@@ -1,8 +1,8 @@
 #include "AngleTestGroup.h"
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 #include "Def.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 
 /* ==================== class AngleTestGroup begin ==================== */
@@ -11,7 +11,7 @@ AngleTestGroup::AngleTestGroup(const std::string& angleTestGroupName, int testTi
 {
 }
 
-AngleTestGroup::~AngleTestGroup(void)
+AngleTestGroup::~AngleTestGroup()
 {
 }
 /* ==================== class AngleTestGroup end ==================== */
@@ -23,7 +23,7 @@ AngleTestBase::AngleTestBase(const Math::Angle& angle) :
 {
 }
 
-AngleTestBase::~AngleTestBase(void)
+AngleTestBase::~AngleTestBase()
 {
 }
 /* ==================== class AngleTestBase end ==================== */
@@ -52,20 +52,20 @@ AngleTestSin::~AngleTestSin()
 
 void AngleTestSin::StartTest()
 {
-	const Math::Real DIFF_THRESHOLD = 0.002f;
+	auto diffThreshold = 0.002f;
 
-	Math::Real sinValue = m_angle.Sin();
-	bool sinEqual = Math::AlmostEqual(sinValue, m_expectedTrigonometryOperatorValue);
+	auto sinValue = m_angle.Sin();
+	auto sinEqual = Math::AlmostEqual(sinValue, m_expectedTrigonometryOperatorValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
 		"The sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 	sinValue = m_angle.FastSin1();
-	sinEqual = abs(sinValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+	sinEqual = abs(sinValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
 		"The first approximate sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 	sinValue = m_angle.FastSin2();
-	sinEqual = abs(sinValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+	sinEqual = abs(sinValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
 		"The second approximate sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 }
@@ -91,7 +91,7 @@ AngleTestCos::~AngleTestCos()
 
 void AngleTestCos::StartTest()
 {
-	const Math::Real DIFF_THRESHOLD = 0.002f;
+	const Math::Real diffThreshold = 0.002f;
 
 	Math::Real cosValue = m_angle.Cos();
 	bool cosEqual = Math::AlmostEqual(cosValue, m_expectedTrigonometryOperatorValue);
@@ -99,12 +99,12 @@ void AngleTestCos::StartTest()
 		"The cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 	cosValue = m_angle.FastCos1();
-	cosEqual = abs(cosValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+	cosEqual = abs(cosValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
 		"The first approximate cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 	cosValue = m_angle.FastCos2();
-	cosEqual = abs(cosValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+	cosEqual = abs(cosValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
 		"The second approximate cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 }
@@ -132,7 +132,7 @@ void AngleTestTan::StartTest()
 {
 	if (!Math::AlmostEqual(m_angle.Cos(), REAL_ZERO))
 	{
-		const Math::Real DIFF_THRESHOLD = 0.002f;
+		const Math::Real diffThreshold = 0.002f;
 
 		Math::Real tanValue = m_angle.Tan();
 		bool tanEqual = Math::AlmostEqual(tanValue, m_expectedTrigonometryOperatorValue);
@@ -140,12 +140,12 @@ void AngleTestTan::StartTest()
 			"The tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 		tanValue = m_angle.FastTan1();
-		tanEqual = abs(tanValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+		tanEqual = abs(tanValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
 			"The first approximate tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
 		tanValue = m_angle.FastTan2();
-		tanEqual = abs(tanValue - m_expectedTrigonometryOperatorValue) < DIFF_THRESHOLD;
+		tanEqual = abs(tanValue - m_expectedTrigonometryOperatorValue) < diffThreshold;
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
 			"The second approximate tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 	}
@@ -188,10 +188,10 @@ AngleTestCompare::~AngleTestCompare()
 
 void AngleTestCompare::StartTest()
 {
-	bool compareResult = (m_angle == m_compareAngle);
+	bool compareResult = m_angle == m_compareAngle;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
 		"The angle ", m_angle, " and angle ", m_compareAngle, " comparison result not as expected.");
-	bool diffCompareResult = (m_angle != m_compareAngle);
+	bool diffCompareResult = m_angle != m_compareAngle;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, Utility::Logging::ERR,
 		"The angle ", m_angle, " and angle ", m_compareAngle, " diff operator result not as expected.");
 	CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::Logging::ERR,

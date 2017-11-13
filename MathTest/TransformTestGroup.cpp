@@ -1,7 +1,7 @@
 #include "TransformTestGroup.h"
 #include "Def.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 /* ==================== class TransformTestGroup begin ==================== */
 TransformTestGroup::TransformTestGroup(const std::string& transformTestGroupName, int testTimeIterationsCount) :
@@ -11,7 +11,7 @@ TransformTestGroup::TransformTestGroup(const std::string& transformTestGroupName
 }
 
 
-TransformTestGroup::~TransformTestGroup(void)
+TransformTestGroup::~TransformTestGroup()
 {
 	NOTICE_LOG_MATH_TEST("Transform tests finished");
 }
@@ -25,7 +25,7 @@ TransformTestBase::TransformTestBase(const Math::Transform& transform) :
 {
 }
 
-TransformTestBase::~TransformTestBase(void)
+TransformTestBase::~TransformTestBase()
 {
 }
 /* ==================== class TransformTestBase end ==================== */
@@ -38,7 +38,7 @@ TransformTestCompare::TransformTestCompare(const Math::Transform& transform1, co
 {
 }
 
-TransformTestCompare::~TransformTestCompare(void)
+TransformTestCompare::~TransformTestCompare()
 {
 }
 

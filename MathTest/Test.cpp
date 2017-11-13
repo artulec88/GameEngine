@@ -1,16 +1,18 @@
 #include "Test.h"
 #include "Def.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 /* ==================== class Test begin ==================== */
-Test::Test(void)
+Test::Test() :
+	m_timer(),
+	m_isTestEnabled(true)
 {
 }
 
 
-Test::~Test(void)
+Test::~Test()
 {
 }
 

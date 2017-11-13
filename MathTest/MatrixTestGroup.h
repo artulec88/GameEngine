@@ -2,9 +2,9 @@
 #define __MATH_TEST_MATRIX_TEST_GROUP_H__
 
 #include "Test.h"
-#include "Math\Matrix.h"
+#include "Math/Matrix.h"
 
-namespace MathTest
+namespace math_test
 {
 
 	class MatrixTestGroup : public TestGroup
@@ -12,7 +12,7 @@ namespace MathTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		MatrixTestGroup(const std::string& quaternionTestGroupName, int testTimeIterationsCount);
-		virtual ~MatrixTestGroup(void);
+		virtual ~MatrixTestGroup();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -27,8 +27,8 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		MatrixTestBase(const Math::Matrix4D& matrix);
-		virtual ~MatrixTestBase(void);
+		explicit MatrixTestBase(const Math::Matrix4D& matrix);
+		virtual ~MatrixTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -46,8 +46,8 @@ namespace MathTest
 		MatrixTestCompare(const Math::Matrix4D& matrix1, const Math::Matrix4D& matrix2, bool expectedCompareResult);
 		virtual ~MatrixTestCompare();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Matrix4D m_compareMatrix;
 		bool m_expectedCompareResult;
@@ -59,8 +59,8 @@ namespace MathTest
 		MatrixTestMultiplyByMatrixOperator(const Math::Matrix4D& matrix1, const Math::Matrix4D& matrix2, const Math::Matrix4D& expectedMultiplyResultMatrix);
 		virtual ~MatrixTestMultiplyByMatrixOperator();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Matrix4D m_matrix2;
 		Math::Matrix4D m_expectedMultiplyResultMatrix;
@@ -72,8 +72,8 @@ namespace MathTest
 		MatrixTestMultiplyByVectorOperator(const Math::Matrix4D& matrix1, const Math::Vector3D& vector, const Math::Vector3D& expectedMultiplyResultVector);
 		virtual ~MatrixTestMultiplyByVectorOperator();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_vector;
 		Math::Vector3D m_expectedMultiplyResultVector;

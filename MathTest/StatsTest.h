@@ -1,19 +1,19 @@
 #ifndef __MATH_TEST_STATS_TEST_H__
 #define __MATH_TEST_STATS_TEST_H__
 
-#include "Math\Statistics.h"
-#include "Math\StatisticsStorage.h"
+#include "Math/Statistics.h"
+#include "Math/StatisticsStorage.h"
 #include "StatsTesting.h"
 
-namespace MathTest
+namespace math_test
 {
 
 	/* ==================== class StatsTest1 begin ==================== */
 	class StatsTest1
 	{
 	public:
-		StatsTest1(void);
-		~StatsTest1(void);
+		StatsTest1();
+		~StatsTest1();
 	public:
 		void Method1();
 		void Method2();
@@ -31,8 +31,8 @@ namespace MathTest
 	class StatsTest2
 	{
 	public:
-		StatsTest2(void);
-		~StatsTest2(void);
+		StatsTest2();
+		~StatsTest2();
 	public:
 		void Method1();
 		void Method2();

@@ -2,11 +2,11 @@
 #define __MATH_TEST_QUATERNION_TEST_GROUP_H__
 
 #include "Test.h"
-#include "Math\Quaternion.h"
-#include "Math\Vector.h"
-#include "Math\Matrix.h"
+#include "Math/Quaternion.h"
+#include "Math/Vector.h"
+#include "Math/Matrix.h"
 
-namespace MathTest
+namespace math_test
 {
 
 	class QuaternionTestGroup : public TestGroup
@@ -14,7 +14,7 @@ namespace MathTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		QuaternionTestGroup(const std::string& quaternionTestGroupName, int testTimeIterationsCount);
-		virtual ~QuaternionTestGroup(void);
+		virtual ~QuaternionTestGroup();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -29,8 +29,8 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		QuaternionTestBase(const Math::Quaternion& quaternion);
-		virtual ~QuaternionTestBase(void);
+		explicit QuaternionTestBase(const Math::Quaternion& quaternion);
+		virtual ~QuaternionTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -48,8 +48,8 @@ namespace MathTest
 		QuaternionTestCompare(const Math::Quaternion& quaternion1, const Math::Quaternion& quaternion2, bool expectedCompareResult);
 		virtual ~QuaternionTestCompare();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_compareQuaternion;
 		bool m_expectedCompareResult;
@@ -61,8 +61,8 @@ namespace MathTest
 		QuaternionTestLength(const Math::Quaternion& quaternion, Math::Real expectedLength);
 		virtual ~QuaternionTestLength();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Real m_expectedLength;
 	}; /* end class QuaternionTestLength */
@@ -73,8 +73,8 @@ namespace MathTest
 		QuaternionTestConjugate(const Math::Quaternion& quaternion, const Math::Quaternion& expectedConjugate);
 		virtual ~QuaternionTestConjugate();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_expectedConjugate;
 	}; /* end class QuaternionTestConjugate */
@@ -85,8 +85,8 @@ namespace MathTest
 		QuaternionTestAddOperator(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, const Math::Quaternion& expectedSumQuaternion);
 		virtual ~QuaternionTestAddOperator();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_quaternion2;
 		Math::Quaternion m_expectedSumQuaternion;
@@ -98,8 +98,8 @@ namespace MathTest
 		QuaternionTestSubtractOperator(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, const Math::Quaternion& expectedSubtractQuaternion);
 		virtual ~QuaternionTestSubtractOperator();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_quaternion2;
 		Math::Quaternion m_expectedSubtractQuaternion;
@@ -119,15 +119,17 @@ namespace MathTest
 		{
 		}
 	public:
-		virtual void StartTest()
+		virtual void StartTest() override
 		{
 			Math::Quaternion multiplyQuaternion = m_quaternion * m_val;
 			// TODO: what if m_val is a Math::Real? It doesn't have ToString() method
-			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyQuaternion == m_expectedMultiplyQuaternion, Utility::ERR,
-				"The multiplication of quaternion ", m_quaternion.ToString(), " and ", m_val.ToString(), " is a quaternion ", multiplyQuaternion.ToString(),
-				". It is different than expected ", m_expectedMultiplyQuaternion.ToString());
+			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyQuaternion == m_expectedMultiplyQuaternion, Utility::Logging::ERR,
+				"The multiplication of quaternion ", m_quaternion, " and ", m_val, " is a quaternion ", multiplyQuaternion,
+				". It is different than expected ", m_expectedMultiplyQuaternion);
 		}
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTimeTest(unsigned int iterationsCount) override
+		{
+		}
 	protected:
 		T m_val;
 		Math::Quaternion m_expectedMultiplyQuaternion;
@@ -139,8 +141,8 @@ namespace MathTest
 		QuaternionTestDivideOperator(const Math::Quaternion& quaternion, Math::Real divideValue, const Math::Quaternion& expectedDivideQuaternion);
 		virtual ~QuaternionTestDivideOperator();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Real m_divideValue;
 		Math::Quaternion m_expectedDivideQuaternion;
@@ -152,8 +154,8 @@ namespace MathTest
 		QuaternionTestNormalize(const Math::Quaternion& quaternion, const Math::Quaternion& expectedNormalizedQuaternion);
 		virtual ~QuaternionTestNormalize();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_expectedNormalizedQuaternion;
 	}; /* end class QuaternionTestNormalize */
@@ -164,8 +166,8 @@ namespace MathTest
 		QuaternionTestDot(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, Math::Real expectedDotResult);
 		virtual ~QuaternionTestDot();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_quaternion2;
 		Math::Real m_expectedDotResult;
@@ -177,8 +179,8 @@ namespace MathTest
 		QuaternionTestNlerp(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, Math::Real nlerpFactor, bool shortest, const Math::Quaternion& expectedNlerpQuaternion);
 		virtual ~QuaternionTestNlerp();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_quaternion2;
 		Math::Real m_nlerpFactor;
@@ -192,8 +194,8 @@ namespace MathTest
 		QuaternionTestSlerp(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, Math::Real slerpFactor, bool shortest, const Math::Quaternion& expectedSlerpQuaternion);
 		virtual ~QuaternionTestSlerp();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Quaternion m_quaternion2;
 		Math::Real m_slerpFactor;
@@ -207,8 +209,8 @@ namespace MathTest
 		QuaternionTestForward(const Math::Quaternion& quaternion, const Math::Vector3D& expectedForwardVector);
 		virtual ~QuaternionTestForward();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedForwardVector;
 	}; /* end class QuaternionTestForward */
@@ -219,8 +221,8 @@ namespace MathTest
 		QuaternionTestUp(const Math::Quaternion& quaternion, const Math::Vector3D& expectedUpVector);
 		virtual ~QuaternionTestUp();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedUpVector;
 	}; /* end class QuaternionTestUp */
@@ -231,8 +233,8 @@ namespace MathTest
 		QuaternionTestRight(const Math::Quaternion& quaternion, const Math::Vector3D& expectedRightVector);
 		virtual ~QuaternionTestRight();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedRightVector;
 	}; /* end class QuaternionTestRight */
@@ -243,8 +245,8 @@ namespace MathTest
 		QuaternionTestBack(const Math::Quaternion& quaternion, const Math::Vector3D& expectedBackVector);
 		virtual ~QuaternionTestBack();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedBackVector;
 	}; /* end class QuaternionTestBack */
@@ -255,8 +257,8 @@ namespace MathTest
 		QuaternionTestDown(const Math::Quaternion& quaternion, const Math::Vector3D& expectedDownVector);
 		virtual ~QuaternionTestDown();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedDownVector;
 	}; /* end class QuaternionTestDown */
@@ -267,8 +269,8 @@ namespace MathTest
 		QuaternionTestLeft(const Math::Quaternion& quaternion, const Math::Vector3D& expectedLeftVector);
 		virtual ~QuaternionTestLeft();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Vector3D m_expectedLeftVector;
 	}; /* end class QuaternionTestLeft */
@@ -279,8 +281,8 @@ namespace MathTest
 		QuaternionTestRotationMatrix(const Math::Quaternion& quaternion, const Math::Matrix4D& expectedRotationMatrix);
 		virtual ~QuaternionTestRotationMatrix();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Matrix4D m_expectedRotationMatrix;
 	}; /* end class QuaternionTestRotationMatrix */

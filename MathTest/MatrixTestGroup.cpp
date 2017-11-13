@@ -1,7 +1,7 @@
 #include "MatrixTestGroup.h"
 #include "Def.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 /* ==================== class MatrixTestGroup begin ==================== */
 MatrixTestGroup::MatrixTestGroup(const std::string& matrixTestGroupName, int testTimeIterationsCount) :
@@ -11,7 +11,7 @@ MatrixTestGroup::MatrixTestGroup(const std::string& matrixTestGroupName, int tes
 }
 
 
-MatrixTestGroup::~MatrixTestGroup(void)
+MatrixTestGroup::~MatrixTestGroup()
 {
 	NOTICE_LOG_MATH_TEST("Matrix tests finished");
 }
@@ -25,7 +25,7 @@ MatrixTestBase::MatrixTestBase(const Math::Matrix4D& matrix) :
 {
 }
 
-MatrixTestBase::~MatrixTestBase(void)
+MatrixTestBase::~MatrixTestBase()
 {
 }
 /* ==================== class MatrixTestBase end ==================== */
@@ -38,7 +38,7 @@ MatrixTestCompare::MatrixTestCompare(const Math::Matrix4D& matrix1, const Math::
 {
 }
 
-MatrixTestCompare::~MatrixTestCompare(void)
+MatrixTestCompare::~MatrixTestCompare()
 {
 }
 

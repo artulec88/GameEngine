@@ -1,10 +1,10 @@
 #include "StatsTest.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 #include <thread>
 
 /* ==================== class StatsTest1 begin ==================== */
-MathTest::StatsTest1::StatsTest1(void)
+math_test::StatsTest1::StatsTest1()
 #ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 	: m_classStats(STATS_STORAGE.GetClassStats("StatsTest1"))
 #endif
@@ -12,11 +12,11 @@ MathTest::StatsTest1::StatsTest1(void)
 }
 
 
-MathTest::StatsTest1::~StatsTest1(void)
+math_test::StatsTest1::~StatsTest1()
 {
 }
 
-void MathTest::StatsTest1::Method1()
+void math_test::StatsTest1::Method1()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -24,7 +24,7 @@ void MathTest::StatsTest1::Method1()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest1::Method2()
+void math_test::StatsTest1::Method2()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -32,7 +32,7 @@ void MathTest::StatsTest1::Method2()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest1::Method3()
+void math_test::StatsTest1::Method3()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -45,7 +45,7 @@ void MathTest::StatsTest1::Method3()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest1::NestedMethod4()
+void math_test::StatsTest1::NestedMethod4()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -55,7 +55,7 @@ void MathTest::StatsTest1::NestedMethod4()
 /* ==================== class StatsTest1 end ==================== */
 
 /* ==================== class StatsTest2 begin ==================== */
-MathTest::StatsTest2::StatsTest2(void)
+math_test::StatsTest2::StatsTest2()
 #ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 	: m_classStats(STATS_STORAGE.GetClassStats("StatsTest2"))
 #endif
@@ -63,11 +63,11 @@ MathTest::StatsTest2::StatsTest2(void)
 }
 
 
-MathTest::StatsTest2::~StatsTest2(void)
+math_test::StatsTest2::~StatsTest2()
 {
 }
 
-void MathTest::StatsTest2::Method1()
+void math_test::StatsTest2::Method1()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -91,7 +91,7 @@ void MathTest::StatsTest2::Method1()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest2::Method2()
+void math_test::StatsTest2::Method2()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -99,7 +99,7 @@ void MathTest::StatsTest2::Method2()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest2::Method3()
+void math_test::StatsTest2::Method3()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)
@@ -112,7 +112,7 @@ void MathTest::StatsTest2::Method3()
 	STOP_PROFILING_MATH_TEST("");
 }
 
-void MathTest::StatsTest2::NestedMethod4()
+void math_test::StatsTest2::NestedMethod4()
 {
 	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes StatisticsStorage, Statistics, etc.)

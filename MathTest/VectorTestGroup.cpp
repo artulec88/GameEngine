@@ -1,7 +1,7 @@
 #include "VectorTestGroup.h"
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 /* ==================== class VectorTestGroup begin ==================== */
 VectorTestGroup::VectorTestGroup(const std::string& vectorTestGroupName, int testTimeIterationsCount) :
@@ -10,7 +10,7 @@ VectorTestGroup::VectorTestGroup(const std::string& vectorTestGroupName, int tes
 	NOTICE_LOG_MATH_TEST("Vector tests started");
 }
 
-VectorTestGroup::~VectorTestGroup(void)
+VectorTestGroup::~VectorTestGroup()
 {
 	NOTICE_LOG_MATH_TEST("Vector tests finished");
 }
@@ -24,7 +24,7 @@ Vector2DTestCross::Vector2DTestCross(const Math::Vector2D& vector1, const Math::
 {
 }
 
-Vector2DTestCross::~Vector2DTestCross(void)
+Vector2DTestCross::~Vector2DTestCross()
 {
 }
 
@@ -53,7 +53,7 @@ Vector3DTestCross::Vector3DTestCross(const Math::Vector3D& vector1, const Math::
 {
 }
 
-Vector3DTestCross::~Vector3DTestCross(void)
+Vector3DTestCross::~Vector3DTestCross()
 {
 }
 

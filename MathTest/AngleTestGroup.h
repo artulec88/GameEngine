@@ -2,9 +2,9 @@
 #define __MATH_TEST_ANGLE_TEST_GROUP_H__
 
 #include "Test.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
-namespace MathTest
+namespace math_test
 {
 
 	class AngleTestGroup : public TestGroup
@@ -12,7 +12,7 @@ namespace MathTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AngleTestGroup(const std::string& angleTestGroupName, int testTimeIterationsCount);
-		virtual ~AngleTestGroup(void);
+		virtual ~AngleTestGroup();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -26,8 +26,8 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		AngleTestBase(const Math::Angle& angle);
-		virtual ~AngleTestBase(void);
+		explicit AngleTestBase(const Math::Angle& angle);
+		virtual ~AngleTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -66,8 +66,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -84,8 +84,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -102,8 +102,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -124,8 +124,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -176,8 +176,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -194,8 +194,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -212,8 +212,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -230,8 +230,8 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

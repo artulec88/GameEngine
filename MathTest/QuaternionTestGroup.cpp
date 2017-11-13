@@ -1,8 +1,8 @@
 #include "QuaternionTestGroup.h"
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 #include "Def.h"
 
-using namespace MathTest;
+using namespace math_test;
 
 /* ==================== class QuaternionTestGroup begin ==================== */
 QuaternionTestGroup::QuaternionTestGroup(const std::string& quaternionTestGroupName, int testTimeIterationsCount) :
@@ -12,7 +12,7 @@ QuaternionTestGroup::QuaternionTestGroup(const std::string& quaternionTestGroupN
 }
 
 
-QuaternionTestGroup::~QuaternionTestGroup(void)
+QuaternionTestGroup::~QuaternionTestGroup()
 {
 	NOTICE_LOG_MATH_TEST("Quaternion test finished");
 }
@@ -26,7 +26,7 @@ QuaternionTestBase::QuaternionTestBase(const Math::Quaternion& quaternion) :
 {
 }
 
-QuaternionTestBase::~QuaternionTestBase(void)
+QuaternionTestBase::~QuaternionTestBase()
 {
 }
 /* ==================== class QuaternionTestBase end ==================== */
@@ -40,7 +40,7 @@ QuaternionTestCompare::QuaternionTestCompare(const Math::Quaternion& quaternion1
 {
 }
 
-QuaternionTestCompare::~QuaternionTestCompare(void)
+QuaternionTestCompare::~QuaternionTestCompare()
 {
 }
 
@@ -64,7 +64,7 @@ QuaternionTestLength::QuaternionTestLength(const Math::Quaternion& quaternion, M
 {
 }
 
-QuaternionTestLength::~QuaternionTestLength(void)
+QuaternionTestLength::~QuaternionTestLength()
 {
 }
 
@@ -92,7 +92,7 @@ QuaternionTestConjugate::QuaternionTestConjugate(const Math::Quaternion& quatern
 {
 }
 
-QuaternionTestConjugate::~QuaternionTestConjugate(void)
+QuaternionTestConjugate::~QuaternionTestConjugate()
 {
 }
 
@@ -120,7 +120,7 @@ QuaternionTestAddOperator::QuaternionTestAddOperator(const Math::Quaternion& qua
 {
 }
 
-QuaternionTestAddOperator::~QuaternionTestAddOperator(void)
+QuaternionTestAddOperator::~QuaternionTestAddOperator()
 {
 }
 
@@ -146,7 +146,7 @@ QuaternionTestSubtractOperator::QuaternionTestSubtractOperator(const Math::Quate
 {
 }
 
-QuaternionTestSubtractOperator::~QuaternionTestSubtractOperator(void)
+QuaternionTestSubtractOperator::~QuaternionTestSubtractOperator()
 {
 }
 
@@ -163,7 +163,6 @@ void QuaternionTestSubtractOperator::StartTimeTest(unsigned int iterationsCount)
 }
 /* ==================== class QuaternionTestSubtractOperator end ==================== */
 
-
 /* ==================== class QuaternionTestDivideOperator begin ==================== */
 QuaternionTestDivideOperator::QuaternionTestDivideOperator(const Math::Quaternion& quaternion, Math::Real divideValue, const Math::Quaternion& expectedDivideQuaternion) :
 	QuaternionTestBase(quaternion),
@@ -172,7 +171,7 @@ QuaternionTestDivideOperator::QuaternionTestDivideOperator(const Math::Quaternio
 {
 }
 
-QuaternionTestDivideOperator::~QuaternionTestDivideOperator(void)
+QuaternionTestDivideOperator::~QuaternionTestDivideOperator()
 {
 }
 
@@ -205,7 +204,7 @@ QuaternionTestNormalize::QuaternionTestNormalize(const Math::Quaternion& quatern
 		"Given expected normalized quaternion ", m_expectedNormalizedQuaternion, " is in fact not normalized.");
 }
 
-QuaternionTestNormalize::~QuaternionTestNormalize(void)
+QuaternionTestNormalize::~QuaternionTestNormalize()
 {
 }
 
@@ -239,7 +238,7 @@ QuaternionTestDot::QuaternionTestDot(const Math::Quaternion& quaternion, const M
 {
 }
 
-QuaternionTestDot::~QuaternionTestDot(void)
+QuaternionTestDot::~QuaternionTestDot()
 {
 }
 
@@ -266,7 +265,7 @@ QuaternionTestNlerp::QuaternionTestNlerp(const Math::Quaternion& quaternion, con
 {
 }
 
-QuaternionTestNlerp::~QuaternionTestNlerp(void)
+QuaternionTestNlerp::~QuaternionTestNlerp()
 {
 }
 
@@ -293,7 +292,7 @@ QuaternionTestSlerp::QuaternionTestSlerp(const Math::Quaternion& quaternion, con
 {
 }
 
-QuaternionTestSlerp::~QuaternionTestSlerp(void)
+QuaternionTestSlerp::~QuaternionTestSlerp()
 {
 }
 
@@ -317,7 +316,7 @@ QuaternionTestForward::QuaternionTestForward(const Math::Quaternion& quaternion,
 {
 }
 
-QuaternionTestForward::~QuaternionTestForward(void)
+QuaternionTestForward::~QuaternionTestForward()
 {
 }
 
@@ -340,7 +339,7 @@ QuaternionTestUp::QuaternionTestUp(const Math::Quaternion& quaternion, const Mat
 {
 }
 
-QuaternionTestUp::~QuaternionTestUp(void)
+QuaternionTestUp::~QuaternionTestUp()
 {
 }
 
@@ -363,7 +362,7 @@ QuaternionTestRight::QuaternionTestRight(const Math::Quaternion& quaternion, con
 {
 }
 
-QuaternionTestRight::~QuaternionTestRight(void)
+QuaternionTestRight::~QuaternionTestRight()
 {
 }
 
@@ -386,7 +385,7 @@ QuaternionTestBack::QuaternionTestBack(const Math::Quaternion& quaternion, const
 {
 }
 
-QuaternionTestBack::~QuaternionTestBack(void)
+QuaternionTestBack::~QuaternionTestBack()
 {
 }
 
@@ -409,7 +408,7 @@ QuaternionTestDown::QuaternionTestDown(const Math::Quaternion& quaternion, const
 {
 }
 
-QuaternionTestDown::~QuaternionTestDown(void)
+QuaternionTestDown::~QuaternionTestDown()
 {
 }
 
@@ -432,7 +431,7 @@ QuaternionTestLeft::QuaternionTestLeft(const Math::Quaternion& quaternion, const
 {
 }
 
-QuaternionTestLeft::~QuaternionTestLeft(void)
+QuaternionTestLeft::~QuaternionTestLeft()
 {
 }
 
@@ -455,7 +454,7 @@ QuaternionTestRotationMatrix::QuaternionTestRotationMatrix(const Math::Quaternio
 {
 }
 
-QuaternionTestRotationMatrix::~QuaternionTestRotationMatrix(void)
+QuaternionTestRotationMatrix::~QuaternionTestRotationMatrix()
 {
 }
 

@@ -1,21 +1,21 @@
 #ifndef __MATH_TEST_TEST_GROUP_H__
 #define __MATH_TEST_TEST_GROUP_H__
 
-#include "Utility\Time.h"
+#include "Utility/Time.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 #include <vector>
 
-namespace MathTest
+namespace math_test
 {
 
 	class Test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		Test(void);
-		virtual ~Test(void);
+		Test();
+		virtual ~Test();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -41,7 +41,7 @@ namespace MathTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		TestGroup(const std::string& testGroupName, int testTimeIterationsCount);
-		virtual ~TestGroup(void);
+		virtual ~TestGroup();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

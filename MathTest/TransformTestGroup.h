@@ -2,9 +2,9 @@
 #define __MATH_TEST_TRANSFORM_TEST_GROUP_H__
 
 #include "Test.h"
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 
-namespace MathTest
+namespace math_test
 {
 
 	class TransformTestGroup : public TestGroup
@@ -12,7 +12,7 @@ namespace MathTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		TransformTestGroup(const std::string& transformTestGroupName, int testTimeIterationsCount);
-		virtual ~TransformTestGroup(void);
+		virtual ~TransformTestGroup();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -27,8 +27,8 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		TransformTestBase(const Math::Transform& transform);
-		virtual ~TransformTestBase(void);
+		explicit TransformTestBase(const Math::Transform& transform);
+		virtual ~TransformTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -46,8 +46,8 @@ namespace MathTest
 		TransformTestCompare(const Math::Transform& transform1, const Math::Transform& transform2, bool expectedCompareResult);
 		virtual ~TransformTestCompare();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Transform m_compareTransform;
 		bool m_expectedCompareResult;
@@ -59,8 +59,8 @@ namespace MathTest
 		TransformTestParent(const Math::Transform& parentTransform, const Math::Transform& childTransform, const Math::Transform& expectedChildFinalTransform);
 		virtual ~TransformTestParent();
 	public:
-		virtual void StartTest();
-		virtual void StartTimeTest(unsigned int iterationsCount);
+		virtual void StartTest() override;
+		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		Math::Transform m_childTransform;
 		Math::Transform m_expectedChildFinalTransform;
