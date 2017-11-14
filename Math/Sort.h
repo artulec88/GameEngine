@@ -224,7 +224,7 @@ namespace Math {
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
-				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(vectorSize >= 2, Utility::Logging::DEBUG,
+				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(vectorSize >= 2, utility::logging::DEBUG,
 					"Selection sort operation ignored. Only one element to sort.");
 
 				for (int k = 0; k < vectorSize - 1; ++k)
@@ -552,7 +552,7 @@ namespace Math {
 			void Sort(T* vectors, size_t left, size_t right, const SortingParametersChain& sortingParameters)
 			{
 				DELOCUST_LOG_MATH("Quick sort started for the range of indices: [", left, "; ", right, "].");
-				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(left < right, Utility::Logging::WARNING,
+				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(left < right, utility::logging::WARNING,
 					"Calling quick sort method with incorrect values for left and right indices (", left, ", ", right, " respectively).");
 
 				const size_t pivotIndex = left;

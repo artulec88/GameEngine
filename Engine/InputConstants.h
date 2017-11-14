@@ -3,7 +3,7 @@
 
 #include "Engine.h"
 
-namespace Engine
+namespace engine
 {
 	namespace Input
 	{

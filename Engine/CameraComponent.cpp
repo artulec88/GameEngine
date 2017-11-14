@@ -7,7 +7,7 @@
 #include "Math\FloatingPoint.h"
 
 /* ==================== CameraComponent class implementation begin ==================== */
-Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
+engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
 	GameComponent(),
 	Rendering::BaseCamera(projectionMatrix, sensitivity),
 	IActionHandler(),
@@ -17,7 +17,7 @@ Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix,
 {
 }
 
-Engine::CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
+engine::CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
 	GameComponent(),
 	Rendering::BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	IActionHandler(),
@@ -27,12 +27,12 @@ Engine::CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspe
 {
 }
 
-Engine::CameraComponent::~CameraComponent(void)
+engine::CameraComponent::~CameraComponent(void)
 {
 	SAFE_DELETE(m_cameraBehavior);
 }
 
-Engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
+engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
 	GameComponent(std::move(cameraComponent)),
 	Rendering::BaseCamera(std::move(cameraComponent)),
 	IActionHandler(std::move(cameraComponent)),
@@ -44,7 +44,7 @@ Engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
 }
 
 
-Engine::CameraComponent& Engine::CameraComponent::operator=(CameraComponent&& cameraComponent)
+engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& cameraComponent)
 {
 	GameComponent::operator=(std::move(cameraComponent));
 	Rendering::BaseCamera::operator=(std::move(cameraComponent));

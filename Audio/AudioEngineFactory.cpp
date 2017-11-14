@@ -5,17 +5,17 @@
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
-Audio::AudioEngineFactory::AudioEngineFactory(const std::string& audioDirectory) :
+audio::AudioEngineFactory::AudioEngineFactory(const std::string& audioDirectory) :
 	m_audioDirectory(audioDirectory)
 {
 }
 
 
-Audio::AudioEngineFactory::~AudioEngineFactory()
+audio::AudioEngineFactory::~AudioEngineFactory()
 {
 }
 
-std::unique_ptr<Audio::IAudioEngine> Audio::AudioEngineFactory::CreateAudioEngine(AudioEngineTypes::AudioEngineType audioEngineType /* = AudioEngineTypes::IRR_KLANG */) const
+std::unique_ptr<audio::IAudioEngine> audio::AudioEngineFactory::CreateAudioEngine(AudioEngineTypes::AudioEngineType audioEngineType /* = AudioEngineTypes::IRR_KLANG */) const
 {
 	switch (audioEngineType)
 	{

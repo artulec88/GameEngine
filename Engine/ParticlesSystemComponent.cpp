@@ -2,7 +2,7 @@
 #include "ParticlesSystemComponent.h"
 
 
-Engine::ParticlesSystemComponent::ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem) :
+engine::ParticlesSystemComponent::ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem) :
 	GameComponent(),
 	IUpdateable(),
 	m_particlesSystem(particlesSystem)
@@ -11,12 +11,12 @@ Engine::ParticlesSystemComponent::ParticlesSystemComponent(GameManager* gameMana
 }
 
 
-Engine::ParticlesSystemComponent::~ParticlesSystemComponent()
+engine::ParticlesSystemComponent::~ParticlesSystemComponent()
 {
 	SAFE_DELETE(m_particlesSystem);
 }
 
-Engine::ParticlesSystemComponent::ParticlesSystemComponent(ParticlesSystemComponent&& particlesSystemComponent) :
+engine::ParticlesSystemComponent::ParticlesSystemComponent(ParticlesSystemComponent&& particlesSystemComponent) :
 	GameComponent(std::move(particlesSystemComponent)),
 	IUpdateable(std::move(particlesSystemComponent)),
 	m_particlesSystem(std::move(particlesSystemComponent.m_particlesSystem))
@@ -24,7 +24,7 @@ Engine::ParticlesSystemComponent::ParticlesSystemComponent(ParticlesSystemCompon
 	particlesSystemComponent.m_particlesSystem = NULL;
 }
 
-Engine::ParticlesSystemComponent& Engine::ParticlesSystemComponent::operator=(ParticlesSystemComponent&& particlesSystemComponent)
+engine::ParticlesSystemComponent& engine::ParticlesSystemComponent::operator=(ParticlesSystemComponent&& particlesSystemComponent)
 {
 	GameComponent::operator=(std::move(particlesSystemComponent));
 	IUpdateable::operator=(std::move(particlesSystemComponent));
@@ -32,7 +32,7 @@ Engine::ParticlesSystemComponent& Engine::ParticlesSystemComponent::operator=(Pa
 	particlesSystemComponent.m_particlesSystem = NULL;
 }
 
-void Engine::ParticlesSystemComponent::Update(Math::Real deltaTime)
+void engine::ParticlesSystemComponent::Update(Math::Real deltaTime)
 {
 	m_particlesSystem->Update(deltaTime);
 }

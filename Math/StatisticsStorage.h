@@ -52,7 +52,7 @@ namespace Math {
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			ClassNames2ClassStatsMap m_classStatistics;
-			Utility::Timing::Timer m_timer;
+			utility::timing::Timer m_timer;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class StatisticsStorage */
 

@@ -3,7 +3,7 @@
 
 #include "GameCommand.h"
 
-namespace Engine
+namespace engine
 {
 
 	class QuitGameCommand : public GameCommand

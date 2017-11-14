@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-namespace Utility
+namespace utility
 {
 	class CommandLineMapper : public ICommandLineMapper
 	{
@@ -17,7 +17,7 @@ namespace Utility
 		/// <summary> Command line parameters mapping object constructor. </summary>
 		/// <param name="argc"> The number of command line parameters. </param>
 		/// <param name="argv"> The array of command line parameter values. </param>
-		CommandLineMapper(int argc, char* argv[]);
+		CommandLineMapper(const int argc, char* argv[]);
 		
 		/// <summary> Command line parameters mapping object destructor. </summary>
 		virtual ~CommandLineMapper();

@@ -8,7 +8,7 @@
 
 #include "Math\Angle.h"
 
-namespace Engine
+namespace engine
 {
 
 	class ConstantRotationComponent : public GameComponent, public IUpdateable

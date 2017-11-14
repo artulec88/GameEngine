@@ -18,11 +18,11 @@
 namespace Game
 {
 
-	class IntroGameState : public Engine::GameState
+	class IntroGameState : public engine::GameState
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		IntroGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
+		IntroGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
 		virtual ~IntroGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -32,16 +32,16 @@ namespace Game
 		virtual void Leaving();
 		virtual void Obscuring();
 		virtual void Revealed();
-		virtual void Handle(Engine::Actions::Action action);
-		virtual void Handle(Engine::States::State state);
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Actions::Action action);
+		virtual void Handle(engine::States::State state);
+		virtual void Handle(engine::Ranges::Range range, Math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
+		engine::GameManager* m_gameManager;
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif

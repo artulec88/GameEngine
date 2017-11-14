@@ -3,7 +3,7 @@
 
 #include "Utility.h"
 
-namespace Utility
+namespace utility
 {
 	template <class T>
 	class Builder;

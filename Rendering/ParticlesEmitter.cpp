@@ -9,7 +9,7 @@ Rendering::Particles::ParticlesEmitter::ParticlesEmitter(Math::Real numberOfPart
 	m_currentTimer(REAL_ZERO),
 	m_timeToEmitOneParticle(REAL_ONE / numberOfParticlesToGeneratePerSecond)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(numberOfParticlesToGeneratePerSecond > REAL_ZERO, Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(numberOfParticlesToGeneratePerSecond > REAL_ZERO, utility::logging::ERR,
 		"The number of particles to emit must be greater than 0 whereas it equals ", numberOfParticlesToGeneratePerSecond);
 }
 

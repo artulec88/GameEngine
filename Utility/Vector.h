@@ -3,8 +3,8 @@
 
 #include "Utility.h"
 
-namespace Utility {
-	namespace Container {
+namespace utility {
+	namespace container {
 
 		/// <summary>
 		/// The vector template class encapsulates dynamically resizable, contiguous storage of objects.
@@ -20,7 +20,7 @@ namespace Utility {
 			/// The <paramref name="growSizeByValue"/> represents the number of elements to grow by when the vector size is dynamically increased.
 			/// The initial size is also the maximum quantity allowed, but dynamic resizing can cause the two numbers to differ.
 			/// </summary>
-			explicit Vector(unsigned int initialSize = 1, unsigned int growSizeByValue = 1) :
+			explicit Vector(const unsigned int initialSize = 1, const unsigned int growSizeByValue = 1) :
 				m_data(nullptr),
 				m_size(initialSize),
 				m_maxSize(initialSize),
@@ -44,10 +44,12 @@ namespace Utility {
 
 			/// <summary> Vector copy assignment operator. </summary>
 			/// <param name="vector"> Vector to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned vector. </returns>
 			Vector& operator=(const Vector& vector) = delete;
 
 			/// <summary> Vector move assignment operator. </summary>
 			/// <param name="vector"> Vector to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned vector. </returns>
 			Vector& operator=(Vector&& vector) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -93,9 +95,9 @@ namespace Utility {
 			/// If the given <paramref name="maxSize"/> is different than current maximum size, the array is reallocated.
 			/// In the event the array grows, the <paramref name="copy"/> parameter specified whether or not the old array items should be copied to the new array.
 			/// </summary>
-			void SetMaxSize(unsigned int maxSize, bool copy);
+			void SetMaxSize(const unsigned int maxSize, bool copy);
 			unsigned int GetGrowSizeByValue() const { return m_growSizeByValue; }
-			void SetGrowSizeByValue(unsigned int growSizeByValue) { m_growSizeByValue = growSizeByValue; }
+			void SetGrowSizeByValue(const unsigned int growSizeByValue) { m_growSizeByValue = growSizeByValue; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

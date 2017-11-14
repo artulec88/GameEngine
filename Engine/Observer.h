@@ -7,7 +7,7 @@
 #include "InputConstants.h"
 //#include "GameEvent.h"
 
-namespace Engine
+namespace engine
 {
 
 	/// <summary>

@@ -46,7 +46,7 @@ const Rendering::Texture* Rendering::TextureFactory::CreateCubeTexture(int textu
 	const std::string EXPECTED_POS_Z_FACE_FILENAME = "front";
 	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
 
-	Utility::FileManager fileManager;
+	utility::FileManager fileManager;
 	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(m_texturesDirectory + cubeTextureDirectory);
 	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;

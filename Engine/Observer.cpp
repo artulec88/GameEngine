@@ -2,11 +2,11 @@
 #include "Observer.h"
 
 
-Engine::Observer::Observer()
+engine::Observer::Observer()
 {
 }
 
 
-Engine::Observer::~Observer()
+engine::Observer::~Observer()
 {
 }

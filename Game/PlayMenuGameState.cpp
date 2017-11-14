@@ -9,8 +9,8 @@
 #include "PlayGameState.h"
 #include "ResumeGameCommand.h"
 
-Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize) :
-	Engine::GameState(inputMappingContextName),
+Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize) :
+	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, NULL, Math::ZERO_VECTOR_2D, Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f,
 		Rendering::Color(Rendering::ColorIDs::BLACK), Rendering::Color(Rendering::ColorIDs::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
@@ -30,22 +30,22 @@ Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, con
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.7f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+	engine::MenuEntry* playMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.7f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true);
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(playMenuOptionsMenuEntry);
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::RESUME_GAME, "Resume", playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::RESUME_GAME, "Resume", playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.1f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::SAVE_GAME, "Save",playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SAVE_GAME, "Save",playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.3f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::LOAD_GAME, "Load",playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::LOAD_GAME, "Load",playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::QUIT_GAME, "Quit", playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.9f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
@@ -57,49 +57,49 @@ Game::PlayMenuGameState::~PlayMenuGameState(void)
 
 void Game::PlayMenuGameState::Entered()
 {
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has been placed in the game state manager");
 }
 
 void Game::PlayMenuGameState::Leaving()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PlayMenu game state is about to be removed from the game state manager");
 }
 
 void Game::PlayMenuGameState::Obscuring()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PlayMenu game state");
 }
 
 void Game::PlayMenuGameState::Revealed()
 {
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::PlayMenuGameState::Handle(Engine::Actions::Action action)
+void Game::PlayMenuGameState::Handle(engine::Actions::Action action)
 {
 	switch (action)
 	{
-	case Engine::Actions::SELECT_PREVIOUS_MENU_ENTRY:
+	case engine::Actions::SELECT_PREVIOUS_MENU_ENTRY:
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectPrevChild(); // TODO: Is it possible that GetParent() == NULL?
 		break;
-	case Engine::Actions::SELECT_NEXT_MENU_ENTRY:
+	case engine::Actions::SELECT_NEXT_MENU_ENTRY:
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == NULL?
 		break;
-	case Engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
+	case engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
 		m_currentMenuEntry->Dispatch();
 		break;
-	case Engine::Actions::RETURN_TO_PARENT_MENU_ENTRY:
+	case engine::Actions::RETURN_TO_PARENT_MENU_ENTRY:
 		if (m_currentMenuEntry->HasParent())
 		{
 			m_currentMenuEntry = m_currentMenuEntry->GetParent();
 		}
 		else
 		{
-			Engine::GameManager::GetGameManager()->PopState();
+			engine::GameManager::GetGameManager()->PopState();
 		}
 		break;
 	default:
@@ -108,11 +108,11 @@ void Game::PlayMenuGameState::Handle(Engine::Actions::Action action)
 	}
 }
 
-void Game::PlayMenuGameState::Handle(Engine::States::State state)
+void Game::PlayMenuGameState::Handle(engine::States::State state)
 {
 }
 
-void Game::PlayMenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+void Game::PlayMenuGameState::Handle(engine::Ranges::Range range, Math::Real value)
 {
 }
 
@@ -148,7 +148,7 @@ void Game::PlayMenuGameState::SelectChild(int childIndex)
 	////m_currentMenuEntry->GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
+	engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
 	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 

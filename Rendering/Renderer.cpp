@@ -305,7 +305,7 @@ void Rendering::Renderer::InitWaterNodesRendering()
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
-		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::Logging::ERR, "Water move factor is still greater than 1.0. It is equal to ", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, utility::logging::ERR, "Water move factor is still greater than 1.0. It is equal to ", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
 	}
 	m_mappedValues.SetReal("waterMoveFactor", m_waterMoveFactor);
 	m_mappedValues.SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);

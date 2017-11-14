@@ -43,7 +43,7 @@
 
 //#endif
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// The core of the game engine. It maintains the whole running game engine.
@@ -121,7 +121,7 @@ namespace Engine
 		//void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 		//void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
-		Audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
+		audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
 
 		const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 		const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
@@ -186,14 +186,14 @@ namespace Engine
 		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void SetCallbacks();
-		void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
+		void StopTimer(utility::timing::Timer& timer, long& countStats, Math::Statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
 		{
 			if (timer.IsRunning())
 			{
 				timer.Stop();
 			}
 			++countStats;
-			long long elapsedTime = timer.GetDuration(Utility::Timing::MICROSECOND);
+			long long elapsedTime = timer.GetDuration(utility::timing::MICROSECOND);
 			minMaxTime.ProcessSample(elapsedTime);
 			timeSum += elapsedTime;
 		}
@@ -216,7 +216,7 @@ namespace Engine
 		const char* m_windowTitle;
 		const Math::Real m_frameTime;
 		GameManager* m_game;
-		std::unique_ptr<Audio::IAudioEngine> m_audioEngine;
+		std::unique_ptr<audio::IAudioEngine> m_audioEngine;
 		Physics::PhysicsEngine* m_physicsEngine;
 		std::unique_ptr<Rendering::Renderer> m_renderer; // TODO: Replace unique_ptr with a simple instance of Rendering::Renderer.
 

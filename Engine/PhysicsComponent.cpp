@@ -6,7 +6,7 @@
 
 ///* static */ const Math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
-Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce) :
+engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce) :
 	GameComponent(),
 	IUpdateable(),
 	m_moveSpeed(movementSpeed),
@@ -17,12 +17,12 @@ Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real 
 }
 
 
-Engine::PhysicsComponent::~PhysicsComponent()
+engine::PhysicsComponent::~PhysicsComponent()
 {
 	//SAFE_DELETE(m_physicsObject);
 }
 
-void Engine::PhysicsComponent::Update(Math::Real deltaTime)
+void engine::PhysicsComponent::Update(Math::Real deltaTime)
 {
 	if (m_isJumping)
 	{

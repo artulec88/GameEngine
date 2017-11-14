@@ -3,18 +3,18 @@
 #include "Utility\ILogger.h"
 
 
-Engine::GameStateManager::GameStateManager() :
+engine::GameStateManager::GameStateManager() :
 	m_gameStateTransition(NULL)
 {
 }
 
 
-Engine::GameStateManager::~GameStateManager(void)
+engine::GameStateManager::~GameStateManager(void)
 {
 	SAFE_DELETE(m_gameStateTransition);
 }
 
-void Engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
+void engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
 	if (gameStateTransition == NULL)
 	{
@@ -27,7 +27,7 @@ void Engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTr
 	m_gameStateTransition = gameStateTransition;
 }
 
-void Engine::GameStateManager::PerformStateTransition()
+void engine::GameStateManager::PerformStateTransition()
 {
 	if (m_gameStateTransition == NULL) // No pending state transition
 	{
@@ -51,7 +51,7 @@ void Engine::GameStateManager::PerformStateTransition()
 	m_gameStateTransition = NULL;
 }
 
-Engine::GameState* Engine::GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
+engine::GameState* engine::GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
 {
 	GameState* currentState = Peek();
 	if (currentState != NULL)
@@ -63,12 +63,12 @@ Engine::GameState* Engine::GameStateManager::Switch(GameState* gameState, GameSt
 	return currentState;
 }
 
-Engine::DefaultGameStateManager::DefaultGameStateManager() :
+engine::DefaultGameStateManager::DefaultGameStateManager() :
 	GameStateManager()
 {
 }
 
-Engine::DefaultGameStateManager::~DefaultGameStateManager()
+engine::DefaultGameStateManager::~DefaultGameStateManager()
 {
 	//for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	//{
@@ -81,18 +81,18 @@ Engine::DefaultGameStateManager::~DefaultGameStateManager()
 	//std::vector<IUpdateable*> m_exposedUpdateables;
 }
 
-void Engine::DefaultGameStateManager::ClearAllIntefaceLists()
+void engine::DefaultGameStateManager::ClearAllIntefaceLists()
 {
 	m_exposedInputablesMouse.clear();
 	m_exposedUpdateables.clear();
 }
 
-Engine::GameState* Engine::DefaultGameStateManager::Peek() const
+engine::GameState* engine::DefaultGameStateManager::Peek() const
 {
 	return (m_activeStates.empty()) ? NULL : m_activeStates.back().first;
 }
 
-void Engine::DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
+void engine::DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
 {
 	m_activeStates.push_back(std::make_pair(gameState, modalityType));
 	
@@ -106,7 +106,7 @@ void Engine::DefaultGameStateManager::Push(GameState* gameState, GameStateModali
 	gameState->Entered();
 }
 
-Engine::GameState* Engine::DefaultGameStateManager::Pop()
+engine::GameState* engine::DefaultGameStateManager::Pop()
 {
 	if (m_activeStates.empty())
 	{
@@ -131,7 +131,7 @@ Engine::GameState* Engine::DefaultGameStateManager::Pop()
 	return poppedPair.first;
 }
 
-void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
+void engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
@@ -144,7 +144,7 @@ void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset
 	}
 }
 
-void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
+void engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
@@ -158,7 +158,7 @@ void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, i
 	}
 }
 
-void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
+void engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 {
 	CHECK_CONDITION_RETURN_VOID_ENGINE(!m_exposedInputablesMouse.empty(), Utility::Logging::DEBUG, "The MOUSE INPUT queue is empty (xPos=", xPos, ", yPos=", yPos, ")");
 	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements (button=", button, ", action=", action, ", mods=", mods, ")");
@@ -168,7 +168,7 @@ void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 	}
 }
 
-void Engine::DefaultGameStateManager::Update(Math::Real deltaTime)
+void engine::DefaultGameStateManager::Update(Math::Real deltaTime)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
 	{
@@ -176,7 +176,7 @@ void Engine::DefaultGameStateManager::Update(Math::Real deltaTime)
 	}
 }
 
-void Engine::DefaultGameStateManager::Render(Rendering::Renderer* renderer) const
+void engine::DefaultGameStateManager::Render(Rendering::Renderer* renderer) const
 {
 	for (std::vector<GameStateModalityTypePair>::const_iterator gameStateItr = m_activeStates.begin(); gameStateItr != m_activeStates.end(); ++gameStateItr)
 	{
@@ -184,7 +184,7 @@ void Engine::DefaultGameStateManager::Render(Rendering::Renderer* renderer) cons
 	}
 }
 
-void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
+void engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG_ENGINE("Adding to interfaces started");
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
@@ -203,7 +203,7 @@ void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 	DELOCUST_LOG_ENGINE("Adding to interfaces finished");
 }
 
-void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
+void engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
@@ -218,7 +218,7 @@ void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 	}
 }
 
-void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
+void engine::DefaultGameStateManager::RebuildInterfaceQueues()
 {
 	INFO_LOG_ENGINE("Clearing game state interface queues");
 	ClearAllIntefaceLists();
@@ -230,7 +230,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
 	DEBUG_LOG_ENGINE("Currently active game states: ", m_activeStates.size());
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), Utility::Logging::EMERGENCY, "No active game state is present in the game at the moment.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), utility::logging::EMERGENCY, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
@@ -247,7 +247,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 }
 
-void Engine::DefaultGameStateManager::NotifyObscuredStates()
+void engine::DefaultGameStateManager::NotifyObscuredStates()
 {
 	if (m_activeStates.size() < 2)
 	{
@@ -273,7 +273,7 @@ void Engine::DefaultGameStateManager::NotifyObscuredStates()
 	}
 }
 
-void Engine::DefaultGameStateManager::NotifyRevealedStates()
+void engine::DefaultGameStateManager::NotifyRevealedStates()
 {
 	if (m_activeStates.empty())
 	{
@@ -300,7 +300,7 @@ void Engine::DefaultGameStateManager::NotifyRevealedStates()
 	}
 }
 
-void Engine::DefaultGameStateManager::Handle(Engine::Actions::Action action)
+void engine::DefaultGameStateManager::Handle(engine::Actions::Action action)
 {
 	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{
@@ -308,7 +308,7 @@ void Engine::DefaultGameStateManager::Handle(Engine::Actions::Action action)
 	}
 }
 
-void Engine::DefaultGameStateManager::Handle(Engine::States::State state)
+void engine::DefaultGameStateManager::Handle(engine::States::State state)
 {
 	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{
@@ -316,7 +316,7 @@ void Engine::DefaultGameStateManager::Handle(Engine::States::State state)
 	}
 }
 
-void Engine::DefaultGameStateManager::Handle(Engine::Ranges::Range range, Math::Real value)
+void engine::DefaultGameStateManager::Handle(engine::Ranges::Range range, Math::Real value)
 {
 	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{

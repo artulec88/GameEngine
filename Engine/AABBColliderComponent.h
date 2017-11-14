@@ -10,7 +10,7 @@
 //#include "Math\Vector.h"
 #include "Physics\AABBCollider.h"
 
-namespace Engine
+namespace engine
 {
 
 	class AABBColliderComponent : public GameComponent

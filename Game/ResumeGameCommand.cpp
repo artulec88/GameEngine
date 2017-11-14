@@ -1,7 +1,7 @@
 #include "ResumeGameCommand.h"
 
 Game::ResumeGameCommand::ResumeGameCommand() :
-	Engine::GameCommand()
+	engine::GameCommand()
 {
 }
 
@@ -10,7 +10,7 @@ Game::ResumeGameCommand::~ResumeGameCommand()
 {
 }
 
-void Game::ResumeGameCommand::Execute(Engine::GameManager* gameManager) const
+void Game::ResumeGameCommand::Execute(engine::GameManager* gameManager) const
 {
 	gameManager->PopState();
 }

@@ -7,7 +7,7 @@
 
 #include <vector>
 
-namespace Audio
+namespace audio
 {
 	namespace Fmod
 	{

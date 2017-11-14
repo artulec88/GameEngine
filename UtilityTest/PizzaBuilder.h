@@ -7,10 +7,10 @@
 
 #include <vector>
 
-namespace UtilityTest
+namespace utility_test
 {
 
-	class PizzaBuilder : public Utility::Builder<Pizza>
+	class PizzaBuilder : public utility::Builder<Pizza>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */

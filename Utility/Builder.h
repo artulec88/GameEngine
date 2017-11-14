@@ -4,7 +4,7 @@
 #include "Utility.h"
 #include "BuilderDirector.h"
 
-namespace Utility {
+namespace utility {
 
 	/// <summary>
 	/// The builder of the object of type <code>T</code>.

@@ -24,14 +24,14 @@ namespace math_test
 		virtual void AfterTest();
 		virtual void StartTest() = 0;
 		virtual void BeforeTimeTest();
-		virtual Utility::Timing::TimeSpan AfterTimeTest();
+		virtual utility::timing::TimeSpan AfterTimeTest();
 		virtual void StartTimeTest(unsigned int iterationsCount) = 0;
 		bool IsTestEnabled() const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Utility::Timing::Timer m_timer;
+		utility::timing::Timer m_timer;
 		bool m_isTestEnabled;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Test */

@@ -4,7 +4,7 @@
 #include "Utility.h"
 #include <string>
 
-namespace Utility
+namespace utility
 {
 
 	class ISerializable

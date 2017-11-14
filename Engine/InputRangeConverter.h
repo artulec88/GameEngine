@@ -15,7 +15,7 @@
 #include <map>
 #include <memory>
 
-namespace Engine
+namespace engine
 {
 	namespace Input
 	{

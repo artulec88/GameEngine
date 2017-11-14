@@ -25,14 +25,14 @@
 
 namespace Game
 {
-	class MenuGameState : public Engine::GameState, public Engine::IUpdateable
+	class MenuGameState : public engine::GameState, public engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize);
+		MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize);
 		virtual ~MenuGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -42,9 +42,9 @@ namespace Game
 		virtual void Leaving();
 		virtual void Obscuring();
 		virtual void Revealed();
-		virtual void Handle(Engine::Actions::Action action);
-		virtual void Handle(Engine::States::State state);
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Actions::Action action);
+		virtual void Handle(engine::States::State state);
+		virtual void Handle(engine::Ranges::Range range, Math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 
@@ -57,9 +57,9 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
+		engine::GameManager* m_gameManager;
 		//Rendering::Particles::ParticlesSystem* m_particlesSystem;
-		Engine::CompositeMenuEntry m_mainMenuRootEntry;
+		engine::CompositeMenuEntry m_mainMenuRootEntry;
 
 		// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.
 		// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
@@ -81,8 +81,8 @@ namespace Game
 
 		Math::Real m_mousePosX, m_mousePosY;
 
-		Engine::MousePicker m_mousePicker;
-		Engine::MenuEntry* m_currentMenuEntry;
+		engine::MousePicker m_mousePicker;
+		engine::MenuEntry* m_currentMenuEntry;
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif

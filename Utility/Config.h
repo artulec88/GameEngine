@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-namespace Utility
+namespace utility
 {
 	/// <summary>
 	/// Class used to manage global configuration parameters defined in config.cfg file

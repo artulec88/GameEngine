@@ -7,7 +7,7 @@
 #include "Rendering\Mesh.h"
 #include "Rendering\Material.h"
 
-namespace Engine
+namespace engine
 {
 
 	class BillboardsRendererComponent : public GameComponent, public IRenderable

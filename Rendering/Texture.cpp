@@ -68,7 +68,7 @@ Rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	std::array<Image, NUMBER_OF_CUBE_MAP_FACES> cubeMapImages = { Image(posXFileName, STBI_rgb_alpha), Image(negXFileName, STBI_rgb_alpha), Image(posYFileName, STBI_rgb_alpha), Image(negYFileName, STBI_rgb_alpha), Image(posZFileName, STBI_rgb_alpha), Image(negZFileName, STBI_rgb_alpha) };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(cubeMapImages[i].GetData() != nullptr, Utility::Logging::EMERGENCY,
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(cubeMapImages[i].GetData() != nullptr, utility::logging::EMERGENCY,
 			"Unable to load texture #", i, " for the cube map");
 		if (i > 0)
 		{
@@ -217,7 +217,7 @@ void Rendering::TextureData::Bind(int textureIndex) const
 
 void Rendering::TextureData::InitRenderTargets(GLenum* attachments)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(attachments != NULL, Utility::Logging::DEBUG, "Cannot initialize rendering targets for the texture. No attachments specified.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(attachments != NULL, utility::logging::DEBUG, "Cannot initialize rendering targets for the texture. No attachments specified.");
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 
 	std::vector<GLenum> drawBuffers(m_texturesCount);

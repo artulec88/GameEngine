@@ -7,23 +7,23 @@
 #include "ILogger.h"
 
 template <class T>
-T& Utility::Container::Vector<T>::operator[](unsigned int i)
+T& utility::container::Vector<T>::operator[](unsigned int i)
 {
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
 	return m_data[i];
 }
 
 template <class T>
-const T& Utility::Container::Vector<T>::operator[](unsigned int i) const
+const T& utility::container::Vector<T>::operator[](unsigned int i) const
 {
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], logging::ERR, "The vector [] operator cannot access index ", i, " which is outside of range [0; ", m_size, ")");
 	return m_data[i];
 }
 
 template <class T>
-void Utility::Container::Vector<T>::Append(const T& dataElement)
+void utility::container::Vector<T>::Append(const T& dataElement)
 {
 	if (m_size == m_maxSize)
 	{
@@ -33,10 +33,10 @@ void Utility::Container::Vector<T>::Append(const T& dataElement)
 }
 
 template <class T>
-void Utility::Container::Vector<T>::SetElement(unsigned int i, const T& dataElement)
+void utility::container::Vector<T>::SetElement(unsigned int i, const T& dataElement)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Logging::ERR, "Cannot set vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_maxSize, Logging::WARNING, "The vector cannot hold more than ", m_maxSize, " elements");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, logging::ERR, "Cannot set vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_maxSize, logging::WARNING, "The vector cannot hold more than ", m_maxSize, " elements");
 
 	m_data[i] = dataElement;
 	if (i > m_size)
@@ -46,10 +46,10 @@ void Utility::Container::Vector<T>::SetElement(unsigned int i, const T& dataElem
 }
 
 template<class T>
-void Utility::Container::Vector<T>::Remove(unsigned int i)
+void utility::container::Vector<T>::Remove(unsigned int i)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Logging::ERR, "Cannot remove vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_size, Logging::WARNING, "Cannot remove vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, logging::ERR, "Cannot remove vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_size, logging::WARNING, "Cannot remove vector's element at index ", i, ". The correct index must be in the range [0; ", m_size, ")");
 
 	for (auto index = i + 1; index < m_size; ++index)
 	{
@@ -59,7 +59,7 @@ void Utility::Container::Vector<T>::Remove(unsigned int i)
 }
 
 template<class T>
-void Utility::Container::Vector<T>::RemoveAll()
+void utility::container::Vector<T>::RemoveAll()
 {
 	for (unsigned int index = 0; index < m_size; ++index)
 	{
@@ -69,7 +69,7 @@ void Utility::Container::Vector<T>::RemoveAll()
 }
 
 template<class T>
-void Utility::Container::Vector<T>::SetMaxSize(unsigned int maxSize, bool copy)
+void utility::container::Vector<T>::SetMaxSize(const unsigned int maxSize, bool copy)
 {
 	CRITICAL_LOG_UTILITY("This function is not yet implemented");
 	//if (maxSize == 0)

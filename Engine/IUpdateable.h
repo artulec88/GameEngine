@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "Math\Math.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Interface for objects which can be updated in the game engine.

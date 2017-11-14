@@ -33,7 +33,7 @@
 
 using namespace Rendering;
 using namespace Math;
-using namespace Utility;
+using namespace utility;
 using namespace std;
 
 const string MODULE_NAME = "MathTest";
@@ -300,7 +300,7 @@ void ErrorCallback(int errorCode, const char* description)
 void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_RENDERING_TEST("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
 
 	const int antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
@@ -376,7 +376,7 @@ void InitGlew()
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(GLEW_OK == err, Utility::Logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(GLEW_OK == err, utility::logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
 	if (GLEW_VERSION_2_0)
 	{
 		DEBUG_LOG_RENDERING_TEST("OpenGL 2.0 supported");
@@ -393,7 +393,7 @@ void InitGlew()
 
 void SetCallbacks()
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(window != NULL, Utility::Logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(window != NULL, utility::logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(window, &WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(window, &WindowResizeCallback);
 	glfwSetKeyCallback(window, &KeyEventCallback);
@@ -436,13 +436,13 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	INFO_LOG_RENDERING_TEST("Test #", testNumber, " passed");
 }
 
-void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const std::string& reportStr, timing::Timer& timer, timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
 {
 	//CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
 	double elapsedTime = static_cast<double>(timer.GetDuration(timeUnit));
 	elapsedTime /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
-	NOTICE_LOG_RENDERING_TEST(reportStr, ":\t", elapsedTime, " ", Timing::DateTime::ConvertTimeUnitToString(timeUnit));
+	NOTICE_LOG_RENDERING_TEST(reportStr, ":\t", elapsedTime, " ", timing::DateTime::ConvertTimeUnitToString(timeUnit));
 }
 
 void CameraBuilderTest()
@@ -519,8 +519,8 @@ void InitializeTestTweakBars()
 	//TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
 	//TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
 
-	//TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
-	//	{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
+	//TwEnumVal daytimeEV[] = { { Utility::timing::NIGHT, "Night" }, { Utility::timing::BEFORE_DAWN, "Before dawn" }, { Utility::timing::SUNRISE, "Sunrise" },
+	//	{ Utility::timing::DAY, "Day" }, { Utility::timing::SUNSET, "Sunset" }, { Utility::timing::AFTER_DUSK, "After dusk" } };
 	//TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	//TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
 
@@ -647,7 +647,7 @@ void CreateScene()
 	Particles::ParticlesSystemBuilder particlesSystemBuilder;
 	particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).SetShaderID(ShaderIDs::PARTICLES_COLORS);
 	//particlesSystemBuilder.
-	Utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 }
 
@@ -790,7 +790,7 @@ void Run()
 			renderer->RenderGuiControl(fpsGuiButton, Rendering::ShaderIDs::GUI);
 #ifdef ANT_TWEAK_BAR_ENABLED
 			int resultCode = TwDraw();
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, Utility::Logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, utility::logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
 #endif
 			glfwSwapBuffers(window);
 		}
@@ -814,10 +814,10 @@ int main(int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
-	Logging::ILogger::GetLogger("Rendering").Fill(commandLineMapper->Get("-logRendering", "Info"), Logging::INFO);
-	Logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), Logging::INFO);
-	Logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), Logging::INFO);
+	logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), logging::INFO);
+	logging::ILogger::GetLogger("Rendering").Fill(commandLineMapper->Get("-logRendering", "Info"), logging::INFO);
+	logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), logging::INFO);
+	logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), logging::INFO);
 
 	IConfig::CreateConfig("Rendering", commandLineMapper->Get("-configRendering", "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\ConfigRendering.cfg"));
 
@@ -836,7 +836,7 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StopTimer();
 	STATS_STORAGE.PrintReport();
 
-	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
+	logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 
 	glfwTerminate(); // Terminate GLFW

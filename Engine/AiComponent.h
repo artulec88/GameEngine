@@ -5,7 +5,7 @@
 #include "GameComponent.h"
 #include "IUpdateable.h"
 
-namespace Engine
+namespace engine
 {
 
 	/// <summary>

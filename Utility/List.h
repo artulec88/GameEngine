@@ -3,8 +3,8 @@
 
 #include "Utility.h"
 
-namespace Utility {
-	namespace Container
+namespace utility {
+	namespace container
 	{
 
 		/// <summary>

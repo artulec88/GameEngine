@@ -11,7 +11,7 @@
 
 #include "Physics\PhysicsObject.h"
 
-namespace Engine
+namespace engine
 {
 	class GameNode;
 

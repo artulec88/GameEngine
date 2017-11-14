@@ -4,7 +4,7 @@
 #include "Audio.h"
 #include "AudioObject.h"
 
-namespace Audio
+namespace audio
 {
 	/// <summary>
 	/// The interface for basic audio functionality, e.g. playing, pausing and stopping audio.

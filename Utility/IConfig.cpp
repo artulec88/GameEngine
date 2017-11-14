@@ -2,9 +2,9 @@
 #include "IConfig.h"
 #include "Config.h"
 
-/* static */ std::map<std::string, std::unique_ptr<Utility::IConfig>> Utility::IConfig::configurations;
+/* static */ std::map<std::string, std::unique_ptr<utility::IConfig>> utility::IConfig::configurations;
 
-/* static */ void Utility::IConfig::CreateConfig(const std::string& moduleName, const std::string& configFileName)
+/* static */ void utility::IConfig::CreateConfig(const std::string& moduleName, const std::string& configFileName)
 {
 	DEBUG_LOG_UTILITY("Reading configuration for module \"", moduleName, "\" from file \"", configFileName, "\".");
 	CHECK_CONDITION_RETURN_VOID_UTILITY(configurations.find(moduleName) == configurations.end(), Logging::ERR,
@@ -13,17 +13,17 @@
 	configurations[moduleName]->LoadFromFile(configFileName);
 }
 
-/* static */ const Utility::IConfig& Utility::IConfig::GetConfig(const std::string& moduleName)
+/* static */ const utility::IConfig& utility::IConfig::GetConfig(const std::string& moduleName)
 {
 	const std::map<std::string, std::unique_ptr<IConfig>>::iterator confItr = configurations.find(moduleName);
 	CHECK_CONDITION_UTILITY(confItr != configurations.end(), Utility::Logging::ERR, "There is no configuration registered for module \"", moduleName, "\"");
 	return *confItr->second;
 }
 
-Utility::IConfig::IConfig()
+utility::IConfig::IConfig()
 {
 }
 
-Utility::IConfig::~IConfig()
+utility::IConfig::~IConfig()
 {
 }

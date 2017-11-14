@@ -16,7 +16,7 @@
 namespace Rendering
 {
 	template <class T>
-	class LightBuilder : public Utility::Builder<T>
+	class LightBuilder : public utility::Builder<T>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -26,7 +26,7 @@ namespace Rendering
 		LightBuilder(const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity,
 			bool defaultShadowInfoFlipFacesEnabled, int defaultShadowInfoShadowMapSizeAsPowerOf2, Math::Real defaultShadowInfoShadowSoftness, Math::Real defaultShadowInfoLightBleedingReductionFactor,
 			Math::Real defaultShadowInfoMinVariance) :
-			Utility::Builder<T>(),
+			utility::Builder<T>(),
 			M_DEFAULT_POS(defaultPosition),
 			M_DEFAULT_ROT(defaultRotation),
 			M_DEFAULT_COLOR(defaultColor),

@@ -3,7 +3,7 @@
 #include "Math\Math.h"
 #include "Utility\ILogger.h"
 
-Audio::AudioObject::AudioObject(const SampleInfo& sampleInfo, IAudioData* audioData) :
+audio::AudioObject::AudioObject(const SampleInfo& sampleInfo, IAudioData* audioData) :
 	m_audioPos(0),
 	m_audioLength(audioData->GetAudioLength()),
 	m_sampleInfo(sampleInfo),
@@ -12,11 +12,11 @@ Audio::AudioObject::AudioObject(const SampleInfo& sampleInfo, IAudioData* audioD
 }
 
 
-Audio::AudioObject::~AudioObject()
+audio::AudioObject::~AudioObject()
 {
 }
 
-bool Audio::AudioObject::GenerateSamples(float* stream, size_t streamLength)
+bool audio::AudioObject::GenerateSamples(float* stream, size_t streamLength)
 {
 	m_audioPos = m_audioData->GenerateSamples(stream, streamLength, m_audioPos, m_sampleInfo);
 
@@ -28,7 +28,7 @@ bool Audio::AudioObject::GenerateSamples(float* stream, size_t streamLength)
 	return true;
 }
 
-void Audio::AudioObject::SetPos(double pos)
+void audio::AudioObject::SetPos(double pos)
 {
 	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), Utility::Logging::ERR,
 		"Cannot easily set the audio data position. The normalized position's value (", pos, ") lies outside of range [0; 1]");
@@ -36,7 +36,7 @@ void Audio::AudioObject::SetPos(double pos)
 	m_audioPos = ConvertPosToAbsolutePos(clampedPos);
 }
 
-size_t Audio::AudioObject::ConvertPosToAbsolutePos(double pos)
+size_t audio::AudioObject::ConvertPosToAbsolutePos(double pos)
 {
 	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), Utility::Logging::ERR,
 		"Cannot convert the audio data normalized position to absolute position. The normalized position's value (", pos, ") lies outside of range [0; 1]");

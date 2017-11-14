@@ -2,11 +2,11 @@
 #include "IAudioDevice.h"
 
 
-Audio::IAudioDevice::IAudioDevice()
+audio::IAudioDevice::IAudioDevice()
 {
 }
 
 
-Audio::IAudioDevice::~IAudioDevice()
+audio::IAudioDevice::~IAudioDevice()
 {
 }

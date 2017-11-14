@@ -5,7 +5,7 @@
 #include "ActionConstants.h"
 #include "InputConstants.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Interface for handlers of specific game actions.

@@ -6,7 +6,7 @@
 
 #include <sstream>
 
-Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
+engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 	m_converter(nullptr)
 {
 	CRITICAL_LOG_ENGINE("InputContextName = ", inputContextName);
@@ -38,7 +38,7 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 		std::stringstream ss("");
 		ss << (i + 1);
 		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(GET_CONFIG_VALUE_ENGINE(inputContextName + "RawInputKey_" + ss.str(), 0));
-		Engine::Actions::Action action = static_cast<Engine::Actions::Action>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Action_" + ss.str(), 0));
+		engine::Actions::Action action = static_cast<engine::Actions::Action>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Action_" + ss.str(), 0));
 		m_actionsMap[button] = action;
 		ERROR_LOG_ENGINE("Button = ", button, " mapped to action = ", action);
 	}
@@ -58,55 +58,55 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 	}
 }
 
-Engine::Input::InputContext::InputContext(std::ifstream& inputContextFile) :
+engine::Input::InputContext::InputContext(std::ifstream& inputContextFile) :
 	m_converter(nullptr)
 {
-	unsigned int rangesCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
+	unsigned int rangesCount = utility::FileManager::AttemptRead<unsigned>(inputContextFile);
 	for (unsigned int i = 0; i < rangesCount; ++i)
 	{
-		RawInputAxes::RawInputAxis axis = static_cast<RawInputAxes::RawInputAxis>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
-		Ranges::Range range = static_cast<Ranges::Range>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		RawInputAxes::RawInputAxis axis = static_cast<RawInputAxes::RawInputAxis>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		Ranges::Range range = static_cast<Ranges::Range>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_rangesMap[axis] = range;
 		DEBUG_LOG_ENGINE("Axis = ", axis, " mapped to range = ", range);
 	}
 
-	unsigned int statesCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
+	unsigned int statesCount = utility::FileManager::AttemptRead<unsigned>(inputContextFile);
 	for (unsigned int i = 0; i < statesCount; ++i)
 	{
-		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
-		States::State state = static_cast<States::State>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		States::State state = static_cast<States::State>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_statesMap[button] = state;
 		DEBUG_LOG_ENGINE("Button = ", button, " mapped to state = ", state);
 	}
 
-	unsigned int actionsCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
+	unsigned int actionsCount = utility::FileManager::AttemptRead<unsigned>(inputContextFile);
 	for (unsigned int i = 0; i < actionsCount; ++i)
 	{
-		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
-		Actions::Action action = static_cast<Actions::Action>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		Actions::Action action = static_cast<Actions::Action>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_actionsMap[button] = action;
 		DEBUG_LOG_ENGINE("Button = ", button, " mapped to action = ", action);
 	}
 
 	m_converter = std::make_unique<InputRangeConverter>(inputContextFile);
 
-	unsigned int sensitivitiesCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
+	unsigned int sensitivitiesCount = utility::FileManager::AttemptRead<unsigned>(inputContextFile);
 	DEBUG_LOG_ENGINE("Sensitivities count = ", sensitivitiesCount);
 	for (unsigned int i = 0; i < sensitivitiesCount; ++i)
 	{
-		Ranges::Range range = static_cast<Ranges::Range>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
-		Math::Real sensitivity = Utility::FileManager::AttemptRead<Math::Real>(inputContextFile);
+		Ranges::Range range = static_cast<Ranges::Range>(utility::FileManager::AttemptRead<unsigned>(inputContextFile));
+		Math::Real sensitivity = utility::FileManager::AttemptRead<Math::Real>(inputContextFile);
 		m_sensitivitiesMap[range] = sensitivity;
 		DEBUG_LOG_ENGINE("Range = ", range, " mapped to sensitivity = ", sensitivity);
 	}
 }
 
 
-Engine::Input::InputContext::~InputContext()
+engine::Input::InputContext::~InputContext()
 {
 }
 
-Engine::Actions::Action Engine::Input::InputContext::MapButtonToAction(RawInputKeys::RawInputKey button) const
+engine::Actions::Action engine::Input::InputContext::MapButtonToAction(RawInputKeys::RawInputKey button) const
 {
 	//for (std::map<RawInputKeys::RawInputKey, Actions::Action>::const_iterator actionsItr = m_actionsMap.begin(); actionsItr != m_actionsMap.end(); ++actionsItr)
 	//{
@@ -120,13 +120,13 @@ Engine::Actions::Action Engine::Input::InputContext::MapButtonToAction(RawInputK
 	return actionsItr->second;
 }
 
-Engine::States::State Engine::Input::InputContext::MapButtonToState(RawInputKeys::RawInputKey button) const
+engine::States::State engine::Input::InputContext::MapButtonToState(RawInputKeys::RawInputKey button) const
 {
 	std::map<RawInputKeys::RawInputKey, States::State>::const_iterator statesItr = m_statesMap.find(button);
 	return (statesItr == m_statesMap.end()) ? States::INVALID : statesItr->second;
 }
 
-Engine::Ranges::Range Engine::Input::InputContext::MapAxisToRange(RawInputAxes::RawInputAxis axis) const
+engine::Ranges::Range engine::Input::InputContext::MapAxisToRange(RawInputAxes::RawInputAxis axis) const
 {
 	std::map<RawInputAxes::RawInputAxis, Ranges::Range>::const_iterator rangesItr = m_rangesMap.find(axis);
 	if (rangesItr == m_rangesMap.end())
@@ -136,7 +136,7 @@ Engine::Ranges::Range Engine::Input::InputContext::MapAxisToRange(RawInputAxes::
 	return rangesItr->second;
 }
 
-Math::Real Engine::Input::InputContext::GetSensitivity(Ranges::Range range) const
+Math::Real engine::Input::InputContext::GetSensitivity(Ranges::Range range) const
 {
 	std::map<Ranges::Range, Math::Real>::const_iterator iter = m_sensitivitiesMap.find(range);
 	if (iter == m_sensitivitiesMap.end())

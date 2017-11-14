@@ -15,7 +15,7 @@
 
 #include "Math\Angle.h"
 
-namespace Engine
+namespace engine
 {
 	class DirectionalLightComponent : public GameComponent
 #ifdef SIMULATE_SUN_BEHAVIOR

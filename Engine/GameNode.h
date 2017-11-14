@@ -19,7 +19,7 @@
 
 #include <vector>
 
-namespace Engine
+namespace engine
 {
 
 	class GameComponent;

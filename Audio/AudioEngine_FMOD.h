@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-namespace Audio
+namespace audio
 {
 	class AudioEngine_FMOD : public IAudioEngine
 	{

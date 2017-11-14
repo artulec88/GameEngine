@@ -4,7 +4,7 @@
 #include "Audio.h"
 #include "SampleInfo.h"
 
-namespace Audio
+namespace audio
 {
 	/// <summary>
 	/// Low-level representation of audio data.

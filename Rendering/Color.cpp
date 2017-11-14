@@ -5,7 +5,7 @@
 #include "Utility\StringUtility.h"
 
 Rendering::Color::Color(const std::string& colorName) noexcept :
-	Color(Value(Utility::StringUtility::MakeLowercase(colorName).c_str(), COLOR_NAMES))
+	Color(Value(utility::string_utility::MakeLowercase(colorName).c_str(), COLOR_NAMES))
 {
 }
 

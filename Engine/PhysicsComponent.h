@@ -10,7 +10,7 @@
 #include "Math\Angle.h"
 #include "Math\Vector.h"
 
-namespace Engine
+namespace engine
 {
 	class GameNode;
 

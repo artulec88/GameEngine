@@ -2,11 +2,11 @@
 #include "IAudioData.h"
 
 
-Audio::IAudioData::IAudioData()
+audio::IAudioData::IAudioData()
 {
 }
 
 
-Audio::IAudioData::~IAudioData()
+audio::IAudioData::~IAudioData()
 {
 }

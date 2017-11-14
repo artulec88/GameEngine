@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "GameCommand.h"
 
-Engine::GameCommand::GameCommand()
+engine::GameCommand::GameCommand()
 {
 }
 
 
-Engine::GameCommand::~GameCommand()
+engine::GameCommand::~GameCommand()
 {
 }

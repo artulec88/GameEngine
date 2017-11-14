@@ -7,7 +7,7 @@
 
 #include "Math\Math.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Interface for handlers of specific game ranges.

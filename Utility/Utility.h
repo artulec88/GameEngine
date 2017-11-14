@@ -58,13 +58,13 @@
 #endif
 #else /* _RELEASE */
 #define CHECK_CONDITION(expr, moduleName, logLevel, ...)
-#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); } } while (0)
+#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { utility::logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, moduleName, logLevel, ...)
-#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { utility::logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, moduleName, logLevel, ...)
-#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, ...) do { if (!(expr)) { utility::logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); return; } } while (0)
 #define CHECK_CONDITION_RETURN(expr, returnValue, moduleName, logLevel, ...)
-#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, ...) do { if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); return returnValue; } } while (0)
+#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, ...) do { if (!(expr)) { utility::logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); return returnValue; } } while (0)
 #define ASSERT(expr)
 #define SLOW_ASSERT(expr)
 #endif /* _DEBUG */
@@ -90,7 +90,7 @@
 #define CHECK_CONDITION_RETURN_UTILITY(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN(expr, returnValue, "Utility", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_RETURN_ALWAYS_UTILITY(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, "Utility", logLevel, ##__VA_ARGS__)
 
-namespace Utility
+namespace utility
 {
 	//template<typename T> Min(T value1, T value2)
 	//{

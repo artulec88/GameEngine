@@ -66,12 +66,12 @@ namespace math_test
 		virtual void StartTest() override
 		{
 			bool compareResult = (m_vector == m_compareVector);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, utility::logging::ERR,
 				"The vector ", m_vector, " and vector ", m_compareVector, " comparison result not as expected.");
 			bool diffCompareResult = (m_vector != m_compareVector);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, utility::logging::ERR,
 				"The vector ", m_vector, " and vector ", m_compareVector, " diff operator result not as expected.");
-			CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, utility::logging::ERR,
 				"The operators == and != should always give opposite results.");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -103,9 +103,9 @@ namespace math_test
 		{
 			Math::Real lengthSquared = m_vector.LengthSquared();
 			Math::Real length = m_vector.Length();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), utility::logging::ERR,
 				"The vector ", m_vector, " has length ", length, ", but was expected to have length ", m_expectedLength);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), utility::logging::ERR,
 				"The vector ", m_vector, " has squared length ", lengthSquared, ", but expected to have squared length ", m_expectedLength * m_expectedLength);
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -136,12 +136,12 @@ namespace math_test
 		virtual void StartTest() override
 		{
 			T sumVector = m_vector + m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(sumVector == m_expectedSumVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(sumVector == m_expectedSumVector, utility::logging::ERR,
 				"The sum of vectors ", m_vector, " and ", m_vector2, " is a vector ", sumVector,
 				". It is different than expected ", m_expectedSumVector);
 
 			m_vector += m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSumVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSumVector, utility::logging::ERR,
 				"The operator += returned different result than operator + (", m_vector, " != ", m_expectedSumVector, ")");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -173,12 +173,12 @@ namespace math_test
 		virtual void StartTest() override
 		{
 			T subtractVector = m_vector - m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(subtractVector == m_expectedSubtractVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(subtractVector == m_expectedSubtractVector, utility::logging::ERR,
 				"The subtraction of vectors", m_vector, " and ", m_vector2, " is a vector ",
 				subtractVector, ". It is different than expected ", m_expectedSubtractVector);
 
 			m_vector -= m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSubtractVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSubtractVector, utility::logging::ERR,
 				"The operator -= returned different result than operator - (", m_vector, " != ", m_expectedSubtractVector, ")");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -214,20 +214,20 @@ namespace math_test
 		{
 			T multiplyVector1 = m_vector * m_vector2;
 			T multiplyVector2 = m_vector * m_value;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector1 == m_expectedMultiplyVector1, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector1 == m_expectedMultiplyVector1, utility::logging::ERR,
 				"The multiplication of vectors ", m_vector, " and ", m_vector2, " is a vector ",
 				multiplyVector1, ". It is different than expected ", m_expectedMultiplyVector1);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector2 == m_expectedMultiplyVector2, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector2 == m_expectedMultiplyVector2, utility::logging::ERR,
 				"The multiplication of vector ", m_vector, " and value ", m_value, " is a vector ",
 				multiplyVector2, ". It is different than expected ", m_expectedMultiplyVector2);
 
 			T tempVector(m_vector);
 			m_vector *= m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector1, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector1, utility::logging::ERR,
 				"The operator *= returned different result than operator * (", m_vector, " != ", m_expectedMultiplyVector1, ")");
 			m_vector = tempVector;
 			m_vector *= m_value;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector2, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector2, utility::logging::ERR,
 				"The operator *= returned different result than operator * (", m_vector, " != ", m_expectedMultiplyVector2, ")");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -264,20 +264,20 @@ namespace math_test
 		{
 			T divideVector1 = m_vector / m_vector2;
 			T divideVector2 = m_vector / m_value;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector1 == m_expectedDivideVector1, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector1 == m_expectedDivideVector1, utility::logging::ERR,
 				"The division of vectors ", m_vector, " and ", m_vector2, " is a vector ",
 				divideVector1, ". It is different than expected ", m_expectedDivideVector1);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector2 == m_expectedDivideVector2, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector2 == m_expectedDivideVector2, utility::logging::ERR,
 				"The division of vector ", m_vector, " and value ", m_value, " is a vector ",
 				divideVector2, ". It is different than expected ", m_expectedDivideVector2);
 
 			T tempVector(m_vector);
 			m_vector /= m_vector2;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector1, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector1, utility::logging::ERR,
 				"The operator /= returned different result than operator / (", m_vector, " != ", m_expectedDivideVector1, ")");
 			m_vector = tempVector;
 			m_vector /= m_value;
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector2, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector2, utility::logging::ERR,
 				"The operator /= returned different result than operator / (", m_vector, " != ", m_expectedDivideVector2, ")");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -304,11 +304,11 @@ namespace math_test
 		{
 			Math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
 			Math::Real length = m_expectedNormalizedVector.Length();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " is in fact not normalized.");
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " gives different results for length and squared length (", length, " and ", lengthSquared, " respectively).");
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedVector.IsNormalized(), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedVector.IsNormalized(), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " is in fact not normalized.");
 		}
 		virtual ~VectorTestNormalize()
@@ -318,15 +318,15 @@ namespace math_test
 		virtual void StartTest() override
 		{
 			T normalizedVector = m_vector.Normalized();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector == m_expectedNormalizedVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector == m_expectedNormalizedVector, utility::logging::ERR,
 				"The vector ", m_vector, " after normalization equals ", normalizedVector, ". It is different than expected ", m_expectedNormalizedVector, ".");
-			CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector.IsNormalized(), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector.IsNormalized(), utility::logging::ERR,
 				"Calculated normalized vector ", normalizedVector, " is in fact not normalized.");
 
 			m_vector.Normalize();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedNormalizedVector, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedNormalizedVector, utility::logging::ERR,
 				"The vector after normalization ", m_vector, " is different than expected ", m_expectedNormalizedVector);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector.IsNormalized(), Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector.IsNormalized(), utility::logging::ERR,
 				"Calculated normalized vector ", m_vector, " is in fact not normalized.");
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
@@ -384,7 +384,7 @@ namespace math_test
 		virtual void StartTest() override
 		{
 			Math::Real dotResult = m_vector.Dot(m_vector2);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), utility::ERR,
 				"The dot product of vectors ", m_vector.ToString(), " and ", m_vector2.ToString(), " equals ", dotResult, ". It is different than expected ", m_expectedDotResult);
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override

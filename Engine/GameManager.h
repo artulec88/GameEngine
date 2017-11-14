@@ -31,7 +31,7 @@
 //#include <amp.h>
 #include <vector>
 
-namespace Engine
+namespace engine
 {
 	class GameManager : public IUpdateable
 	{
@@ -60,34 +60,34 @@ namespace Engine
 		/// </remarks>
 		ENGINE_API GameManager();
 
-		/// <summary>
-		/// Destroys the game manager.
-		/// </summary>
-		ENGINE_API virtual ~GameManager(void);
+		/// <summary> Destroys the game manager. </summary>
+		ENGINE_API virtual ~GameManager();
 
-		/// <summary>
-		/// Game manager copy constructor.
-		/// </summary>
+		/// <summary> Game manager copy constructor. </summary>
+		/// <param name="gameManager"> Game manager to copy construct from. </param>
 		GameManager(const GameManager& gameManager) = delete;
-		/// <summary>
-		/// Game manager move constructor.
-		/// </summary>
+		
+		/// <summary> Game manager move constructor. </summary>
+		/// <param name="gameManager"> Game manager to move construct from. </param>
 		GameManager(GameManager&& gameManager) = delete;
-		/// <summary>
-		/// Game manager copy assignment operator.
-		/// </summary>
+		
+		/// <summary> Game manager copy assignment operator. </summary>
+		/// <param name="gameManager"> Game manager to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned game manager. </returns>
 		GameManager& operator=(const GameManager& gameManager) = delete;
-		/// <summary>
-		/// Game manager move assignment operator.
-		/// </summary>
+
+		/// <summary> Game manager move assignment operator. </summary>
+		/// <param name="gameManager"> The r-value reference to the game manager to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned game manager. </returns>
 		GameManager& operator=(GameManager&& gameManager) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Load() = 0; // Loads the game
+		/// <summary> Loads the game. Performs the loading of all necessary models, textures, etc. </summary>
+		ENGINE_API virtual void Load() = 0;
 		ENGINE_API void Input(Actions::Action actionID);
-		ENGINE_API virtual void Input(const Engine::Input::MappedInput& input);
+		ENGINE_API virtual void Input(const engine::Input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
 

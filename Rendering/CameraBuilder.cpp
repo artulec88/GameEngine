@@ -5,7 +5,7 @@
 
 /* ==================== CameraBuilder implementation begin ==================== */
 Rendering::CameraBuilder::CameraBuilder() :
-	Utility::Builder<Camera>(),
+	utility::Builder<Camera>(),
 	M_DEFAULT_CAMERA_POS_X(GET_CONFIG_VALUE_RENDERING("defaultCameraPosX", 0.0f)),
 	M_DEFAULT_CAMERA_POS_Y(GET_CONFIG_VALUE_RENDERING("defaultCameraPosY", 0.0f)),
 	M_DEFAULT_CAMERA_POS_Z(GET_CONFIG_VALUE_RENDERING("defaultCameraPosZ", 0.0f)),

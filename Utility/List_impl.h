@@ -6,55 +6,55 @@
 #include "ILogger.h"
 
 template <class T>
-Utility::Container::List<T>::List(const T& item, List<T>* tailList = nullptr) :
+utility::container::List<T>::List(const T& item, List<T>* tailList = nullptr) :
 	m_item(item),
 	m_tailList(tailList)
 {
 }
 
 template <class T>
-Utility::Container::List<T>::~List()
+utility::container::List<T>::~List()
 {
 }
 
 template <class T>
-void Utility::Container::List<T>::SetItem(const T& item)
+void utility::container::List<T>::SetItem(const T& item)
 {
 	m_item = item;
 }
 
 template <class T>
-T& Utility::Container::List<T>::GetItem()
+T& utility::container::List<T>::GetItem()
 {
 	return m_item;
 }
 
 template <class T>
-const T& Utility::Container::List<T>::GetItem() const
+const T& utility::container::List<T>::GetItem() const
 {
 	return m_item;
 }
 
 template <class T>
-void Utility::Container::List<T>::SetTail(List<T>* tailList)
+void utility::container::List<T>::SetTail(List<T>* tailList)
 {
 	m_tailList = tailList;
 }
 
 template <class T>
-Utility::Container::List<T>* Utility::Container::List<T>::GetTail()
+utility::container::List<T>* utility::container::List<T>::GetTail()
 {
 	return m_tailList;
 }
 
 template <class T>
-const Utility::Container::List<T>* Utility::Container::List<T>::GetTail() const
+const utility::container::List<T>* utility::container::List<T>::GetTail() const
 {
 	return m_tailList;
 }
 
 template <class T>
-int Utility::Container::List<T>::GetSize() const
+int utility::container::List<T>::GetSize() const
 {
 	int size = 1;
 	while (m_tailList != nullptr)
@@ -66,7 +66,7 @@ int Utility::Container::List<T>::GetSize() const
 }
 
 template <class T>
-void Utility::Container::List<T>::RemoveTailFront()
+void utility::container::List<T>::RemoveTailFront()
 {
 	if (m_tailList == nullptr)
 	{
@@ -78,7 +78,7 @@ void Utility::Container::List<T>::RemoveTailFront()
 }
 
 template <class T>
-void Utility::Container::List<T>::RemoveTailItem(const T& itemToRemove, bool removeAllMatchingNodesEnabled)
+void utility::container::List<T>::RemoveTailItem(const T& itemToRemove, const bool removeAllMatchingNodesEnabled)
 {
 	List<T>* prevNode = this;
 	List<T>* tailList = m_tailList;

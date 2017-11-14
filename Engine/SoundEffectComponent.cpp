@@ -2,7 +2,7 @@
 #include "SoundEffectComponent.h"
 #include "CoreEngine.h"
 
-Engine::SoundEffectComponent::SoundEffectComponent(const std::string& soundEffectPath) :
+engine::SoundEffectComponent::SoundEffectComponent(const std::string& soundEffectPath) :
 	GameComponent(),
 	m_soundEffectPath(soundEffectPath)
 {
@@ -10,6 +10,6 @@ Engine::SoundEffectComponent::SoundEffectComponent(const std::string& soundEffec
 }
 
 
-Engine::SoundEffectComponent::~SoundEffectComponent()
+engine::SoundEffectComponent::~SoundEffectComponent()
 {
 }

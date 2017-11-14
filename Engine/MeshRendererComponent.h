@@ -7,7 +7,7 @@
 #include "Rendering\Mesh.h"
 #include "Rendering\Material.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Mesh rendering component.

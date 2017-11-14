@@ -9,7 +9,7 @@
 
 #include "Math\Vector.h"
 
-namespace Engine
+namespace engine
 {
 	class GameNode;
 

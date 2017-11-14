@@ -5,8 +5,8 @@
 #include "Array.h"
 #include "ILogger.h"
 
-template <class T, unsigned int SIZE>
-T& Utility::Container::Array<T, SIZE>::operator[](unsigned int i)
+template <class T, unsigned int Size>
+T& utility::container::Array<T, Size>::operator[](const unsigned int i)
 {
 	//CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data.front(), Logging::ERR, "The array [] operator cannot access index ", i, " which is outside of range [0; ", GetSize(), ")");
 	//CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < GetSize(), m_data.back(), Logging::ERR, "The array [] operator cannot access index ", i, " which is outside of range [0; ", GetSize(), ")");
@@ -15,8 +15,8 @@ T& Utility::Container::Array<T, SIZE>::operator[](unsigned int i)
 	return m_data[i];
 }
 
-template <class T, unsigned int SIZE>
-const T& Utility::Container::Array<T, SIZE>::operator[](unsigned int i) const
+template <class T, unsigned int Size>
+const T& utility::container::Array<T, Size>::operator[](const unsigned int i) const
 {
 	//CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data.front(), Logging::ERR, "The array [] operator cannot access index ", i, " which is outside of range [0; ", GetSize(), ")");
 	//CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < GetSize(), m_data.back(), Logging::ERR, "The array [] operator cannot access index ", i, " which is outside of range [0; ", GetSize(), ")");
@@ -25,11 +25,11 @@ const T& Utility::Container::Array<T, SIZE>::operator[](unsigned int i) const
 	return m_data[i];
 }
 
-template <class T, unsigned int SIZE>
-void Utility::Container::Array<T, SIZE>::SetElement(unsigned int i, const T& dataElement)
+template <class T, unsigned int Size>
+void utility::container::Array<T, Size>::SetElement(unsigned int i, const T& dataElement)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Logging::ERR, "Cannot set array's element at index ", i, ". The correct index must be in the range [0; ", GetSize(), ")");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < GetSize(), Logging::ERR, "The array cannot hold more than ", GetSize(), " elements");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, logging::ERR, "Cannot set array's element at index ", i, ". The correct index must be in the range [0; ", GetSize(), ")");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < GetSize(), logging::ERR, "The array cannot hold more than ", GetSize(), " elements");
 
 	m_data[i] = dataElement;
 }

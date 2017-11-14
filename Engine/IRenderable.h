@@ -8,7 +8,7 @@
 
 #include "Math\Math.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Interface for objects which can be rendered in the game engine.

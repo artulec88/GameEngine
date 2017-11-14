@@ -74,24 +74,24 @@ void operator delete[](void* ptr) throw() { ++numberOfDeallocs3; free(ptr); }
 void operator delete[](void* ptr, const std::nothrow_t&) throw() { ++numberOfDeallocs4; free(ptr); }
 
 
-Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
+engine::CoreEngine* engine::CoreEngine::s_coreEngine = nullptr;
 
-/* static */ Engine::CoreEngine* Engine::CoreEngine::GetCoreEngine()
+/* static */ engine::CoreEngine* engine::CoreEngine::GetCoreEngine()
 {
 	return s_coreEngine;
 }
 
-/* static */ void Engine::CoreEngine::ErrorCallback(int errorCode, const char* description)
+/* static */ void engine::CoreEngine::ErrorCallback(int errorCode, const char* description)
 {
 	GetCoreEngine()->ErrorCallbackEvent(errorCode, description);
 }
 
-/* static */ void Engine::CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
+/* static */ void engine::CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
 {
 	GetCoreEngine()->CloseWindowEvent(window);
 }
 
-/* static */ void Engine::CoreEngine::WindowResizeCallback(GLFWwindow* window, int width, int height)
+/* static */ void engine::CoreEngine::WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwWindowSize(width, height))
@@ -103,7 +103,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
-/* static */ void Engine::CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+/* static */ void engine::CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	DEBUG_LOG_ENGINE("Key event callback (key = ", key, "; scancode = ", scancode, "; action = ", action, "; mods = ", mods);
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -117,7 +117,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
-/* static */ void Engine::CoreEngine::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
+/* static */ void engine::CoreEngine::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMouseButtonGLFW(button, action))
@@ -130,7 +130,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
-/* static */ void Engine::CoreEngine::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
+/* static */ void engine::CoreEngine::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMousePosGLFW(static_cast<int>(xPos), static_cast<int>(yPos)))
@@ -144,7 +144,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 	//GetCoreEngine()->CentralizeCursor();
 }
 
-/* static */ void Engine::CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
+/* static */ void engine::CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMouseWheelGLFW(static_cast<int>(yOffset))) // TODO: Check if yOffset here is ok
@@ -157,7 +157,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
-Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
+engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
 	const std::string& configDirectory /* = "..\\Config\\" */, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
@@ -215,7 +215,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	NOTICE_LOG_ENGINE("Main application construction started");
 	STATS_STORAGE.StartTimer();
 
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(s_coreEngine == NULL, Utility::Logging::ERR, "Constructor called when a singleton instance of MainApp class has already been created");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(s_coreEngine == NULL, utility::logging::ERR, "Constructor called when a singleton instance of MainApp class has already been created");
 	s_coreEngine = this;
 
 	CreateAudioEngine();
@@ -227,7 +227,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 }
 
 
-Engine::CoreEngine::~CoreEngine(void)
+engine::CoreEngine::~CoreEngine(void)
 {
 	DEBUG_LOG_ENGINE("Core engine destruction started");
 
@@ -262,25 +262,25 @@ Engine::CoreEngine::~CoreEngine(void)
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG_ENGINE("Core engine destruction finished");
 
-	Utility::Logging::ILogger::GetLogger("Engine").ResetConsoleColor();
+	utility::logging::ILogger::GetLogger("Engine").ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 }
 
-void Engine::CoreEngine::CreateAudioEngine()
+void engine::CoreEngine::CreateAudioEngine()
 {
-	Audio::AudioEngineFactory audioEngineFactory(m_audioDirectory);
-	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<Audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(Audio::AudioEngineTypes::FMOD))));
+	audio::AudioEngineFactory audioEngineFactory(m_audioDirectory);
+	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(audio::AudioEngineTypes::FMOD))));
 	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Logging::CRITICAL, "Failed to create an audio engine.");
 }
 
-void Engine::CoreEngine::CreatePhysicsEngine()
+void engine::CoreEngine::CreatePhysicsEngine()
 {
 	m_physicsEngine = new Physics::PhysicsEngine();
 
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
 
-void Engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	START_PROFILING_ENGINE(true, "");
 	InitGraphics(fullscreenEnabled, width, height, title, antiAliasingMethod);
@@ -296,17 +296,17 @@ void Engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int h
 	STOP_PROFILING_ENGINE("");
 }
 
-void Engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 }
 
-void Engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
 
 	const int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
@@ -376,13 +376,13 @@ void Engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	DEBUG_LOG_ENGINE("Initializing GLFW finished successfully");
 }
 
-void Engine::CoreEngine::InitGlew()
+void engine::CoreEngine::InitGlew()
 {
 	INFO_LOG_ENGINE("Initializing GLEW started");
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(GLEW_OK == err, Utility::Logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(GLEW_OK == err, utility::logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
 	if (GLEW_VERSION_2_0)
 	{
 		DEBUG_LOG_ENGINE("OpenGL 2.0 supported");
@@ -397,9 +397,9 @@ void Engine::CoreEngine::InitGlew()
 	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
-void Engine::CoreEngine::SetCallbacks()
+void engine::CoreEngine::SetCallbacks()
 {
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Utility::Logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, utility::logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(m_window, &CoreEngine::WindowResizeCallback);
 	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
@@ -410,21 +410,21 @@ void Engine::CoreEngine::SetCallbacks()
 	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
 }
 
-void Engine::CoreEngine::Start(GameManager* gameManager)
+void engine::CoreEngine::Start(GameManager* gameManager)
 {
 	START_PROFILING_ENGINE(true, "");
 	m_game = gameManager;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(!m_isRunning, Utility::Logging::WARNING, "The order to start core engine ignored. Core engine instance is already running.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(!m_isRunning, utility::logging::WARNING, "The order to start core engine ignored. Core engine instance is already running.");
 	NOTICE_LOG_ENGINE("The core engine started");
 
 	Run();
 	STOP_PROFILING_ENGINE("");
 }
 
-void Engine::CoreEngine::Stop()
+void engine::CoreEngine::Stop()
 {
 	START_PROFILING_ENGINE(true, "");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(m_isRunning, Utility::Logging::WARNING, "The order to stop core engine ignored. The core engine instance is not running.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(m_isRunning, utility::logging::WARNING, "The order to stop core engine ignored. The core engine instance is not running.");
 
 	m_isRunning = false;
 	RequestWindowClose();
@@ -443,7 +443,7 @@ void Engine::CoreEngine::Stop()
 	STOP_PROFILING_ENGINE("");
 }
 
-void Engine::CoreEngine::Run()
+void engine::CoreEngine::Run()
 {
 	START_PROFILING_ENGINE(true, "");
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
@@ -634,14 +634,14 @@ void Engine::CoreEngine::Run()
 	}
 }
 
-void Engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	m_renderer->SetWindowWidth(width);
 	m_renderer->SetWindowHeight(height);
 	m_game->WindowResizeEvent(width, height);
 }
 
-void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
+void engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 {
 	switch (errorCode)
 	{
@@ -678,26 +678,26 @@ void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 	exit(EXIT_FAILURE);
 }
 
-void Engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
+void engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
 {
 	m_game->CloseWindowEvent();
 }
 
-void Engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key ", key, " not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Key ", key, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
 }
 
-void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
 	DELOCUST_LOG_ENGINE("Mouse button event: button=", button, "\t action=", action, "\t mods=", mods);
 
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Button ", button, " not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Button ", button, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
 }
@@ -705,27 +705,27 @@ void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 //double lastXPos = 0.0;
 //double lastYPos = 0.0;
 
-void Engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	DEBUG_LOG_ENGINE("Mouse position = (", xPos, ", ", yPos, ")");
-	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
-	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
+	m_inputMapping.SetRawAxisValue(engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
+	m_inputMapping.SetRawAxisValue(engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
 	//lastXPos = xPos;
 	//lastYPos = yPos;
 	//m_game->MousePosEvent(xPos, yPos);
 }
 
-void Engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+void engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
 	m_game->ScrollEvent(xOffset, yOffset);
 }
 
-void Engine::CoreEngine::PollEvents()
+void engine::CoreEngine::PollEvents()
 {
 	glfwPollEvents();
 }
 
-Math::Real Engine::CoreEngine::GetTime() const
+Math::Real engine::CoreEngine::GetTime() const
 {
 	return static_cast<Math::Real>(glfwGetTime());
 	//return Time(glfwGetTime());
@@ -733,11 +733,11 @@ Math::Real Engine::CoreEngine::GetTime() const
 	//return Time::Now();
 }
 
-void Engine::CoreEngine::ClearScreen() const
+void engine::CoreEngine::ClearScreen() const
 {
 }
 
-void Engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
+void engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 {
 	if (m_renderer == NULL)
 	{
@@ -747,33 +747,33 @@ void Engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 	glfwSetCursorPos(m_window, xPos, yPos);
 }
 
-void Engine::CoreEngine::CentralizeCursor()
+void engine::CoreEngine::CentralizeCursor()
 {
 	SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
-void Engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
+void engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
 {
 	//m_renderer->AddBillboardNode(billboardNode);
 }
 
-void Engine::CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
+void engine::CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
 {
 	m_physicsEngine->AddPhysicsObject(physicsObject);
 }
 
-void Engine::CoreEngine::PushInputContext(const std::string& inputContextName)
+void engine::CoreEngine::PushInputContext(const std::string& inputContextName)
 {
 	m_inputMapping.PushContext(inputContextName);
 }
 
-void Engine::CoreEngine::PopInputContext()
+void engine::CoreEngine::PopInputContext()
 {
 	m_inputMapping.PopContext();
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Engine::CoreEngine::InitializeTweakBars()
+void engine::CoreEngine::InitializeTweakBars()
 {
 	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
 
@@ -786,8 +786,8 @@ void Engine::CoreEngine::InitializeTweakBars()
 	//TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
 	//TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
 
-	//TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
-	//	{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
+	//TwEnumVal daytimeEV[] = { { Utility::timing::NIGHT, "Night" }, { Utility::timing::BEFORE_DAWN, "Before dawn" }, { Utility::timing::SUNRISE, "Sunrise" },
+	//	{ Utility::timing::DAY, "Day" }, { Utility::timing::SUNSET, "Sunset" }, { Utility::timing::AFTER_DUSK, "After dusk" } };
 	//TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	//TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
 
@@ -804,7 +804,7 @@ void Engine::CoreEngine::InitializeTweakBars()
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 }
 
-void Engine::CoreEngine::InitializeGameTweakBars()
+void engine::CoreEngine::InitializeGameTweakBars()
 {
 	m_game->InitializeTweakBars();
 	m_renderer->InitializeTweakBars();

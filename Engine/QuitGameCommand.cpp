@@ -2,17 +2,17 @@
 #include "QuitGameCommand.h"
 #include "GameManager.h"
 
-Engine::QuitGameCommand::QuitGameCommand() :
+engine::QuitGameCommand::QuitGameCommand() :
 	GameCommand()
 {
 }
 
 
-Engine::QuitGameCommand::~QuitGameCommand()
+engine::QuitGameCommand::~QuitGameCommand()
 {
 }
 
-void Engine::QuitGameCommand::Execute(GameManager* gameManager) const
+void engine::QuitGameCommand::Execute(GameManager* gameManager) const
 {
 	gameManager->RequestGameQuit();
 }

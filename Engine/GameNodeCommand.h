@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "Utility\ILogger.h"
 
-namespace Engine
+namespace engine
 {
 
 	class GameNode;

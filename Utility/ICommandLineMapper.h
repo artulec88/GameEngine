@@ -4,7 +4,7 @@
 #include "Utility.h"
 #include <memory>
 
-namespace Utility
+namespace utility
 {
 	/// <summary>
 	/// The object giving the user an easy access to command-line parameters defined at the startup of the application.
@@ -19,7 +19,7 @@ namespace Utility
 		/// <remarks>
 		/// To hide the specific implementation from the client we provide the factory-like method to create specific command instances.
 		/// </remarks>
-		UTILITY_API static std::unique_ptr<Utility::ICommandLineMapper> CreateCommandLineMapper(int argc, char* argv[]);
+		UTILITY_API static std::unique_ptr<utility::ICommandLineMapper> CreateCommandLineMapper(int argc, char* argv[]);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

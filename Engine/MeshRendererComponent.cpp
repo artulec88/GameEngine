@@ -3,7 +3,7 @@
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
 
-Engine::MeshRendererComponent::MeshRendererComponent(int meshID, const Rendering::Material* material) :
+engine::MeshRendererComponent::MeshRendererComponent(int meshID, const Rendering::Material* material) :
 	GameComponent(),
 	IRenderable(),
 	m_meshID(meshID),
@@ -13,12 +13,12 @@ Engine::MeshRendererComponent::MeshRendererComponent(int meshID, const Rendering
 }
 
 
-Engine::MeshRendererComponent::~MeshRendererComponent(void)
+engine::MeshRendererComponent::~MeshRendererComponent(void)
 {
 	SAFE_DELETE(m_material);
 }
 
-Engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& meshRendererComponent) :
+engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& meshRendererComponent) :
 	GameComponent(std::move(meshRendererComponent)),
 	IRenderable(std::move(meshRendererComponent)),
 	m_meshID(std::move(meshRendererComponent.m_meshID)),
@@ -27,7 +27,7 @@ Engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& mes
 	meshRendererComponent.m_material = NULL;
 }
 
-Engine::MeshRendererComponent& Engine::MeshRendererComponent::operator=(MeshRendererComponent&& meshRendererComponent)
+engine::MeshRendererComponent& engine::MeshRendererComponent::operator=(MeshRendererComponent&& meshRendererComponent)
 {
 	GameComponent::operator=(std::move(meshRendererComponent));
 	IRenderable::operator=(std::move(meshRendererComponent));
@@ -37,7 +37,7 @@ Engine::MeshRendererComponent& Engine::MeshRendererComponent::operator=(MeshRend
 	return *this;
 }
 
-void Engine::MeshRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::MeshRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering mesh started");
 	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");

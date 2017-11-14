@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace Audio
+namespace audio
 {
 	/// <summary>
 	/// It pretty much serves as a factory pattern for creating the audio data.

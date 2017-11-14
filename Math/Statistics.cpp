@@ -191,12 +191,12 @@ Math::Statistics::MethodStats::~MethodStats()
 {
 }
 
-void Math::Statistics::MethodStats::Push(const Utility::Timing::TimeSpan& elapsedTimeSpan)
+void Math::Statistics::MethodStats::Push(const utility::timing::TimeSpan& elapsedTimeSpan)
 {
 	m_totalTime += elapsedTimeSpan;
 
 #ifdef METHOD_STATS_VARIANT_1
-	m_timeSamples.push_back(std::make_pair<bool, Utility::Timing::TimeSpan>(m_isNestedWithinAnotherProfiledMethod, elapsedTimeSpan));
+	m_timeSamples.push_back(std::make_pair<bool, Utility::timing::TimeSpan>(m_isNestedWithinAnotherProfiledMethod, elapsedTimeSpan));
 #else
 	if (m_isNestedWithinAnotherProfiledMethod)
 	{
@@ -207,7 +207,7 @@ void Math::Statistics::MethodStats::Push(const Utility::Timing::TimeSpan& elapse
 	++m_invocationsCount;
 }
 
-Utility::Timing::TimeSpan Math::Statistics::MethodStats::CalculateMean() const
+utility::timing::TimeSpan Math::Statistics::MethodStats::CalculateMean() const
 {
 	//const Math::Real ONE_THOUSAND = 1000.0f;
 	//const Math::Real ONE_MILION = 1000000.0f;
@@ -233,7 +233,7 @@ Utility::Timing::TimeSpan Math::Statistics::MethodStats::CalculateMean() const
 }
 
 #ifdef METHOD_STATS_VARIANT_1
-Utility::Timing::TimeSpan Math::Statistics::MethodStats::CalculateMedian() const
+Utility::timing::TimeSpan Math::Statistics::MethodStats::CalculateMedian() const
 {
 	if (m_timeSamples.empty())
 	{
@@ -241,16 +241,16 @@ Utility::Timing::TimeSpan Math::Statistics::MethodStats::CalculateMedian() const
 		return REAL_ZERO;
 	}
 
-	Utility::Timing::TimeSpan* timeSamples = new Utility::Timing::TimeSpan[m_timeSamples.size()]; // TODO: Get rid of all "new" operator calls. Replace it with some better C++11 solution.
+	Utility::timing::TimeSpan* timeSamples = new Utility::timing::TimeSpan[m_timeSamples.size()]; // TODO: Get rid of all "new" operator calls. Replace it with some better C++11 solution.
 	unsigned int i = 0;
-	for (std::vector<std::pair<bool, Utility::Timing::TimeSpan>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr, ++i)
+	for (std::vector<std::pair<bool, Utility::timing::TimeSpan>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr, ++i)
 	{
 		timeSamples[i] = timeSampleItr->second;
 	}
 
 	Math::Sorting::ISort::GetSortingObject(Math::Sorting::MERGE_SORT)->Sort(&timeSamples[0], m_timeSamples.size(), Sorting::ASCENDING);
 
-	Utility::Timing::TimeSpan result = timeSamples[m_timeSamples.size() / 2];
+	Utility::timing::TimeSpan result = timeSamples[m_timeSamples.size() / 2];
 	if ((m_timeSamples.size() % 2) == 0)
 	{
 		result += timeSamples[(m_timeSamples.size() / 2) - 1];
@@ -278,13 +278,13 @@ void Math::Statistics::MethodStats::StopProfiling()
 	{
 		m_timer.Stop();
 	}
-	Utility::Timing::TimeSpan elapsedTimeSpan = m_timer.GetTimeSpan();
+	utility::timing::TimeSpan elapsedTimeSpan = m_timer.GetTimeSpan();
 	//DEBUG_LOG_MATH("Stopped profiling the method. ", elapsedTime, " [us] has passed.");
 	Push(elapsedTimeSpan);
 	m_isProfiling = false;
 }
 
-Utility::Timing::TimeSpan Math::Statistics::MethodStats::GetTotalTimeWithoutNestedStats() const
+utility::timing::TimeSpan Math::Statistics::MethodStats::GetTotalTimeWithoutNestedStats() const
 {
 #ifdef METHOD_STATS_VARIANT_1
 	CHECK_CONDITION_MATH(m_invocationsCount == m_timeSamples.size(), Utility::ERR, "There have been ", m_invocationsCount, " method invocations performed, but ", m_timeSamples.size(), " samples are stored");
@@ -296,7 +296,7 @@ Utility::Timing::TimeSpan Math::Statistics::MethodStats::GetTotalTimeWithoutNest
 	}
 
 	Math::Real totalTimeWithoutNestedStats = REAL_ZERO;
-	for (std::vector<std::pair<bool, Utility::Timing::TimeSpan>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr)
+	for (std::vector<std::pair<bool, Utility::timing::TimeSpan>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr)
 	{
 		if (!timeSampleItr->first)
 		{
@@ -336,12 +336,12 @@ void Math::Statistics::ClassStats::StopProfiling(const std::string& methodName)
 {
 	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot stop profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), utility::logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }
 
-void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const
+void Math::Statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const
 {
 	std::fstream classStatsFile;
 	if (!m_methodsStats.empty())
@@ -353,16 +353,16 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 	}
 
 	INFO_LOG_MATH("Class: \"", m_className, "\"");
-	Utility::Timing::TimeSpan classTotalTimeExcludingNestedCalls;
-	Utility::Timing::TimeSpan classTotalTime;
+	utility::timing::TimeSpan classTotalTimeExcludingNestedCalls;
+	utility::timing::TimeSpan classTotalTime;
 	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		//INFO_LOG_MATH("Method \"", methodStatsItr->first, "\": total time without nested stats = ", methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		classTotalTime += methodStatsItr->second.GetTotalTime();
 	}
-	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime.ToString(Utility::Timing::NANOSECOND) <<
-		"\t" << classTotalTimeExcludingNestedCalls.ToString(Utility::Timing::NANOSECOND) << "\n";
+	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime.ToString(utility::timing::NANOSECOND) <<
+		"\t" << classTotalTimeExcludingNestedCalls.ToString(utility::timing::NANOSECOND) << "\n";
 	LogTime("\tTotal time: ", classTotalTime);
 	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
 	DEBUG_LOG_MATH("\tApplication usage: ", classTotalTimeExcludingNestedCalls / applicationTimeSpan * 100, "%");
@@ -372,12 +372,12 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		DEBUG_LOG_MATH("\tMethod: \"", methodStatsItr->first, "\"");
 		DEBUG_LOG_MATH("\t\tInvocations count: ", methodStatsItr->second.GetInvocationsCount());
 		
-		Utility::Timing::TimeSpan totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
+		utility::timing::TimeSpan totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		LogTime("\t\tTotal time: ", totalTimeExcludingNestedCalls);
-		Utility::Timing::TimeSpan totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
+		utility::timing::TimeSpan totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
 		LogTime("\t\tTotal time including nested calls: ", totalTimeIncludingNestedCalls);
 
-		Utility::Timing::TimeSpan meanTime = methodStatsItr->second.CalculateMean();
+		utility::timing::TimeSpan meanTime = methodStatsItr->second.CalculateMean();
 		LogTime("\t\tAverage time: ", meanTime);
 		
 		DEBUG_LOG_MATH("\t\tClass usage: ", totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls * 100, "%");
@@ -393,8 +393,8 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		}
 		methodNameStr.erase(std::remove_if(methodNameStr.begin(), methodNameStr.end(), std::bind( std::isspace<char>, -1, std::locale::classic() )), methodNameStr.end());
 		classStatsFile << methodNameStr << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" << methodStatsItr->second.GetInvocationsCountWithoutNestedCalls() <<
-			"\t" << methodStatsItr->second.GetTotalTime().ToString(Utility::Timing::NANOSECOND) << "\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats().ToString(Utility::Timing::NANOSECOND) <<
-			"\t" << meanTime.ToString(Utility::Timing::NANOSECOND) << "\n";
+			"\t" << methodStatsItr->second.GetTotalTime().ToString(utility::timing::NANOSECOND) << "\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats().ToString(utility::timing::NANOSECOND) <<
+			"\t" << meanTime.ToString(utility::timing::NANOSECOND) << "\n";
 	}
 	if (classStatsFile.is_open())
 	{
@@ -412,23 +412,23 @@ int Math::Statistics::ClassStats::GetTotalNumberOfSamples() const
 	return totalNumberOfSamples;
 }
 
-void Math::Statistics::ClassStats::LogTime(const std::string& text, const Utility::Timing::TimeSpan& timeSpan) const
+void Math::Statistics::ClassStats::LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan) const
 {
-	if (timeSpan < Utility::Timing::MICROSECOND)
+	if (timeSpan < utility::timing::MICROSECOND)
 	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(Utility::Timing::NANOSECOND));
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::NANOSECOND));
 	}
-	else if (timeSpan < Utility::Timing::MILLISECOND)
+	else if (timeSpan < utility::timing::MILLISECOND)
 	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(Utility::Timing::MICROSECOND));
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MICROSECOND));
 	}
-	else if (timeSpan < Utility::Timing::MINUTE)
+	else if (timeSpan < utility::timing::MINUTE)
 	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(Utility::Timing::MILLISECOND));
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MILLISECOND));
 	}
 	else
 	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(Utility::Timing::SECOND));
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::SECOND));
 	}
 }
 /* ==================== ClassStats end ==================== */

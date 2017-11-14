@@ -4,7 +4,7 @@
 #include "Utility\ILogger.h"
 
 
-Audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount) :
+audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount) :
 	IAudioEngine(audioDirectory),
 	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
 	m_engine(NULL),
@@ -19,12 +19,12 @@ Audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(const std::string& audioDire
 }
 
 
-Audio::AudioEngine_IRR_KLANG::~AudioEngine_IRR_KLANG()
+audio::AudioEngine_IRR_KLANG::~AudioEngine_IRR_KLANG()
 {
 	m_engine->drop();
 }
 
-void Audio::AudioEngine_IRR_KLANG::Update(Math::Real deltaTime)
+void audio::AudioEngine_IRR_KLANG::Update(Math::Real deltaTime)
 {
 	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
 	{
@@ -63,22 +63,22 @@ void Audio::AudioEngine_IRR_KLANG::Update(Math::Real deltaTime)
 	m_engine->update(); // TODO: This is not necessary if audio engine is running in the multithreaded mode.
 }
 
-void Audio::AudioEngine_IRR_KLANG::LoadSoundEffect(const std::string& path)
+void audio::AudioEngine_IRR_KLANG::LoadSoundEffect(const std::string& path)
 {
 	Load(Categories::SOUND_EFFECT, path);
 }
 
-void Audio::AudioEngine_IRR_KLANG::LoadSoundEffect3D(const std::string& path)
+void audio::AudioEngine_IRR_KLANG::LoadSoundEffect3D(const std::string& path)
 {
 	Load(Categories::SOUND_EFFECT_3D, path);
 }
 
-void Audio::AudioEngine_IRR_KLANG::LoadSong(const std::string& path)
+void audio::AudioEngine_IRR_KLANG::LoadSong(const std::string& path)
 {
 	Load(Categories::SONG, path);
 }
 
-void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::string& path)
+void audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::string& path)
 {
 	DEBUG_LOG_AUDIO("Loading sound \"", path, "\" from directory \"", m_audioDirectory, "\".");
 	if (m_soundSources[type].find(path) != m_soundSources[type].end())
@@ -88,11 +88,11 @@ void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::st
 	}
 	irrklang::ISoundSource* sound;
 	sound = m_engine->addSoundSourceFromFile((m_audioDirectory + path).c_str(), irrklang::ESM_AUTO_DETECT, false);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, Utility::Logging::ERR, "The audio \"", path, "\" cannot be loaded.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, utility::logging::ERR, "The audio \"", path, "\" cannot be loaded.");
 	m_soundSources[type].insert(std::make_pair(path, sound));
 }
 
-void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */)
+void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */)
 {
 	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
 	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
@@ -104,7 +104,7 @@ void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	m_engine->play2D(soundItr->second, false, false, false, false);
 }
 
-void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch)
+void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
 	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
@@ -127,11 +127,11 @@ void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	}
 }
 
-void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity)
+void audio::AudioEngine_IRR_KLANG::PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity)
 {
 }
 
-void Audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
+void audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
 {
 	// Ignoring if this song is already playing
 	if (m_currentSongPath == path)
@@ -164,12 +164,12 @@ void Audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Bet
 	m_fade = FadeStates::FADE_IN;
 }
 
-void Audio::AudioEngine_IRR_KLANG::StopSoundEffects()
+void audio::AudioEngine_IRR_KLANG::StopSoundEffects()
 {
 	WARNING_LOG_AUDIO("Function not yet implemented");
 }
 
-void Audio::AudioEngine_IRR_KLANG::StopSong()
+void audio::AudioEngine_IRR_KLANG::StopSong()
 {
 	if (m_currentSong != NULL)
 	{
@@ -180,22 +180,22 @@ void Audio::AudioEngine_IRR_KLANG::StopSong()
 	m_nextSongPath.clear();
 }
 
-void Audio::AudioEngine_IRR_KLANG::SetMasterVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetMasterVolume(Math::Real volume)
 {
 	// TODO: volume must lie in range [0; 1]. Check that it does.
 	m_engine->setSoundVolume(volume);
 }
 
-void Audio::AudioEngine_IRR_KLANG::SetSoundEffectsVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetSoundEffectsVolume(Math::Real volume)
 {
 	SetVolume(Categories::SOUND_EFFECT, volume);
 }
 
-void Audio::AudioEngine_IRR_KLANG::SetSongsVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetSongsVolume(Math::Real volume)
 {
 }
 
-void Audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Real volume)
 {
 	for (Filenames2SoundSources::iterator soundSourceItr = m_soundSources[type].begin(); soundSourceItr != m_soundSources[type].end(); ++soundSourceItr)
 	{
@@ -203,12 +203,12 @@ void Audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Re
 	}
 }
 
-Math::Real Audio::AudioEngine_IRR_KLANG::ChangeOctave(Math::Real frequency, Math::Real variation) const
+Math::Real audio::AudioEngine_IRR_KLANG::ChangeOctave(Math::Real frequency, Math::Real variation) const
 {
 	return 0.0f;
 }
 
-Math::Real Audio::AudioEngine_IRR_KLANG::ChangeSemitone(Math::Real frequency, Math::Real variation) const
+Math::Real audio::AudioEngine_IRR_KLANG::ChangeSemitone(Math::Real frequency, Math::Real variation) const
 {
 	return 0.0f;
 }

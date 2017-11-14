@@ -15,7 +15,7 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	m_programID(glCreateProgram())
 {
 	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, Utility::Logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, utility::logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
 	std::string shaderText = LoadShaderData(directoryPath, fileName);
 	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
@@ -40,7 +40,7 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 
 	AddAllAttributes(vertexShaderText);
 
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), Utility::Logging::CRITICAL, "Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), utility::logging::CRITICAL, "Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
 	DEBUG_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
 	AddShaderUniforms(shaderText);
 	//ERROR_LOG_RENDERING("Vertex shader text = ", vertexShaderText);
@@ -124,12 +124,12 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 
 			std::vector<std::string> tokens;
 			DELOCUST_LOG_RENDERING("Shader line \"", line, "\"");
-			Utility::StringUtility::CutToTokens(line, tokens, ' ');
+			utility::string_utility::CutToTokens(line, tokens, ' ');
 			//for (int i = 0; i < tokens.size(); ++i)
 			//{
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
 			//}
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, Utility::Logging::ERR, "Error while reading #include directive in the shader file \"", fileName, "\"");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, utility::logging::ERR, "Error while reading #include directive in the shader file \"", fileName, "\"");
 			std::string includeFileName = tokens[1];
 			//DEBUG_LOG_RENDERING("Tokens[1] = \"", tokens[1], "\". IncludeFileName=\"", includeFileName, "\"");
 			//includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
@@ -234,7 +234,7 @@ void Rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum typ
 {
 	GLuint shader = glCreateShader(type);
 
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(shader != 0, Utility::Logging::EMERGENCY, "Error creating shader type: ", type);
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(shader != 0, utility::logging::EMERGENCY, "Error creating shader type: ", type);
 
 	const GLchar* p[1];
 	p[0] = shaderText.c_str();
@@ -285,11 +285,11 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 				size_t end = vertexShaderText.find(";", begin);
 
 				std::string attributeLine = vertexShaderText.substr(begin, end - begin);
-				Utility::StringUtility::LeftTrim(attributeLine);
+				utility::string_utility::LeftTrim(attributeLine);
 
 				end = attributeLine.find(")");
 				std::string locationNumber = attributeLine.substr(0, end);
-				currentAttribLocation = Utility::StringUtility::ToInt(locationNumber);
+				currentAttribLocation = utility::string_utility::ToInt(locationNumber);
 			}
 			size_t begin = attributeLocation + std::string(ATTRIBUTE_KEYWORD).length() + 1;
 			size_t end = vertexShaderText.find(";", begin);
@@ -435,8 +435,8 @@ std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindU
 std::string Rendering::ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const
 {
 	std::vector<std::string> tokens;
-	Utility::StringUtility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
-	Utility::StringUtility::RightTrim(tokens[0]);
+	utility::string_utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
+	utility::string_utility::RightTrim(tokens[0]);
 	//DELOCUST_LOG_RENDERING("tokens[0] = \"", tokens[0], "\"");
 	return tokens[0];
 
@@ -452,7 +452,7 @@ std::vector<Rendering::Uniforms::UniformInfo> Rendering::ShaderData::FindUniform
 
 	std::vector<Uniforms::UniformInfo> result;
 	std::vector<std::string> structLines;
-	Utility::StringUtility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
+	utility::string_utility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
 
 	for (std::vector<std::string>::const_iterator structLinesItr = structLines.begin(); structLinesItr != structLines.end(); ++structLinesItr)
 	{

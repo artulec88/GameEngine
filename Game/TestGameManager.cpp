@@ -71,8 +71,8 @@ Game::TestGameManager::TestGameManager() :
 	//AddSmoothEffects();
 	//AddBlinkEffects();
 
-	m_actionsToGameCommandsMap.insert(std::make_pair(Engine::Actions::START_GAME, &m_startGameCommand));
-	m_actionsToGameCommandsMap.insert(std::make_pair(Engine::Actions::QUIT_GAME, &m_quitGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(engine::Actions::START_GAME, &m_startGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(engine::Actions::QUIT_GAME, &m_quitGameCommand));
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
@@ -271,7 +271,7 @@ Math::Real Game::TestGameManager::GetLoadingProgress() const
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
 }
 
-Engine::GameState* Game::TestGameManager::GetLoadGameState()
+engine::GameState* Game::TestGameManager::GetLoadGameState()
 {
 	if (m_loadGameState == nullptr)
 	{
@@ -280,7 +280,7 @@ Engine::GameState* Game::TestGameManager::GetLoadGameState()
 	return m_loadGameState.get();
 }
 
-Engine::GameState* Game::TestGameManager::GetIntroGameState()
+engine::GameState* Game::TestGameManager::GetIntroGameState()
 {
 	if (m_introGameState == nullptr)
 	{
@@ -289,7 +289,7 @@ Engine::GameState* Game::TestGameManager::GetIntroGameState()
 	return m_introGameState.get();
 }
 
-Engine::GameState* Game::TestGameManager::GetMainMenuGameState()
+engine::GameState* Game::TestGameManager::GetMainMenuGameState()
 {
 	if (m_menuGameState == nullptr)
 	{
@@ -300,7 +300,7 @@ Engine::GameState* Game::TestGameManager::GetMainMenuGameState()
 	return m_menuGameState.get();
 }
 
-Engine::GameState* Game::TestGameManager::GetPlayGameState()
+engine::GameState* Game::TestGameManager::GetPlayGameState()
 {
 	if (m_playGameState == nullptr)
 	{
@@ -311,7 +311,7 @@ Engine::GameState* Game::TestGameManager::GetPlayGameState()
 	return m_playGameState.get();
 }
 
-Engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
+engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 {
 	if (m_playMainMenuGameState == nullptr)
 	{
@@ -325,7 +325,7 @@ void Game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
+	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, utility::logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Engine::GameNode* testMesh1 = new Engine::GameNode();
 	//testMesh1->GetTransform().SetPos(-2.0f, 2.0f, 2.0f);
@@ -389,7 +389,7 @@ void Game::TestGameManager::Load()
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 
 	m_isGameLoaded = true;
-	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
+	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, utility::logging::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING_GAME("");
 	NOTICE_LOG_GAME("Initalizing test game finished");
 }

@@ -1,7 +1,7 @@
 #ifndef __ENGINE_ACTION_CONSTANTS_H__
 #define __ENGINE_ACTION_CONSTANTS_H__
 
-namespace Engine
+namespace engine
 {
 	namespace Actions
 	{

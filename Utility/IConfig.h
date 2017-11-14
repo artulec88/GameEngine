@@ -7,11 +7,11 @@
 #include <memory>
 #include <map>
 #include <string>
-#define GET_CONFIG_VALUE(moduleName, cfgName, defValue) Utility::IConfig::GetConfig(moduleName).Get(cfgName, defValue)
-#define GET_CONFIG_VALUE_STR(moduleName, cfgName, defValue) Utility::IConfig::GetConfig(moduleName).GetArg(cfgName, defValue)
-#define HAS_CONFIG_VALUE(moduleName, cfgName) Utility::IConfig::GetConfig(moduleName).HasArg(cfgName)
+#define GET_CONFIG_VALUE(moduleName, cfgName, defValue) utility::IConfig::GetConfig(moduleName).Get(cfgName, defValue)
+#define GET_CONFIG_VALUE_STR(moduleName, cfgName, defValue) utility::IConfig::GetConfig(moduleName).GetArg(cfgName, defValue)
+#define HAS_CONFIG_VALUE(moduleName, cfgName) utility::IConfig::GetConfig(moduleName).HasArg(cfgName)
 
-namespace Utility
+namespace utility
 {
 	/// <summary>
 	/// The interface for the application's configuration container. It gives the easy access to configuration parameters and their values.
@@ -73,10 +73,10 @@ namespace Utility
 			//DELOCUST_LOG_UTILITY("Config parameter \"", name, "\" collected with value \"", resultStr, "\"");
 
 			Type result;
-			std::stringstream resultSS;
-			resultSS << resultStr;
-			DELOCUST_LOG_UTILITY("Config parameter \"", name, "\" collected with value \"", resultSS.str(), "\"");
-			resultSS >> result;
+			std::stringstream resultStream;
+			resultStream << resultStr;
+			DELOCUST_LOG_UTILITY("Config parameter \"", name, "\" collected with value \"", resultStream.str(), "\"");
+			resultStream >> result;
 			return result;
 		}
 		/* ==================== Non-static member functions end ==================== */

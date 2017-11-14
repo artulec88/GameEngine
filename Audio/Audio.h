@@ -43,7 +43,7 @@
 #define CHECK_CONDITION_RETURN_AUDIO(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN(expr, returnValue, "Audio", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_RETURN_ALWAYS_AUDIO(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, "Audio", logLevel, ##__VA_ARGS__)
 
-namespace Audio
+namespace audio
 {
 } /* end namespace Audio */
 

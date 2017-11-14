@@ -46,8 +46,8 @@ void Math::Statistics::StatisticsStorage::PrintSimpleReport() const
 void Math::Statistics::StatisticsStorage::PrintReport() const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
-	Utility::Logging::ILogger::GetLogger("Math").AddStream("ApplicationStats.txt");
-	INFO_LOG_MATH("Total elapsed time: ", m_timer.GetDuration(Utility::Timing::MILLISECOND), " [ms]");
+	utility::logging::ILogger::GetLogger("Math").AddStream("ApplicationStats.txt");
+	INFO_LOG_MATH("Total elapsed time: ", m_timer.GetDuration(utility::timing::MILLISECOND), " [ms]");
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";

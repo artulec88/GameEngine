@@ -7,7 +7,7 @@
 
 #include "Utility\IConfig.h"
 
-Engine::GravityComponent::GravityComponent(const Rendering::Terrain* terrain) :
+engine::GravityComponent::GravityComponent(const Rendering::Terrain* terrain) :
 	GameComponent(),
 	IUpdateable(),
 	m_terrain(terrain),
@@ -20,11 +20,11 @@ Engine::GravityComponent::GravityComponent(const Rendering::Terrain* terrain) :
 }
 
 
-Engine::GravityComponent::~GravityComponent()
+engine::GravityComponent::~GravityComponent()
 {
 }
 
-Engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) :
+engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) :
 	GameComponent(std::move(gravityComponent)),
 	IUpdateable(std::move(gravityComponent)),
 	m_terrain(std::move(gravityComponent.m_terrain)),
@@ -35,7 +35,7 @@ Engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) 
 {
 }
 
-Engine::GravityComponent& Engine::GravityComponent::operator=(GravityComponent&& gravityComponent)
+engine::GravityComponent& engine::GravityComponent::operator=(GravityComponent&& gravityComponent)
 {
 	GameComponent::operator=(std::move(gravityComponent));
 	IUpdateable::operator=(std::move(gravityComponent));
@@ -47,7 +47,7 @@ Engine::GravityComponent& Engine::GravityComponent::operator=(GravityComponent&&
 	return *this;
 }
 
-void Engine::GravityComponent::Update(Math::Real deltaTime)
+void engine::GravityComponent::Update(Math::Real deltaTime)
 {
 	Math::Real terrainHeight = (Math::AlmostEqual(GetTransform().GetPos().x, m_lastX) && Math::AlmostEqual(GetTransform().GetPos().z, m_lastZ)) ? m_lastHeight :
 		m_terrain->GetHeightAt(GetTransform().GetPos().x, GetTransform().GetPos().z) + m_heightAdjustment;

@@ -2,12 +2,12 @@
 #include "StringUtility.h"
 #include "ILogger.h"
 
-void Utility::StringUtility::LeftTrim(std::string& s)
+void utility::string_utility::LeftTrim(std::string& s)
 {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 }
 
-void Utility::StringUtility::RightTrim(std::string& s)
+void utility::string_utility::RightTrim(std::string& s)
 {
 	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 }
@@ -18,7 +18,7 @@ void Utility::StringUtility::RightTrim(std::string& s)
 //	LeftTrim(s);
 //}
 
-std::string Utility::StringUtility::Trim(const std::string& str, const std::string& trimStr /* = std::string(" \t\n") */)
+std::string utility::string_utility::Trim(const std::string& str, const std::string& trimStr /* = std::string(" \t\n") */)
 {
 	if (trimStr.size() == 0)
 	{
@@ -34,7 +34,7 @@ std::string Utility::StringUtility::Trim(const std::string& str, const std::stri
 	return "";
 }
 
-void Utility::StringUtility::FindAndReplace(std::string& source, const std::string& find, const std::string& replace)
+void utility::string_utility::FindAndReplace(std::string& source, const std::string& find, const std::string& replace)
 {
 	size_t j;
 	for (; (j = source.find(find)) != std::string::npos; )
@@ -43,26 +43,26 @@ void Utility::StringUtility::FindAndReplace(std::string& source, const std::stri
 	}
 }
 
-std::string Utility::StringUtility::MakeUppercase(const std::string& str)
+std::string utility::string_utility::MakeUppercase(const std::string& str)
 {
 	std::string temp = str;
 	std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
 	return temp;
 }
 
-std::string Utility::StringUtility::MakeLowercase(const std::string& str)
+std::string utility::string_utility::MakeLowercase(const std::string& str)
 {
 	std::string temp = str;
 	std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
 	return temp;
 }
 
-bool Utility::StringUtility::Contains(const std::string& source, const char* find)
+bool utility::string_utility::Contains(const std::string& source, const char* find)
 {
 	return (strstr(source.c_str(), find) != nullptr);
 }
 
-std::string Utility::StringUtility::Pad(const std::string& str, char padChar, int length)
+std::string utility::string_utility::Pad(const std::string& str, const char padChar, const int length)
 {
 	std::string result = str;
 	for (int i = static_cast<int>(result.length()); i < length; ++i)
@@ -72,7 +72,7 @@ std::string Utility::StringUtility::Pad(const std::string& str, char padChar, in
 	return result;
 }
 
-int Utility::StringUtility::ToInt(const std::string& str)
+int utility::string_utility::ToInt(const std::string& str)
 {
 	int result = 0;
 	std::string inString = Trim(str);
@@ -94,7 +94,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 	return result;
 }
 
-float Utility::StringUtility::ToFloat(const std::string& str)
+float utility::string_utility::ToFloat(const std::string& str)
 {
 	WARNING_LOG_UTILITY("This function has not been tested yet.");
 
@@ -132,12 +132,12 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 	return result;
 }
 
-bool Utility::StringUtility::IsNumeric(char c)
+bool utility::string_utility::IsNumeric(const char c)
 {
 	return ('0' <= c && c <= '9');
 }
 
-void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim)
+void utility::string_utility::CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim)
 {
 	CutToTokens(str, tokens, &delim, 1);
 
@@ -163,7 +163,7 @@ void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std
 	// }
 }
 
-void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, int delimCount)
+void utility::string_utility::CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, const int delimCount)
 {
 	//stringstream ss(str);
 	//string temp = "";
@@ -229,7 +229,7 @@ void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std
 		//std::string token;
 		//Trim(str.substr(start, end - start), token);
 		std::string token = str.substr(start, end - start);
-		StringUtility::Trim(token);
+		Trim(token);
 		if (!token.empty() || quoteFound)
 		{
 			quoteFound = false;

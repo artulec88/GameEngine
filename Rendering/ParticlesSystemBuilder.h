@@ -18,7 +18,7 @@ namespace Rendering
 		/// <summary>
 		/// The particles system builder.
 		/// </summary>
-		class ParticlesSystemBuilder : public Utility::Builder<ParticlesSystem>
+		class ParticlesSystemBuilder : public utility::Builder<ParticlesSystem>
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */

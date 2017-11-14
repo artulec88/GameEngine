@@ -5,7 +5,7 @@
 //#define LOGMODULE "Command"
 #include "ILogger.h"
 
-Utility::CommandLineMapper::CommandLineMapper(int argc, char* argv[]) : ICommandLineMapper()
+utility::CommandLineMapper::CommandLineMapper(const int argc, char* argv[]) : ICommandLineMapper()
 {
 	DELOCUST_LOG_UTILITY("CommandLineMapper constructor");
 	CHECK_CONDITION_UTILITY(argc >= 1, Utility::Logging::ERR, "Incorrect number of program parameters specified (", argc, ")");
@@ -17,13 +17,13 @@ Utility::CommandLineMapper::CommandLineMapper(int argc, char* argv[]) : ICommand
 	}
 }
 
-Utility::CommandLineMapper::~CommandLineMapper()
+utility::CommandLineMapper::~CommandLineMapper()
 {
 	DELOCUST_LOG_UTILITY("CommandLineMapper object gets destroyed");
 	m_argsToValuesMap.clear();
 }
 
-const std::string& Utility::CommandLineMapper::Get(const std::string& opt, const std::string& defaultValue) const
+const std::string& utility::CommandLineMapper::Get(const std::string& opt, const std::string& defaultValue) const
 {
 	const ArgsToValuesMap::const_iterator argToValueItr = m_argsToValuesMap.find(opt);
 	return (argToValueItr != m_argsToValuesMap.end()) ? argToValueItr->second : defaultValue;

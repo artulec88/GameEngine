@@ -7,9 +7,9 @@
 #include <iomanip>
 
 /* ==================== DateTime class begin ==================== */
-/* static */ std::array<int, Utility::Timing::DateTime::MONTHS_COUNT> Utility::Timing::DateTime::DAYS_COUNT_IN_MONTH = {
+/* static */ std::array<int, utility::timing::DateTime::MONTHS_COUNT> utility::timing::DateTime::DAYS_COUNT_IN_MONTH = {
 	31, 28 /* We don't account for "przestêpny" years */, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-/* static */ std::array<int, Utility::Timing::DateTime::MONTHS_COUNT> Utility::Timing::DateTime::DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR = {
+/* static */ std::array<int, utility::timing::DateTime::MONTHS_COUNT> utility::timing::DateTime::DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR = {
 	0,
 	DAYS_COUNT_IN_MONTH[0],
 	DAYS_COUNT_IN_MONTH[0] + DAYS_COUNT_IN_MONTH[1],
@@ -24,7 +24,7 @@
 	DAYS_COUNT_IN_MONTH[0] + DAYS_COUNT_IN_MONTH[1] + DAYS_COUNT_IN_MONTH[2] + DAYS_COUNT_IN_MONTH[3] + DAYS_COUNT_IN_MONTH[4] + DAYS_COUNT_IN_MONTH[5] + DAYS_COUNT_IN_MONTH[6] + DAYS_COUNT_IN_MONTH[7] + DAYS_COUNT_IN_MONTH[8] + DAYS_COUNT_IN_MONTH[9] + DAYS_COUNT_IN_MONTH[10],
 };
 
-/* static */ Utility::Timing::DateTime Utility::Timing::DateTime::Now()
+/* static */ utility::timing::DateTime utility::timing::DateTime::Now()
 {
 	/* ==================== Calculate local time #1 begin ==================== */
 	//SYSTEMTIME st; // See https://msdn.microsoft.com/pl-pl/library/windows/desktop/ms724950(v=vs.85).aspx
@@ -42,7 +42,7 @@
 	/* ==================== Calculate local time #2 end ==================== */
 }
 
-/* static */ std::string Utility::Timing::DateTime::ConvertTimeUnitToString(TimeUnit timeUnit)
+/* static */ std::string utility::timing::DateTime::ConvertTimeUnitToString(TimeUnit timeUnit)
 {
 	switch (timeUnit)
 	{
@@ -59,7 +59,7 @@
 	}
 }
 
-Utility::Timing::DateTime::DateTime(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int minute, unsigned int second) :
+utility::timing::DateTime::DateTime(const unsigned int year, const unsigned int month, const unsigned int day, const unsigned int hour, const unsigned int minute, const unsigned int second) :
 	m_timePoint()
 {
 	CHECK_CONDITION_UTILITY(month > 0 && month <= MONTHS_COUNT, Utility::Logging::ERR, "Incorrect month number specified: ", month, ". The month number must lie in range [1; 12].");
@@ -75,69 +75,69 @@ Utility::Timing::DateTime::DateTime(unsigned int year, unsigned int month, unsig
 	m_timePoint = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(std::mktime(&tm)));
 }
 
-Utility::Timing::DateTime::DateTime(const std::chrono::system_clock::time_point& timePoint) :
+utility::timing::DateTime::DateTime(const std::chrono::system_clock::time_point& timePoint) :
 	m_timePoint(std::chrono::time_point_cast<std::chrono::seconds>(timePoint))
 {
 }
 
-Utility::Timing::DateTime::~DateTime()
+utility::timing::DateTime::~DateTime()
 {
 }
 
-Utility::Timing::DateTime::DateTime(const DateTime& dateTime) :
+utility::timing::DateTime::DateTime(const DateTime& dateTime) :
 	m_timePoint(dateTime.m_timePoint)
 {
 }
 
-Utility::Timing::DateTime::DateTime(DateTime&& dateTime) noexcept :
+utility::timing::DateTime::DateTime(DateTime&& dateTime) noexcept :
 	m_timePoint(std::move(dateTime.m_timePoint))
 {
 }
 
-Utility::Timing::DateTime& Utility::Timing::DateTime::operator=(const DateTime& dateTime)
+utility::timing::DateTime& utility::timing::DateTime::operator=(const DateTime& dateTime)
 {
 	m_timePoint = dateTime.m_timePoint;
 	return *this;
 }
 
-Utility::Timing::DateTime& Utility::Timing::DateTime::operator=(DateTime&& dateTime) noexcept
+utility::timing::DateTime& utility::timing::DateTime::operator=(DateTime&& dateTime) noexcept
 {
 	m_timePoint = std::move(dateTime.m_timePoint);
 	return *this;
 }
 
-bool Utility::Timing::DateTime::operator==(const DateTime& dateTime) const
+bool utility::timing::DateTime::operator==(const DateTime& dateTime) const
 {
 	return m_timePoint == dateTime.m_timePoint;
 }
 
-bool Utility::Timing::DateTime::operator!=(const DateTime& dateTime) const
+bool utility::timing::DateTime::operator!=(const DateTime& dateTime) const
 {
 	return !(operator==(dateTime));
 }
 
-bool Utility::Timing::DateTime::operator<(const DateTime& dateTime) const
+bool utility::timing::DateTime::operator<(const DateTime& dateTime) const
 {
 	return m_timePoint < dateTime.m_timePoint;
 }
 
-bool Utility::Timing::DateTime::operator>(const DateTime& dateTime) const
+bool utility::timing::DateTime::operator>(const DateTime& dateTime) const
 {
 	return m_timePoint > dateTime.m_timePoint;
 }
 
-//int Utility::Timing::DateTime::GetDayInYear() const
+//int Utility::timing::DateTime::GetDayInYear() const
 //{
 //	//CRITICAL_LOG_UTILITY("Day in year: ", DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR[m_month] + m_day);
 //	return DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR[m_month] + m_day;
 //}
 //
-//int Utility::Timing::DateTime::GetDayTime() const
+//int Utility::timing::DateTime::GetDayTime() const
 //{
 //	return m_hour * SECONDS_PER_HOUR + m_minute * SECONDS_PER_MINUTE + m_second + m_millisecond * MILLISECONDS_PER_SECOND;
 //}
 
-std::string Utility::Timing::DateTime::ToString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
+std::string utility::timing::DateTime::ToString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
 	// TODO: Format parameter not used.
 	std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::seconds>(m_timePoint));
@@ -148,17 +148,17 @@ std::string Utility::Timing::DateTime::ToString(const char *format /* = "%Y-%m-%
 /* ==================== DateTime class end ==================== */
 
 /* ==================== Timer class begin ==================== */
-Utility::Timing::Timer::Timer() :
+utility::timing::Timer::Timer() :
 	m_startTime(),
 	m_stopTime()
 {
 }
 
-Utility::Timing::Timer::~Timer()
+utility::timing::Timer::~Timer()
 {
 }
 
-//long long Utility::Timing::Timer::GetDuration(TimeUnit timeUnit) const
+//long long Utility::timing::Timer::GetDuration(TimeUnit timeUnit) const
 //{
 //	switch (timeUnit)
 //	{
@@ -180,18 +180,18 @@ Utility::Timing::Timer::~Timer()
 //	}
 //}
 
-void Utility::Timing::Timer::Start()
+void utility::timing::Timer::Start()
 {
 	//CHECK_CONDITION_RETURN_VOID_UTILITY(!m_isRunning, Logging::ERR, "Starting the timer which is already running");
 	m_startTime = std::chrono::system_clock::now();
 }
 
-void Utility::Timing::Timer::Reset()
+void utility::timing::Timer::Reset()
 {
 	Start();
 }
 
-void Utility::Timing::Timer::Stop()
+void utility::timing::Timer::Stop()
 {
 	//CHECK_CONDITION_RETURN_VOID_UTILITY(m_isRunning, Logging::ERR, "Stopping the timer which is already stopped.");
 	m_stopTime = std::chrono::system_clock::now();

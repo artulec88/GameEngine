@@ -18,7 +18,7 @@
 #include <string>
 #include <map>
 
-namespace Engine
+namespace engine
 {
 	///<summary>
 	/// The base class for each game state. It provides functionality for game states lifecycles.

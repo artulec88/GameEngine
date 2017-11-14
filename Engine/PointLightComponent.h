@@ -6,7 +6,7 @@
 
 #include "Rendering\PointLight.h"
 
-namespace Engine
+namespace engine
 {
 	class PointLightComponent : public GameComponent
 	{

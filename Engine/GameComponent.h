@@ -10,7 +10,7 @@
 
 //#include <map>
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// The base class for all game components. Game components are the actual logic that one can perform on the entity.

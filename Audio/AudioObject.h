@@ -5,7 +5,7 @@
 #include "IAudioData.h"
 #include "SampleInfo.h"
 
-namespace Audio
+namespace audio
 {
 	/// <summary>
 	/// The abstract representation of what an audio is. It is a sort of a wrapper for an audio data.

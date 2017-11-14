@@ -3,7 +3,7 @@
 #include "Utility\ILogger.h"
 #include "Math\Quaternion.h"
 
-Engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
+engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 	GameComponent(),
 	IUpdateable(),
 	m_entityToLookAtTransform(gameNode->GetTransform())
@@ -11,11 +11,11 @@ Engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 }
 
 
-Engine::LookAtComponent::~LookAtComponent(void)
+engine::LookAtComponent::~LookAtComponent(void)
 {
 }
 
-void Engine::LookAtComponent::Update(Math::Real delta)
+void engine::LookAtComponent::Update(Math::Real delta)
 {
 	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
 	Math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();

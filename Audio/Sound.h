@@ -6,7 +6,7 @@
 #include "fmod.hpp"
 #include <string>
 
-namespace Audio
+namespace audio
 {
 	class SoundData
 	{

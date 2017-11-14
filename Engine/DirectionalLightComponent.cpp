@@ -5,7 +5,7 @@
 #include "Utility\IConfig.h"
 #include "Utility\Time.h"
 
-Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
+engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
 	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
 	const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel) :
 	GameComponent(),
@@ -28,12 +28,12 @@ Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting
 }
 
 
-Engine::DirectionalLightComponent::~DirectionalLightComponent()
+engine::DirectionalLightComponent::~DirectionalLightComponent()
 {
 	SAFE_DELETE(m_directionalLight);
 }
 
-Engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) :
+engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) :
 	GameComponent(std::move(directionalLightComponent)),
 #ifdef SIMULATE_SUN_BEHAVIOR
 	IUpdateable(std::move(directionalLightComponent)),
@@ -53,7 +53,7 @@ Engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightCom
 {
 }
 
-Engine::DirectionalLightComponent& Engine::DirectionalLightComponent::operator=(DirectionalLightComponent&& directionalLightComponent)
+engine::DirectionalLightComponent& engine::DirectionalLightComponent::operator=(DirectionalLightComponent&& directionalLightComponent)
 {
 	GameComponent::operator=(std::move(directionalLightComponent));
 #ifdef SIMULATE_SUN_BEHAVIOR
@@ -75,7 +75,7 @@ Engine::DirectionalLightComponent& Engine::DirectionalLightComponent::operator=(
 }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
-void Engine::DirectionalLightComponent::Update(Math::Real delta)
+void engine::DirectionalLightComponent::Update(Math::Real delta)
 {
 	DELOCUST_LOG_ENGINE("Directional light update with delta time = ", delta);
 
@@ -84,31 +84,31 @@ void Engine::DirectionalLightComponent::Update(Math::Real delta)
 	//CoreEngine* coreEngine = CoreEngine::GetCoreEngine();
 	//Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
 	//Math::Real daytimeTransitionFactor;
-	//Utility::Timing::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
+	//Utility::timing::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
 
-	//m_directionalLight->SetIsEnabled(daytime != Utility::Timing::NIGHT);
+	//m_directionalLight->SetIsEnabled(daytime != Utility::timing::NIGHT);
 
 	//switch (daytime)
 	//{
-	//case Utility::Timing::NIGHT:
+	//case Utility::timing::NIGHT:
 	//	m_directionalLight->SetColor(m_sunNighttimeColor);
 	//	break;
-	//case Utility::Timing::BEFORE_DAWN:
+	//case Utility::timing::BEFORE_DAWN:
 	//	m_directionalLight->SetColor(m_sunNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor));
 	//	m_directionalLight->SetIntensity(daytimeTransitionFactor * m_maxIntensity);
 	//	break;
-	//case Utility::Timing::SUNRISE:
+	//case Utility::timing::SUNRISE:
 	//	m_directionalLight->SetColor(m_sunNearHorizonColor.Lerp(m_sunDaytimeColor, daytimeTransitionFactor));
 	//	m_directionalLight->SetIntensity(m_maxIntensity);
 	//	break;
-	//case Utility::Timing::DAY:
+	//case Utility::timing::DAY:
 	//	m_directionalLight->SetColor(m_sunDaytimeColor);
 	//	break;
-	//case Utility::Timing::SUNSET:
+	//case Utility::timing::SUNSET:
 	//	m_directionalLight->SetColor(m_sunNearHorizonColor.Lerp(m_sunDaytimeColor, daytimeTransitionFactor));
 	//	m_directionalLight->SetIntensity(m_maxIntensity);
 	//	break;
-	//case Utility::Timing::AFTER_DUSK:
+	//case Utility::timing::AFTER_DUSK:
 	//	m_directionalLight->SetColor(m_sunNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor));
 	//	m_directionalLight->SetIntensity(daytimeTransitionFactor * m_maxIntensity);
 	//	break;
@@ -118,7 +118,7 @@ void Engine::DirectionalLightComponent::Update(Math::Real delta)
 }
 #endif
 
-void Engine::DirectionalLightComponent::CalculateSunElevationAndAzimuth()
+void engine::DirectionalLightComponent::CalculateSunElevationAndAzimuth()
 {
 	//const int timeGMTdifference = 1;
 
@@ -136,7 +136,7 @@ void Engine::DirectionalLightComponent::CalculateSunElevationAndAzimuth()
 	////DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
 	////DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
-	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::Timing::DateTime::SECONDS_PER_HOUR) / Utility::Timing::DateTime::SECONDS_PER_HOUR);
+	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
 	////DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
 	//const Math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
@@ -145,7 +145,7 @@ void Engine::DirectionalLightComponent::CalculateSunElevationAndAzimuth()
 
 	//const Math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	//m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
-	//bool isAfternoon = (localSolarTime > 12.0f * Utility::Timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
+	//bool isAfternoon = (localSolarTime > 12.0f * Utility::timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
 	//if (isAfternoon)
 	//{
 	//	m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());

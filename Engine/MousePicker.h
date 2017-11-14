@@ -6,7 +6,7 @@
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// The mouse picker class. It casts a ray from the camera's position in the specified direction.

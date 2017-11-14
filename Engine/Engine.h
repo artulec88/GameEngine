@@ -45,7 +45,7 @@
 #define CHECK_CONDITION_RETURN_ENGINE(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN(expr, returnValue, "Engine", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_RETURN_ALWAYS_ENGINE(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, "Engine", logLevel, ##__VA_ARGS__)
 
-namespace Engine
+namespace engine
 {
 
 } /* end namespace Engine */

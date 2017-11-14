@@ -2,11 +2,11 @@
 #include "IAudioContext.h"
 
 
-Audio::IAudioContext::IAudioContext()
+audio::IAudioContext::IAudioContext()
 {
 }
 
 
-Audio::IAudioContext::~IAudioContext()
+audio::IAudioContext::~IAudioContext()
 {
 }

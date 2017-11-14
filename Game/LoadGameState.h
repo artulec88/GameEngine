@@ -22,14 +22,14 @@ namespace Game
 	class Rendering::Shader;
 
 	/* TODO: Consider inheriting from Rendering::IUpdateable class */
-	class LoadGameState : public Engine::GameState, public virtual Engine::IUpdateable
+	class LoadGameState : public engine::GameState, public virtual engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LoadGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
+		LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
 		virtual ~LoadGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -39,9 +39,9 @@ namespace Game
 		virtual void Leaving();
 		virtual void Obscuring();
 		virtual void Revealed();
-		virtual void Handle(Engine::Actions::Action action);
-		virtual void Handle(Engine::States::State state);
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Actions::Action action);
+		virtual void Handle(engine::States::State state);
+		virtual void Handle(engine::Ranges::Range range, Math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 
@@ -50,7 +50,7 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
+		engine::GameManager* m_gameManager;
 		Math::Real m_loadingProgress;
 		std::thread* m_loadingThread;
 #ifdef PROFILING_GAME_MODULE_ENABLED

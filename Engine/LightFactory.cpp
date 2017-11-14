@@ -3,7 +3,7 @@
 
 #include "Utility\BuilderDirector.h"
 
-Engine::LightFactory::LightFactory() :
+engine::LightFactory::LightFactory() :
 	m_directionalLights(),
 	m_pointLights(),
 	m_spotLights()
@@ -11,11 +11,11 @@ Engine::LightFactory::LightFactory() :
 }
 
 
-Engine::LightFactory::~LightFactory()
+engine::LightFactory::~LightFactory()
 {
 }
 
-const Rendering::Lighting::BaseLight* Engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightID)
+const Rendering::Lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightID)
 {
 	switch (lightType)
 	{
@@ -31,7 +31,7 @@ const Rendering::Lighting::BaseLight* Engine::LightFactory::CreateLight(LightTyp
 	return NULL;
 }
 
-const Rendering::Lighting::DirectionalLight* Engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const Rendering::Lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	// TODO: This code needs to be fixed.
 
@@ -48,12 +48,12 @@ const Rendering::Lighting::DirectionalLight* Engine::LightFactory::AddDirectiona
 	return NULL;
 }
 
-const Rendering::Lighting::PointLight* Engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const Rendering::Lighting::PointLight* engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	return NULL;
 }
 
-const Rendering::Lighting::SpotLight* Engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const Rendering::Lighting::SpotLight* engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	return NULL;
 }

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace Utility
+namespace utility
 {
 
 	/// <summary>
@@ -32,12 +32,29 @@ namespace Utility
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> File manager constructor. </summary>
 		UTILITY_API FileManager();
+
+		/// <summary> File manager destructor. </summary>
 		UTILITY_API ~FileManager();
+
+		/// <summary> File manager copy constructor. </summary>
+		/// <param name="fileManager"> The file manager to copy construct from. </param>
 		FileManager(const FileManager& fileManager) = delete;
-		FileManager(FileManager&& fileManager) = delete;
+
+		/// <summary> File manager move constructor. </summary>
+		/// <param name="fileManager"> The file manager to move construct from. </param>
+		FileManager(FileManager&& fileManager) noexcept = delete;
+
+		/// <summary> File manager copy assignment operator. </summary>
+		/// <param name="fileManager"> The file manager to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned file manager. </returns>
 		FileManager& operator=(const FileManager& fileManager) = delete;
-		FileManager& operator=(FileManager&& fileManager) = delete;
+
+		/// <summary> File manager move assignment operator. </summary>
+		/// <param name="fileManager"> The file manager to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned file manager. </returns>
+		FileManager& operator=(FileManager&& fileManager) noexcept = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -61,6 +78,6 @@ namespace Utility
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FileManager */
 
-} /* end namespace Utility */
+} /* end namespace utility */
 
 #endif /* __UTILITY_FILE_MANAGER_H__ */

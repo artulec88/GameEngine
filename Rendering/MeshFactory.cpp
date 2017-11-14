@@ -47,7 +47,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	CHECK_CONDITION_RENDERING(!meshFileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
 #ifdef MEASURE_MESH_TIME_ENABLED
-	Utility::Timing::Timer timer;
+	Utility::timing::Timer timer;
 	timer.Start();
 #endif
 	INFO_LOG_RENDERING("Loading model from file \"", meshFileName, "\"");
@@ -108,7 +108,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Logging::WARNING, "The face has ", face.mNumIndices, " indices when only triangle faces are supported.");
+		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, utility::logging::WARNING, "The face has ", face.mNumIndices, " indices when only triangle faces are supported.");
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);

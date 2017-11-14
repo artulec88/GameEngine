@@ -4,7 +4,7 @@
 #include <string>
 #include "Time.h"
 	
-Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = nullptr */) :
+utility::logging::LoggerWindows::LoggerWindows(const char* fileName /* = nullptr */) :
 	ILogger(fileName),
 	m_indentDepth(0),
 	m_dateTimeFormat("%H:%M:%S"),
@@ -15,11 +15,11 @@ Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = nullptr
 	ReadConsoleColorsFromConfigFile(); // TODO: Beware of calling the virtual function in the constructor.
 }
 
-Utility::Logging::LoggerWindows::~LoggerWindows()
+utility::logging::LoggerWindows::~LoggerWindows()
 {
 }
 
-void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
+void utility::logging::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
@@ -40,18 +40,18 @@ void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = Empt
 	SetLevel(defaultLogLevel);
 }
 
-void Utility::Logging::LoggerWindows::ResetConsoleColor() const
+void utility::logging::LoggerWindows::ResetConsoleColor() const
 {
 	SetConsoleTextAttribute(m_console, 15); // set color back to normal
 }
 
-void Utility::Logging::LoggerWindows::ReadConsoleColorsFromConfigFile()
+void utility::logging::LoggerWindows::ReadConsoleColorsFromConfigFile()
 {
 	// TODO: Not yet implemented
 	// TODO: Store console colors for each logging level from configuration file
 }
 
-void Utility::Logging::LoggerWindows::SetConsoleColor(LogLevel level) const
+void utility::logging::LoggerWindows::SetConsoleColor(LogLevel level) const
 {
 	switch (level)
 	{

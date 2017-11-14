@@ -28,7 +28,7 @@
 namespace Game
 {
 
-	class PlayGameState : public Engine::GameState, public Engine::Input::IInputableMouse, public Engine::IUpdateable
+	class PlayGameState : public engine::GameState, public engine::Input::IInputableMouse, public engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
@@ -37,7 +37,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
+		PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
 		virtual ~PlayGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -47,9 +47,9 @@ namespace Game
 		virtual void Leaving();
 		virtual void Obscuring();
 		virtual void Revealed();
-		virtual void Handle(Engine::Actions::Action action);
-		virtual void Handle(Engine::States::State state);
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Actions::Action action);
+		virtual void Handle(engine::States::State state);
+		virtual void Handle(engine::Ranges::Range range, Math::Real value);
 
 		virtual void MouseButtonEvent(int button, int action, int mods);
 		virtual void MousePosEvent(double xPos, double yPos);
@@ -117,27 +117,27 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameNode m_rootGameNode;
-		Engine::GameNode m_terrainNode;
+		engine::GameNode m_rootGameNode;
+		engine::GameNode m_terrainNode;
 		Rendering::Terrain* m_terrain;
 		Rendering::Material* m_terrainMaterial;
 
-		Engine::GameNode m_waterNode;
-		Engine::GameNode m_skyboxNode;
-		Engine::GameNode m_playerNode;
-		std::vector<Engine::GameNode> m_nodes;
-		std::vector<Engine::GameNode> m_billboardsNodes;
+		engine::GameNode m_waterNode;
+		engine::GameNode m_skyboxNode;
+		engine::GameNode m_playerNode;
+		std::vector<engine::GameNode> m_nodes;
+		std::vector<engine::GameNode> m_billboardsNodes;
 		
 		std::vector<Rendering::BaseCamera*> m_cameras;
 		unsigned int m_currentCameraIndex;
 		//std::vector<Engine::GameNode> m_cameraNodes;
-		Engine::GameNode m_camerasNode;
+		engine::GameNode m_camerasNode;
 
 		bool m_isMouseLocked;
-		Engine::GameManager* m_gameManager;
-		Engine::MousePicker m_mousePicker;
+		engine::GameManager* m_gameManager;
+		engine::MousePicker m_mousePicker;
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_clockSpeed;
-		Utility::Timing::DateTime m_inGameDateTime;
+		utility::timing::DateTime m_inGameDateTime;
 #ifdef DRAW_GAME_TIME
 		mutable Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
 #endif

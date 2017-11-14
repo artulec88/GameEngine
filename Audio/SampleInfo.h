@@ -3,7 +3,7 @@
 
 #include "Audio.h"
 
-namespace Audio
+namespace audio
 {
 	/// <summary>
 	/// Holds various properties of the audio, e.g. volume, pitch, loop, panning. They tell how we play the audio data.

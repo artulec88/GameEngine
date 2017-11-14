@@ -1,16 +1,16 @@
-#ifndef __UTILITY_CONTAINER_ARRAY_H__
-#define __UTILITY_CONTAINER_ARRAY_H__
+#ifndef UTILITY_CONTAINER_ARRAY_H
+#define UTILITY_CONTAINER_ARRAY_H
 
 #include "Utility.h"
 
-namespace Utility {
-	namespace Container {
+namespace utility {
+	namespace container {
 
 		/// <summary>
 		/// The array template class encapsulates contiguous storage of objects.
 		/// The template parameter class need only implement the default constructor, the copy constructor, and the copy assignment operator.
 		/// </summary>
-		template <class T, unsigned int SIZE>
+		template <class T, unsigned int Size>
 		class Array
 		{
 			/* ==================== Constructors and destructors begin ==================== */
@@ -53,8 +53,8 @@ namespace Utility {
 			}
 			T* GetData() { return m_data.data(); }
 			const T* GetData() const { return m_data.data(); }
-			T& operator[](unsigned int i);
-			const T& operator[](unsigned int i) const;
+			T& operator[](const unsigned int i);
+			const T& operator[](const unsigned int i) const;
 
 			/// <summary>
 			/// The method allows to insert a new element at any index larger than Q (where Q is the size of the array).
@@ -66,7 +66,7 @@ namespace Utility {
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			std::array<T, SIZE> m_data;
+			std::array<T, Size> m_data;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Array */
 
@@ -74,4 +74,4 @@ namespace Utility {
 
 } /* end namespace Utility */
 
-#endif /* __UTILITY_CONTAINER_ARRAY_H__ */
+#endif /* UTILITY_CONTAINER_ARRAY_H */

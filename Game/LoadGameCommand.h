@@ -8,7 +8,7 @@ namespace Game
 	/// <summary>
 	/// The game command responsible for loading the previously saved game.
 	/// </summary>
-	class LoadGameCommand : public Engine::GameCommand
+	class LoadGameCommand : public engine::GameCommand
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -21,7 +21,7 @@ namespace Game
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Execute(Engine::GameManager* gameManager) const;
+		virtual void Execute(engine::GameManager* gameManager) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

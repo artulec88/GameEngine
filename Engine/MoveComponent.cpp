@@ -3,7 +3,7 @@
 #include "Math\Transform.h"
 #include "Math\Quaternion.h"
 
-Engine::MoveComponent::MoveComponent(Physics::PhysicsObject* physicsObject, Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
+engine::MoveComponent::MoveComponent(Physics::PhysicsObject* physicsObject, Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
 	GameComponent(),
 	m_physicsObject(physicsObject),
 	m_movementSpeed(movementSpeed),
@@ -20,11 +20,11 @@ Engine::MoveComponent::MoveComponent(Physics::PhysicsObject* physicsObject, Math
 }
 
 
-Engine::MoveComponent::~MoveComponent()
+engine::MoveComponent::~MoveComponent()
 {
 }
 
-void Engine::MoveComponent::Update(Math::Real deltaTime)
+void engine::MoveComponent::Update(Math::Real deltaTime)
 {
 	Math::Transform& transform = GetTransform();
 	transform.SetRot(transform.GetRot() * Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
@@ -51,15 +51,15 @@ void Engine::MoveComponent::Update(Math::Real deltaTime)
 	//m_currentStrafeSpeed = REAL_ZERO;
 }
 
-void Engine::MoveComponent::MouseButtonEvent(int button, int action, int mods)
+void engine::MoveComponent::MouseButtonEvent(int button, int action, int mods)
 {
 	// TODO: Primary attack action
 }
 
-void Engine::MoveComponent::MousePosEvent(double xPos, double yPos)
+void engine::MoveComponent::MousePosEvent(double xPos, double yPos)
 {
 }
 
-void Engine::MoveComponent::ScrollEvent(double xOffset, double yOffset)
+void engine::MoveComponent::ScrollEvent(double xOffset, double yOffset)
 {
 }

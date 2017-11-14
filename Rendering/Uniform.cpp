@@ -87,7 +87,7 @@ void Rendering::Uniforms::TextureUniform::Update(const Renderer* renderer, const
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	unsigned int multitextureIndex = 0; // used only by the multitextures
 	const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 	texture->Bind(samplerSlot, multitextureIndex);
 	glUniform1i(GetLocation(), samplerSlot);
 }
@@ -117,7 +117,7 @@ void Rendering::Uniforms::CubeTextureUniform::Update(const Renderer* renderer, c
 	{
 		unsigned int multitextureIndex = 0; // used only by the multitextures
 		const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 		texture->Bind(samplerSlot, multitextureIndex);
 	}
 	glUniform1i(GetLocation(), samplerSlot);
@@ -267,9 +267,9 @@ Rendering::Uniforms::BaseLightUniform::BaseLightUniform(const std::string& name,
 	m_colorLocation(colorLocation),
 	m_intensityLocation(intensityLocation)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(colorLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(colorLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create base light uniform. The color location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(intensityLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(intensityLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create base light uniform. The intensity location is invalid.");
 }
 
@@ -284,7 +284,7 @@ Rendering::Uniforms::DirectionalLightUniform::DirectionalLightUniform(const std:
 	BaseLightUniform(name, DIRECTIONAL_LIGHT, colorLocation, intensityLocation),
 	m_directionLocation(directionLocation)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(directionLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(directionLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create directional light uniform. The direction location is invalid.");
 }
 
@@ -319,15 +319,15 @@ Rendering::Uniforms::PointLightUniform::PointLightUniform(const std::string& nam
 	m_positionLocation(positionLocation),
 	m_rangeLocation(rangeLocation)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(constantFactorLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(constantFactorLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create point light uniform. The attenuation constant factor location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(linearFactorLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(linearFactorLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create point light uniform. The attenuation linear factor location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(exponentFactorLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(exponentFactorLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create point light uniform. The attenuation exponent factor location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(positionLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(positionLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create point light uniform. The position location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(rangeLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(rangeLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create point light uniform. The range location is invalid.");
 }
 
@@ -357,9 +357,9 @@ Rendering::Uniforms::SpotLightUniform::SpotLightUniform(const std::string& name,
 	m_directionLocation(directionLocation),
 	m_cutoffLocation(cutoffLocation)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_directionLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_directionLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create spot light uniform. The direction location is invalid.");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_cutoffLocation != INVALID_LOCATION, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_cutoffLocation != INVALID_LOCATION, utility::logging::EMERGENCY,
 		"Cannot create spot light uniform. The cutoff location is invalid.");
 }
 

@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "AiComponent.h"
 
-Engine::AiComponent::AiComponent()
+engine::AiComponent::AiComponent()
 {
 }
 
 
-Engine::AiComponent::~AiComponent()
+engine::AiComponent::~AiComponent()
 {
 }
 
-void Engine::AiComponent::Update(Math::Real deltaTime)
+void engine::AiComponent::Update(Math::Real deltaTime)
 {
 }

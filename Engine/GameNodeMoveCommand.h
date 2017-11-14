@@ -5,7 +5,7 @@
 #include "GameNodeCommand.h"
 #include "Math\Math.h"
 
-namespace Engine
+namespace engine
 {
 
 	/// <summary>

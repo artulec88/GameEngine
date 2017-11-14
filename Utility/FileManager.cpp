@@ -10,16 +10,16 @@
 #endif
 //#include <dirent.h>
 
-Utility::FileManager::FileManager()
+utility::FileManager::FileManager()
 {
 }
 
 
-Utility::FileManager::~FileManager()
+utility::FileManager::~FileManager()
 {
 }
 
-std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
+std::vector<std::string> utility::FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
 {
 	DEBUG_LOG_UTILITY("Listing all files in a directory \"", directoryPath, "\" (recursive search enabled = ", isRecursiveSearchEnabled, ")");
 	std::vector<std::string> filenames;
@@ -31,12 +31,9 @@ std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std
 
 	// Find the first file in the directory
 	WIN32_FIND_DATA ffd;
-	HANDLE hFind = FindFirstFile(szDir, &ffd);
-	if (INVALID_HANDLE_VALUE == hFind)
-	{
-		ERROR_LOG_UTILITY("Cannot list files in a directory \"", directoryPath, "\". FindFirstFile() function failed.");
-		exit(EXIT_FAILURE);
-	}
+	const HANDLE hFind = FindFirstFile(szDir, &ffd);
+	CHECK_CONDITION_EXIT_ALWAYS_UTILITY(INVALID_HANDLE_VALUE != hFind, logging::ERR, "Cannot list files in a directory \"",
+		directoryPath, "\". FindFirstFile() function failed.");
 
 	// List all the files in the directory with some information about them.
 	LARGE_INTEGER fileSize;
@@ -59,11 +56,8 @@ std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std
 		}
 	} while (FindNextFile(hFind, &ffd) != 0);
 
-	DWORD dwError = GetLastError();
-	if (dwError != ERROR_NO_MORE_FILES)
-	{
-		ERROR_LOG_UTILITY("No more files.");
-	}
+	const DWORD dwError = GetLastError();
+	CHECK_CONDITION_ALWAYS_UTILITY(ERROR_NO_MORE_FILES != dwError, logging::ERR, "No more files.");
 
 	FindClose(hFind);
 #endif

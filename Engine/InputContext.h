@@ -10,7 +10,7 @@
 #include <memory>
 #include <fstream>
 
-namespace Engine
+namespace engine
 {
 	namespace Input
 	{

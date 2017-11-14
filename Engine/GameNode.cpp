@@ -8,9 +8,9 @@
 
 #include "Utility\ILogger.h"
 
-/* static */ int Engine::GameNode::gameNodeCount = 0;
+/* static */ int engine::GameNode::gameNodeCount = 0;
 
-Engine::GameNode::GameNode() :
+engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
 	m_transform(),
 	m_physicsObject(nullptr)
@@ -19,7 +19,7 @@ Engine::GameNode::GameNode() :
 }
 
 
-Engine::GameNode::~GameNode(void)
+engine::GameNode::~GameNode(void)
 {
 	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction started");
 	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=", m_ID);
@@ -68,7 +68,7 @@ Engine::GameNode::~GameNode(void)
 //{
 //}
 
-Engine::GameNode::GameNode(GameNode&& gameNode) :
+engine::GameNode::GameNode(GameNode&& gameNode) :
 	m_ID(std::move(gameNode.m_ID)),
 	m_childrenGameNodes(std::move(gameNode.m_childrenGameNodes)),
 	m_components(std::move(gameNode.m_components)),
@@ -87,7 +87,7 @@ Engine::GameNode::GameNode(GameNode&& gameNode) :
 	}
 }
 
-Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
+engine::GameNode& engine::GameNode::operator=(GameNode&& gameNode)
 {
 	m_ID = std::move(gameNode.m_ID);
 	m_childrenGameNodes = std::move(gameNode.m_childrenGameNodes);
@@ -108,27 +108,27 @@ Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
 	return *this;
 }
 
-Engine::GameNode Engine::GameNode::Clone() const
+engine::GameNode engine::GameNode::Clone() const
 {
 	GameNode cloneGameNode;
 	// TODO: Finish the implementation
 	return cloneGameNode;
 }
 
-void Engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)
+void engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)
 {
 	m_physicsObject = std::make_unique<Physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
-	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
+	engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
 }
 
-Engine::GameNode* Engine::GameNode::AddChild(GameNode* child)
+engine::GameNode* engine::GameNode::AddChild(GameNode* child)
 {
 	m_childrenGameNodes.push_back(child);
 	child->GetTransform().SetParent(&m_transform);
 	return this;
 }
 
-Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
+engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 {
 	m_components.push_back(child);
 	child->SetParent(this);
@@ -165,7 +165,7 @@ Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
 //}
 //}
 
-void Engine::GameNode::MouseButtonEvent(int button, int action, int mods)
+void engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -178,7 +178,7 @@ void Engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 	}
 }
 
-void Engine::GameNode::MousePosEvent(double xPos, double yPos)
+void engine::GameNode::MousePosEvent(double xPos, double yPos)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -191,7 +191,7 @@ void Engine::GameNode::MousePosEvent(double xPos, double yPos)
 	}
 }
 
-void Engine::GameNode::ScrollEvent(double xOffset, double yOffset)
+void engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -204,7 +204,7 @@ void Engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 	}
 }
 
-void Engine::GameNode::Update(Math::Real delta)
+void engine::GameNode::Update(Math::Real delta)
 {
 	for (std::vector<IUpdateable*>::iterator gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
 	{
@@ -217,7 +217,7 @@ void Engine::GameNode::Update(Math::Real delta)
 	}
 }
 
-void Engine::GameNode::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::GameNode::Render(int shaderID, Rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{
@@ -230,7 +230,7 @@ void Engine::GameNode::Render(int shaderID, Rendering::Renderer* renderer) const
 	}
 }
 
-std::vector<Engine::GameNode*> Engine::GameNode::GetAllDescendants() const
+std::vector<engine::GameNode*> engine::GameNode::GetAllDescendants() const
 {
 	std::vector<GameNode*> descendants;
 

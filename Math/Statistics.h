@@ -99,18 +99,18 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			void Push(const Utility::Timing::TimeSpan& elapsedTimeSpan);
+			void Push(const utility::timing::TimeSpan& elapsedTimeSpan);
 
-			Utility::Timing::TimeSpan CalculateMean() const;
+			utility::timing::TimeSpan CalculateMean() const;
 #ifdef METHOD_STATS_VARIANT_1
-			Utility::Timing::TimeSpan CalculateMedian() const;
+			Utility::timing::TimeSpan CalculateMedian() const;
 #endif
 
 			void StartProfiling(bool isMeasureTimeEnabled, bool isNestedWithinAnotherProfiledMethod);
 			void StopProfiling();
 
-			const Utility::Timing::TimeSpan& GetTotalTime() const { return m_totalTime; }
-			Utility::Timing::TimeSpan GetTotalTimeWithoutNestedStats() const;
+			const utility::timing::TimeSpan& GetTotalTime() const { return m_totalTime; }
+			utility::timing::TimeSpan GetTotalTimeWithoutNestedStats() const;
 			int GetInvocationsCount() const { return m_invocationsCount; }
 			int GetInvocationsCountWithoutNestedCalls() const { return m_invocationsCount - m_invocationsCountNestedProfiling; }
 			bool IsProfiling() const { return m_isProfiling; }
@@ -122,16 +122,16 @@ namespace Math {
 			/// <summary>
 			/// Time samples stored along with the information whether the method has been nested within another method in the same class.
 			/// </summary>
-			std::vector<std::pair<bool, Utility::Timing::TimeSpan>> m_timeSamples;
+			std::vector<std::pair<bool, Utility::timing::TimeSpan>> m_timeSamples;
 #else
-			Utility::Timing::TimeSpan m_totalTimeNestedProfiling;
+			utility::timing::TimeSpan m_totalTimeNestedProfiling;
 			int m_invocationsCountNestedProfiling;
 #endif
-			Utility::Timing::TimeSpan m_totalTime;
+			utility::timing::TimeSpan m_totalTime;
 			int m_invocationsCount;
 			bool m_isProfiling;
 			bool m_isNestedWithinAnotherProfiledMethod;
-			Utility::Timing::Timer m_timer;
+			utility::timing::Timer m_timer;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class MethodStats */
 
@@ -152,7 +152,7 @@ namespace Math {
 			//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 			//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-			MATH_API void PrintReport(const Utility::Timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const;
+			MATH_API void PrintReport(const utility::timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const;
 
 			MATH_API void StartProfiling(bool isMeasureTimeEnabled, const std::string& methodName);
 			MATH_API void StopProfiling(const std::string& methodName);
@@ -170,7 +170,7 @@ namespace Math {
 
 			MATH_API int GetTotalNumberOfSamples() const;
 		private:
-			void LogTime(const std::string& text, const Utility::Timing::TimeSpan& timeSpan) const;
+			void LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

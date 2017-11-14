@@ -45,14 +45,14 @@ TransformTestCompare::~TransformTestCompare()
 void TransformTestCompare::StartTest()
 {
 	bool compareResult = (m_transform == m_compareTransform);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, utility::logging::ERR,
 		"The transform ", m_transform, " and transform ", m_compareTransform, " equality comparison result is not as expected.");
 
 	bool diffResult = (m_transform != m_compareTransform);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(diffResult == !m_expectedCompareResult, Utility::Logging::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(diffResult == !m_expectedCompareResult, utility::logging::ERR,
 		"The transform ", m_transform, " and transform ", m_compareTransform, " inequality comparison result is not as expected.");
 
-	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult != diffResult, Utility::Logging::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult != diffResult, utility::logging::ERR,
 		"The transform ", m_transform, " and transform ", m_compareTransform, " equality and inequality comparisons results are the same.");
 }
 
@@ -78,11 +78,11 @@ TransformTestParent::~TransformTestParent()
 void TransformTestParent::StartTest()
 {
 	Math::Vector3D childPos = m_childTransform.GetTransformedPos();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(childPos == m_expectedChildFinalTransform.GetPos(), Utility::Logging::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(childPos == m_expectedChildFinalTransform.GetPos(), utility::logging::ERR,
 		"The transformed position of the child transform equals: ", childPos, " while it was expected to equal: ", m_expectedChildFinalTransform.GetPos());
 
 	Math::Quaternion childRot = m_childTransform.GetTransformedRot();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(childRot == m_expectedChildFinalTransform.GetRot(), Utility::Logging::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(childRot == m_expectedChildFinalTransform.GetRot(), utility::logging::ERR,
 		"The transformed rotation of the child transform equals: ", childRot, " while it was expected to equal: ", m_expectedChildFinalTransform.GetRot());
 
 	// TODO: GetTransformedScale

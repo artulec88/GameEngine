@@ -252,7 +252,7 @@ namespace Rendering
 		inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 		{
 			std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), Utility::Logging::ERR, "Sampler name \"", samplerName, "\" has not been found in the sampler map.");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), utility::logging::ERR, "Sampler name \"", samplerName, "\" has not been found in the sampler map.");
 			return samplerItr->second;
 		}
 

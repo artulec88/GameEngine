@@ -2,7 +2,7 @@
 #include "BillboardRendererComponent.h"
 #include "Rendering\Shader.h"
 
-Engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMeshID, Rendering::Material* billboardMaterial) :
+engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMeshID, Rendering::Material* billboardMaterial) :
 	GameComponent(),
 	IRenderable(),
 	m_billboardMeshID(billboardMeshID),
@@ -11,12 +11,12 @@ Engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMe
 }
 
 
-Engine::BillboardsRendererComponent::~BillboardsRendererComponent()
+engine::BillboardsRendererComponent::~BillboardsRendererComponent()
 {
 	SAFE_DELETE(m_billboardMaterial);
 }
 
-Engine::BillboardsRendererComponent::BillboardsRendererComponent(BillboardsRendererComponent&& billboardsRendererComponent) :
+engine::BillboardsRendererComponent::BillboardsRendererComponent(BillboardsRendererComponent&& billboardsRendererComponent) :
 	GameComponent(std::move(billboardsRendererComponent)),
 	IRenderable(std::move(billboardsRendererComponent)),
 	m_billboardMeshID(std::move(billboardsRendererComponent.m_billboardMeshID)),
@@ -25,7 +25,7 @@ Engine::BillboardsRendererComponent::BillboardsRendererComponent(BillboardsRende
 	billboardsRendererComponent.m_billboardMaterial = NULL;
 }
 
-Engine::BillboardsRendererComponent& Engine::BillboardsRendererComponent::operator=(BillboardsRendererComponent&& billboardsRendererComponent)
+engine::BillboardsRendererComponent& engine::BillboardsRendererComponent::operator=(BillboardsRendererComponent&& billboardsRendererComponent)
 {
 	GameComponent::operator=(std::move(billboardsRendererComponent));
 	m_billboardMeshID = std::move(billboardsRendererComponent.m_billboardMeshID);
@@ -34,7 +34,7 @@ Engine::BillboardsRendererComponent& Engine::BillboardsRendererComponent::operat
 	return *this;
 }
 
-void Engine::BillboardsRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::BillboardsRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering billboards started");
 	//shader->Bind();

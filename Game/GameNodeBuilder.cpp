@@ -8,8 +8,8 @@
 #include "Utility\IConfig.h"
 
 /* ==================== GameNodeBuilder implementation begin ==================== */
-Game::GameNodeBuilder::GameNodeBuilder(Engine::GameManager* gameManager) :
-	Utility::Builder<Engine::GameNode>(),
+Game::GameNodeBuilder::GameNodeBuilder(engine::GameManager* gameManager) :
+	utility::Builder<engine::GameNode>(),
 	m_gameManager(gameManager),
 	m_gameNode()
 {
@@ -21,10 +21,10 @@ Game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-Game::CameraNodeBuilder::CameraNodeBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera) :
+Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, Rendering::BaseCamera* camera) :
 	GameNodeBuilder(gameManager),
-	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<Engine::CameraBehaviorTypes::CameraBehaviorType>(
-		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(Engine::CameraBehaviorTypes::STATIC)))),
+	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
+		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(engine::camera_behavior_types::STATIC)))),
 	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f)),
 	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
 	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f)),
@@ -57,22 +57,22 @@ void Game::CameraNodeBuilder::BuildTransform()
 	//	m_rotations[i] = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 
 	//	// Setting camera type
-	//	Engine::CameraBehaviorTypes::CameraBehaviorType cameraBehaviorType = ConvertToCameraBehaviorType(GET_CONFIG_VALUE_STR_GAME("cameraType" + indexStr, "Static"));
+	//	Engine::camera_behavior_types::CameraBehaviorType cameraBehaviorType = ConvertToCameraBehaviorType(GET_CONFIG_VALUE_STR_GAME("cameraType" + indexStr, "Static"));
 	//	switch (cameraBehaviorType)
 	//	{
-	//	case Engine::CameraBehaviorTypes::STATIC:
+	//	case engine::camera_behavior_types::STATIC:
 	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior();
 	//		break;
-	//	case Engine::CameraBehaviorTypes::ROTATION_ONLY:
+	//	case engine::camera_behavior_types::ROTATION_ONLY:
 	//		m_cameraBehaviors[i] = new Engine::RotationCameraBehavior();
 	//		break;
-	//	case Engine::CameraBehaviorTypes::MOVEMENT_ONLY:
+	//	case engine::camera_behavior_types::MOVEMENT_ONLY:
 	//		m_cameraBehaviors[i] = new Engine::MovementCameraBehavior();
 	//		break;
-	//	case Engine::CameraBehaviorTypes::FOLLOW_ENTITY:
+	//	case engine::camera_behavior_types::FOLLOW_ENTITY:
 	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
 	//		break;
-	//	case Engine::CameraBehaviorTypes::FOLLOW_ENTITY_WITH_ROTATION:
+	//	case engine::camera_behavior_types::FOLLOW_ENTITY_WITH_ROTATION:
 	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
 	//		break;
 	//	default:
@@ -118,7 +118,7 @@ void Game::CameraNodeBuilder::BuildComponents()
 /* ==================== CameraNodeBuilder implementation end ==================== */
 
 /* ==================== SkyboxBuilder implementation begin ==================== */
-Game::SkyboxBuilder::SkyboxBuilder(Engine::GameManager* gameManager) :
+Game::SkyboxBuilder::SkyboxBuilder(engine::GameManager* gameManager) :
 	GameNodeBuilder(gameManager),
 	m_gameManager(gameManager),
 	m_scale(GET_CONFIG_VALUE_GAME("skyboxScale", 5.0f))
@@ -151,8 +151,8 @@ void Game::SkyboxBuilder::BuildComponents()
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
 	m_gameManager->AddMesh(MeshIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
-	m_gameNode.AddComponent(new Engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial));
+	m_gameNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial));
 
-	m_gameNode.AddComponent(new Engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
+	m_gameNode.AddComponent(new engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
 }
 /* ==================== SkyboxBuilder implementation end ==================== */

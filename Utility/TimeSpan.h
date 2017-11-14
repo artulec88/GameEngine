@@ -6,9 +6,9 @@
 #include <sstream>
 #include <chrono>
 
-namespace Utility
+namespace utility
 {
-	namespace Timing
+	namespace timing
 	{
 
 		// TODO: Make this enum scoped.
@@ -38,7 +38,7 @@ namespace Utility
 			/// The time span default constructor.
 			/// </summary>
 			/// <param name="timeValue"> The amount of time specified in nanoseconds. Default value is <code>0</code>.</param>
-			explicit TimeSpan(long long timeValue = 0L) :
+			explicit TimeSpan(const long long timeValue = 0L) :
 				m_duration(timeValue)
 			{
 			}
@@ -48,7 +48,7 @@ namespace Utility
 			/// </summary>
 			/// <param name="timeValue"> The time span value. </param>
 			/// <param name="timeUnit"> The time unit in which the value is represented. </param>
-			TimeSpan(long long timeValue, TimeUnit timeUnit) :
+			TimeSpan(const long long timeValue, const TimeUnit timeUnit) :
 				m_duration()
 			{
 				switch (timeUnit)
@@ -76,7 +76,7 @@ namespace Utility
 					break;
 				}
 			}
-			TimeSpan(const std::chrono::nanoseconds& duration) :
+			explicit TimeSpan(const std::chrono::nanoseconds& duration) :
 				m_duration(duration)
 			{
 			}
@@ -147,11 +147,11 @@ namespace Utility
 				m_duration -= timeSpan.m_duration;
 				return *this;
 			}
-			TimeSpan operator*(long long s) const
+			TimeSpan operator*(const long long s) const
 			{
 				return TimeSpan(m_duration.count() * s);
 			}
-			TimeSpan& operator*=(long long s)
+			TimeSpan& operator*=(const long long s)
 			{
 				m_duration *= s;
 				return *this;
@@ -163,11 +163,11 @@ namespace Utility
 			/// <summary> Time span division operator. The returned time span may have rounding errors. </summary>
 			/// <param name="s"> The floating-point value representing the divisor. </param>
 			/// <returns> The time span which is a result of dividing the source time span by the floating-point value. </returns>
-			TimeSpan operator/(long long s) const
+			TimeSpan operator/(const long long s) const
 			{
 				return TimeSpan(m_duration.count() / s);
 			}
-			TimeSpan& operator/=(long long s)
+			TimeSpan& operator/=(const long long s)
 			{
 				m_duration /= s;
 				return *this;
@@ -185,7 +185,7 @@ namespace Utility
 			{
 				return m_duration < timeSpan.m_duration;
 			}
-			bool operator<(TimeUnit timeUnit) const
+			bool operator<(const TimeUnit timeUnit) const
 			{
 				switch (timeUnit)
 				{
@@ -211,7 +211,7 @@ namespace Utility
 			{
 				return m_duration > timeSpan.m_duration;
 			}
-			bool operator>(TimeUnit timeUnit) const
+			bool operator>(const TimeUnit timeUnit) const
 			{
 				switch (timeUnit)
 				{
@@ -232,7 +232,7 @@ namespace Utility
 					return true;
 				}
 			}
-			std::string ToString(TimeUnit timeUnit) const
+			std::string ToString(const TimeUnit timeUnit) const
 			{
 				std::stringstream ss("");
 				switch (timeUnit)

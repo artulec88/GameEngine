@@ -9,7 +9,7 @@
 //#include "Math\Angle.h"
 //#include "Math\Vector.h"
 
-namespace Engine
+namespace engine
 {
 
 	class SoundEffectComponent : public GameComponent

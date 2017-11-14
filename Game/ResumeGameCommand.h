@@ -7,7 +7,7 @@
 namespace Game
 {
 
-	class ResumeGameCommand : public Engine::GameCommand
+	class ResumeGameCommand : public engine::GameCommand
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -20,7 +20,7 @@ namespace Game
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Execute(Engine::GameManager* gameManager) const;
+		virtual void Execute(engine::GameManager* gameManager) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

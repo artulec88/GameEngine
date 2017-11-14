@@ -30,7 +30,7 @@ Rendering::MeshData::MeshData(GLsizei size) :
 	m_size(size)
 {
 	glGenVertexArrays(1, &m_vao);
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "VAO has not been created successfully. Its ID is still 0.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, utility::logging::CRITICAL, "VAO has not been created successfully. Its ID is still 0.");
 	DELOCUST_LOG_RENDERING("Created mesh data: ", *this);
 }
 
@@ -893,7 +893,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
 //{
 //#ifdef MEASURE_MESH_TIME_ENABLED
-//	Utility::Timing::Timer timer;
+//	Utility::timing::Timer timer;
 //	timer.Start();
 //#endif
 //#if defined HEIGHTS_KD_TREE
@@ -946,7 +946,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //
 //#ifdef MEASURE_MESH_TIME_ENABLED
 //	timer.Stop();
-//	DEBUG_LOG_RENDERING("Camera's height calculation took ", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString());
+//	DEBUG_LOG_RENDERING("Camera's height calculation took ", timer.GetTimeSpan(Utility::timing::MICROSECOND).ToString());
 //#endif
 //
 //	return y;

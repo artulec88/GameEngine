@@ -7,9 +7,9 @@
 #include <string>
 #include <Windows.h>
 
-namespace Utility
+namespace utility
 {
-	namespace Logging
+	namespace logging
 	{
 		class LoggerWindows : public ILogger
 		{

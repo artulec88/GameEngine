@@ -5,7 +5,7 @@
 #include "Rendering\SpotLight.h"
 #include "GameComponent.h"
 
-namespace Engine
+namespace engine
 {
 	class SpotLightComponent : public GameComponent
 	{

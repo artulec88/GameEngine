@@ -24,7 +24,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
-Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_rootGameNode(),
 	m_terrainNode(),
@@ -105,18 +105,18 @@ void Game::PlayGameState::Entered()
 	AddCameras();
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
-	Engine::GameNode testMesh1;
+	engine::GameNode testMesh1;
 	testMesh1.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh1PosX", 42.0f), GET_CONFIG_VALUE_GAME("testMesh1PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh1PosZ", 40.0f));
 	testMesh1.GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1.GetTransform().SetScale(0.1f);
-	testMesh1.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
+	testMesh1.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0,
 			m_gameManager->AddTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"),
 			m_gameManager->AddTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
-	Engine::GameNode testMesh2;
+	engine::GameNode testMesh2;
 	testMesh2.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh2PosX", 8.0f), GET_CONFIG_VALUE_GAME("testMesh2PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh2PosZ", 0.0f));
 	testMesh2.GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
-	testMesh2.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
+	testMesh2.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->GetTexture(TextureIDs::BRICKS), 0.0f, 0,
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
@@ -165,12 +165,12 @@ void Game::PlayGameState::Entered()
 	//	AddToSceneRoot(boulderNode);
 	//}
 
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::Logging::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
+	engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
 #endif
 
 #ifdef CALCULATE_STATS
@@ -181,7 +181,7 @@ void Game::PlayGameState::Entered()
 
 void Game::PlayGameState::Leaving()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PLAY game state is about to be removed from the game state manager");
 #ifdef CALCULATE_STATS
 	Rendering::CoreEngine::GetCoreEngine()->StopSamplingSpf();
@@ -190,13 +190,13 @@ void Game::PlayGameState::Leaving()
 
 void Game::PlayGameState::Obscuring()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PLAY game state");
 }
 
 void Game::PlayGameState::Revealed()
 {
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has become the topmost game state in the game state manager's stack");
 }
 
@@ -261,7 +261,7 @@ void Game::PlayGameState::AddWaterNodes()
 {
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	m_waterNode.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
+	m_waterNode.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
@@ -275,7 +275,7 @@ void Game::PlayGameState::AddSkyboxNode()
 	DEBUG_LOG_GAME("Creating a skybox");
 
 	SkyboxBuilder skyboxBuilder(m_gameManager);
-	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(&skyboxBuilder);
+	utility::BuilderDirector<engine::GameNode> skyboxBuilderDirector(&skyboxBuilder);
 	m_skyboxNode = skyboxBuilderDirector.Construct();
 	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING_GAME("");
@@ -290,9 +290,9 @@ void Game::PlayGameState::AddPlayerNode()
 	m_playerNode.GetTransform().SetScale(0.0005f);
 	m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
 	m_gameManager->AddMesh(MeshIDs::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
-	m_playerNode.AddComponent(new Engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	m_playerNode.AddComponent(new Engine::GravityComponent(m_terrain));
+	m_playerNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	m_playerNode.AddComponent(new engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	m_playerNode.AddComponent(new engine::GravityComponent(m_terrain));
 	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
 	//playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	//m_resourcesLoaded += 2;
@@ -332,9 +332,9 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
-	Engine::GameNode billboardsNode;
+	engine::GameNode billboardsNode;
 	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, Math::Matrix4D::SIZE * Math::Matrix4D::SIZE));
-	billboardsNode.AddComponent(new Engine::BillboardsRendererComponent(MeshIDs::BILLBOARD, billboardsMaterial));
+	billboardsNode.AddComponent(new engine::BillboardsRendererComponent(MeshIDs::BILLBOARD, billboardsMaterial));
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
 
@@ -348,7 +348,7 @@ void Game::PlayGameState::AddCameras()
 	// TODO: temporary code end.
 
 	Rendering::PerspectiveCameraBuilder cameraBuilder;
-	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(&cameraBuilder);
+	utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(&cameraBuilder);
 	int camerasCount = GET_CONFIG_VALUE_GAME("camerasCount", 3);
 	for (int i = 0; i < camerasCount; ++i)
 	{
@@ -415,7 +415,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	NOTICE_LOG_GAME("Directional lights enabled");
 
 	Rendering::DirectionalLightBuilder directionalLightBuilder;
-	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
+	utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
 	Rendering::Lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
 	++m_directionalLightsCount;
@@ -430,7 +430,7 @@ void Game::PlayGameState::AddPointLights()
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
 		Rendering::PointLightBuilder pointLightBuilder;
-		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
+		utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
 			Rendering::Lighting::PointLight pointLight = lightBuilderDirector.Construct();
@@ -452,7 +452,7 @@ void Game::PlayGameState::AddSpotLights()
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
 		Rendering::SpotLightBuilder spotLightBuilder;
-		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
+		utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
 			m_spotLights.push_back(std::move(lightBuilderDirector.Construct()));
@@ -466,36 +466,36 @@ void Game::PlayGameState::AddSpotLights()
 	}
 }
 
-void Game::PlayGameState::Handle(Engine::Actions::Action action)
+void Game::PlayGameState::Handle(engine::Actions::Action action)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Handling action: ", action);
 	switch (action)
 	{
-	case Engine::Actions::SHOW_PLAY_MENU:
-		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
+	case engine::Actions::SHOW_PLAY_MENU:
+		m_gameManager->SetTransition(new engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), engine::GameStateTransitioning::PUSH, engine::GameStateModality::EXCLUSIVE));
 		break;
-	case Engine::Actions::MOVE_CAMERA_UP:
+	case engine::Actions::MOVE_CAMERA_UP:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.15f);
 		CRITICAL_LOG_GAME("Moving up... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case Engine::Actions::MOVE_CAMERA_DOWN:
+	case engine::Actions::MOVE_CAMERA_DOWN:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.15f);
 		CRITICAL_LOG_GAME("Moving down... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case Engine::Actions::MOVE_CAMERA_LEFT:
+	case engine::Actions::MOVE_CAMERA_LEFT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.15f);
 		CRITICAL_LOG_GAME("Moving left... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case Engine::Actions::MOVE_CAMERA_RIGHT:
+	case engine::Actions::MOVE_CAMERA_RIGHT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.15f);
 		CRITICAL_LOG_GAME("Moving right... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case Engine::Actions::MOVE_CAMERA_FORWARD:
+	case engine::Actions::MOVE_CAMERA_FORWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.15f);
 		CRITICAL_LOG_GAME("Moving forward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case Engine::Actions::MOVE_CAMERA_BACKWARD:
+	case engine::Actions::MOVE_CAMERA_BACKWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.15f);
 		CRITICAL_LOG_GAME("Moving backward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
@@ -505,39 +505,39 @@ void Game::PlayGameState::Handle(Engine::Actions::Action action)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Handle(Engine::States::State state)
+void Game::PlayGameState::Handle(engine::States::State state)
 {
 	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
 	{
-	case Engine::States::MOUSE_KEY_LEFT_PRESSED:
+	case engine::States::MOUSE_KEY_LEFT_PRESSED:
 		m_isMouseLocked = true;
 		DEBUG_LOG_GAME("Mouse left key pressed");
 		break;
-	case Engine::States::MOUSE_KEY_MIDDLE_PRESSED:
+	case engine::States::MOUSE_KEY_MIDDLE_PRESSED:
 		DEBUG_LOG_GAME("Mouse middle key pressed");
 		break;
-	case Engine::States::MOUSE_KEY_RIGHT_PRESSED:
+	case engine::States::MOUSE_KEY_RIGHT_PRESSED:
 		DEBUG_LOG_GAME("Mouse right key pressed");
 		break;
-	case Engine::States::MOVE_CAMERA_UP:
+	case engine::States::MOVE_CAMERA_UP:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.01f);
 		//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
-	case Engine::States::MOVE_CAMERA_DOWN:
+	case engine::States::MOVE_CAMERA_DOWN:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.01f);
 		//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
-	case Engine::States::MOVE_CAMERA_LEFT:
+	case engine::States::MOVE_CAMERA_LEFT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.01f);
 		break;
-	case Engine::States::MOVE_CAMERA_RIGHT:
+	case engine::States::MOVE_CAMERA_RIGHT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.01f);
 		break;
-	case Engine::States::MOVE_CAMERA_FORWARD:
+	case engine::States::MOVE_CAMERA_FORWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.01f);
 		break;
-	case Engine::States::MOVE_CAMERA_BACKWARD:
+	case engine::States::MOVE_CAMERA_BACKWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.01f);
 		break;
 	default:
@@ -546,11 +546,11 @@ void Game::PlayGameState::Handle(Engine::States::State state)
 	}
 }
 
-void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+void Game::PlayGameState::Handle(engine::Ranges::Range range, Math::Real value)
 {
 	switch (range)
 	{
-	case Engine::Ranges::AXIS_X:
+	case engine::Ranges::AXIS_X:
 		m_previousMousePos.x = m_mousePos.x;
 		m_mousePos.x = value;
 		m_mousePosChanged = true;
@@ -563,7 +563,7 @@ void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 		}
 		DEBUG_LOG_GAME("Mouse pos = ", m_mousePos);
 		break;
-	case Engine::Ranges::AXIS_Y:
+	case engine::Ranges::AXIS_Y:
 		m_previousMousePos.y = m_mousePos.y;
 		m_mousePos.y = value;
 		m_mousePosChanged = true;
@@ -1005,7 +1005,7 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 	m_skyboxNode.GetTransform().SetPos(m_cameras[m_currentCameraIndex]->GetTransform().GetPos()); // TODO: Instead, skyboxNode should have a simple component that does exactly that!
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
-	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, Utility::Timing::MICROSECOND);
+	m_inGameDateTime += utility::timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, utility::timing::MICROSECOND);
 	//CRITICAL_LOG_GAME("Clock speed = ", m_clockSpeed, ". ElapsedTime = ", elapsedTime, ". In-game time: ", m_inGameDateTime.ToString());
 
 	//AdjustAmbientLightAccordingToCurrentTime();
@@ -1033,7 +1033,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 	////DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
 	////DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
-	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::Timing::DateTime::SECONDS_PER_HOUR) / Utility::Timing::DateTime::SECONDS_PER_HOUR);
+	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
 	////DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
 	//const Math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
@@ -1042,7 +1042,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 
 	//const Math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	//m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
-	//bool isAfternoon = (localSolarTime > 12.0f * Utility::Timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
+	//bool isAfternoon = (localSolarTime > 12.0f * Utility::timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
 	//if (isAfternoon)
 	//{
 	//	m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
@@ -1055,27 +1055,27 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	START_PROFILING_GAME(true, "");
 //	switch (dayTime)
 //	{
-//	case Utility::Timing::NIGHT:
+//	case Utility::timing::NIGHT:
 //		dayNightMixFactor = REAL_ZERO;
 //		m_ambientLightColor = m_ambientNighttimeColor;
 //		break;
-//	case Utility::Timing::BEFORE_DAWN:
+//	case Utility::timing::BEFORE_DAWN:
 //		dayNightMixFactor = REAL_ZERO;
 //		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
 //		break;
-//	case Utility::Timing::SUNRISE:
+//	case Utility::timing::SUNRISE:
 //		dayNightMixFactor = dayTimeTransitionFactor;
 //		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
 //		break;
-//	case Utility::Timing::DAY:
+//	case Utility::timing::DAY:
 //		dayNightMixFactor = REAL_ONE;
 //		m_ambientLightColor = m_ambientDaytimeColor;
 //		break;
-//	case Utility::Timing::SUNSET:
+//	case Utility::timing::SUNSET:
 //		dayNightMixFactor = dayTimeTransitionFactor;
 //		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
 //		break;
-//	case Utility::Timing::AFTER_DUSK:
+//	case Utility::timing::AFTER_DUSK:
 //		dayNightMixFactor = REAL_ZERO;
 //		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
 //		break;

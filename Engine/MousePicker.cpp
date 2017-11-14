@@ -3,17 +3,17 @@
 #include "CoreEngine.h"
 #include "Utility\ILogger.h"
 
-Engine::MousePicker::MousePicker() :
+engine::MousePicker::MousePicker() :
 	m_currentRay(REAL_ZERO, REAL_ZERO, REAL_ZERO)
 {
 }
 
 
-Engine::MousePicker::~MousePicker()
+engine::MousePicker::~MousePicker()
 {
 }
 
-void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix)
+void engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix)
 {
 	//WARNING_LOG_ENGINE("This function has not been tested yet. Use it with caution.");
 	//Math::Real xPosReal = 800.0f;

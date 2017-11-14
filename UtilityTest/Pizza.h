@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace UtilityTest {
+namespace utility_test {
 	class Pizza
 	{
 		/* ==================== Static variables and functions begin ==================== */

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 /* ==================== ParticleSystem class begin ==================== */
-Engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
+engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
 	//m_particles(),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
@@ -16,12 +16,12 @@ Engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* 
 }
 
 
-Engine::ParticlesSystem::~ParticlesSystem()
+engine::ParticlesSystem::~ParticlesSystem()
 {
 	SAFE_DELETE(m_particleTexture);
 }
 
-void Engine::ParticlesSystem::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
+void engine::ParticlesSystem::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
 {
 	/* ==================== Small test whether sorting particles work fine begin ==================== */
 	//std::array<Rendering::Particle, 5> testParticles;
@@ -42,7 +42,7 @@ void Engine::ParticlesSystem::SortParticles(const Math::Vector3D& originPosition
 	std::sort(m_particles.begin(), m_particles.end(), Rendering::Particles::ParticleComparator(originPosition));
 }
 
-void Engine::ParticlesSystem::Update(Math::Real deltaTime)
+void engine::ParticlesSystem::Update(Math::Real deltaTime)
 {
 	m_currentTimer += deltaTime;
 	m_aliveParticlesCount = 0;
@@ -57,7 +57,7 @@ void Engine::ParticlesSystem::Update(Math::Real deltaTime)
 /* ==================== ParticleSystem class end ==================== */
 
 /* ==================== FireParticleSystem class begin ==================== */
-Engine::FireParticlesSystem::FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+engine::FireParticlesSystem::FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
@@ -68,11 +68,11 @@ Engine::FireParticlesSystem::FireParticlesSystem(Rendering::Particles::ParticleT
 }
 
 
-Engine::FireParticlesSystem::~FireParticlesSystem()
+engine::FireParticlesSystem::~FireParticlesSystem()
 {
 }
 
-void Engine::FireParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+void engine::FireParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
@@ -83,7 +83,7 @@ void Engine::FireParticlesSystem::GenerateParticles(const Math::Vector3D& initia
 /* ==================== FreeFallParticleSystem class end ==================== */
 
 /* ==================== FreeFallParticleSystem class begin ==================== */
-Engine::FreeFallParticlesSystem::FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+engine::FreeFallParticlesSystem::FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
@@ -94,11 +94,11 @@ Engine::FreeFallParticlesSystem::FreeFallParticlesSystem(Rendering::Particles::P
 }
 
 
-Engine::FreeFallParticlesSystem::~FreeFallParticlesSystem()
+engine::FreeFallParticlesSystem::~FreeFallParticlesSystem()
 {
 }
 
-void Engine::FreeFallParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+void engine::FreeFallParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{

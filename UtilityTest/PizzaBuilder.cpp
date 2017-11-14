@@ -1,8 +1,8 @@
 #include "PizzaBuilder.h"
 
 /* ==================== PizzaBuilder implementation begin ==================== */
-UtilityTest::PizzaBuilder::PizzaBuilder() :
-	Utility::Builder<Pizza>(),
+utility_test::PizzaBuilder::PizzaBuilder() :
+	utility::Builder<Pizza>(),
 	M_DEFAULT_PIZZA_DOUGH("defaultDough"),
 	M_DEFAULT_PIZZA_SAUCE("defaultSauce"),
 	M_DEFAULT_PIZZA_TOPPING("defaultTopping"),
@@ -12,26 +12,26 @@ UtilityTest::PizzaBuilder::PizzaBuilder() :
 {
 }
 
-UtilityTest::PizzaBuilder::~PizzaBuilder()
+utility_test::PizzaBuilder::~PizzaBuilder()
 {
 }
 /* ==================== PizzaBuilder implementation end ==================== */
 
 /* ==================== HawaiianPizzaBuilder implementation begin ==================== */
-UtilityTest::HawaiianPizzaBuilder::HawaiianPizzaBuilder() :
+utility_test::HawaiianPizzaBuilder::HawaiianPizzaBuilder() :
 	PizzaBuilder()
 {
 }
 
-UtilityTest::HawaiianPizzaBuilder::~HawaiianPizzaBuilder()
+utility_test::HawaiianPizzaBuilder::~HawaiianPizzaBuilder()
 {
 }
 
-void UtilityTest::HawaiianPizzaBuilder::BuildDough()
+void utility_test::HawaiianPizzaBuilder::BuildDough()
 {
 }
 
-void UtilityTest::HawaiianPizzaBuilder::BuildSauce()
+void utility_test::HawaiianPizzaBuilder::BuildSauce()
 {
 	if (!m_ingredients.empty())
 	{
@@ -47,26 +47,26 @@ void UtilityTest::HawaiianPizzaBuilder::BuildSauce()
 	}
 }
 
-void UtilityTest::HawaiianPizzaBuilder::BuildTopping()
+void utility_test::HawaiianPizzaBuilder::BuildTopping()
 {
 }
 /* ==================== HawaiianPizzaBuilder implementation end ==================== */
 
 /* ==================== SpicyPizzaBuilder implementation begin ==================== */
-UtilityTest::SpicyPizzaBuilder::SpicyPizzaBuilder() :
+utility_test::SpicyPizzaBuilder::SpicyPizzaBuilder() :
 	PizzaBuilder()
 {
 }
 
-UtilityTest::SpicyPizzaBuilder::~SpicyPizzaBuilder()
+utility_test::SpicyPizzaBuilder::~SpicyPizzaBuilder()
 {
 }
 
-void UtilityTest::SpicyPizzaBuilder::BuildDough()
+void utility_test::SpicyPizzaBuilder::BuildDough()
 {
 }
 
-void UtilityTest::SpicyPizzaBuilder::BuildSauce()
+void utility_test::SpicyPizzaBuilder::BuildSauce()
 {
 	if (!m_ingredients.empty())
 	{
@@ -82,7 +82,7 @@ void UtilityTest::SpicyPizzaBuilder::BuildSauce()
 	}
 }
 
-void UtilityTest::SpicyPizzaBuilder::BuildTopping()
+void utility_test::SpicyPizzaBuilder::BuildTopping()
 {
 }
 /* ==================== SpicyPizzaBuilder implementation end ==================== */

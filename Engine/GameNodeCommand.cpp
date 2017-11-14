@@ -3,11 +3,11 @@
 #include "GameNode.h"
 #include "Utility\ILogger.h"
 
-Engine::GameNodeCommand::GameNodeCommand()
+engine::GameNodeCommand::GameNodeCommand()
 {
 }
 
 
-Engine::GameNodeCommand::~GameNodeCommand()
+engine::GameNodeCommand::~GameNodeCommand()
 {
 }

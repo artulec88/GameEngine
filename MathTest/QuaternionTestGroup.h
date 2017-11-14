@@ -123,7 +123,7 @@ namespace math_test
 		{
 			Math::Quaternion multiplyQuaternion = m_quaternion * m_val;
 			// TODO: what if m_val is a Math::Real? It doesn't have ToString() method
-			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyQuaternion == m_expectedMultiplyQuaternion, Utility::Logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyQuaternion == m_expectedMultiplyQuaternion, utility::logging::ERR,
 				"The multiplication of quaternion ", m_quaternion, " and ", m_val, " is a quaternion ", multiplyQuaternion,
 				". It is different than expected ", m_expectedMultiplyQuaternion);
 		}

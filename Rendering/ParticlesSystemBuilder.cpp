@@ -12,7 +12,7 @@
 #include "Utility\IConfig.h"
 
 Rendering::Particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
-	Utility::Builder<ParticlesSystem>(),
+	utility::Builder<ParticlesSystem>(),
 	M_DEFAULT_MAX_PARTICLES_COUNT(GET_CONFIG_VALUE_RENDERING("defaultMaxParticlesCount", 10000)),
 	M_DEFAULT_ATTRIBUTES_MASK(GET_CONFIG_VALUE_RENDERING("defaultParticlesAttributesMask",
 		static_cast<int>(Attributes::POSITION | Attributes::LIFE_SPAN | Attributes::COLOR | Attributes::SCALE))),
@@ -268,7 +268,7 @@ void Rendering::Particles::ParticlesSystemBuilder::AddAccelerationGenerator(Part
 
 void Rendering::Particles::ParticlesSystemBuilder::AddGravityEffectFactorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR), utility::logging::DEBUG,
 		"The gravity effect factor attribute is disabled for the current particles system");
 
 	// TODO: Implement this function
@@ -346,30 +346,30 @@ void Rendering::Particles::ParticlesSystemBuilder::AddScaleGenerator(ParticlesEm
 
 void Rendering::Particles::ParticlesSystemBuilder::AddTextureOffsetGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET), utility::logging::DEBUG,
 		"The texture offset attribute is disabled for the current particles system");
 }
 
 void Rendering::Particles::ParticlesSystemBuilder::AddColorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::COLOR), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::COLOR), utility::logging::DEBUG,
 		"The color attribute is disabled for the current particles system");
 }
 
 void Rendering::Particles::ParticlesSystemBuilder::AddMassGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::MASS), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::MASS), utility::logging::DEBUG,
 		"The mass attribute is disabled for the current particles system");
 }
 
 void Rendering::Particles::ParticlesSystemBuilder::AddAliveGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ALIVE), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ALIVE), utility::logging::DEBUG,
 		"The alive attribute is disabled for the current particles system");
 }
 
 void Rendering::Particles::ParticlesSystemBuilder::AddIdGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ID), Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ID), utility::logging::DEBUG,
 		"The ID attribute is disabled for the current particles system");
 }

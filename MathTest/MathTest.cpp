@@ -30,7 +30,7 @@
 //#include <fstream>
 
 using namespace Math;
-using namespace Utility;
+using namespace utility;
 using namespace std;
 
 unsigned int innerLoops = 10000;
@@ -72,13 +72,13 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	}
 }
 
-void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const std::string& reportStr, timing::Timer& timer, timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
 {
 	//CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
 	double elapsedTime = static_cast<double>(timer.GetDuration(timeUnit));
 	elapsedTime /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
-	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime, " ", Timing::DateTime::ConvertTimeUnitToString(timeUnit));
+	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime, " ", timing::DateTime::ConvertTimeUnitToString(timeUnit));
 }
 
 void AngleTest()
@@ -326,7 +326,7 @@ void QuaternionTest()
 	INFO_LOG_MATH_TEST("Profiling quaternion to rotation matrix conversion functions begin");
 	Quaternion q = RandomQuaternion();
 	const int QUATERNION_TO_ROTATION_MATRIX_ITERATIONS = 5000000;
-	Timing::Timer timer;
+	timing::Timer timer;
 	timer.Start();
 	for (int i = 0; i < QUATERNION_TO_ROTATION_MATRIX_ITERATIONS; ++i)
 	{
@@ -334,7 +334,7 @@ void QuaternionTest()
 		q.ToRotationMatrix();
 	}
 	timer.Stop();
-	TimeReport("Average time for quaternion to rotation matrix conversion", timer, Timing::MICROSECOND, QUATERNION_TO_ROTATION_MATRIX_ITERATIONS);
+	TimeReport("Average time for quaternion to rotation matrix conversion", timer, timing::MICROSECOND, QUATERNION_TO_ROTATION_MATRIX_ITERATIONS);
 	DEBUG_LOG_MATH_TEST("Profiling quaternion to rotation matrix conversion functions end.");
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- end ==================== */
 
@@ -349,7 +349,7 @@ void QuaternionTest()
 		q1.Nlerp(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
 	}
 	timer.Stop();
-	TimeReport("Average time for quaternion linear interpolation function", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
+	TimeReport("Average time for quaternion linear interpolation function", timer, timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
 
 	DEBUG_LOG_MATH_TEST("Profiling quaternion linear interpolation functions end.");
 	/* ==================== QUATERNION TEST #3- calculating linear interpolation- end ==================== */
@@ -431,14 +431,14 @@ void NewMatrixTest()
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
 	constexpr int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
-	Timing::Timer timer;
+	timing::Timer timer;
 	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
 		auto m = Math::Matrix<int, 33, 44, MatrixOrderings::ROW_MAJOR>::IDENTITY;
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrix creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	TimeReport("Average time for identity matrix creation:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
 	/* ==================== MATRIX TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #2 begin ==================== */
@@ -450,7 +450,7 @@ void NewMatrixTest()
 		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for identity matrices multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #2 end ==================== */
 }
 
@@ -533,14 +533,14 @@ void MatrixTest()
 	Matrix4D testMatrix1(Matrix4D::IDENTITY_MATRIX);
 	TestReport(testMatrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 
-	Timing::Timer timer;
+	timing::Timer timer;
 	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
 		Matrix4D testMatrix2(Matrix4D::IDENTITY_MATRIX);
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrix creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	TimeReport("Average time for identity matrix creation:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
 	/* ==================== MATRIX TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #2 begin ==================== */
@@ -552,7 +552,7 @@ void MatrixTest()
 		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for identity matrices multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #2 end ==================== */
 
 	/* ==================== MATRIX TEST #3 begin ==================== */
@@ -566,7 +566,7 @@ void MatrixTest()
 		//CHECK_CONDITION_MATH_TEST(result == mat1 * mat2, Utility::ERR, "Random matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
-	TimeReport("Average time for random matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for random matrices multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #3 end ==================== */
 
 	/* ==================== MATRIX TEST #4 begin ==================== */
@@ -577,7 +577,7 @@ void MatrixTest()
 		Matrix4D result(RandomAngle(), RandomAngle(), RandomAngle());
 	}
 	timer.Stop();
-	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
+	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, timing::NANOSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
 	/* ==================== MATRIX TEST #4 end ==================== */
 
 	constexpr int NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS = 1000000;
@@ -597,7 +597,7 @@ void MatrixTest()
 	//	cout << "array2[" << i << "] = " << array1d_2[i] << endl;
 	//	cout << "leftArray[" << i << "] = " << leftArray1d[i] << endl;
 	//}
-	TimeReport("Average time for SSE 1D matrix multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
+	TimeReport("Average time for SSE 1D matrix multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
 
 	std::array<std::array<float, 4>, 4> array2d_1{ {{{ 1.0f, 2.0f, 3.0f, 0.0f}}, {{5.0f, 6.0f, 7.0f, 0.0f}}, {{9.0f, 10.0f, 11.0f, 0.0f}}, {{13.0f, 14.0f, 15.0f, 1.0f}}} };
 	std::array<std::array<float, 4>, 4> array2d_2{ { { { -1.0f, 2.0f, -3.0f, 4.0f } },{ { -5.0f, 6.0f, -7.0f, 8.0f } },{ { -9.0f, 10.0f, -11.0f, 12.0f } },{ { -13.0f, 14.0f, -15.0f, 16.0f } } } };
@@ -618,7 +618,7 @@ void MatrixTest()
 	//		cout << "leftArray[" << i << "][" << j << "] = " << leftArray2d[i][j] << endl;
 	//	}
 	//}
-	TimeReport("Average time for SSE 2D matrix multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
+	TimeReport("Average time for SSE 2D matrix multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
 }
 
 void TransformTest()
@@ -648,7 +648,7 @@ void SortTest()
 		return;
 	}
 
-	Logging::ILogger::GetLogger(MODULE_NAME).AddStream("sortingOutput.txt");
+	logging::ILogger::GetLogger(MODULE_NAME).AddStream("sortingOutput.txt");
 	//ofstream sortingOutputFile;
 	//sortingOutputFile.open("sortingOutput.txt");
 
@@ -699,7 +699,7 @@ void SortTest()
 		bool sortingTestCasePassed = true;
 		Sorting::SortingParametersChain sortingParameters(Sorting::Keys::COMPONENT_X, Sorting::Orders::ASCENDING);
 		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::Keys::COMPONENT_Y, Sorting::Orders::DESCENDING));
-		Timing::Timer timer;
+		timing::Timer timer;
 		timer.Start();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -710,7 +710,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -747,7 +747,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -783,7 +783,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -817,7 +817,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -851,7 +851,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -889,7 +889,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -927,7 +927,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -965,7 +965,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -1003,7 +1003,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -1041,7 +1041,7 @@ void SortTest()
 			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -1183,7 +1183,7 @@ void HeightsGeneratorTests()
 	{
 		return;
 	}
-	Timing::Timer timer;
+	timing::Timer timer;
 	timer.Start();
 
 	Math::Real amplitude = 70.0f;
@@ -1395,9 +1395,9 @@ int main(int argc, char* argv[])
 	//constexpr int ACCEPTABLE_PROGRAM_ARGUMENTS_COUNT = 4;
 	//const std::array<std::string, ACCEPTABLE_PROGRAM_ARGUMENTS_COUNT> acceptableProgramArguments = { "-help", "-logUtility", "-logMath", "-log" };
 
-	Logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), Logging::INFO);
-	Logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), Logging::INFO);
-	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
+	logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), logging::INFO);
+	logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), logging::INFO);
+	logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), logging::INFO);
 	
 
 	STATS_STORAGE.StartTimer();
@@ -1423,7 +1423,7 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StopTimer();
 	STATS_STORAGE.PrintReport();
 
-	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
+	logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 
 	return 0;

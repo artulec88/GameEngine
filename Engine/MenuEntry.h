@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-namespace Engine
+namespace engine
 {
 	// TODO: See if the composite pattern could be applied here. See:
 	// https://github.com/bethrobson/Head-First-Design-Patterns/tree/master/src/headfirst/designpatterns/composite, or
@@ -122,7 +122,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ActionMenuEntry(Engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
+		ENGINE_API ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 			const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, const Math::Vector2D& scale, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry(void);
@@ -137,7 +137,7 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::Actions::Action m_actionID;
+		engine::Actions::Action m_actionID;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ActionMenuEntry */
 

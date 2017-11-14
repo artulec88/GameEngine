@@ -22,25 +22,25 @@
 
 #include <fstream>
 
-Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
+engine::GameManager* engine::GameManager::s_gameManager = NULL;
 
-/* static */ Engine::GameManager* Engine::GameManager::GetGameManager()
+/* static */ engine::GameManager* engine::GameManager::GetGameManager()
 {
 	return s_gameManager;
 }
 
-/* static */ void Engine::GameManager::LoadGame(GameManager* gameManager)
+/* static */ void engine::GameManager::LoadGame(GameManager* gameManager)
 {
 	CHECK_CONDITION_EXIT_ENGINE(gameManager != NULL, Utility::Logging::CRITICAL, "Cannot load the game. Specified game manager is NULL.");
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
-	Engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
+	engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
 	gameManager->Load();
 }
 
-Engine::GameManager::GameManager() :
+engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
-	m_gameStateManager(std::make_unique<Engine::DefaultGameStateManager>()),
+	m_gameStateManager(std::make_unique<engine::DefaultGameStateManager>()),
 	m_isGameLoaded(false),
 	m_emptyGameCommand(),
 	m_actionsToGameCommandsMap(),
@@ -48,7 +48,7 @@ Engine::GameManager::GameManager() :
 	//m_actionsToGameCommandsMap({ { Input::Actions::EMPTY, std::make_unique<EmptyGameCommand>() } }), // cannot do it this way since it requires copying the unique_ptr object
 	m_actionsToGameNodesMap()
 #ifdef ANT_TWEAK_BAR_ENABLED
-	, m_gameBar(NULL)
+	, m_gameBar(nullptr)
 #endif
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("GameManager"))
@@ -56,44 +56,44 @@ Engine::GameManager::GameManager() :
 {
 	INFO_LOG_ENGINE("Game manager construction started");
 
-	if (Engine::GameManager::s_gameManager != NULL)
+	if (engine::GameManager::s_gameManager != nullptr)
 	{
 		ERROR_LOG_ENGINE("Constructor called when a singleton instance of CoreEngine class has already been created");
-		SAFE_DELETE(Engine::GameManager::s_gameManager);
+		SAFE_DELETE(engine::GameManager::s_gameManager);
 	}
 
 	m_actionsToGameCommandsMap.insert(std::make_pair(Actions::EMPTY, &m_emptyGameCommand));
 	//m_actionsToGameCommandsMap.insert(std::make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
 
-	Engine::GameManager::s_gameManager = this;
+	engine::GameManager::s_gameManager = this;
 	DEBUG_LOG_ENGINE("Game manager construction finished");
 }
 
 
-Engine::GameManager::~GameManager(void)
+engine::GameManager::~GameManager()
 {
 	INFO_LOG_ENGINE("Game manager destruction started");
 	DEBUG_LOG_ENGINE("Game manager destruction finished");
 }
 
-void Engine::GameManager::WindowResizeEvent(int width, int height)
+void engine::GameManager::WindowResizeEvent(int width, int height)
 {
 	NOTICE_LOG_ENGINE("Window resize event (width = ", width, ", height = ", height, ")");
 	// TODO: Check if core engine finds out about the resizing of the window.
 }
 
-void Engine::GameManager::CloseWindowEvent()
+void engine::GameManager::CloseWindowEvent()
 {
 	NOTICE_LOG_ENGINE("Close window event");
 	CoreEngine::GetCoreEngine()->Stop();
 }
 
-void Engine::GameManager::MousePosEvent(double xPos, double yPos)
+void engine::GameManager::MousePosEvent(double xPos, double yPos)
 {
 	DEBUG_LOG_ENGINE("Mouse position event x=", xPos, ", y=", yPos);
 }
 
-void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
+void engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 {
 	DEBUG_LOG_ENGINE("Scroll event: xOffset=", xOffset, "\t yOffset=", yOffset);
 }
@@ -110,7 +110,7 @@ void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 //	return shader;
 //}
 
-void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& guiControl)
+void engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& guiControl)
 {
 	//FontMap::const_iterator textItr = m_texts.find(guiText.GetFont());
 	//if (textItr == m_texts.end())
@@ -122,52 +122,52 @@ void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& g
 	//m_texts[guiText.GetFont()].push_back(guiText);
 }
 
-void Engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem)
+void engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem)
 {
 	m_particlesSystems.push_back(particlesSystem);
 }
 
-const Rendering::Mesh* Engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
+const Rendering::Mesh* engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
 }
 
-const Rendering::Mesh* Engine::GameManager::GetMesh(int meshID) const
+const Rendering::Mesh* engine::GameManager::GetMesh(int meshID) const
 {
 	return CoreEngine::GetCoreEngine()->GetMesh(meshID);
 }
 
-const Rendering::Texture* Engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
+const Rendering::Texture* engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddTexture(textureID, textureFileName);
 }
 
-const Rendering::Texture* Engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+const Rendering::Texture* engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
 {
 	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureID, cubeMapTextureDirectory);
 }
 
-const Rendering::Particles::ParticleTexture* Engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+const Rendering::Particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
 {
 	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 }
 
-const Rendering::Texture* Engine::GameManager::GetTexture(int textureID) const
+const Rendering::Texture* engine::GameManager::GetTexture(int textureID) const
 {
 	return CoreEngine::GetCoreEngine()->GetTexture(textureID);
 }
 
-const Rendering::Shader* Engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
+const Rendering::Shader* engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddShader(shaderID, shaderFileName);
 }
 
-const Rendering::Shader* Engine::GameManager::GetShader(int shaderID) const
+const Rendering::Shader* engine::GameManager::GetShader(int shaderID) const
 {
 	return CoreEngine::GetCoreEngine()->GetShader(shaderID);
 }
 
-void Engine::GameManager::Input(Actions::Action actionID)
+void engine::GameManager::Input(Actions::Action actionID)
 {
 	CRITICAL_LOG_ENGINE("Handling action: ", actionID);
 	ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(actionID);
@@ -193,7 +193,7 @@ void Engine::GameManager::Input(Actions::Action actionID)
 	}
 }
 
-void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
+void engine::GameManager::Input(const engine::Input::MappedInput& input)
 {
 	for (Input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
 	{
@@ -230,27 +230,27 @@ void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
 //{
 //}
 
-void Engine::GameManager::Render(Rendering::Renderer* renderer) const
+void engine::GameManager::Render(Rendering::Renderer* renderer) const
 {
 	m_gameStateManager->Render(renderer);
 }
 
-void Engine::GameManager::SetTransition(Engine::GameStateTransitioning::GameStateTransition* gameStateTransition)
+void engine::GameManager::SetTransition(engine::GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
 	m_gameStateManager->SetTransition(gameStateTransition);
 }
 
-void Engine::GameManager::PerformStateTransition()
+void engine::GameManager::PerformStateTransition()
 {
 	m_gameStateManager->PerformStateTransition();
 }
 
-void Engine::GameManager::PopState()
+void engine::GameManager::PopState()
 {
 	m_gameStateManager->Pop();
 }
 
-void Engine::GameManager::RequestGameQuit() const
+void engine::GameManager::RequestGameQuit() const
 {
 	// TODO: Ask the user to save the game if the inGameState can be found in the game states stack
 	//glfwSetWindowShouldClose(window, GL_TRUE); // Doesn't work, because we don't have a window
@@ -258,33 +258,33 @@ void Engine::GameManager::RequestGameQuit() const
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
-const Rendering::Text::Font* Engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
+const Rendering::Text::Font* engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
 	return CoreEngine::GetCoreEngine()->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
 }
 
-const Rendering::Text::Font* Engine::GameManager::GetFont(int fontID) const
+const Rendering::Text::Font* engine::GameManager::GetFont(int fontID) const
 {
 	return CoreEngine::GetCoreEngine()->GetFont(fontID);
 }
 
-void Engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const
+void engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const
 {
 	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(soundEffectFileName);
 }
 
-void Engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const
+void engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const
 {
 	CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(soundEffectFileName, volume, pitch);
 }
 
-void Engine::GameManager::CentralizeCursor() const
+void engine::GameManager::CentralizeCursor() const
 {
 	CoreEngine::GetCoreEngine()->CentralizeCursor();
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Engine::GameManager::InitializeTweakBars()
+void engine::GameManager::InitializeTweakBars()
 {
 	m_gameBar = TwNewBar("GameBar");
 	//TwAddVarRW(m_gameBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");

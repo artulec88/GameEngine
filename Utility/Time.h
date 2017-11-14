@@ -11,7 +11,7 @@
 #define TIME_MEASUREMENT_ENABLED
 
 #ifdef TIME_MEASUREMENT_ENABLED
-#define START_TIMER(timerID) Utility::Timing::Timer timerID; do { timerID.Start(); } while(0)
+#define START_TIMER(timerID) utility::timing::Timer timerID; do { timerID.Start(); } while(0)
 #define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) timerID.Stop(); } while (0)
 #else
@@ -20,8 +20,8 @@
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
 #endif
 
-namespace Utility {
-	namespace Timing
+namespace utility {
+	namespace timing
 	{
 		// TODO: Make this enum scoped.
 		enum Daytime
@@ -99,7 +99,7 @@ namespace Utility {
 			/// <param name="second"> The second. The value must lie in range from <code>0</code> to <code>59</code>. </param>
 			/// <param name="millisecond"> The millisecond. The value must lie in range from <code>0</code> to <code>999</code>. </param>
 			UTILITY_API DateTime(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int minute, unsigned int second);
-			UTILITY_API DateTime(const std::chrono::system_clock::time_point& timePoint);
+			UTILITY_API explicit DateTime(const std::chrono::system_clock::time_point& timePoint);
 			UTILITY_API ~DateTime();
 			UTILITY_API DateTime(const DateTime& dateTime);
 			UTILITY_API DateTime(DateTime&& dateTime) noexcept;
@@ -191,7 +191,7 @@ namespace Utility {
 				return TimeSpan(std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime));
 			}
 
-			UTILITY_API inline long long GetDuration(TimeUnit timeUnit) const
+			UTILITY_API inline long long GetDuration(const TimeUnit timeUnit) const
 			{
 				switch (timeUnit)
 				{
@@ -212,7 +212,7 @@ namespace Utility {
 			UTILITY_API void Reset();
 			UTILITY_API void Stop();
 			UTILITY_API bool IsRunning() const { return m_startTime > m_stopTime; }
-			UTILITY_API std::string ToString(TimeUnit timeUnit = NANOSECOND) const
+			UTILITY_API std::string ToString(const TimeUnit timeUnit = NANOSECOND) const
 			{
 				std::stringstream ss("");
 				ss << GetDuration(timeUnit) << " " << DateTime::ConvertTimeUnitToString(timeUnit);

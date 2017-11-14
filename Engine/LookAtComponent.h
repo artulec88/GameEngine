@@ -9,7 +9,7 @@
 #include "Math\Transform.h"
 #include "Math\Vector.h"
 
-namespace Engine
+namespace engine
 {
 
 	class LookAtComponent : public GameComponent, public IUpdateable

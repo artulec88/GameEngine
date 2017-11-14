@@ -10,7 +10,7 @@
 
 #include <map>
 
-namespace Engine
+namespace engine
 {
 	namespace LightTypes
 	{

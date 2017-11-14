@@ -14,7 +14,7 @@ namespace Rendering
 	/// <summary>
 	/// The camera builder.
 	/// </summary>
-	class CameraBuilder : public Utility::Builder<Camera>
+	class CameraBuilder : public utility::Builder<Camera>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */

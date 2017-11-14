@@ -5,8 +5,8 @@
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 
-Game::LoadGameState::LoadGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
-	Engine::GameState(inputMappingContextName),
+Game::LoadGameState::LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
@@ -24,43 +24,43 @@ Game::LoadGameState::~LoadGameState(void)
 void Game::LoadGameState::Entered()
 {
 	START_PROFILING_GAME(true, "");
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG_GAME("Starting the loading thread");
 
 	// VAOs cannot be shared across multiple window contexts, that is why we don't use additional threads anymore.
 	// See http://stackoverflow.com/questions/23765371/opengl-multitreading-shared-context-and-glgenbuffers.
-	m_loadingThread = new std::thread(Engine::GameManager::LoadGame, Engine::GameManager::GetGameManager());
+	m_loadingThread = new std::thread(engine::GameManager::LoadGame, engine::GameManager::GetGameManager());
 	STOP_PROFILING_GAME("");
 }
 
 void Game::LoadGameState::Leaving()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("LOAD game state is about to be removed from the game state manager");
 }
 
 void Game::LoadGameState::Obscuring()
 {
-	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
+	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of LOAD game state");
 }
 
 void Game::LoadGameState::Revealed()
 {
-	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::LoadGameState::Handle(Engine::Actions::Action action)
+void Game::LoadGameState::Handle(engine::Actions::Action action)
 {
 }
 
-void Game::LoadGameState::Handle(Engine::States::State state)
+void Game::LoadGameState::Handle(engine::States::State state)
 {
 }
 
-void Game::LoadGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+void Game::LoadGameState::Handle(engine::Ranges::Range range, Math::Real value)
 {
 }
 
@@ -77,7 +77,7 @@ void Game::LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state updating");
-	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
+	engine::GameManager* gameManager = engine::GameManager::GetGameManager();
 	m_loadingProgress = gameManager->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
@@ -89,7 +89,7 @@ void Game::LoadGameState::Update(Math::Real elapsedTime)
 	{
 		NOTICE_LOG_GAME("The game is loaded");
 		m_loadingThread->join();
-		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+		gameManager->SetTransition(new engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), engine::GameStateTransitioning::SWITCH, engine::GameStateModality::EXCLUSIVE));
 	}
 	STOP_PROFILING_GAME("");
 }

@@ -13,7 +13,7 @@
 #include <list>
 #include <array>
 
-namespace Engine
+namespace engine
 {
 	class ParticlesSystem
 	{

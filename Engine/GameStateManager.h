@@ -18,7 +18,7 @@
 #include <vector>
 #include <stack>
 
-namespace Engine
+namespace engine
 {
 	/// <summary>
 	/// Interface for a stack-based game state manager.
@@ -169,20 +169,20 @@ namespace Engine
 		/// Handles the incoming action appropriately.
 		/// </summary>
 		/// <param name="action"> The action that must be handled by active game state. </param>
-		virtual void Handle(Engine::Actions::Action action);
+		virtual void Handle(engine::Actions::Action action);
 
 		/// <summary>
 		/// Handles the incoming state appropriately.
 		/// </summary>
 		/// <param name="state"> The state that must be handled by active game states. </param>
-		virtual void Handle(Engine::States::State state);
+		virtual void Handle(engine::States::State state);
 
 		/// <summary>
 		/// Handles the incoming range appropriately.
 		/// </summary>
 		/// <param name="range"> The range that must be handled by active game states. </param>
 		/// <param name="value"> The value associated with the specified range. </param>
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, Math::Real value);
 	private:
 		/// <summary>
 		///   Adds the specified game state to the exposed Drawables or Updateables if it

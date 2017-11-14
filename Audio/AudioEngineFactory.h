@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-namespace Audio
+namespace audio
 {
 	class IAudioEngine;
 

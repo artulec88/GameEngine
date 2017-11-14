@@ -29,7 +29,7 @@ void Test::BeforeTimeTest()
 	m_timer.Start(); // TODO: m_timer.Reset()?
 }
 
-Utility::Timing::TimeSpan Test::AfterTimeTest()
+utility::timing::TimeSpan Test::AfterTimeTest()
 {
 	m_timer.Stop();
 	return m_timer.GetTimeSpan();
@@ -118,7 +118,7 @@ void TestGroup::StartTimeTests()
 	{
 		(*testItr)->BeforeTimeTest();
 		(*testItr)->StartTimeTest(m_testTimeIterationsCount);
-		Utility::Timing::TimeSpan timeSpan = (*testItr)->AfterTimeTest();
+		utility::timing::TimeSpan timeSpan = (*testItr)->AfterTimeTest();
 		m_testTimeSpans.push_back(static_cast<Math::Real>(timeSpan.GetValue()) / m_testTimeIterationsCount);
 	}
 	for (std::vector<TestGroup*>::iterator testGroupItr = m_testGroups.begin(); testGroupItr != m_testGroups.end(); ++testGroupItr)

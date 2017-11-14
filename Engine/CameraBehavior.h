@@ -5,9 +5,9 @@
 #include "ActionConstants.h"
 #include "Rendering\BaseCamera.h"
 
-namespace Engine
+namespace engine
 {
-	namespace CameraBehaviorTypes
+	namespace camera_behavior_types
 	{
 		enum CameraBehaviorType
 		{
@@ -17,7 +17,7 @@ namespace Engine
 			FOLLOW_ENTITY,
 			FOLLOW_ENTITY_WITH_ROTATION
 		}; /* end enum CameraBehaviorType */
-	} /* end namespace CameraBehaviorTypes */
+	} /* end namespace camera_behavior_types */
 
 	class CameraBehavior
 	{
@@ -27,7 +27,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API CameraBehavior();
-		ENGINE_API virtual ~CameraBehavior(void);
+		ENGINE_API virtual ~CameraBehavior();
 		CameraBehavior(const CameraBehavior& cameraBehavior) = delete;
 		CameraBehavior(CameraBehavior&& cameraBehavior) = default;
 		CameraBehavior& operator=(const CameraBehavior& cameraBehavior) = delete;
@@ -54,7 +54,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API StaticCameraBehavior();
-		ENGINE_API virtual ~StaticCameraBehavior(void);
+		ENGINE_API virtual ~StaticCameraBehavior();
 		StaticCameraBehavior(const StaticCameraBehavior& staticCameraBehavior) = delete;
 		StaticCameraBehavior(StaticCameraBehavior&& staticCameraBehavior) = default;
 		StaticCameraBehavior& operator=(const StaticCameraBehavior& staticCameraBehavior) = delete;
@@ -81,7 +81,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API RotationCameraBehavior();
-		ENGINE_API virtual ~RotationCameraBehavior(void);
+		ENGINE_API virtual ~RotationCameraBehavior();
 		RotationCameraBehavior(const RotationCameraBehavior& rotationCameraBehavior) = delete;
 		RotationCameraBehavior(RotationCameraBehavior&& rotationCameraBehavior) = default;
 		RotationCameraBehavior& operator=(const RotationCameraBehavior& rotationCameraBehavior) = delete;
@@ -108,7 +108,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API MovementCameraBehavior();
-		ENGINE_API virtual ~MovementCameraBehavior(void);
+		ENGINE_API virtual ~MovementCameraBehavior();
 		MovementCameraBehavior(const MovementCameraBehavior& movementCameraBehavior) = delete;
 		MovementCameraBehavior(MovementCameraBehavior&& movementCameraBehavior) = default;
 		MovementCameraBehavior& operator=(const MovementCameraBehavior& movementCameraBehavior) = delete;
@@ -126,6 +126,6 @@ namespace Engine
 	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MovementCameraBehavior */
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_CAMERA_BEHAVIOR_H__ */

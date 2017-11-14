@@ -5,7 +5,7 @@
 #include "Math\Vector.h"
 #include <string>
 
-namespace Audio
+namespace audio
 {
 	namespace Categories
 	{

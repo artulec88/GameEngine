@@ -37,7 +37,7 @@ void PrintHelp()
 void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirectory, std::string* shaderDirectory, std::string* modelsDirectory,
 	std::string* texturesDirectory, std::string* fontsDirectory, std::string* audioDirectory)
 {
-	std::unique_ptr<Utility::ICommandLineMapper> commandLineMapper = Utility::ICommandLineMapper::CreateCommandLineMapper(argc, argv);
+	std::unique_ptr<utility::ICommandLineMapper> commandLineMapper = utility::ICommandLineMapper::CreateCommandLineMapper(argc, argv);
 	if (commandLineMapper->IsPresent("-help"))
 	{
 		PrintHelp();
@@ -48,28 +48,28 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirect
 	// Initializing config directory
 	*configDirectory = commandLineMapper->Get("-configDirectory", "..\\..\\Config\\");
 
-	Utility::IConfig::CreateConfig("Audio", *configDirectory + commandLineMapper->Get("-configAudio", "ConfigAudio.cfg"));
-	Utility::IConfig::CreateConfig("Physics", *configDirectory + commandLineMapper->Get("-configPhysics", "ConfigPhysics.cfg"));
-	Utility::IConfig::CreateConfig("Rendering", *configDirectory + commandLineMapper->Get("-configRendering", "ConfigRendering.cfg"));
-	Utility::IConfig::CreateConfig("Engine", *configDirectory + commandLineMapper->Get("-configEngine", "ConfigEngine.cfg"));
-	Utility::IConfig::CreateConfig("Game", *configDirectory + commandLineMapper->Get("-configGame", "ConfigGame.cfg"));
-	Utility::IConfig::CreateConfig("Math", *configDirectory + commandLineMapper->Get("-configMath", "ConfigMath.cfg"));
-	Utility::IConfig::CreateConfig("Utility", *configDirectory + commandLineMapper->Get("-configUtility", "ConfigUtility.cfg"));
+	utility::IConfig::CreateConfig("Audio", *configDirectory + commandLineMapper->Get("-configAudio", "ConfigAudio.cfg"));
+	utility::IConfig::CreateConfig("Physics", *configDirectory + commandLineMapper->Get("-configPhysics", "ConfigPhysics.cfg"));
+	utility::IConfig::CreateConfig("Rendering", *configDirectory + commandLineMapper->Get("-configRendering", "ConfigRendering.cfg"));
+	utility::IConfig::CreateConfig("Engine", *configDirectory + commandLineMapper->Get("-configEngine", "ConfigEngine.cfg"));
+	utility::IConfig::CreateConfig("Game", *configDirectory + commandLineMapper->Get("-configGame", "ConfigGame.cfg"));
+	utility::IConfig::CreateConfig("Math", *configDirectory + commandLineMapper->Get("-configMath", "ConfigMath.cfg"));
+	utility::IConfig::CreateConfig("Utility", *configDirectory + commandLineMapper->Get("-configUtility", "ConfigUtility.cfg"));
 
-	Utility::Logging::ILogger::GetLogger("Audio").Fill((commandLineMapper->IsPresent("-logAudio")) ? commandLineMapper->Get("-logAudio", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelAudio", "Info"), Utility::Logging::INFO); // Initializing audio logger
-	Utility::Logging::ILogger::GetLogger("Physics").Fill((commandLineMapper->IsPresent("-logPhysics")) ? commandLineMapper->Get("-logPhysics", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelPhysics", "Info"), Utility::Logging::INFO); // Initializing physics logger
-	Utility::Logging::ILogger::GetLogger("Rendering").Fill((commandLineMapper->IsPresent("-logRendering")) ? commandLineMapper->Get("-logRendering", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelRendering", "Info"), Utility::Logging::INFO); // Initializing rendering logger
-	Utility::Logging::ILogger::GetLogger("Engine").Fill((commandLineMapper->IsPresent("-logEngine")) ? commandLineMapper->Get("-logEngine", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelEngine", "Info"), Utility::Logging::INFO); // Initializing engine logger
-	Utility::Logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-logGame")) ? commandLineMapper->Get("-logGame", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelGame", "Info"), Utility::Logging::INFO); // Initializing game logger
-	Utility::Logging::ILogger::GetLogger("Math").Fill((commandLineMapper->IsPresent("-logMath")) ? commandLineMapper->Get("-logMath", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelMath", "Info"), Utility::Logging::INFO); // Initializing math logger
-	Utility::Logging::ILogger::GetLogger("Utility").Fill((commandLineMapper->IsPresent("-logUtility")) ? commandLineMapper->Get("-logUtility", "Info") :
-		GET_CONFIG_VALUE_STR_GAME("LoggingLevelUtility", "Info"), Utility::Logging::INFO); // Initializing utility logger
+	utility::logging::ILogger::GetLogger("Audio").Fill((commandLineMapper->IsPresent("-logAudio")) ? commandLineMapper->Get("-logAudio", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelAudio", "Info"), utility::logging::INFO); // Initializing audio logger
+	utility::logging::ILogger::GetLogger("Physics").Fill((commandLineMapper->IsPresent("-logPhysics")) ? commandLineMapper->Get("-logPhysics", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelPhysics", "Info"), utility::logging::INFO); // Initializing physics logger
+	utility::logging::ILogger::GetLogger("Rendering").Fill((commandLineMapper->IsPresent("-logRendering")) ? commandLineMapper->Get("-logRendering", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelRendering", "Info"), utility::logging::INFO); // Initializing rendering logger
+	utility::logging::ILogger::GetLogger("Engine").Fill((commandLineMapper->IsPresent("-logEngine")) ? commandLineMapper->Get("-logEngine", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelEngine", "Info"), utility::logging::INFO); // Initializing engine logger
+	utility::logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-logGame")) ? commandLineMapper->Get("-logGame", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelGame", "Info"), utility::logging::INFO); // Initializing game logger
+	utility::logging::ILogger::GetLogger("Math").Fill((commandLineMapper->IsPresent("-logMath")) ? commandLineMapper->Get("-logMath", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelMath", "Info"), utility::logging::INFO); // Initializing math logger
+	utility::logging::ILogger::GetLogger("Utility").Fill((commandLineMapper->IsPresent("-logUtility")) ? commandLineMapper->Get("-logUtility", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelUtility", "Info"), utility::logging::INFO); // Initializing utility logger
 
 	// Initializing shader directory
 	*shaderDirectory = (commandLineMapper->IsPresent("-shaders")) ? commandLineMapper->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
 	ReadSettingsAndParameters(argc, argv, &configDirectory, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
 
 	/* ==================== Create game instance and run ==================== */
-	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("fullscreenEnabled", false), GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
+	engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("fullscreenEnabled", false), GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
 		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), configDirectory, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
 	Game::TestGameManager game;
 	engine.Start(&game);

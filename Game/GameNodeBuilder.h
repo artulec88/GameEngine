@@ -18,14 +18,14 @@
 
 namespace Game
 {
-	class GameNodeBuilder : public Utility::Builder<Engine::GameNode>
+	class GameNodeBuilder : public utility::Builder<engine::GameNode>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		GameNodeBuilder(Engine::GameManager* gameManager);
+		GameNodeBuilder(engine::GameManager* gameManager);
 		virtual ~GameNodeBuilder(void);
 		GameNodeBuilder(GameNodeBuilder& gameNodeBuilder) = delete;
 		GameNodeBuilder(GameNodeBuilder&& gameNodeBuilder) = delete;
@@ -35,7 +35,7 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
-		virtual Engine::GameNode Get() override
+		virtual engine::GameNode Get() override
 		{
 			return m_gameNode.Clone();
 			//return std::move(m_gameNode);
@@ -58,8 +58,8 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Engine::GameManager* m_gameManager;
-		Engine::GameNode m_gameNode;
+		engine::GameManager* m_gameManager;
+		engine::GameNode m_gameNode;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNodeBuilder */
 
@@ -69,37 +69,37 @@ namespace Game
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static /* constexpr */ Engine::CameraBehaviorTypes::CameraBehaviorType ConvertToCameraBehaviorType(const std::string& cameraBehaviorTypeStr)
+		static /* constexpr */ engine::camera_behavior_types::CameraBehaviorType ConvertToCameraBehaviorType(const std::string& cameraBehaviorTypeStr)
 		{
-			const std::string cameraBehaviorTypeLowercaseStr = Utility::StringUtility::MakeLowercase(cameraBehaviorTypeStr);
+			const std::string cameraBehaviorTypeLowercaseStr = utility::string_utility::MakeLowercase(cameraBehaviorTypeStr);
 			if (cameraBehaviorTypeLowercaseStr == "static")
 			{
-				return Engine::CameraBehaviorTypes::STATIC;
+				return engine::camera_behavior_types::STATIC;
 			}
 			else if (cameraBehaviorTypeLowercaseStr == "rotation")
 			{
-				return Engine::CameraBehaviorTypes::ROTATION_ONLY;
+				return engine::camera_behavior_types::ROTATION_ONLY;
 			}
 			else if (cameraBehaviorTypeLowercaseStr == "movement")
 			{
-				return Engine::CameraBehaviorTypes::MOVEMENT_ONLY;
+				return engine::camera_behavior_types::MOVEMENT_ONLY;
 			}
 			else if (cameraBehaviorTypeLowercaseStr == "follow_entity")
 			{
-				return Engine::CameraBehaviorTypes::FOLLOW_ENTITY;
+				return engine::camera_behavior_types::FOLLOW_ENTITY;
 			}
 			else if (cameraBehaviorTypeLowercaseStr == "follow_entity_with_rotation")
 			{
-				return Engine::CameraBehaviorTypes::FOLLOW_ENTITY_WITH_ROTATION;
+				return engine::camera_behavior_types::FOLLOW_ENTITY_WITH_ROTATION;
 			}
 			WARNING_LOG_GAME("Unknown camera behavior type \"", cameraBehaviorTypeStr, "\". Using STATIC as default.");
-			return Engine::CameraBehaviorTypes::STATIC;
+			return engine::camera_behavior_types::STATIC;
 		}
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraNodeBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera);
+		CameraNodeBuilder(engine::GameManager* gameManager, Rendering::BaseCamera* camera);
 		virtual ~CameraNodeBuilder(void);
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
@@ -111,7 +111,7 @@ namespace Game
 	public:
 		virtual void BuildTransform() override;
 		virtual void BuildComponents() override;
-		void SetGameNodeToFollow(const Engine::GameNode* gameNodeToFollow)
+		void SetGameNodeToFollow(const engine::GameNode* gameNodeToFollow)
 		{
 			m_gameNodeToFollow = gameNodeToFollow;
 		}
@@ -119,16 +119,16 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Engine::CameraBehaviorTypes::CameraBehaviorType M_DEFAULT_CAMERA_BEHAVIOR_TYPE;
+		const engine::camera_behavior_types::CameraBehaviorType M_DEFAULT_CAMERA_BEHAVIOR_TYPE;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
 		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 
 		Rendering::BaseCamera* m_camera;
-		Engine::CameraBehaviorTypes::CameraBehaviorType m_cameraBehaviorType;
+		engine::camera_behavior_types::CameraBehaviorType m_cameraBehaviorType;
 
-		const Engine::GameNode* m_gameNodeToFollow;
+		const engine::GameNode* m_gameNodeToFollow;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraNodeBuilder */
 
@@ -139,7 +139,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit SkyboxBuilder(Engine::GameManager* gameManager);
+		explicit SkyboxBuilder(engine::GameManager* gameManager);
 		virtual ~SkyboxBuilder(void);
 		SkyboxBuilder(SkyboxBuilder& skyboxBuilder) = delete;
 		SkyboxBuilder(SkyboxBuilder&& skyboxBuilder) = delete;
@@ -155,7 +155,7 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
+		engine::GameManager* m_gameManager;
 		Math::Real m_scale;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SkyboxBuilder */

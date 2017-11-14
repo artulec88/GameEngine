@@ -13,7 +13,7 @@
 
 #include <vector>
 
-namespace Engine
+namespace engine
 {
 	class CameraComponent : public GameComponent, Rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
 	{

@@ -25,15 +25,15 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	int z = 14;
 	Real noise1 = GetNoise(x, z);
 	Real noise2 = GetNoise(x, z);
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise1, noise2), Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise1, noise2), utility::logging::ERR,
 		"The noise function does not return the same output for a given input (", noise1, " and ", noise2, ")");
 	x += 1;
 	z += -4;
 	Real noise3 = GetNoise(x, z);
 	Real noise4 = GetNoise(x, z);
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), utility::logging::ERR,
 		"The noise function does not return the same output for a given input (", noise3, " and ", noise4, ")");
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), utility::logging::ERR,
 		"The noise function always returns the same output for any input (", noise1, ")");
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input end ==================== */
 }

@@ -25,7 +25,7 @@
 
 namespace Game
 {
-	class TestGameManager : public Engine::GameManager
+	class TestGameManager : public engine::GameManager
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
@@ -44,11 +44,11 @@ namespace Game
 
 		virtual Math::Real GetLoadingProgress() const;
 
-		virtual Engine::GameState* GetIntroGameState();
-		virtual Engine::GameState* GetMainMenuGameState();
-		virtual Engine::GameState* GetLoadGameState();
-		virtual Engine::GameState* GetPlayGameState();
-		virtual Engine::GameState* GetPlayMainMenuGameState();
+		virtual engine::GameState* GetIntroGameState();
+		virtual engine::GameState* GetMainMenuGameState();
+		virtual engine::GameState* GetLoadGameState();
+		virtual engine::GameState* GetPlayGameState();
+		virtual engine::GameState* GetPlayMainMenuGameState();
 
 		virtual void WindowResizeEvent(int width, int height);
 		virtual void ScrollEvent(double xOffset, double yOffset);
@@ -70,14 +70,14 @@ namespace Game
 		const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 		int m_resourcesLoaded;
 
-		std::unique_ptr<Engine::GameState> m_introGameState;
-		std::unique_ptr<Engine::GameState> m_menuGameState;
-		std::unique_ptr<Engine::GameState> m_loadGameState;
-		std::unique_ptr<Engine::GameState> m_playGameState;
-		std::unique_ptr<Engine::GameState> m_playMainMenuGameState;
+		std::unique_ptr<engine::GameState> m_introGameState;
+		std::unique_ptr<engine::GameState> m_menuGameState;
+		std::unique_ptr<engine::GameState> m_loadGameState;
+		std::unique_ptr<engine::GameState> m_playGameState;
+		std::unique_ptr<engine::GameState> m_playMainMenuGameState;
 
 		StartGameCommand m_startGameCommand;
-		Engine::QuitGameCommand m_quitGameCommand;
+		engine::QuitGameCommand m_quitGameCommand;
 		ShowIntroCommand m_showIntroGameCommand;
 		ResumeGameCommand m_resumeGameCommand;
 		SaveGameCommand m_saveGameCommand;
@@ -95,10 +95,10 @@ namespace Game
 
 		Math::Real m_timeToUpdateCameraHeight;
 
-		Engine::GameNode* m_boxNode;
+		engine::GameNode* m_boxNode;
 
 		const int HUMAN_NODES_COUNT;
-		Engine::GameNode** humanNodes;
+		engine::GameNode** humanNodes;
 		bool m_heightMapCalculationEnabled;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED

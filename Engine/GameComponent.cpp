@@ -7,13 +7,13 @@
 
 #include "Utility\ILogger.h"
 
-Engine::GameComponent::GameComponent(void) :
+engine::GameComponent::GameComponent(void) :
 	m_parentGameNode(NULL)
 {
 }
 
 
-Engine::GameComponent::~GameComponent(void)
+engine::GameComponent::~GameComponent(void)
 {
 }
 
@@ -28,19 +28,19 @@ Engine::GameComponent::~GameComponent(void)
 //	return *this;
 //}
 
-void Engine::GameComponent::SetParent(GameNode* parentGameNode)
+void engine::GameComponent::SetParent(GameNode* parentGameNode)
 {
 	CHECK_CONDITION_EXIT_ENGINE(parentGameNode != NULL, Utility::Logging::ERR, "Cannot assign a parent to the game component. Parent game node is NULL.");
 	m_parentGameNode = parentGameNode;
 }
 
-Math::Transform& Engine::GameComponent::GetTransform()
+Math::Transform& engine::GameComponent::GetTransform()
 {
 	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != NULL, Utility::Logging::CRITICAL, "Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
 }
 
-const Math::Transform& Engine::GameComponent::GetTransform() const
+const Math::Transform& engine::GameComponent::GetTransform() const
 {
 	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != NULL, Utility::Logging::CRITICAL, "Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
