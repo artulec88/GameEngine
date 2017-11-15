@@ -36,8 +36,8 @@ namespace Rendering
 		/// <param name="displacementMap">The dispacement map of the material.</param>
 		/// <param name="displacementScale">The displacement scale.</param>
 		/// <param name="displacementOffset">The displacement offset.</param>
-		RENDERING_API Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap,
-			const Texture* displacementMap, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+		RENDERING_API Material(const Texture* diffuseTexture, math::Real specularIntensity, math::Real specularPower, const Texture* normalMap,
+			const Texture* displacementMap, math::Real displacementScale = REAL_ZERO, math::Real displacementOffset = REAL_ZERO);
 
 		/// <summary>
 		/// Material constructor that takes a <paramref name="texture"/> with name <paramref name="textureName"/>.
@@ -71,14 +71,14 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		const Math::Real& GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
-		const Math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
-		const Math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
+		const math::Real& GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
+		const math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
+		const math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
 		const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }
 
-		void SetReal(const std::string& realValueName, Math::Real realValue) { m_mappedValues.SetReal(realValueName, realValue); }
-		void SetVector3D(const std::string& vectorName, const Math::Vector3D& vec3D) { m_mappedValues.SetVector3D(vectorName, vec3D); }
-		void SetVector4D(const std::string& vectorName, const Math::Vector4D& vec4D) { return m_mappedValues.SetVector4D(vectorName, vec4D); }
+		void SetReal(const std::string& realValueName, math::Real realValue) { m_mappedValues.SetReal(realValueName, realValue); }
+		void SetVector3D(const std::string& vectorName, const math::Vector3D& vec3D) { m_mappedValues.SetVector3D(vectorName, vec3D); }
+		void SetVector4D(const std::string& vectorName, const math::Vector4D& vec4D) { return m_mappedValues.SetVector4D(vectorName, vec4D); }
 
 		RENDERING_API void SetAdditionalTexture(const Texture* texture, const std::string& textureName);
 #ifdef ANT_TWEAK_BAR_ENABLED

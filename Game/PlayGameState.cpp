@@ -43,11 +43,11 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), NULL,
-		Math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_GAME("screenRotationInGameTime", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE_GAME("screenScaleInGameTimeX", 1.0f), GET_CONFIG_VALUE_GAME("screenScaleInGameTimeY", 1.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
+		math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), math::Angle(GET_CONFIG_VALUE_GAME("screenRotationInGameTime", 0.0f)),
+		math::Vector2D(GET_CONFIG_VALUE_GAME("screenScaleInGameTimeX", 1.0f), GET_CONFIG_VALUE_GAME("screenScaleInGameTimeY", 1.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
 		Rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
 		Rendering::Color(GET_CONFIG_VALUE_GAME("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeBlue", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE_GAME("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_GAME("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_GAME("isCenteredInGameTime", false),
+		math::Vector2D(GET_CONFIG_VALUE_GAME("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_GAME("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_GAME("isCenteredInGameTime", false),
 		GET_CONFIG_VALUE_GAME("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_GAME("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_GAME("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE_GAME("borderEdgeTransitionWidthInGameTime", 0.1f)),
 #endif
@@ -107,7 +107,7 @@ void Game::PlayGameState::Entered()
 
 	engine::GameNode testMesh1;
 	testMesh1.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh1PosX", 42.0f), GET_CONFIG_VALUE_GAME("testMesh1PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh1PosZ", 40.0f));
-	testMesh1.GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
+	testMesh1.GetTransform().SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1.GetTransform().SetScale(0.1f);
 	testMesh1.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0,
@@ -115,7 +115,7 @@ void Game::PlayGameState::Entered()
 			m_gameManager->AddTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	engine::GameNode testMesh2;
 	testMesh2.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh2PosX", 8.0f), GET_CONFIG_VALUE_GAME("testMesh2PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh2PosZ", 0.0f));
-	testMesh2.GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
+	testMesh2.GetTransform().SetRot(math::Quaternion(math::Matrix4D(math::Angle(90.0f), math::Angle(90.0f), math::Angle(0.0f))));
 	testMesh2.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->GetTexture(TextureIDs::BRICKS), 0.0f, 0,
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
@@ -126,23 +126,23 @@ void Game::PlayGameState::Entered()
 	m_rootGameNode.AddChild(&m_nodes[1]);
 	//Engine::GameNode* testMesh3 = new Engine::GameNode();
 	//testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
-	//testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
+	//testMesh3->GetTransform().SetRot(math::Matrix4D(math::Angle(0.0f), math::Angle(0.0f), math::Angle(-180.0f)));
 	//testMesh3->GetTransform().SetScale(0.25f);
 	//testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
 	//AddToSceneRoot(testMesh3);
 
-	//const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	//const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::Generators::SIMPLE);
 	//const int treeCount = 30;
 	//for (int i = 0; i < treeCount; ++i)
 	//{
 	//	Engine::GameNode* treeNode = new Engine::GameNode();
-	//	Math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
-	//	Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
-	//	Math::Real y = 0.0f;
+	//	math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
+	//	math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
+	//	math::Real y = 0.0f;
 	//	treeNode->GetTransform().SetPos(x, y, z);
-	//	treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
+	//	treeNode->GetTransform().SetRot(math::Quaternion(math::Matrix4D(math::Angle(0.0f), math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), math::Angle(0.0f))));
 	//	treeNode->GetTransform().SetScale(0.01f);
-	//	//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	//	//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, math::Vector3D(0.0f, 0.0f, 0.0f)));
 	//	treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	//	//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	//	AddToSceneRoot(treeNode);
@@ -152,13 +152,13 @@ void Game::PlayGameState::Entered()
 	//for (int i = 0; i < boulderCount; ++i)
 	//{
 	//	Engine::GameNode* boulderNode = new Engine::GameNode();
-	//	Math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
-	//	Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
-	//	Math::Real y = 0.0f;
+	//	math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
+	//	math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
+	//	math::Real y = 0.0f;
 	//	boulderNode->GetTransform().SetPos(x, y, z);
-	//	boulderNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
+	//	boulderNode->GetTransform().SetRot(math::Quaternion(math::Matrix4D(math::Angle(0.0f), math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), math::Angle(0.0f))));
 	//	boulderNode->GetTransform().SetScale(0.01f);
-	//	//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	//	//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, math::Vector3D(0.0f, 0.0f, 0.0f)));
 	//	boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
 	//		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	//	//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
@@ -236,7 +236,7 @@ void Game::PlayGameState::AddTerrainNode()
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Adding terrain node");
-	//m_terrainMesh = new Rendering::TerrainMesh(0, 0, Math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
+	//m_terrainMesh = new Rendering::TerrainMesh(0, 0, math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
 	//	GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f)), GET_CONFIG_VALUE_GAME("terrainVertexCount", 128));
 	m_terrainMaterial = new Rendering::Material(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f),
 		GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f), m_gameManager->AddTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
@@ -283,17 +283,17 @@ void Game::PlayGameState::AddSkyboxNode()
 
 void Game::PlayGameState::AddPlayerNode()
 {
-	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
-	const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
-	const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
+	const math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
+	const math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(math::Vector2D(playerPositionX, playerPositionZ));
 	m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	m_playerNode.GetTransform().SetScale(0.0005f);
-	m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
+	m_playerNode.CreatePhysicsObject(122.0f, math::Vector3D(0.0f, 0.0f, 0.0f));
 	m_gameManager->AddMesh(MeshIDs::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
 	m_playerNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	m_playerNode.AddComponent(new engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	m_playerNode.AddComponent(new engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, math::Angle(152.0f, math::units::DEGREE), 0.015f, 0.0002f));
 	m_playerNode.AddComponent(new engine::GravityComponent(m_terrain));
-	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
+	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(Particleeffects::FOUNTAIN);
 	//playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	//m_resourcesLoaded += 2;
 	m_rootGameNode.AddChild(&m_playerNode);
@@ -301,19 +301,19 @@ void Game::PlayGameState::AddPlayerNode()
 
 void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
 {
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
-	Math::Real angle = 0.0f;
-	std::vector<Math::Real> billboardsModelMatrices;
-	billboardsModelMatrices.reserve(billboardsCount * Math::Matrix4D::SIZE * Math::Matrix4D::SIZE);
+	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
+	math::Real angle = 0.0f;
+	std::vector<math::Real> billboardsModelMatrices;
+	billboardsModelMatrices.reserve(billboardsCount * math::Matrix4D::SIZE * math::Matrix4D::SIZE);
 	for (int i = 0; i < billboardsCount; ++i)
 	{
-		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
-		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
-		Math::Real y = 0.0f;
+		math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
+		math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
+		math::Real y = 0.0f;
 
-		Math::Transform billboardTransform(Math::Vector3D(x, y, z), Math::Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
+		math::Transform billboardTransform(math::Vector3D(x, y, z), math::Quaternion(math::Vector3D(0.0f, 1.0f, 0.0f), math::Angle(angle)), 0.5f);
 		//angle += 15.0f;
-		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
+		math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
 
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 0));
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 1));
@@ -333,7 +333,7 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
 	engine::GameNode billboardsNode;
-	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, Math::Matrix4D::SIZE * Math::Matrix4D::SIZE));
+	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, math::Matrix4D::SIZE * math::Matrix4D::SIZE));
 	billboardsNode.AddComponent(new engine::BillboardsRendererComponent(MeshIDs::BILLBOARD, billboardsMaterial));
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
@@ -343,7 +343,7 @@ void Game::PlayGameState::AddCameras()
 	START_PROFILING_GAME(true, "");
 
 	// TODO: temporary code begin.
-	m_cameras.push_back(new Rendering::Camera(Math::Vector3D(50.0f, 0.5f, 49.95f), Math::NO_ROTATION_QUATERNION, Math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
+	m_cameras.push_back(new Rendering::Camera(math::Vector3D(50.0f, 0.5f, 49.95f), math::NO_ROTATION_QUATERNION, math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
 	m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 
@@ -546,7 +546,7 @@ void Game::PlayGameState::Handle(engine::States::State state)
 	}
 }
 
-void Game::PlayGameState::Handle(engine::Ranges::Range range, Math::Real value)
+void Game::PlayGameState::Handle(engine::Ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
@@ -556,8 +556,8 @@ void Game::PlayGameState::Handle(engine::Ranges::Range range, Math::Real value)
 		m_mousePosChanged = true;
 		if (m_isMouseLocked)
 		{
-			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(Math::Vector3D(0, 1, 0),
-				Math::Angle(500.0f * (m_mousePos.x - m_previousMousePos.x) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
+			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(math::Vector3D(0, 1, 0),
+				math::Angle(500.0f * (m_mousePos.x - m_previousMousePos.x) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
 		}
@@ -570,7 +570,7 @@ void Game::PlayGameState::Handle(engine::Ranges::Range range, Math::Real value)
 		if (m_isMouseLocked)
 		{
 			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(m_cameras[m_currentCameraIndex]->GetTransform().GetRot().GetRight(),
-				Math::Angle((m_mousePos.y - m_previousMousePos.y) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
+				math::Angle((m_mousePos.y - m_previousMousePos.y) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
 		}
@@ -624,24 +624,24 @@ void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 
 	//int width = Rendering::CoreEngine::GetCoreEngine()->GetWindowWidth();
 	//int height = Rendering::CoreEngine::GetCoreEngine()->GetWindowHeight();
-	//Math::Vector2D centerPosition(static_cast<Math::Real>(width) / 2, static_cast<Math::Real>(height) / 2);
-	//Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
+	//math::Vector2D centerPosition(static_cast<math::Real>(width) / 2, static_cast<math::Real>(height) / 2);
+	//math::Vector2D deltaPosition(static_cast<math::Real>(xPos), static_cast<math::Real>(yPos));
 	//deltaPosition -= centerPosition;
 	//
-	//bool rotX = ! Math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
-	//bool rotY = ! Math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
+	//bool rotX = ! math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
+	//bool rotY = ! math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
 
 	//if (rotX || rotY)
 	//{
 	//	Rendering::Transform& transform = Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
-	//	const Math::Real sensitivity = static_cast<Math::Real>(Rendering::Camera::GetSensitivity());
+	//	const math::Real sensitivity = static_cast<math::Real>(Rendering::Camera::GetSensitivity());
 	//	if (rotX)
 	//	{
-	//		transform.Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * sensitivity));
+	//		transform.Rotate(math::Vector3D(0, 1, 0), math::Angle(deltaPosition.GetX() * sensitivity));
 	//	}
 	//	if (rotY)
 	//	{
-	//		transform.Rotate(transform.GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * sensitivity));
+	//		transform.Rotate(transform.GetRot().GetRight(), math::Angle(deltaPosition.GetY() * sensitivity));
 	//	}
 	//	Rendering::CoreEngine::GetCoreEngine()->CentralizeCursor();
 	//}
@@ -841,8 +841,8 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
 	const Rendering::BaseCamera& currentCameraCopy(renderer->GetCurrentCamera());
 	//Rendering::BaseCamera reflectionCamera(currentCameraCopy);
-	//const Math::Real cameraHeight = reflectionCamera.GetPos().GetY();
-	//Math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
+	//const math::Real cameraHeight = reflectionCamera.GetPos().GetY();
+	//math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
 	//reflectionCamera.GetPos().SetY(cameraHeight - distance); // TODO: Uncomment. use m_altCamera instead of the main camera.
 	//reflectionCamera.GetRot().InvertPitch(); // TODO: Uncomment.
 
@@ -996,7 +996,7 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Update(Math::Real elapsedTime)
+void Game::PlayGameState::Update(math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
@@ -1019,28 +1019,28 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 {
 	//const int timeGMTdifference = 1;
 
-	//const Math::Angle b(0.9863014f * (m_inGameDateTime->GetDayInYear() - 81)); // 0,98630136986301369863013698630137 = 360 / 365
-	//const Math::Real bSin = b.Sin();
-	//const Math::Real bCos = b.Cos();
+	//const math::Angle b(0.9863014f * (m_inGameDateTime->GetDayInYear() - 81)); // 0,98630136986301369863013698630137 = 360 / 365
+	//const math::Real bSin = b.Sin();
+	//const math::Real bCos = b.Cos();
 
-	//const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
-	//const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
-	//const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
+	//const math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
+	//const math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
+	//const math::Angle declinationAngle(asin(declinationSin), math::units::RADIAN);
 	////DEBUG_LOG_ENGINE("Declination in degrees = ", declinationAngle.GetAngleInDegrees());
 
-	//const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (m_longitude.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
-	//const Math::Real localSolarTime = m_inGameDateTime->GetDayTime() + timeCorrectionInSeconds;
+	//const math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (m_longitude.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
+	//const math::Real localSolarTime = m_inGameDateTime->GetDayTime() + timeCorrectionInSeconds;
 	////DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
 	////DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
-	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
+	//const math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
 	////DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
-	//const Math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
+	//const math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
 	//m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
 	////DEBUG_LOG_ENGINE("Sun elevation = ", m_sunElevation.GetAngleInDegrees());
 
-	//const Math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
+	//const math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	//m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
 	//bool isAfternoon = (localSolarTime > 12.0f * Utility::timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
 	//if (isAfternoon)

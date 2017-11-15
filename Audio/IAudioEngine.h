@@ -101,7 +101,7 @@ namespace audio
 		/// <summary>
 		/// Updates the state of the audio engine. For irrKlang audio engine running in multithreaded mode this function may be an empty operation.
 		/// </summary>
-		AUDIO_API virtual void Update(Math::Real deltaTime) = 0;
+		AUDIO_API virtual void Update(math::Real deltaTime) = 0;
 		AUDIO_API virtual void LoadSoundEffect(const std::string& path) = 0;
 		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path) = 0;
 		AUDIO_API virtual void LoadSong(const std::string& path) = 0;
@@ -115,19 +115,19 @@ namespace audio
 		/// Plays the sound effect specified in the <paramref name="path/>. If the sound under the specified key has not been loaded yet, the function simply returns.
 		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch) = 0;
+		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch) = 0;
 		/// <summary>
 		/// Plays the 3D sound effect specified in the <paramref name="path/>.
 		/// The method searches for the sound in the correct map and plays it back setting the volume, pitch, position and velocity of the source beforehand.
 		/// </summary>
 		AUDIO_API virtual void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */,
-			Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity) = 0;
+			math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity) = 0;
 		AUDIO_API virtual void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */) = 0;
 		AUDIO_API virtual void StopSoundEffects() = 0;
 		AUDIO_API virtual void StopSong() = 0;
-		AUDIO_API virtual void SetMasterVolume(Math::Real volume) = 0;
-		AUDIO_API virtual void SetSoundEffectsVolume(Math::Real volume) = 0;
-		AUDIO_API virtual void SetSongsVolume(Math::Real volume) = 0;
+		AUDIO_API virtual void SetMasterVolume(math::Real volume) = 0;
+		AUDIO_API virtual void SetSoundEffectsVolume(math::Real volume) = 0;
+		AUDIO_API virtual void SetSongsVolume(math::Real volume) = 0;
 	protected:
 		/// <summary>
 		/// A helper method for calculating the octaves. By using this method it becomes simple to modify the pitch of a sound.
@@ -143,7 +143,7 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual Math::Real ChangeOctave(Math::Real frequency, Math::Real variation) const = 0;
+		virtual math::Real ChangeOctave(math::Real frequency, math::Real variation) const = 0;
 
 		/// <summary>
 		/// A helper method for calculating the semitones. By using this method it becomes simple to modify the pitch of a sound.
@@ -159,7 +159,7 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual Math::Real ChangeSemitone(Math::Real frequency, Math::Real variation) const = 0;
+		virtual math::Real ChangeSemitone(math::Real frequency, math::Real variation) const = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

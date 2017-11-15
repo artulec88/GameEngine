@@ -4,7 +4,7 @@
 #include "Math\RandomGeneratorFactory.h"
 
 /* ==================== class ConstantScaleGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantScaleGenerator::ConstantScaleGenerator(Math::Real scale) :
+Rendering::Particles::Generators::ConstantScaleGenerator::ConstantScaleGenerator(math::Real scale) :
 	ScaleGenerator(),
 	m_scale(scale)
 {
@@ -14,7 +14,7 @@ Rendering::Particles::Generators::ConstantScaleGenerator::~ConstantScaleGenerato
 {
 }
 
-void Rendering::Particles::Generators::ConstantScaleGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::ConstantScaleGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -24,11 +24,11 @@ void Rendering::Particles::Generators::ConstantScaleGenerator::Generate(Math::Re
 /* ==================== class ConstantScaleGenerator end ==================== */
 
 /* ==================== class RangeScaleGenerator begin ==================== */
-Rendering::Particles::Generators::RangeScaleGenerator::RangeScaleGenerator(Math::Real minScale, Math::Real maxScale) :
+Rendering::Particles::Generators::RangeScaleGenerator::RangeScaleGenerator(math::Real minScale, math::Real maxScale) :
 	ScaleGenerator(),
 	m_minScale(minScale),
 	m_maxScale(maxScale),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
+	m_randomGenerator(math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE))
 {
 }
 
@@ -36,7 +36,7 @@ Rendering::Particles::Generators::RangeScaleGenerator::~RangeScaleGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeScaleGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::RangeScaleGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

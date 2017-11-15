@@ -7,16 +7,16 @@
 #define MATH_API __declspec(dllimport)
 #endif
 
-#define EPSILON		static_cast<Math::Real>(1e-6)
-#define REAL_ZERO	static_cast<Math::Real>(0)
-#define REAL_ONE	static_cast<Math::Real>(1)
+#define EPSILON		static_cast<math::Real>(1e-6)
+#define REAL_ZERO	static_cast<math::Real>(0)
+#define REAL_ONE	static_cast<math::Real>(1)
 
 //#define NOMINMAX
 
 #undef min
 #undef max
-#define REAL_MIN	static_cast<Math::Real>(std::numeric_limits<Math::Real>::min())
-#define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<Math::Real>::max())
+#define REAL_MIN	static_cast<math::Real>(std::numeric_limits<math::Real>::min())
+#define REAL_MAX	static_cast<math::Real>(std::numeric_limits<math::Real>::max())
 
 #define GET_CONFIG_VALUE_MATH(cfgName, defValue) GET_CONFIG_VALUE("Math", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_MATH(cfgName, defValue) GET_CONFIG_VALUE_STR("Math", cfgName, defValue)
@@ -60,7 +60,7 @@
 #include <math.h>
 #include <cmath>
 
-namespace Math
+namespace math
 {
 	using Real = float;
 
@@ -90,13 +90,13 @@ namespace Math
 	template<typename Type>
 	constexpr Type ToRad(Type angleInDegrees) noexcept
 	{
-		return static_cast<Type>(Math::DEG_TO_RAD_MULTIPLIER * angleInDegrees);
+		return static_cast<Type>(DEG_TO_RAD_MULTIPLIER * angleInDegrees);
 	}
 
 	template<typename Type>
 	constexpr Type ToDeg(Type angleInRadians) noexcept
 	{
-		return static_cast<Type>(Math::RAD_TO_DEG_MULTIPLIER * angleInRadians);
+		return static_cast<Type>(RAD_TO_DEG_MULTIPLIER * angleInRadians);
 	}
 
 	template<typename Type>
@@ -117,10 +117,10 @@ namespace Math
 		return static_cast<int>(ceil(value));
 	}
 
-//	Math::Real RealMin()
+//	Real RealMin()
 //	{
 //#undef max
-//		return static_cast<Math::Real>(std::numeric_limits<float>::max());
+//		return static_cast<Real>(std::numeric_limits<float>::max());
 //	}
 
 	template<typename Type>

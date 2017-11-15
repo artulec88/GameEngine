@@ -58,7 +58,6 @@ namespace utility {
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Builder<T> */
 

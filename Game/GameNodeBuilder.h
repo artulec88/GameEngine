@@ -120,10 +120,10 @@ namespace Game
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		const engine::camera_behavior_types::CameraBehaviorType M_DEFAULT_CAMERA_BEHAVIOR_TYPE;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
-		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
+		const math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
+		const math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
+		const math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
+		const math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 
 		Rendering::BaseCamera* m_camera;
 		engine::camera_behavior_types::CameraBehaviorType m_cameraBehaviorType;
@@ -156,7 +156,7 @@ namespace Game
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		engine::GameManager* m_gameManager;
-		Math::Real m_scale;
+		math::Real m_scale;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SkyboxBuilder */
 

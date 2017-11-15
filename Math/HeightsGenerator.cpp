@@ -6,7 +6,7 @@
 #include "Utility\ILogger.h"
 
 
-Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, Math::Real heightAmplitude, int octaves, Math::Real roughness) :
+math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, Real heightAmplitude, int octaves, Real roughness) :
 	m_offsetX(gridX * (vertexCount - 1)),
 	m_offsetZ(gridZ * (vertexCount - 1)),
 	m_heightAmplitude(heightAmplitude),
@@ -16,8 +16,8 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	m_smoothCornersFactor(16.0f),
 	m_smoothSidesFactor(8.0f),
 	m_smoothCenterFactor(4.0f),
-	m_interpolationType(Interpolation::InterpolationTypes::COSINE),
-	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE, 1000000000))
+	m_interpolationType(interpolation::interpolation_types::COSINE),
+	m_randomGenerator(random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(random::generator_ids::SIMPLE, 1000000000))
 {
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
 	// TODO: In the future this test should be moved to MathTest project.
@@ -38,11 +38,11 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input end ==================== */
 }
 
-Math::HeightsGenerator::~HeightsGenerator()
+math::HeightsGenerator::~HeightsGenerator()
 {
 }
 
-Math::Real Math::HeightsGenerator::GenerateHeight(Real x, Real z) const
+math::Real math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 {
 	Real totalHeight = REAL_ZERO;
 	Real d = pow(m_freqFactor, m_octaves - 1);
@@ -55,7 +55,7 @@ Math::Real Math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 	return totalHeight;
 }
 
-Math::Real Math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
+math::Real math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 {
 	// Watch: https://www.youtube.com/watch?v=qChQrNWU9Xw
 	Real intPartX, intPartZ;
@@ -70,12 +70,12 @@ Math::Real Math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 	const Real height3 = GetSmoothNoise(intX, intZ + 1);
 	const Real height4 = GetSmoothNoise(intX + 1, intZ + 1);
 
-	const Math::Real i1 = Interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
-	const Math::Real i2 = Interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
-	return Interpolation::Interpolate<Real>(m_interpolationType, i1, i2, fractZ);
+	const Real i1 = interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
+	const Real i2 = interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
+	return interpolation::Interpolate<Real>(m_interpolationType, i1, i2, fractZ);
 }
 
-Math::Real Math::HeightsGenerator::GetSmoothNoise(int x, int z) const
+math::Real math::HeightsGenerator::GetSmoothNoise(int x, int z) const
 {
 	// TODO: Place for an improvement. Create a GaussianBlur class which would be able to smooth noise values a little bit more efficiently.
 	const Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
@@ -84,7 +84,7 @@ Math::Real Math::HeightsGenerator::GetSmoothNoise(int x, int z) const
 	return corners + sides + center;
 }
 
-Math::Real Math::HeightsGenerator::GetNoise(int x, int z) const
+math::Real math::HeightsGenerator::GetNoise(int x, int z) const
 {
 	m_randomGenerator.SetSeed(x * 49632 + z * 325176 + m_randomGenerator.GetSeed());
 	return m_randomGenerator.NextFloat(-1.0f, 1.0f);

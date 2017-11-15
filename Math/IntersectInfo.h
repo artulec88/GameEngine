@@ -3,7 +3,7 @@
 
 #include "Math.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo
@@ -44,9 +44,8 @@ namespace Math
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
-		MATH_API inline bool IsIntersecting() const { /* return m_distance < REAL_ZERO; */return m_isIntersecting; }
-		MATH_API inline Real GetDistance() const { return m_distance; }
+		MATH_API bool IsIntersecting() const { /* return m_distance < REAL_ZERO; */return m_isIntersecting; }
+		MATH_API Real GetDistance() const { return m_distance; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -63,6 +62,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IntersectInfo */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_INTERSECT_INFO_H__ */

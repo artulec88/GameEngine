@@ -90,7 +90,7 @@ namespace math_test
 	class VectorTestLength : public VectorTestBase<T>
 	{
 	public:
-		VectorTestLength(const T& vector, Math::Real expectedLength) :
+		VectorTestLength(const T& vector, math::Real expectedLength) :
 			VectorTestBase<T>(vector),
 			m_expectedLength(expectedLength)
 		{
@@ -101,22 +101,22 @@ namespace math_test
 	public:
 		virtual void StartTest() override
 		{
-			Math::Real lengthSquared = m_vector.LengthSquared();
-			Math::Real length = m_vector.Length();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), utility::logging::ERR,
+			math::Real lengthSquared = m_vector.LengthSquared();
+			math::Real length = m_vector.Length();
+			CHECK_CONDITION_ALWAYS_MATH_TEST(math::AlmostEqual(length, m_expectedLength), utility::logging::ERR,
 				"The vector ", m_vector, " has length ", length, ", but was expected to have length ", m_expectedLength);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), utility::logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), utility::logging::ERR,
 				"The vector ", m_vector, " has squared length ", lengthSquared, ", but expected to have squared length ", m_expectedLength * m_expectedLength);
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
 		{
 			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
-				Math::Real length = m_vector.Length();
+				math::Real length = m_vector.Length();
 			}
 		}
 	protected:
-		Math::Real m_expectedLength;
+		math::Real m_expectedLength;
 	}; /* end class VectorTestLength */
 
 	template <class T>
@@ -198,7 +198,7 @@ namespace math_test
 	class VectorTestMultiplyOperator : public VectorTestBase<T>
 	{
 	public:
-		VectorTestMultiplyOperator(const T& vector1, const T& vector2, Math::Real value, const T& expectedMultiplyVector1, const T& expectedMultiplyVector2) :
+		VectorTestMultiplyOperator(const T& vector1, const T& vector2, math::Real value, const T& expectedMultiplyVector1, const T& expectedMultiplyVector2) :
 			VectorTestBase<T>(vector1),
 			m_vector2(vector2),
 			m_value(value),
@@ -239,7 +239,7 @@ namespace math_test
 		}
 	protected:
 		T m_vector2;
-		Math::Real m_value;
+		math::Real m_value;
 		T m_expectedMultiplyVector1;
 		T m_expectedMultiplyVector2;
 	}; /* end class VectorTestMultiplyOperator */
@@ -248,7 +248,7 @@ namespace math_test
 	class VectorTestDivideOperator : public VectorTestBase<T>
 	{
 	public:
-		VectorTestDivideOperator(const T& vector1, const T& vector2, Math::Real value, const T& expectedDivideVector1, const T& expectedDivideVector2) :
+		VectorTestDivideOperator(const T& vector1, const T& vector2, math::Real value, const T& expectedDivideVector1, const T& expectedDivideVector2) :
 			VectorTestBase<T>(vector1),
 			m_vector2(vector2),
 			m_value(value),
@@ -289,7 +289,7 @@ namespace math_test
 		}
 	protected:
 		T m_vector2;
-		Math::Real m_value;
+		math::Real m_value;
 		T m_expectedDivideVector1;
 		T m_expectedDivideVector2;
 	}; /* end class VectorTestDivideOperator */
@@ -302,11 +302,11 @@ namespace math_test
 			VectorTestBase<T>(vector),
 			m_expectedNormalizedVector(expectedNormalizedVector)
 		{
-			Math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
-			Math::Real length = m_expectedNormalizedVector.Length();
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), utility::logging::ERR,
+			math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
+			math::Real length = m_expectedNormalizedVector.Length();
+			CHECK_CONDITION_ALWAYS_MATH_TEST(math::AlmostEqual(lengthSquared, REAL_ONE), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " is in fact not normalized.");
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), utility::logging::ERR,
+			CHECK_CONDITION_ALWAYS_MATH_TEST(math::AlmostEqual(length, lengthSquared), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " gives different results for length and squared length (", length, " and ", lengthSquared, " respectively).");
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedVector.IsNormalized(), utility::logging::ERR,
 				"Given expected normalized vector ", m_expectedNormalizedVector, " is in fact not normalized.");
@@ -341,37 +341,37 @@ namespace math_test
 	}; /* end class VectorTestNormalize */
 
 
-	class Vector2DTestCross : public VectorTestBase<Math::Vector2D>
+	class Vector2DTestCross : public VectorTestBase<math::Vector2D>
 	{
 	public:
-		Vector2DTestCross(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedCrossResult);
+		Vector2DTestCross(const math::Vector2D& vector1, const math::Vector2D& vector2, math::Real expectedCrossResult);
 		virtual ~Vector2DTestCross();
 	public:
 		virtual void StartTest() override;
 		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
-		Math::Vector2D m_vector2;
-		Math::Real m_expectedCrossResult;
+		math::Vector2D m_vector2;
+		math::Real m_expectedCrossResult;
 	}; /* end class Vector2DTestCross */
 
-	class Vector3DTestCross : public VectorTestBase<Math::Vector3D>
+	class Vector3DTestCross : public VectorTestBase<math::Vector3D>
 	{
 	public:
-		Vector3DTestCross(const Math::Vector3D& vector1, const Math::Vector3D& vector2, const Math::Vector3D& expectedCrossResult);
+		Vector3DTestCross(const math::Vector3D& vector1, const math::Vector3D& vector2, const math::Vector3D& expectedCrossResult);
 		virtual ~Vector3DTestCross();
 	public:
 		virtual void StartTest() override;
 		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
-		Math::Vector3D m_vector2;
-		Math::Vector3D m_expectedCrossResult;
+		math::Vector3D m_vector2;
+		math::Vector3D m_expectedCrossResult;
 	}; /* end class Vector3DTestCross */
 
 	template <class T>
 	class VectorTestDot : public VectorTestBase<T>
 	{
 	public:
-		VectorTestDot(const T& vector1, const T& vector2, Math::Real expectedDotResult) :
+		VectorTestDot(const T& vector1, const T& vector2, math::Real expectedDotResult) :
 			VectorTestBase<T>(vector1),
 			m_vector2(vector2),
 			m_expectedDotResult(expectedDotResult)
@@ -383,45 +383,45 @@ namespace math_test
 	public:
 		virtual void StartTest() override
 		{
-			Math::Real dotResult = m_vector.Dot(m_vector2);
-			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), utility::ERR,
+			math::Real dotResult = m_vector.Dot(m_vector2);
+			CHECK_CONDITION_ALWAYS_MATH_TEST(math::AlmostEqual(dotResult, m_expectedDotResult), utility::ERR,
 				"The dot product of vectors ", m_vector.ToString(), " and ", m_vector2.ToString(), " equals ", dotResult, ". It is different than expected ", m_expectedDotResult);
 		}
 		virtual void StartTimeTest(unsigned int iterationsCount) override
 		{
 			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
-				Math::Real dotResult = m_vector.Dot(m_vector2);
+				math::Real dotResult = m_vector.Dot(m_vector2);
 			}
 		}
 	protected:
 		T m_vector2;
-		Math::Real m_expectedDotResult;
+		math::Real m_expectedDotResult;
 	}; /* end class VectorTestDot */
 
-	//class Vector2DTestRotate : public VectorTestBase<Math::Vector2D>
+	//class Vector2DTestRotate : public VectorTestBase<math::Vector2D>
 	//{
 	//public:
-	//	Vector2DTestRotate(const Math::Vector2D& vec1, const Math::Angle& angle, const Math::Vector2D& expectedRotateVector);
+	//	Vector2DTestRotate(const math::Vector2D& vec1, const math::Angle& angle, const math::Vector2D& expectedRotateVector);
 	//	virtual ~Vector2DTestRotate();
 	//public:
 	//	virtual void StartTest();
 	//protected:
-	//	Math::Angle m_angle;
-	//	Math::Vector2D m_expectedRotateVector;
+	//	math::Angle m_angle;
+	//	math::Vector2D m_expectedRotateVector;
 	//}; /* end class Vector2DTestRotate */
 	//
-	//class Vector2DTestLerp : public VectorTestBase<Math::Vector2D>
+	//class Vector2DTestLerp : public VectorTestBase<math::Vector2D>
 	//{
 	//public:
-	//	Vector2DTestLerp(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real lerpFactor, const Math::Vector2D& expectedLerpVector);
+	//	Vector2DTestLerp(const math::Vector2D& vector1, const math::Vector2D& vector2, math::Real lerpFactor, const math::Vector2D& expectedLerpVector);
 	//	virtual ~Vector2DTestLerp();
 	//public:
 	//	virtual void StartTest();
 	//protected:
-	//	Math::Vector2D m_vector2;
-	//	Math::Real m_lerpFactor;
-	//	Math::Vector2D m_expectedLerpVector;
+	//	math::Vector2D m_vector2;
+	//	math::Real m_lerpFactor;
+	//	math::Vector2D m_expectedLerpVector;
 	//}; /* end class Vector2DTestLerp */
 
 } /* end namespace MathTest */

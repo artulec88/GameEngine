@@ -157,17 +157,17 @@ Rendering::Color::Color(ColorIDs::ColorID colorID) noexcept
 	}
 }
 
-Rendering::Color::Color(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha /* = REAL_ONE */) noexcept :
+Rendering::Color::Color(math::Real red, math::Real green, math::Real blue, math::Real alpha /* = REAL_ONE */) noexcept :
 	m_values(red, green, blue, alpha)
 {
 }
 
-Rendering::Color::Color(const Math::Vector3D& rgbVector) noexcept :
+Rendering::Color::Color(const math::Vector3D& rgbVector) noexcept :
 	Color(rgbVector.x, rgbVector.y, rgbVector.z, REAL_ONE)
 {
 }
 
-Rendering::Color::Color(const Math::Vector4D& rgbaVector) noexcept :
+Rendering::Color::Color(const math::Vector4D& rgbaVector) noexcept :
 	Color(rgbaVector.x, rgbaVector.y, rgbaVector.z, rgbaVector.w)
 {
 }
@@ -187,12 +187,12 @@ Rendering::Color& Rendering::Color::operator+=(const Color& color) noexcept
 	return *this;
 }
 
-Rendering::Color Rendering::Color::operator*(Math::Real value) const noexcept
+Rendering::Color Rendering::Color::operator*(math::Real value) const noexcept
 {
 	return Color(GetRed() * value, GetGreen() * value, GetBlue() * value, GetAlpha() * value);
 }
 
-Rendering::Color& Rendering::Color::operator*=(Math::Real value) noexcept
+Rendering::Color& Rendering::Color::operator*=(math::Real value) noexcept
 {
 	m_values.Set(GetRed() * value, GetGreen() * value, GetBlue() * value, GetAlpha() * value);
 	return *this;

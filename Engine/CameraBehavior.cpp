@@ -35,7 +35,7 @@ void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, States:
 	WARNING_LOG_ENGINE("Handling state ", state, " by the static camera.");
 }
 
-void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value)
+void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the static camera.");
 }
@@ -62,7 +62,7 @@ void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, State
 	WARNING_LOG_ENGINE("Handling state ", state, " by the rotation camera.");
 }
 
-void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value)
+void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the rotation camera.");
 }
@@ -89,7 +89,7 @@ void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, State
 	WARNING_LOG_ENGINE("Handling state ", state, " by the movement camera.");
 }
 
-void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value)
+void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the movement camera.");
 }

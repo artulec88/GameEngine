@@ -9,6 +9,10 @@ namespace utility
 
 	class ISerializable
 	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
+
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		UTILITY_API ISerializable()
 		{
@@ -16,10 +20,16 @@ namespace utility
 		UTILITY_API virtual ~ISerializable()
 		{
 		}
-	public:
+		/* ==================== Constructors and destructors begin ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
 		UTILITY_API virtual std::string ToString() const = 0;
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member functions end ==================== */
 	}; /* end class ISerializable */
 
-} /* end namespace Utility */
+} /* end namespace utility */
 
 #endif /* __UTILITY_ISERIALIZABLE_H__ */

@@ -28,14 +28,14 @@ TwType Rendering::shadowInfoType;
 	fogCalculationType = TwDefineEnum("FogCalculationType", fogCalculationTypeEV, 2);
 
 	TwStructMember angleMembers[] = { { "Angle", TW_TYPE_REAL, 0, " precision=1 "} };
-	angleType = TwDefineStruct("Angle", angleMembers, 1, sizeof(Math::Angle), NULL, NULL);
+	angleType = TwDefineStruct("Angle", angleMembers, 1, sizeof(math::Angle), NULL, NULL);
 
 	TwStructMember vector3DMembers[3] = {
 		{ "X", TW_TYPE_REAL, 0, " precision=2 "},
 		{ "Y", TW_TYPE_REAL, 4, " precision=2 "},
 		{ "Z", TW_TYPE_REAL, 8, " precision=2 "}
 	};
-	vector3DType = TwDefineStruct("Vector", vector3DMembers, 3, sizeof(Math::Vector3D), NULL, NULL);
+	vector3DType = TwDefineStruct("Vector", vector3DMembers, 3, sizeof(math::Vector3D), NULL, NULL);
 
 	TwStructMember matrix4DRowMembers [4] = {
 		{ "[0]", TW_TYPE_REAL, 0, " precision=2 " },
@@ -43,7 +43,7 @@ TwType Rendering::shadowInfoType;
 		{ "[2]", TW_TYPE_REAL, 32, " precision=2 " },
 		{ "[3]", TW_TYPE_REAL, 48, " precision=2 " },
 	};
-	matrix4DRowType = TwDefineStruct("Matrix4DRow", matrix4DRowMembers, 4, sizeof(Math::Matrix4D), NULL, NULL);
+	matrix4DRowType = TwDefineStruct("Matrix4DRow", matrix4DRowMembers, 4, sizeof(math::Matrix4D), NULL, NULL);
 
 	TwStructMember matrix4DMembers[4] = {
 		{ "[0]", matrix4DRowType, 0, "" },
@@ -51,7 +51,7 @@ TwType Rendering::shadowInfoType;
 		{ "[2]", matrix4DRowType, 8, "" },
 		{ "[3]", matrix4DRowType, 12, "" }
 	};
-	matrix4DType = TwDefineStruct("Matrix4D", matrix4DMembers, 4, sizeof(Math::Matrix4D) / 4, NULL, NULL);
+	matrix4DType = TwDefineStruct("Matrix4D", matrix4DMembers, 4, sizeof(math::Matrix4D) / 4, NULL, NULL);
 
 	TwStructMember shadowInfoMembers[6] = {
 		{ "Projection", matrix4DType, 4, "" },

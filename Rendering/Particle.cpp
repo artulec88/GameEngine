@@ -18,8 +18,8 @@ Rendering::Particles::Particle::Particle() :
 	STOP_PROFILING_RENDERING("1");
 }
 
-Rendering::Particles::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
-	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale) :
+Rendering::Particles::Particle::Particle(const math::Vector3D& position, const math::Vector3D& velocity,
+	math::Real gravityEffectFactor, math::Real lifespanLimit, const math::Angle& rotation, math::Real scale) :
 	m_position(position),
 	m_velocity(velocity),
 	m_gravityEffectFactor(gravityEffectFactor),
@@ -102,8 +102,8 @@ Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(Partic
 	return *this;
 }
 
-void Rendering::Particles::Particle::Revive(const Math::Vector3D& position, const Math::Vector3D& velocity,
-	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale)
+void Rendering::Particles::Particle::Revive(const math::Vector3D& position, const math::Vector3D& velocity,
+	math::Real gravityEffectFactor, math::Real lifespanLimit, const math::Angle& rotation, math::Real scale)
 {
 	START_PROFILING_RENDERING(false, "");
 	//CHECK_CONDITION_ALWAYS_RENDERING(!IsAlive(), Utility::Logging::WARNING, "The particle is not dead.");
@@ -117,7 +117,7 @@ void Rendering::Particles::Particle::Revive(const Math::Vector3D& position, cons
 	STOP_PROFILING_RENDERING("");
 }
 
-bool Rendering::Particles::Particle::Update(Math::Real deltaTime)
+bool Rendering::Particles::Particle::Update(math::Real deltaTime)
 {
 	START_PROFILING_RENDERING(false, "");
 	m_velocity.y += GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime;
@@ -131,14 +131,14 @@ bool Rendering::Particles::Particle::Update(Math::Real deltaTime)
 	//return IsAlive();
 }
 
-void Rendering::Particles::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const
+void Rendering::Particles::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, math::Vector2D& textureOffset0, math::Vector2D& textureOffset1, math::Real& textureAtlasBlendFactor) const
 {
 	START_PROFILING_RENDERING(false, "");
 	/* Updating the texture offsets and the blend factor begin */
-	Math::Real lifeSpanFactor = m_lifeSpan / m_lifeSpanLimit;
+	math::Real lifeSpanFactor = m_lifeSpan / m_lifeSpanLimit;
 	int stageCount = textureAtlasRowsCount * textureAtlasRowsCount;
-	Math::Real textureAtlasProgression = lifeSpanFactor * stageCount;
-	int index0 = Math::Floor(textureAtlasProgression);
+	math::Real textureAtlasProgression = lifeSpanFactor * stageCount;
+	int index0 = math::Floor(textureAtlasProgression);
 	int index1 = (index0 == stageCount - 1) ? index0 : index0 + 1;
 	textureAtlasBlendFactor = textureAtlasProgression - static_cast<int>(textureAtlasProgression); // fractional part of the variable
 	

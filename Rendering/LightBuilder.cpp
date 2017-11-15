@@ -3,10 +3,10 @@
 
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
 Rendering::DirectionalLightBuilder::DirectionalLightBuilder() :
-	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosX", 0.0f),
+	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosZ", 0.0f)),
-		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleX", -45.0f)),
-			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleZ", 0.0f)))),
+		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleX", -45.0f)),
+			math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleY", 0.0f)), math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorAlpha", 1.0f)),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoFlipFacesEnabled", true),
@@ -29,14 +29,14 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 	//	GET_CONFIG_VALUE_GAME("directionalLightPosZ", GET_CONFIG_VALUE_GAME("defaultDirectionalLightPosZ", 0.0f)));
 
 	//// Determining rotation
-	//const Math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleX", -45.0f), Math::Unit::DEGREE);
-	//const Math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleY", REAL_ZERO), Math::Unit::DEGREE);
-	//const Math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleZ", REAL_ZERO), Math::Unit::DEGREE);
-	//Math::Angle angleX(GET_CONFIG_VALUE_GAME("directionalLightAngleX", defaultDirectionalLightRotationX.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
-	//Math::Angle angleY(GET_CONFIG_VALUE_GAME("directionalLightAngleY", defaultDirectionalLightRotationY.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
-	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	//const math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleX", -45.0f), math::units::DEGREE);
+	//const math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleY", REAL_ZERO), math::units::DEGREE);
+	//const math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE_GAME("defaultDirectionalLightAngleZ", REAL_ZERO), math::units::DEGREE);
+	//math::Angle angleX(GET_CONFIG_VALUE_GAME("directionalLightAngleX", defaultDirectionalLightRotationX.Get(math::units::DEGREE)), math::units::DEGREE);
+	//math::Angle angleY(GET_CONFIG_VALUE_GAME("directionalLightAngleY", defaultDirectionalLightRotationY.Get(math::units::DEGREE)), math::units::DEGREE);
+	//math::Angle angleZ(GET_CONFIG_VALUE_GAME("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(math::units::DEGREE)), math::units::DEGREE);
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
 //void Rendering::DirectionalLightBuilder::BuildLightParams()
@@ -58,15 +58,15 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 	//m_minVariance = GET_CONFIG_VALUE_GAME("directionalLightMinVariance", GET_CONFIG_VALUE_GAME("defaultDirectionalLightMinVariance", 0.00002f));
 
 	//// Setting additional directional light information
-	////Math::Real maxIntensity = directionalLight->GetIntensity();
+	////math::Real maxIntensity = directionalLight->GetIntensity();
 	////const Rendering::Color sunlightDaytimeColor(directionalLight->GetColor());
 	////const Rendering::Color sunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE_GAME("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE_GAME("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE_GAME("directionalLightNearHorizonColorBlue", REAL_ZERO)));
 	////const Rendering::Color sunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE_GAME("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE_GAME("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE_GAME("directionalLightNighttimeColorBlue", REAL_ZERO)));
 
 	////m_object->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor,
-	////	Math::Angle(GET_CONFIG_VALUE_GAME("latitude", 52.0f)), Math::Angle(GET_CONFIG_VALUE_GAME("longitude", -16.0f)),
-	////	Math::Angle(GET_CONFIG_VALUE_GAME("sunlightFirstElevationLevel", -REAL_ONE)), Math::Angle(GET_CONFIG_VALUE_GAME("sunlightSecondElevationLevel", REAL_ZERO)),
-	////	Math::Angle(GET_CONFIG_VALUE_GAME("sunlightThirdElevationLevel", REAL_ONE))));
+	////	math::Angle(GET_CONFIG_VALUE_GAME("latitude", 52.0f)), math::Angle(GET_CONFIG_VALUE_GAME("longitude", -16.0f)),
+	////	math::Angle(GET_CONFIG_VALUE_GAME("sunlightFirstElevationLevel", -REAL_ONE)), math::Angle(GET_CONFIG_VALUE_GAME("sunlightSecondElevationLevel", REAL_ZERO)),
+	////	math::Angle(GET_CONFIG_VALUE_GAME("sunlightThirdElevationLevel", REAL_ONE))));
 //}
 
 void Rendering::DirectionalLightBuilder::BuildShaders()
@@ -82,7 +82,7 @@ void Rendering::DirectionalLightBuilder::BuildShaders()
 	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
-	//m_object->SetTransform(Math::Transform(m_pos, m_rot, REAL_ONE));
+	//m_object->SetTransform(math::Transform(m_pos, m_rot, REAL_ONE));
 
 	//m_object->SetColor(m_color);
 	//m_object->SetIntensity(m_intensity);
@@ -108,13 +108,13 @@ void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
 	m_gameNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
 	m_gameNode->AddComponent(new MeshRendererComponent(m_gameManager->GetMesh("DirectionalLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::DIRECTIONAL_LIGHT), 1.0f, 8.0f)));
 
-	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
-	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
+	math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
+	math::Vector3D rayEndPosition = forwardVec * 2.0f;
 	//DELOCUST_LOG_ENGINE("light position = ", m_gameNode->GetTransform().GetTransformedPos(), ";\t light rotation = ",
 	//	m_gameNode->GetTransform().GetTransformedRot(), ";\t light forward vector = ", forwardVec, ";\t light end pos = ",
 	//	(m_gameNode->GetTransform().GetTransformedPos() + rayEndPosition));
 
-	//Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
+	//Vertex vertices [] = { Vertex(math::Vector3D()), Vertex(rayEndPosition) };
 	//int indices [] = { 0, 1 };
 	//m_gameNode->AddComponent(new MeshRenderer(
 	//	new Mesh(vertices, 2, indices, 2, false, GL_LINES),
@@ -125,10 +125,10 @@ void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
 
 /* ==================== PointLightBuilder implementation begin ==================== */
 Rendering::PointLightBuilder::PointLightBuilder() :
-	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultPointLightPosX", 0.0f),
+	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultPointLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightPosZ", 0.0f)),
-		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleX", -45.0f)),
-			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleZ", 0.0f)))),
+		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleX", -45.0f)),
+			math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleY", 0.0f)), math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultPointLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultPointLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorAlpha", 1.0f)),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightIntensity", 1.0f), false, 0, REAL_ONE, REAL_ZERO, REAL_ZERO),
@@ -146,11 +146,11 @@ Rendering::PointLightBuilder::PointLightBuilder() :
 	//	GET_CONFIG_VALUE_GAME("pointLightPosZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetZ()));
 
 	//// Determining rotation
-	//Math::Angle angleX(GET_CONFIG_VALUE_GAME("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-	//Math::Angle angleY(GET_CONFIG_VALUE_GAME("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+	//math::Angle angleX(GET_CONFIG_VALUE_GAME("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.Get(math::units::DEGREE)));
+	//math::Angle angleY(GET_CONFIG_VALUE_GAME("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.Get(math::units::DEGREE)));
+	//math::Angle angleZ(GET_CONFIG_VALUE_GAME("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(math::units::DEGREE)));
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
 //void Rendering::PointLightBuilder::BuildLightParams()
@@ -165,9 +165,9 @@ Rendering::PointLightBuilder::PointLightBuilder() :
 	//m_intensity = GET_CONFIG_VALUE_GAME("pointLightIntensity_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_INTENSITY);
 
 	//// Determining attenuation
-	//Math::Real constant = GET_CONFIG_VALUE_GAME("pointLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetConstant());
-	//Math::Real linear = GET_CONFIG_VALUE_GAME("pointLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetLinear());
-	//Math::Real exponent = GET_CONFIG_VALUE_GAME("pointLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
+	//math::Real constant = GET_CONFIG_VALUE_GAME("pointLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetConstant());
+	//math::Real linear = GET_CONFIG_VALUE_GAME("pointLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetLinear());
+	//math::Real exponent = GET_CONFIG_VALUE_GAME("pointLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
 	//m_attenuation = std::move(Rendering::Attenuation(constant, linear, exponent));
 
 	//// TODO: Setting shadow info
@@ -187,7 +187,7 @@ void Rendering::PointLightBuilder::BuildShaders()
 	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
-	//m_object->SetTransform(Math::Transform(m_pos, m_rot, REAL_ONE));
+	//m_object->SetTransform(math::Transform(m_pos, m_rot, REAL_ONE));
 
 	//m_object->SetColor(m_color);
 	//m_object->SetIntensity(m_intensity);
@@ -216,17 +216,17 @@ void Rendering::PointLightBuilder::BuildMeshRenderer()
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
 Rendering::SpotLightBuilder::SpotLightBuilder() :
-	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosX", 0.0f),
+	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosZ", 0.0f)),
-		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleX", -45.0f)),
-			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleZ", 0.0f)))),
+		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleX", -45.0f)),
+			math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleY", 0.0f)), math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorAlpha", 1.0f)),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoFlipFacesEnabled", false),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowMapSizeAsPowerOf2", 10), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowSoftness", REAL_ONE),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoLightBleedingReductionFactor", 0.2f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightMinVariance", 0.00002f)),
 	M_DEFAULT_SPOT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationExponent", 0.05f)),
-	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightViewAngle", 120.0f), Math::Unit::DEGREE),
+	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightViewAngle", 120.0f), math::units::DEGREE),
 	M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoProjectionNearPlane", 0.1f)),
 	m_attenuation(M_DEFAULT_SPOT_LIGHT_ATTENUATION),
 	m_viewAngle(M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE),
@@ -242,11 +242,11 @@ Rendering::SpotLightBuilder::SpotLightBuilder() :
 	//	GET_CONFIG_VALUE_GAME("spotLightPosZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetZ()));
 
 	//// Determining rotation
-	//Math::Angle angleX(GET_CONFIG_VALUE_GAME("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-	//Math::Angle angleY(GET_CONFIG_VALUE_GAME("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+	//math::Angle angleX(GET_CONFIG_VALUE_GAME("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.Get(math::units::DEGREE)));
+	//math::Angle angleY(GET_CONFIG_VALUE_GAME("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.Get(math::units::DEGREE)));
+	//math::Angle angleZ(GET_CONFIG_VALUE_GAME("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(math::units::DEGREE)));
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
 //void Rendering::SpotLightBuilder::BuildLightParams()
@@ -261,13 +261,13 @@ Rendering::SpotLightBuilder::SpotLightBuilder() :
 	//m_intensity = GET_CONFIG_VALUE_GAME("spotLightIntensity_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_INTENSITY);
 
 	//// Setting attenuation
-	//Math::Real constant = GET_CONFIG_VALUE_GAME("spotLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetConstant());
-	//Math::Real linear = GET_CONFIG_VALUE_GAME("spotLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetLinear());
-	//Math::Real exponent = GET_CONFIG_VALUE_GAME("spotLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetExponent());
+	//math::Real constant = GET_CONFIG_VALUE_GAME("spotLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetConstant());
+	//math::Real linear = GET_CONFIG_VALUE_GAME("spotLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetLinear());
+	//math::Real exponent = GET_CONFIG_VALUE_GAME("spotLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetExponent());
 	//m_attenuation = Rendering::Attenuation(constant, linear, exponent);
 
 	//// Setting shadow info
-	//m_viewAngle.Set(GET_CONFIG_VALUE_GAME("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	//m_viewAngle.Set(GET_CONFIG_VALUE_GAME("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.Get(math::units::DEGREE)), math::units::DEGREE);
 	//m_shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE_GAME("spotLightShadowMapSizeAsPowerOf2_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2);
 	//m_nearPlane = GET_CONFIG_VALUE_GAME("spotLightProjectionNearPlane", 0.1f);
 	//m_shadowSoftness = GET_CONFIG_VALUE_GAME("spotLightShadowSoftness_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS);
@@ -290,7 +290,7 @@ void Rendering::SpotLightBuilder::BuildShaders()
 	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
-	//m_object->SetTransform(Math::Transform(m_pos, m_rot));
+	//m_object->SetTransform(math::Transform(m_pos, m_rot));
 	//m_object->SetColor(m_color);
 	//m_object->SetIntensity(m_intensity);
 	//m_object->SetAttenuation(m_attenuation);

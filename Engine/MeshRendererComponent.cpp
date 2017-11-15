@@ -44,7 +44,7 @@ void engine::MeshRendererComponent::Render(int shaderID, Rendering::Renderer* re
 	CHECK_CONDITION_ENGINE(m_material != NULL, Utility::Logging::WARNING, "Rendering a mesh while the material is NULL.");
 
 
-	//const Math::Transform& transform = GetTransform();
+	//const math::Transform& transform = GetTransform();
 	//renderer->AddRenderCommand(shader, m_mesh, m_material, &transform);
 	renderer->Render(m_meshID, m_material, GetTransform(), shaderID);
 }

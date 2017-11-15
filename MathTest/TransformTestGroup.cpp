@@ -19,7 +19,7 @@ TransformTestGroup::~TransformTestGroup()
 /* ==================== class TransformTestGroup end ==================== */
 
 /* ==================== class TransformTestBase begin ==================== */
-TransformTestBase::TransformTestBase(const Math::Transform& transform) :
+TransformTestBase::TransformTestBase(const math::Transform& transform) :
 	Test(),
 	m_transform(transform)
 {
@@ -31,7 +31,7 @@ TransformTestBase::~TransformTestBase()
 /* ==================== class TransformTestBase end ==================== */
 
 /* ==================== class TransformTestCompare begin ==================== */
-TransformTestCompare::TransformTestCompare(const Math::Transform& transform1, const Math::Transform& transform2, bool expectedCompareResult) :
+TransformTestCompare::TransformTestCompare(const math::Transform& transform1, const math::Transform& transform2, bool expectedCompareResult) :
 	TransformTestBase(transform1),
 	m_compareTransform(transform2),
 	m_expectedCompareResult(expectedCompareResult)
@@ -63,7 +63,7 @@ void TransformTestCompare::StartTimeTest(unsigned int iterationsCount)
 
 
 /* ==================== class TransformTestParent begin ==================== */
-TransformTestParent::TransformTestParent(const Math::Transform& parentTransform, const Math::Transform& childTransform, const Math::Transform& expectedChildFinalTransform) :
+TransformTestParent::TransformTestParent(const math::Transform& parentTransform, const math::Transform& childTransform, const math::Transform& expectedChildFinalTransform) :
 	TransformTestBase(parentTransform),
 	m_childTransform(childTransform),
 	m_expectedChildFinalTransform(expectedChildFinalTransform)
@@ -77,11 +77,11 @@ TransformTestParent::~TransformTestParent()
 
 void TransformTestParent::StartTest()
 {
-	Math::Vector3D childPos = m_childTransform.GetTransformedPos();
+	math::Vector3D childPos = m_childTransform.GetTransformedPos();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(childPos == m_expectedChildFinalTransform.GetPos(), utility::logging::ERR,
 		"The transformed position of the child transform equals: ", childPos, " while it was expected to equal: ", m_expectedChildFinalTransform.GetPos());
 
-	Math::Quaternion childRot = m_childTransform.GetTransformedRot();
+	math::Quaternion childRot = m_childTransform.GetTransformedRot();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(childRot == m_expectedChildFinalTransform.GetRot(), utility::logging::ERR,
 		"The transformed rotation of the child transform equals: ", childRot, " while it was expected to equal: ", m_expectedChildFinalTransform.GetRot());
 

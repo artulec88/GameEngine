@@ -24,7 +24,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
+		ENGINE_API ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit);
 		ENGINE_API virtual ~ParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -39,11 +39,11 @@ namespace engine
 		/// <returns>
 		/// The number of particles that are alive.
 		/// </returns>
-		ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
+		ENGINE_API void SortParticles(const math::Vector3D& originPosition /* cameraPosition */);
 
-		ENGINE_API void Update(Math::Real deltaTime);
-		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime) = 0;
-		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition) = 0;
+		ENGINE_API void Update(math::Real deltaTime);
+		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime) = 0;
+		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition) = 0;
 	protected:
 		inline int FindDeadParticleIndex() const
 		{
@@ -76,14 +76,14 @@ namespace engine
 		Rendering::Particles::ParticleTexture* m_particleTexture;
 		std::array<Rendering::Particles::Particle, MAX_PARTICLES_COUNT> m_particles;
 		//Rendering::ParticleContainer m_particles;
-		Math::Real m_particleLifeSpanLimit;
+		math::Real m_particleLifeSpanLimit;
 
-		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
-		Math::Real m_timeForGeneratingOneParticle; // TODO: Replace with timespan object
+		mutable math::Real m_currentTimer; // TODO: Replace with timespan object
+		math::Real m_timeForGeneratingOneParticle; // TODO: Replace with timespan object
 		int m_aliveParticlesCount;
 		mutable int m_lastRevivedParticleIndex;
 
-		const Math::Random::RandomGenerator& m_randomGenerator;
+		const math::random::RandomGenerator& m_randomGenerator;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticlesSystem */
 
@@ -94,21 +94,21 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
+		ENGINE_API FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
 		ENGINE_API virtual ~FireParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime);
-		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
+		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime);
+		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition)
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			Math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			Math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
-			Math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			Math::Vector3D velocity(dirX, dirY, dirZ);
+			math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
 			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
@@ -117,10 +117,10 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Real m_particleSpeed;
-		Math::Real m_particleGravityComplient;
-		Math::Angle m_particleRotation;
-		Math::Real m_particleScale;
+		math::Real m_particleSpeed;
+		math::Real m_particleGravityComplient;
+		math::Angle m_particleRotation;
+		math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FireParticlesSystem */
 
@@ -131,21 +131,21 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
+		ENGINE_API FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
 		ENGINE_API virtual ~FreeFallParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime);
-		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
+		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime);
+		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition)
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			Math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			Math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
-			Math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			Math::Vector3D velocity(dirX, dirY, dirZ);
+			math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
 			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
@@ -154,10 +154,10 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Real m_particleSpeed;
-		Math::Real m_particleGravityComplient;
-		Math::Angle m_particleRotation;
-		Math::Real m_particleScale;
+		math::Real m_particleSpeed;
+		math::Real m_particleGravityComplient;
+		math::Angle m_particleRotation;
+		math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FreeFallParticlesSystem */
 

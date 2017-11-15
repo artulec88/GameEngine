@@ -94,7 +94,7 @@ Game::TestGameManager::~TestGameManager(void)
 //		std::stringstream ss("");
 //		ss << (i + 1);
 //		m_singleValueStaticEffects.emplace_back(GET_CONFIG_VALUE_GAME("staticValue_" + ss.str(), 0.2f));
-//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_singleValueStaticEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::STATIC, &m_singleValueStaticEffects.back());
 //	}
 //	const int staticVec2DEffectsCount = GET_CONFIG_VALUE_GAME("staticVec2DEffectsCount", 4);
 //	m_vec2DStaticEffects.reserve(staticVec2DEffectsCount);
@@ -102,9 +102,9 @@ Game::TestGameManager::~TestGameManager(void)
 //	{
 //		std::stringstream ss("");
 //		ss << (i + 1);
-//		m_vec2DStaticEffects.emplace_back(Math::Vector2D(GET_CONFIG_VALUE_GAME("staticVector2D_X_" + ss.str(), 1.0f),
+//		m_vec2DStaticEffects.emplace_back(math::Vector2D(GET_CONFIG_VALUE_GAME("staticVector2D_X_" + ss.str(), 1.0f),
 //			GET_CONFIG_VALUE_GAME("staticVector2D_Y_" + ss.str(), 1.0f)));
-//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec2DStaticEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::STATIC, &m_vec2DStaticEffects.back());
 //	}
 //	const int staticVec3DEffectsCount = GET_CONFIG_VALUE_GAME("staticVec3DEffectsCount", 4);
 //	m_vec3DStaticEffects.reserve(staticVec3DEffectsCount);
@@ -112,9 +112,9 @@ Game::TestGameManager::~TestGameManager(void)
 //	{
 //		std::stringstream ss("");
 //		ss << (i + 1);
-//		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE_GAME("staticVector3D_X_" + ss.str(), 1.0f),
+//		m_vec3DStaticEffects.emplace_back(math::Vector3D(GET_CONFIG_VALUE_GAME("staticVector3D_X_" + ss.str(), 1.0f),
 //			GET_CONFIG_VALUE_GAME("staticVector3D_Y_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("staticVector3D_Z_" + ss.str(), 1.0f)));
-//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec3DStaticEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::STATIC, &m_vec3DStaticEffects.back());
 //	}
 //}
 
@@ -128,8 +128,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		ssVariant << (variant + 1);
 //		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothValuesCount_" + ssVariant.str(), 2);
 //		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
-//		std::vector<Math::Real> values;
-//		std::vector<Math::Real> times;
+//		std::vector<math::Real> values;
+//		std::vector<math::Real> times;
 //		values.reserve(smoothValuesCount);
 //		times.reserve(smoothValuesCount);
 //		for (size_t j = 0; j < smoothValuesCount; ++j)
@@ -140,7 +140,7 @@ Game::TestGameManager::~TestGameManager(void)
 //			times.push_back(GET_CONFIG_VALUE_GAME("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //		m_singleValueSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_singleValueSmoothEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::SMOOTH, &m_singleValueSmoothEffects.back());
 //	}
 //	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE_GAME("smoothVec2DEffectsCount", 4);
 //	m_vec2DSmoothEffects.reserve(smoothVec2DEffectsCount);
@@ -150,8 +150,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		ssVariant << (variant + 1);
 //		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothVec2DCount_" + ssVariant.str(), 2);
 //		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
-//		std::vector<Math::Vector2D> values;
-//		std::vector<Math::Real> times;
+//		std::vector<math::Vector2D> values;
+//		std::vector<math::Real> times;
 //		values.reserve(smoothValuesCount);
 //		times.reserve(smoothValuesCount);
 //		for (size_t j = 0; j < smoothValuesCount; ++j)
@@ -163,7 +163,7 @@ Game::TestGameManager::~TestGameManager(void)
 //		}
 //
 //		m_vec2DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec2DSmoothEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::SMOOTH, &m_vec2DSmoothEffects.back());
 //	}
 //	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE_GAME("smoothVec3DEffectsCount", 4);
 //	m_vec3DSmoothEffects.reserve(smoothVec3DEffectsCount);
@@ -173,8 +173,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		ssVariant << (variant + 1);
 //		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
 //		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothVec3DCount_" + ssVariant.str(), 2);
-//		std::vector<Math::Vector3D> values;
-//		std::vector<Math::Real> times;
+//		std::vector<math::Vector3D> values;
+//		std::vector<math::Real> times;
 //		values.reserve(smoothValuesCount);
 //		times.reserve(smoothValuesCount);
 //		for (size_t j = 0; j < smoothValuesCount; ++j)
@@ -187,7 +187,7 @@ Game::TestGameManager::~TestGameManager(void)
 //		}
 //
 //		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec3DSmoothEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::SMOOTH, &m_vec3DSmoothEffects.back());
 //	}
 //}
 
@@ -200,8 +200,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
 //		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkValuesCount_" + ssVariant.str(), 2);
-//		std::vector<Math::Real> values;
-//		std::vector<Math::Real> durations;
+//		std::vector<math::Real> values;
+//		std::vector<math::Real> durations;
 //		values.reserve(blinkValuesCount);
 //		durations.reserve(blinkValuesCount);
 //		for (size_t j = 0; j < blinkValuesCount; ++j)
@@ -212,7 +212,7 @@ Game::TestGameManager::~TestGameManager(void)
 //			durations.push_back(GET_CONFIG_VALUE_GAME("blinkValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //		m_singleValueBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_singleValueBlinkEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::BLINK, &m_singleValueBlinkEffects.back());
 //	}
 //	const int blinkVec2DEffectsCount = GET_CONFIG_VALUE_GAME("blinkVec2DEffectsCount", 4);
 //	m_vec2DBlinkEffects.reserve(blinkVec2DEffectsCount);
@@ -221,8 +221,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
 //		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkVec2DCount_" + ssVariant.str(), 2);
-//		std::vector<Math::Vector2D> values;
-//		std::vector<Math::Real> durations;
+//		std::vector<math::Vector2D> values;
+//		std::vector<math::Real> durations;
 //		values.reserve(blinkValuesCount);
 //		durations.reserve(blinkValuesCount);
 //		for (size_t j = 0; j < blinkValuesCount; ++j)
@@ -234,7 +234,7 @@ Game::TestGameManager::~TestGameManager(void)
 //		}
 //
 //		m_vec2DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec2DBlinkEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::BLINK, &m_vec2DBlinkEffects.back());
 //	}
 //	const int blinkVec3DEffectsCount = GET_CONFIG_VALUE_GAME("blinkVec3DEffectsCount", 4);
 //	m_vec3DBlinkEffects.reserve(blinkVec3DEffectsCount);
@@ -243,8 +243,8 @@ Game::TestGameManager::~TestGameManager(void)
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
 //		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkVec3DCount_" + ssVariant.str(), 2);
-//		std::vector<Math::Vector3D> values;
-//		std::vector<Math::Real> durations;
+//		std::vector<math::Vector3D> values;
+//		std::vector<math::Real> durations;
 //		values.reserve(blinkValuesCount);
 //		durations.reserve(blinkValuesCount);
 //		for (size_t j = 0; j < blinkValuesCount; ++j)
@@ -257,18 +257,18 @@ Game::TestGameManager::~TestGameManager(void)
 //		}
 //
 //		m_vec3DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec3DBlinkEffects.back());
+//		m_effectFactory.CreateEffect(Rendering::effects::BLINK, &m_vec3DBlinkEffects.back());
 //	}
 //}
 
-Math::Real Game::TestGameManager::GetLoadingProgress() const
+math::Real Game::TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
 		WARNING_LOG_GAME("Resources loaded (", m_resourcesLoaded, ") exceeds the total number of expected resources (", RESOURCES_TO_LOAD, ")");
 		return REAL_ONE;
 	}
-	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
+	return static_cast<math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
 }
 
 engine::GameState* Game::TestGameManager::GetLoadGameState()
@@ -329,12 +329,12 @@ void Game::TestGameManager::Load()
 
 	//Engine::GameNode* testMesh1 = new Engine::GameNode();
 	//testMesh1->GetTransform().SetPos(-2.0f, 2.0f, 2.0f);
-	//testMesh1->GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
+	//testMesh1->GetTransform().SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	//testMesh1->GetTransform().SetScale(0.1f);
 	//Engine::GameNode* testMesh2 = new Engine::GameNode();
 	//testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	////testMesh2->GetTransform().SetScale(1.5f);
-	//testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
+	//testMesh2->GetTransform().SetRot(math::Quaternion(math::Matrix4D(math::Angle(90.0f), math::Angle(90.0f), math::Angle(0.0f))));
 	//testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0, m_textureFactory.CreateTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"), m_textureFactory.CreateTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	//m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	//testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
@@ -343,12 +343,12 @@ void Game::TestGameManager::Load()
 	//testMesh1->AddChild(testMesh2);
 	//Engine::GameNode* testMesh3 = new Engine::GameNode();
 	//testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
-	//testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
+	//testMesh3->GetTransform().SetRot(math::Matrix4D(math::Angle(0.0f), math::Angle(0.0f), math::Angle(-180.0f)));
 	//testMesh3->GetTransform().SetScale(0.25f);
 	//testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
 	//AddToSceneRoot(testMesh3);
 
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
+	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 
 	//Engine::GameNode* monkeyNode1 = new Engine::GameNode();
 	//monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
@@ -365,7 +365,7 @@ void Game::TestGameManager::Load()
 	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f),
 	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
 	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f),
-	////	Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)),
+	////	math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)),
 	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
 	//AddToSceneRoot(monkeyNode1);
 
@@ -395,7 +395,7 @@ void Game::TestGameManager::Load()
 }
 
 // TODO: temporary code. Remove in the future.
-//Rendering::Particles::ParticlesSystem Game::TestGameManager::CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect)
+//Rendering::Particles::ParticlesSystem Game::TestGameManager::CreateParticlesSystem(Particleeffects::ParticleEffect particleEffect)
 //{
 	//ParticlesSystemBuilder particlesSystemBuilder(this, particleEffect);
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
@@ -422,7 +422,7 @@ void Game::TestGameManager::Load()
 //	stdlog(INFO, LOGPLACE, "The game is being cleaned up");
 //}
 
-void Game::TestGameManager::Update(Math::Real delta)
+void Game::TestGameManager::Update(math::Real delta)
 {
 	START_PROFILING_GAME(true, "");
 	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
@@ -471,9 +471,9 @@ void Game::TestGameManager::InitializeTweakBars()
 	//TwAddVarRO(testGamePropertiesBar, "temp1", TW_TYPE_INT32, &HUMAN_NODES_COUNT, " label='Human count' group='Terrain' ");
 	//TwAddVarRO(testGamePropertiesBar, "temp2", TW_TYPE_INT32, &pointLightCount, " label='Human count' group='Box' ");
 
-	//terrainMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
+	//terrainMaterial->SetVector3D("Vec1", math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
 	//terrainMaterial->InitializeTweakBar(testGamePropertiesBar, "Terrain");
-	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
+	//boxMaterial->SetVector3D("Vec1", math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
 
 	//TwRemoveVar(testGamePropertiesBar, "temp1");

@@ -8,9 +8,9 @@
 
 #include <xmmintrin.h>
 
-/* static */ const Math::Matrix4D Math::Matrix4D::IDENTITY_MATRIX;
+/* static */ const math::Matrix4D math::Matrix4D::IDENTITY_MATRIX;
 
-Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
+math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "7");
@@ -33,7 +33,7 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
 	STOP_PROFILING_MATH("7");
 }
 
-Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ) :
+math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "8"); // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
@@ -85,7 +85,7 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 	/* ==================== SOLUTION #2 end ==================== */
 }
 
-Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right) :
+math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right) :
 	Matrix4D(right.x, up.x, forward.x, REAL_ZERO, right.y, up.y, forward.y, REAL_ZERO, right.z, up.z, forward.z, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "9");
@@ -95,7 +95,7 @@ Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vect
 	STOP_PROFILING_MATH("9");
 }
 
-Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up) :
+math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "10");
@@ -106,7 +106,7 @@ Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up) :
 	STOP_PROFILING_MATH("10");
 }
 
-Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */) :
+math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "11");
@@ -114,7 +114,7 @@ Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* As
 	STOP_PROFILING_MATH("11");
 }
 
-Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane) :
+math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane) :
 	Matrix4D(2.0f / (right - left), REAL_ZERO, REAL_ZERO, REAL_ZERO,
 		REAL_ZERO, 2.0f / (top - bottom), REAL_ZERO, REAL_ZERO,
 		REAL_ZERO, REAL_ZERO, -2.0f / (farPlane - nearPlane), REAL_ZERO,
@@ -124,7 +124,7 @@ Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real near
 	STOP_PROFILING_MATH("12");
 }
 
-Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
+math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 	m_values(mat.m_values)
 #ifdef PROFILING_MATH_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
@@ -136,7 +136,7 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 	STOP_PROFILING_MATH("13");
 }
 
-Math::Matrix4D::Matrix4D(Matrix4D&& mat) noexcept:
+math::Matrix4D::Matrix4D(Matrix4D&& mat) noexcept:
 	m_values(std::move(mat.m_values))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
@@ -147,11 +147,11 @@ Math::Matrix4D::Matrix4D(Matrix4D&& mat) noexcept:
 	STOP_PROFILING_MATH("14");
 }
 
-Math::Matrix4D::~Matrix4D()
+math::Matrix4D::~Matrix4D()
 {
 }
 
-Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
+math::Matrix4D& math::Matrix4D::operator=(const Matrix4D& mat)
 {
 	START_PROFILING_MATH(true, "");
 
@@ -164,7 +164,7 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 	return *this;
 }
 
-Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat) noexcept
+math::Matrix4D& math::Matrix4D::operator=(Matrix4D&& mat) noexcept
 {
 	START_PROFILING_MATH(false, "");
 	m_values = std::move(mat.m_values);
@@ -173,14 +173,14 @@ Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat) noexcept
 	return *this;
 }
 
-Math::Matrix4D::Matrix4D(const Math::Real* values) :
+math::Matrix4D::Matrix4D(const math::Real* values) :
 	Matrix4D(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15])
 {
 	START_PROFILING_MATH(false, "15");
 	STOP_PROFILING_MATH("15");
 }
 
-void Math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
+void math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
 	__m128 row1 = _mm_load_ps(&B[0]);
 	__m128 row2 = _mm_load_ps(&B[4]);
 	__m128 row3 = _mm_load_ps(&B[8]);
@@ -201,7 +201,7 @@ void Math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
 	}
 }
 
-Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
+math::Matrix4D math::Matrix4D::operator*(const Matrix4D& mat) const
 {
 	START_PROFILING_MATH(true, "");
 	/* ==================== SOLUTION #1 (doesn't work!!!) begin ==================== */
@@ -276,15 +276,15 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 
 	/* ==================== SOLUTION #3 begin ==================== */
 	//Matrix4D matrix;
-//	const Math::Real m00 = m_values[0][0]; const Math::Real m01 = m_values[0][1]; const Math::Real m02 = m_values[0][2]; const Math::Real m03 = m_values[0][3];
-//	const Math::Real m10 = m_values[1][0]; const Math::Real m11 = m_values[1][1]; const Math::Real m12 = m_values[1][2]; const Math::Real m13 = m_values[1][3];
-//	const Math::Real m20 = m_values[2][0]; const Math::Real m21 = m_values[2][1]; const Math::Real m22 = m_values[2][2]; const Math::Real m23 = m_values[2][3];
-//	const Math::Real m30 = m_values[3][0]; const Math::Real m31 = m_values[3][1]; const Math::Real m32 = m_values[3][2]; const Math::Real m33 = m_values[3][3];
+//	const math::Real m00 = m_values[0][0]; const math::Real m01 = m_values[0][1]; const math::Real m02 = m_values[0][2]; const math::Real m03 = m_values[0][3];
+//	const math::Real m10 = m_values[1][0]; const math::Real m11 = m_values[1][1]; const math::Real m12 = m_values[1][2]; const math::Real m13 = m_values[1][3];
+//	const math::Real m20 = m_values[2][0]; const math::Real m21 = m_values[2][1]; const math::Real m22 = m_values[2][2]; const math::Real m23 = m_values[2][3];
+//	const math::Real m30 = m_values[3][0]; const math::Real m31 = m_values[3][1]; const math::Real m32 = m_values[3][2]; const math::Real m33 = m_values[3][3];
 //
-//	const Math::Real b00 = mat.m_values[0][0]; const Math::Real b01 = mat.m_values[0][1]; const Math::Real b02 = mat.m_values[0][2]; const Math::Real b03 = mat.m_values[0][3];
-//	const Math::Real b10 = mat.m_values[1][0]; const Math::Real b11 = mat.m_values[1][1]; const Math::Real b12 = mat.m_values[1][2]; const Math::Real b13 = mat.m_values[1][3];
-//	const Math::Real b20 = mat.m_values[2][0]; const Math::Real b21 = mat.m_values[2][1]; const Math::Real b22 = mat.m_values[2][2]; const Math::Real b23 = mat.m_values[2][3];
-//	const Math::Real b30 = mat.m_values[3][0]; const Math::Real b31 = mat.m_values[3][1]; const Math::Real b32 = mat.m_values[3][2]; const Math::Real b33 = mat.m_values[3][3];
+//	const math::Real b00 = mat.m_values[0][0]; const math::Real b01 = mat.m_values[0][1]; const math::Real b02 = mat.m_values[0][2]; const math::Real b03 = mat.m_values[0][3];
+//	const math::Real b10 = mat.m_values[1][0]; const math::Real b11 = mat.m_values[1][1]; const math::Real b12 = mat.m_values[1][2]; const math::Real b13 = mat.m_values[1][3];
+//	const math::Real b20 = mat.m_values[2][0]; const math::Real b21 = mat.m_values[2][1]; const math::Real b22 = mat.m_values[2][2]; const math::Real b23 = mat.m_values[2][3];
+//	const math::Real b30 = mat.m_values[3][0]; const math::Real b31 = mat.m_values[3][1]; const math::Real b32 = mat.m_values[3][2]; const math::Real b33 = mat.m_values[3][3];
 //
 //#ifdef MATRIX_MODE_TWO_DIMENSIONS
 //	matrix.m_values[0][0] = m00 * b00 + m10 * b01 + m20 * b02 + m30 * b03;
@@ -362,7 +362,7 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #5 end ==================== */
 }
 
-Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
+math::Vector3D math::Matrix4D::operator*(const Vector3D& vec) const
 {
 	START_PROFILING_MATH(true, "");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -385,7 +385,7 @@ Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
 	//	(m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]) * oneperw);
 }
 
-Math::Vector4D Math::Matrix4D::operator*(const Vector4D& vec) const
+math::Vector4D math::Matrix4D::operator*(const Vector4D& vec) const
 {
 	START_PROFILING_MATH(true, "");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -406,7 +406,7 @@ Math::Vector4D Math::Matrix4D::operator*(const Vector4D& vec) const
 /**
  * @see Matrix4D::IsIdentity
  */
-bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
+bool math::Matrix4D::operator==(const Matrix4D& matrix) const
 {
 	START_PROFILING_MATH(false, "");
 	/**
@@ -433,12 +433,12 @@ bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
 	return true;
 }
 
-bool Math::Matrix4D::operator!=(const Matrix4D& matrix) const
+bool math::Matrix4D::operator!=(const Matrix4D& matrix) const
 {
 	return (!((*this) == matrix));
 }
 
-Math::Matrix4D Math::Matrix4D::Transposition() const
+math::Matrix4D math::Matrix4D::Transposition() const
 {
 	START_PROFILING_MATH(true, "");
 	Matrix4D matrix;
@@ -463,7 +463,7 @@ Math::Matrix4D Math::Matrix4D::Transposition() const
 	return matrix;
 }
 
-Math::Real Math::Matrix4D::Det(int p, int q) const
+math::Real math::Matrix4D::Det(int p, int q) const
 {
 	START_PROFILING_MATH(true, "");
 	/*
@@ -503,7 +503,7 @@ Math::Real Math::Matrix4D::Det(int p, int q) const
 	return result;
 }
 
-Math::Matrix4D Math::Matrix4D::Inversion() const
+math::Matrix4D math::Matrix4D::Inversion() const
 {
 	START_PROFILING_MATH(true, "");
 	Real det = 0;
@@ -546,7 +546,7 @@ Math::Matrix4D Math::Matrix4D::Inversion() const
 /**
  * @see Matrix4D::operator ==
  */
-bool Math::Matrix4D::IsIdentity() const
+bool math::Matrix4D::IsIdentity() const
 {
 	START_PROFILING_MATH(false, "");
 	/**
@@ -589,7 +589,7 @@ bool Math::Matrix4D::IsIdentity() const
 	return true;
 }
 
-void Math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
+void math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 {
 	START_PROFILING_MATH(false, "");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -606,7 +606,7 @@ void Math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 	STOP_PROFILING_MATH("");
 }
 
-void Math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
+void math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
 {
 	SetElement(0, 0, 2.0f / (right - left));
 	SetElement(0, 1, REAL_ZERO);
@@ -626,7 +626,7 @@ void Math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom,
 	SetElement(3, 3, REAL_ONE);
 }
 
-void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
+void math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
 {
 	START_PROFILING_MATH(false, "");
 	Angle halfAngle(fov / static_cast<Real>(2.0));
@@ -659,7 +659,7 @@ void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Rea
 	STOP_PROFILING_MATH("");
 }
 
-Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec) const
+math::Vector3D math::Matrix4D::Transform(const Vector3D& vec) const
 {
 	// This function is very similar (almost the same) to the Matrix4D.operator*(Vector3D) function. Investigate that and remove one of them if possible.
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -683,7 +683,7 @@ Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec) const
 	//}
 }
 
-Math::Vector3D* Math::Matrix4D::TransformPositions(Vector3D* vectors, int vectorsCount) const
+math::Vector3D* math::Matrix4D::TransformPositions(Vector3D* vectors, int vectorsCount) const
 {
 	for (int i = 0; i < vectorsCount; ++i)
 	{
@@ -692,7 +692,7 @@ Math::Vector3D* Math::Matrix4D::TransformPositions(Vector3D* vectors, int vector
 	return vectors;
 }
 
-void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+void math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
 	Vector3D f = forward.Normalized();
 	Vector3D u = up.Normalized();

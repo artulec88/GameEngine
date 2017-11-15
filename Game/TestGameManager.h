@@ -40,9 +40,9 @@ namespace Game
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void Load();
-		virtual void Update(Math::Real delta);
+		virtual void Update(math::Real delta);
 
-		virtual Math::Real GetLoadingProgress() const;
+		virtual math::Real GetLoadingProgress() const;
 
 		virtual engine::GameState* GetIntroGameState();
 		virtual engine::GameState* GetMainMenuGameState();
@@ -57,7 +57,7 @@ namespace Game
 		virtual void InitializeTweakBars();
 #endif
 	private:
-		//Rendering::Particles::ParticlesSystem CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
+		//Rendering::Particles::ParticlesSystem CreateParticlesSystem(Particleeffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
 		//void AddCameras(Engine::GameNode* entityToFollow);
 		//void AddStaticEffects();
 		//void AddSmoothEffects();
@@ -67,7 +67,7 @@ namespace Game
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const int RESOURCES_TO_LOAD;
-		const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
+		const math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 		int m_resourcesLoaded;
 
 		std::unique_ptr<engine::GameState> m_introGameState;
@@ -83,17 +83,17 @@ namespace Game
 		SaveGameCommand m_saveGameCommand;
 		LoadGameCommand m_loadGameCommand;
 
-		//std::vector<Rendering::Effects::Effect<Math::Real>> m_singleValueStaticEffects;
-		//std::vector<Rendering::Effects::Effect<Math::Vector2D>> m_vec2DStaticEffects;
-		//std::vector<Rendering::Effects::Effect<Math::Vector3D>> m_vec3DStaticEffects;
-		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Real>> m_singleValueSmoothEffects;
-		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>> m_vec2DSmoothEffects;
-		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>> m_vec3DSmoothEffects;
-		//std::vector<Rendering::Effects::BlinkEffect<Math::Real>> m_singleValueBlinkEffects;
-		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector2D>> m_vec2DBlinkEffects;
-		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector3D>> m_vec3DBlinkEffects;
+		//std::vector<Rendering::effects::Effect<math::Real>> m_singleValueStaticEffects;
+		//std::vector<Rendering::effects::Effect<math::Vector2D>> m_vec2DStaticEffects;
+		//std::vector<Rendering::effects::Effect<math::Vector3D>> m_vec3DStaticEffects;
+		//std::vector<Rendering::effects::SmoothTransitionEffect<math::Real>> m_singleValueSmoothEffects;
+		//std::vector<Rendering::effects::SmoothTransitionEffect<math::Vector2D>> m_vec2DSmoothEffects;
+		//std::vector<Rendering::effects::SmoothTransitionEffect<math::Vector3D>> m_vec3DSmoothEffects;
+		//std::vector<Rendering::effects::BlinkEffect<math::Real>> m_singleValueBlinkEffects;
+		//std::vector<Rendering::effects::BlinkEffect<math::Vector2D>> m_vec2DBlinkEffects;
+		//std::vector<Rendering::effects::BlinkEffect<math::Vector3D>> m_vec3DBlinkEffects;
 
-		Math::Real m_timeToUpdateCameraHeight;
+		math::Real m_timeToUpdateCameraHeight;
 
 		engine::GameNode* m_boxNode;
 
@@ -102,7 +102,7 @@ namespace Game
 		bool m_heightMapCalculationEnabled;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 
 		/* ==================== Non-static member variables end ==================== */

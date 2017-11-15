@@ -5,17 +5,17 @@
 
 #include <sstream>
 
-Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture,
-	const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset,
-	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
-	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, math::Real fontSize, const Texture* iconTexture,
+	const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale, math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const math::Vector2D& offset,
+	bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
+	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	GuiControl(screenPosition, screenRotationAngle, scale),
 	m_mesh(nullptr),
 	m_text(text),
 	m_font(font),
 	m_fontSize(fontSize),
 	m_iconTexture(iconTexture),
-	m_iconTransformationMatrix(screenPosition, screenRotationAngle, Math::Vector2D(0.05f, 0.05f)),
+	m_iconTransformationMatrix(screenPosition, screenRotationAngle, math::Vector2D(0.05f, 0.05f)),
 	m_color(textColor),
 	m_outlineColor(outlineColor),
 	m_maxLineLength(maxLineLength),
@@ -35,8 +35,8 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	else
 	{
 		// Replace all such calls to create new meshes with reference to one single mesh (probably MeshIDs::SIMPLE_QUAD).
-		Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
-		Math::Vector2D quadTexCoords[] = { Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ONE) };
+		math::Vector2D quadVertexPositions[] = { math::Vector2D(-REAL_ONE, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ONE), math::Vector2D(-REAL_ONE, -REAL_ONE), math::Vector2D(REAL_ONE, -REAL_ONE) };
+		math::Vector2D quadTexCoords[] = { math::Vector2D(REAL_ZERO, REAL_ZERO), math::Vector2D(REAL_ZERO, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ZERO), math::Vector2D(REAL_ONE, REAL_ONE) };
 		m_mesh = std::make_unique<Mesh>(quadVertexPositions, quadTexCoords, 4, GL_TRIANGLE_STRIP);
 	}
 }
@@ -86,14 +86,14 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 
 	// Creating quad vertices based on the lines vector
 	m_linesCount = static_cast<int>(lines.size());
-	Math::Real minCursorX = REAL_MAX;
-	Math::Real maxCursorX = REAL_MIN;
-	Math::Real cursorY = REAL_ZERO;
-	std::vector<Math::Vector2D> positions;
-	std::vector<Math::Vector2D> textureCoordinates;
+	math::Real minCursorX = REAL_MAX;
+	math::Real maxCursorX = REAL_MIN;
+	math::Real cursorY = REAL_ZERO;
+	std::vector<math::Vector2D> positions;
+	std::vector<math::Vector2D> textureCoordinates;
 	for (std::vector<Text::Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
 	{
-		Math::Real cursorX = (m_isCentered) ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
+		math::Real cursorX = (m_isCentered) ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
 		if (minCursorX > cursorX)
 		{
 			minCursorX = cursorX;
@@ -103,14 +103,14 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 			for (std::vector<Text::Character>::const_iterator characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
 			{
 				// Adding positions
-				const Math::Real x = cursorX + (characterItr->GetOffset().x * m_fontSize);
-				const Math::Real y = cursorY + (characterItr->GetOffset().y * m_fontSize);
-				const Math::Real maxX = x + (characterItr->GetSize().x * m_fontSize);
-				const Math::Real maxY = y + (characterItr->GetSize().y * m_fontSize);
-				const Math::Real properX = (2.0f * x) - 1.0f;
-				const Math::Real properY = (-2.0f * y) + 1.0f;
-				const Math::Real properMaxX = (2.0f * maxX) - 1.0f;
-				const Math::Real properMaxY = (-2.0f * maxY) + 1.0f;
+				const math::Real x = cursorX + (characterItr->GetOffset().x * m_fontSize);
+				const math::Real y = cursorY + (characterItr->GetOffset().y * m_fontSize);
+				const math::Real maxX = x + (characterItr->GetSize().x * m_fontSize);
+				const math::Real maxY = y + (characterItr->GetSize().y * m_fontSize);
+				const math::Real properX = (2.0f * x) - 1.0f;
+				const math::Real properY = (-2.0f * y) + 1.0f;
+				const math::Real properMaxX = (2.0f * maxX) - 1.0f;
+				const math::Real properMaxY = (-2.0f * maxY) + 1.0f;
 
 				//CRITICAL_LOG_RENDERING(tempCount++, ")\n\t(x, y) = (", x, ", ", y, ");\n\t(maxX, maxY) = (", maxX, ", ", maxY,
 				//	");\n\t(properX, properY) = (", properX, ", ", properY, ");\n\t(properMaxX, properMaxY) = (", properMaxX, ", ", properMaxY, ");");
@@ -154,7 +154,7 @@ void Rendering::Controls::GuiButtonControl::Draw(const Shader* guiControlShader,
 	else if (m_iconTexture != NULL)
 	{
 		DELOCUST_LOG_RENDERING("Rendering button with icon");
-		//renderer.Render(*m_mesh, NULL, Math::Transform(), guiControlShader);
+		//renderer.Render(*m_mesh, NULL, math::Transform(), guiControlShader);
 		guiControlShader->Bind();
 		m_iconTexture->Bind(0);
 		guiControlShader->SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
@@ -163,37 +163,37 @@ void Rendering::Controls::GuiButtonControl::Draw(const Shader* guiControlShader,
 	}
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyColorEffect(const Math::Effects::Effect<Color>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyColorEffect(const math::effects::Effect<Color>& effect)
 {
 	effect.Apply(&m_color);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect)
 {
 	effect.Apply(&m_outlineColor);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect)
 {
 	effect.Apply(&m_offset);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	effect.Apply(&m_characterWidth);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	effect.Apply(&m_characterEdgeTransitionWidth);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	effect.Apply(&m_borderWidth);
 }
 
-void Rendering::Controls::GuiButtonControl::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiButtonControl::ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	effect.Apply(&m_borderEdgeTransitionWidth);
 }

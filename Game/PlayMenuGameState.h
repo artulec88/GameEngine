@@ -30,7 +30,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
+		PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, math::Real playMainMenuFontSize);
 		virtual ~PlayMenuGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -42,7 +42,7 @@ namespace Game
 		virtual void Revealed();
 		virtual void Handle(engine::Actions::Action action);
 		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 
@@ -59,16 +59,16 @@ namespace Game
 	private:
 		engine::GameManager* m_gameManager;
 		engine::CompositeMenuEntry m_playMainMenuRootEntry;
-		//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
-		//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
-		//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
-		//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
-		//Rendering::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-		//Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
-		Math::Real m_mousePosX, m_mousePosY;
+		//Rendering::effects::Effect<math::Vector3D>* m_notSelectedMenuEntryColorEffect;
+		//Rendering::effects::Effect<math::Vector3D>* m_selectedMenuEntryColorEffect;
+		//Rendering::effects::Effect<math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
+		//Rendering::effects::Effect<math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
+		//Rendering::effects::Effect<math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
+		//Rendering::effects::Effect<math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+		math::Real m_mousePosX, m_mousePosY;
 		engine::MenuEntry* m_currentMenuEntry;
 #ifdef PROFILING_GAME_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayMenuGameState */

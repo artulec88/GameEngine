@@ -56,7 +56,7 @@ const utility::container::List<T>* utility::container::List<T>::GetTail() const
 template <class T>
 int utility::container::List<T>::GetSize() const
 {
-	int size = 1;
+	auto size = 1;
 	while (m_tailList != nullptr)
 	{
 		m_tailList = m_tailList->GetTail();

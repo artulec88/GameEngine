@@ -42,7 +42,7 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				void Set(ParticlesContainer* particleContainer, size_t i, const Math::Vector3D& velocity)
+				void Set(ParticlesContainer* particleContainer, size_t i, const math::Vector3D& velocity)
 				{
 					particleContainer->SetVelocity(i, velocity);
 				}
@@ -63,19 +63,19 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantVelocityGenerator(const Math::Vector3D& velocity);
-				RENDERING_API ConstantVelocityGenerator(Math::Real velocityX, Math::Real velocityY, Math::Real velocityZ);
+				RENDERING_API ConstantVelocityGenerator(const math::Vector3D& velocity);
+				RENDERING_API ConstantVelocityGenerator(math::Real velocityX, math::Real velocityY, math::Real velocityZ);
 				RENDERING_API virtual ~ConstantVelocityGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Vector3D m_velocity;
+				math::Vector3D m_velocity;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ConstantVelocityGenerator */
 
@@ -89,24 +89,24 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API RangeVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ);
+				RENDERING_API RangeVelocityGenerator(math::Real minSpeedX, math::Real maxSpeedX, math::Real minSpeedY, math::Real maxSpeedY, math::Real minSpeedZ, math::Real maxSpeedZ);
 				RENDERING_API virtual ~RangeVelocityGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_minSpeedX;
-				Math::Real m_maxSpeedX;
-				Math::Real m_minSpeedY;
-				Math::Real m_maxSpeedY;
-				Math::Real m_minSpeedZ;
-				Math::Real m_maxSpeedZ;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				math::Real m_minSpeedX;
+				math::Real m_maxSpeedX;
+				math::Real m_minSpeedY;
+				math::Real m_maxSpeedY;
+				math::Real m_minSpeedZ;
+				math::Real m_maxSpeedZ;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeVelocityGenerator */
 		} /* end namespace Generators */

@@ -74,7 +74,7 @@ audio::AudioEngine_FMOD::~AudioEngine_FMOD()
 	NOTICE_LOG_AUDIO("Audio engine destroyed.");
 }
 
-void audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
+void audio::AudioEngine_FMOD::Update(math::Real deltaTime)
 {
 	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
 	{
@@ -143,12 +143,12 @@ void audio::AudioEngine_FMOD::Load(Categories::Category type, const std::string&
 	m_sounds[type].insert(std::make_pair(path, sound));
 }
 
-Math::Real audio::AudioEngine_FMOD::ChangeOctave(Math::Real frequency, Math::Real variation) const
+math::Real audio::AudioEngine_FMOD::ChangeOctave(math::Real frequency, math::Real variation) const
 {
 	return frequency * pow(OCTAVE_RATIO, variation);
 }
 
-Math::Real audio::AudioEngine_FMOD::ChangeSemitone(Math::Real frequency, Math::Real variation) const
+math::Real audio::AudioEngine_FMOD::ChangeSemitone(math::Real frequency, math::Real variation) const
 {
 	return frequency * pow(SEMITONE_RATIO, variation);
 }
@@ -161,7 +161,7 @@ void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path)
 	PlaySoundEffect(path, volume, pitch);
 }
 
-void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, Math::Real volume, Math::Real pitch)
+void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, math::Real volume, math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT].find(path);
@@ -172,21 +172,21 @@ void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, Math::Rea
 	}
 
 	// Calculating random volume and pitch in selected range
-	//const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
-	//Math::Real volume = randomGenerator.NextFloat(minVolume, maxVolume);
-	//Math::Real pitch = randomGenerator.NextFloat(minPitch, maxPitch);
+	//const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::Generators::SIMPLE);
+	//math::Real volume = randomGenerator.NextFloat(minVolume, maxVolume);
+	//math::Real pitch = randomGenerator.NextFloat(minPitch, maxPitch);
 
 	// Playing the sound effect with these initial values
 	FMOD::Channel* channel;
 	m_system->playSound(soundItr->second, m_groups[Categories::SOUND_EFFECT], true, &channel);
 	channel->setVolume(volume);
-	Math::Real frequency;
+	math::Real frequency;
 	channel->getFrequency(&frequency);
 	channel->setFrequency(ChangeSemitone(frequency, pitch));
 	channel->setPaused(false);
 }
 
-void audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity)
+void audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity)
 {
 	// Trying to find sound effect and return if not found
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT_3D].find(path);
@@ -200,7 +200,7 @@ void audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, Math::R
 	FMOD::Channel* channel;
 	m_system->playSound(soundItr->second, m_groups[Categories::SOUND_EFFECT_3D], true, &channel);
 	channel->setVolume(volume);
-	Math::Real frequency;
+	math::Real frequency;
 	channel->getFrequency(&frequency);
 	channel->setFrequency(ChangeSemitone(frequency, pitch));
 	const FMOD_VECTOR fmodPosition = { position.x, position.y, position.z };
@@ -243,17 +243,17 @@ void audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better p
 	m_fade = FadeStates::FADE_IN;
 }
 
-void audio::AudioEngine_FMOD::SetMasterVolume(Math::Real volume)
+void audio::AudioEngine_FMOD::SetMasterVolume(math::Real volume)
 {
 	m_master->setVolume(volume);
 }
 
-void audio::AudioEngine_FMOD::SetSoundEffectsVolume(Math::Real volume)
+void audio::AudioEngine_FMOD::SetSoundEffectsVolume(math::Real volume)
 {
 	m_groups[Categories::SOUND_EFFECT]->setVolume(volume);
 }
 
-void audio::AudioEngine_FMOD::SetSongsVolume(Math::Real volume)
+void audio::AudioEngine_FMOD::SetSongsVolume(math::Real volume)
 {
 	m_groups[Categories::SONG]->setVolume(volume);
 }

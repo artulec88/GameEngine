@@ -1,11 +1,11 @@
 #ifndef __MATH_EFFECT_IDS_H__
 #define __MATH_EFFECT_IDS_H__
 
-namespace Math
+namespace math
 {
-	namespace Effects
+	namespace effects
 	{
-		namespace EffectIDs
+		namespace effect_ids
 		{
 			// TODO: Rename the value names with some more self-explanatory ones.
 			enum EffectID
@@ -39,8 +39,8 @@ namespace Math
 				BLINK_VEC3D_THREE,
 				COUNT,
 			}; /* end enum EffectID */
-		} /* end namespace EffectIDs */
-	} /* end namespace Effects */
-} /* end namespace Math */
+		} /* end namespace effect_ids */
+	} /* end namespace effects */
+} /* end namespace math */
 
 #endif /* __MATH_EFFECT_IDS_H__ */

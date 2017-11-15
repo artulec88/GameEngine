@@ -5,8 +5,8 @@
 #include "ISort.h"
 #include <vector>
 
-namespace Math {
-	namespace Sorting {
+namespace math {
+	namespace sorting {
 
 		/// <summary>
 		/// The object representation of the bubble sort algorithm.
@@ -48,15 +48,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
 			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -129,15 +129,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -206,15 +206,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -291,15 +291,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -332,7 +332,7 @@ namespace Math {
 				size_t j = pivot + 1 - left;
 				size_t q = left;
 				size_t i;
-				//Math::Vector2D* t = new Math::Vector2D [right - left + 1];
+				//Vector2D* t = new Vector2D [right - left + 1];
 				size_t k = 0;
 				for (i = left; i <= right; ++i, ++k)
 				{
@@ -405,15 +405,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey, orders::Order sortingOrder)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -527,15 +527,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey, orders::Order sortingOrder)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -625,15 +625,15 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey, orders::Order sortingOrder)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -646,7 +646,7 @@ namespace Math {
 				const size_t QUARTER_VECTOR_SIZE = vectorSize / 4;
 				const size_t FIRST_CONST_INDEX = 1;
 				const size_t LAST_CONST_INDEX = 701;
-				const Math::Real RECURSIVE_INDEX_STEP = 2.25f;
+				const Real RECURSIVE_INDEX_STEP = 2.25f;
 				int constIndices[] = { FIRST_CONST_INDEX, 4, 10, 23, 57, 132, 301, LAST_CONST_INDEX };
 				std::vector<size_t> indices(constIndices, constIndices + sizeof(constIndices) / sizeof(int));
 				if (indices.back() >= QUARTER_VECTOR_SIZE)
@@ -658,11 +658,11 @@ namespace Math {
 				}
 				else
 				{
-					int nextIndex = Floor(static_cast<Math::Real>(LAST_CONST_INDEX) * RECURSIVE_INDEX_STEP);
+					int nextIndex = Floor(static_cast<Real>(LAST_CONST_INDEX) * RECURSIVE_INDEX_STEP);
 					while (nextIndex < QUARTER_VECTOR_SIZE)
 					{
 						indices.push_back(nextIndex);
-						nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
+						nextIndex = Floor(static_cast<Real>(nextIndex) * RECURSIVE_INDEX_STEP);
 					}
 				}
 				CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Logging::ERR,
@@ -733,18 +733,18 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey, orders::Order sortingOrder)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -759,7 +759,7 @@ namespace Math {
 
 				// TODO: replace with some predefined const from the configuration file.
 				// This value is set by the rule of thumb (see http://en.wikipedia.org/wiki/Comb_sort)
-				Math::Real shrink = 1.3f;
+				Real shrink = 1.3f;
 
 				bool swapOccured = false;
 				while (gap != 1 || swapOccured)
@@ -824,12 +824,12 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -876,12 +876,12 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -903,7 +903,7 @@ namespace Math {
 				Bucket() : m_lowBound(REAL_MIN), m_highBound(REAL_MAX)
 				{
 				}
-				Bucket(Math::Real lowBound, Math::Real highBound) : m_lowBound(lowBound), m_highBound(highBound)
+				Bucket(Real lowBound, Real highBound) : m_lowBound(lowBound), m_highBound(highBound)
 				{
 				}
 				~Bucket()
@@ -916,18 +916,18 @@ namespace Math {
 				Bucket& operator=(Bucket&& bucket) = delete;
 			public:
 				bool IsEmpty() const { return m_vectors.empty(); }
-				Math::Real GetLowBound() const { return m_lowBound; }
-				Math::Real GetHighBound() const { return m_highBound; }
-				void SetLowBound(Math::Real lowBound) { m_lowBound = lowBound; }
-				void SetHighBound(Math::Real highBound) { m_highBound = highBound; }
+				Real GetLowBound() const { return m_lowBound; }
+				Real GetHighBound() const { return m_highBound; }
+				void SetLowBound(Real lowBound) { m_lowBound = lowBound; }
+				void SetHighBound(Real highBound) { m_highBound = highBound; }
 				void PushVector(const T& vector) { m_vectors.push_back(vector); }
 				T* GetVectors() { return &m_vectors[0]; }
 				const T& GetVector(int i) const { return m_vectors[i]; }
 				size_t GetVectorsSize() const { return m_vectors.size(); }
 			private:
 				std::vector<T> m_vectors;
-				Math::Real m_lowBound; // TODO: Remove this member variable in the future. It is not used anywhere
-				Math::Real m_highBound; // TODO: Remove this member variable in the future. It is not used anywhere.
+				Real m_lowBound; // TODO: Remove this member variable in the future. It is not used anywhere
+				Real m_highBound; // TODO: Remove this member variable in the future. It is not used anywhere.
 			};
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
@@ -961,14 +961,14 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
-			void FindMinMax(Math::Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey, Math::Real& minValue, Math::Real& maxValue)
+			void FindMinMax(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey, Real& minValue, Real& maxValue)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
@@ -977,7 +977,7 @@ namespace Math {
 				maxValue = REAL_MIN;
 				for (int i = 0; i < vectorSize; ++i)
 				{
-					Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+					Real value = CollectValueByKey(vectors[i], sortingKey);
 					if (minValue > value)
 					{
 						minValue = value;
@@ -990,7 +990,7 @@ namespace Math {
 				CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 			}
 
-			void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey, Math::Real& minValue, Math::Real& maxValue)
+			void FindMinMax(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey, Real& minValue, Real& maxValue)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
@@ -999,7 +999,7 @@ namespace Math {
 				maxValue = REAL_MIN;
 				for (int i = 0; i < vectorSize; ++i)
 				{
-					Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+					Real value = CollectValueByKey(vectors[i], sortingKey);
 					if (minValue > value)
 					{
 						minValue = value;
@@ -1013,18 +1013,18 @@ namespace Math {
 			}
 
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
+			void Sort(T* vectors, size_t vectorSize, keys::Key sortingKey, orders::Order sortingOrder)
 			{
-				Math::Real minValue, maxValue;
+				Real minValue, maxValue;
 				FindMinMax(vectors, vectorSize, sortingKey, minValue, maxValue);
 				//DEBUG_LOG_MATH("minValue = ", minValue, "; maxValue = ", maxValue);
 
 				//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
-				const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
-				const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
+				const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Real>(vectorSize)));
+				const Real bucketWidth = static_cast<Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
 				std::vector<Bucket<T>> buckets;
 				buckets.reserve(NUMBER_OF_BUCKETS);
-				Math::Real bucketLowBound = minValue;
+				Real bucketLowBound = minValue;
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
 					buckets.emplace_back(bucketLowBound, bucketLowBound + bucketWidth);
@@ -1034,7 +1034,7 @@ namespace Math {
 
 				for (int i = 0; i < vectorSize; ++i)
 				{
-					Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+					Real value = CollectValueByKey(vectors[i], sortingKey);
 					//DEBUG_LOG_MATH("vectors[", i, "] = ", vectors[i].ToString(), " and the value = ", value);
 
 					// Calculate the index of the bucket to which we will add the vector
@@ -1047,7 +1047,7 @@ namespace Math {
 					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 					buckets[bucketIndex].PushVector(vectors[i]);
 				}
-				std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::SortingAlgorithms::INSERTION_SORT);
+				std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(sorting::sorting_algorithms::INSERTION_SORT);
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
 					//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
@@ -1071,7 +1071,7 @@ namespace Math {
 				int index = 0;
 				switch (sortingOrder)
 				{
-				case Orders::ASCENDING:
+				case orders::ASCENDING:
 					for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1080,7 +1080,7 @@ namespace Math {
 						}
 					}
 					break;
-				case Orders::DESCENDING:
+				case orders::DESCENDING:
 					for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1090,8 +1090,8 @@ namespace Math {
 					}
 					break;
 				default:
-					ERROR_LOG_MATH("Unknown sorting direction value (", sortingOrder, "). Only ASCENDING (", Orders::ASCENDING,
-						") and DESCENDING (", Orders::DESCENDING, ") are acceptable.");
+					ERROR_LOG_MATH("Unknown sorting direction value (", sortingOrder, "). Only ASCENDING (", orders::ASCENDING,
+						") and DESCENDING (", orders::DESCENDING, ") are acceptable.");
 					break;
 				}
 			}
@@ -1099,16 +1099,16 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				Math::Real minValue, maxValue;
+				Real minValue, maxValue;
 				FindMinMax(vectors, vectorSize, sortingParameters.GetKey(), minValue, maxValue);
 				//DEBUG_LOG_MATH("minValue = ", minValue, "; maxValue = ", maxValue);
 
 				//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
-				const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
-				const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
+				const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Real>(vectorSize)));
+				const Real bucketWidth = static_cast<Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
 				std::vector<Bucket<T>> buckets;
 				buckets.reserve(NUMBER_OF_BUCKETS);
-				Math::Real bucketLowBound = minValue;
+				Real bucketLowBound = minValue;
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
 					buckets.emplace_back(bucketLowBound, bucketLowBound + bucketWidth);
@@ -1118,7 +1118,7 @@ namespace Math {
 
 				for (int i = 0; i < vectorSize; ++i)
 				{
-					Math::Real value = CollectValueByKey(vectors[i], sortingParameters.GetKey());
+					Real value = CollectValueByKey(vectors[i], sortingParameters.GetKey());
 					//DEBUG_LOG_MATH("vectors[", i, "] = ", vectors[i].ToString(), " and the value = ", value);
 
 					// Calculate the index of the bucket to which we will add the vector
@@ -1131,7 +1131,7 @@ namespace Math {
 					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 					buckets[bucketIndex].PushVector(vectors[i]);
 				}
-				std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::SortingAlgorithms::INSERTION_SORT);
+				std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(sorting::sorting_algorithms::INSERTION_SORT);
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
 					//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
@@ -1155,7 +1155,7 @@ namespace Math {
 				int index = 0;
 				switch (sortingParameters.GetOrder())
 				{
-				case Orders::ASCENDING:
+				case orders::ASCENDING:
 					for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1164,7 +1164,7 @@ namespace Math {
 						}
 					}
 					break;
-				case Orders::DESCENDING:
+				case orders::DESCENDING:
 					for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1175,7 +1175,7 @@ namespace Math {
 					break;
 				default:
 					ERROR_LOG_MATH("Unknown sorting order value (", sortingParameters.GetOrder(), "). Only ASCENDING (",
-						Orders::ASCENDING, ") and DESCENDING (", Orders::DESCENDING, ") are acceptable.");
+						orders::ASCENDING, ") and DESCENDING (", orders::DESCENDING, ") are acceptable.");
 					break;
 				}
 			}

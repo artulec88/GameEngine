@@ -41,7 +41,6 @@ namespace utility {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			void SetItem(const T& item);
 			T& GetItem();
 			const T& GetItem() const;

@@ -7,11 +7,11 @@
 #include <map>
 #include <memory>
 
-namespace Math
+namespace math
 {
-	namespace Random
+	namespace random
 	{
-		namespace GeneratorIDs
+		namespace generator_ids
 		{
 			enum GeneratorID
 			{
@@ -34,14 +34,14 @@ namespace Math
 				SHUFFLE_ORDER_ENGINE,
 				SUBTRACT_WITH_CARRY_ENGINE
 			}; /* end enum GeneratorID */
-		} /* end namespace GeneratorIDs */
+		} /* end namespace generator_ids */
 
 		/// <summary>
 		/// The random number generator factory.
 		/// </summary>
 		class RandomGeneratorFactory
 		{
-			using RandomGeneratorsMap = std::map<GeneratorIDs::GeneratorID, std::unique_ptr<RandomGenerator>>;
+			using RandomGeneratorsMap = std::map<generator_ids::GeneratorID, std::unique_ptr<RandomGenerator>>;
 		/* ==================== Static variables begin ==================== */
 		public:
 			MATH_API static RandomGeneratorFactory& GetRandomGeneratorFactory();
@@ -88,7 +88,7 @@ namespace Math
 			/// <returns>
 			/// The unmodifiable reference of the random generator stored for the specified <paramref name="randomGeneratorID"/> and initialized with the given <paramref name="seed"/>.
 			/// </returns>
-			MATH_API const RandomGenerator& GetRandomGenerator(GeneratorIDs::GeneratorID randomGeneratorID, unsigned seed = (static_cast<unsigned int>(time(nullptr))));
+			MATH_API const RandomGenerator& GetRandomGenerator(generator_ids::GeneratorID randomGeneratorID, unsigned seed = (static_cast<unsigned int>(time(nullptr))));
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -97,8 +97,8 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class RandomGeneratorFactory */
 
-	} /* end namespace Random */
+	} /* end namespace random */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_RANDOM_GENERATOR_FACTORY_H__ */

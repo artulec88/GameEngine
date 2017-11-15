@@ -59,7 +59,7 @@ namespace math_test
 		const int m_testTimeIterationsCount;
 		std::vector<TestGroup*> m_testGroups;
 		std::vector<Test*> m_tests;
-		std::vector<Math::Real> m_testTimeSpans;
+		std::vector<math::Real> m_testTimeSpans;
 		bool m_isTestGroupEnabled;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TestGroup */

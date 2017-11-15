@@ -2,23 +2,23 @@
 #include "SortingParameters.h"
 #include "Utility\ILogger.h"
 
-Math::Sorting::SortingParametersChain::SortingParametersChain(Keys::Key sortingKey, Orders::Order sortingOrder) :
+math::sorting::SortingParametersChain::SortingParametersChain(keys::Key sortingKey, orders::Order sortingOrder) :
 	m_sortingParametersChain(nullptr),
 	m_sortingKey(sortingKey),
 	m_order(sortingOrder)
 {
 }
 
-Math::Sorting::SortingParametersChain::~SortingParametersChain(void)
+math::sorting::SortingParametersChain::~SortingParametersChain()
 {
 }
 
-void Math::Sorting::SortingParametersChain::ResetChainLink()
+void math::sorting::SortingParametersChain::ResetChainLink()
 {
 	m_sortingParametersChain = nullptr;
 }
 
-void Math::Sorting::SortingParametersChain::SetKey(Keys::Key sortingKey)
+void math::sorting::SortingParametersChain::SetKey(keys::Key sortingKey)
 {
 	if ((m_sortingParametersChain != nullptr) && (m_sortingParametersChain->GetKey() == sortingKey))
 	{
@@ -28,7 +28,7 @@ void Math::Sorting::SortingParametersChain::SetKey(Keys::Key sortingKey)
 	m_sortingKey = sortingKey;
 }
 
-void Math::Sorting::SortingParametersChain::AddChainLink(SortingParametersChain* sortingParametersChain)
+void math::sorting::SortingParametersChain::AddChainLink(SortingParametersChain* sortingParametersChain)
 {
 	if (m_sortingParametersChain != nullptr)
 	{

@@ -59,48 +59,48 @@ namespace Rendering
 			m_pos.x = M_DEFAULT_CAMERA_POS_X;
 			m_pos.y = M_DEFAULT_CAMERA_POS_Y;
 			m_pos.z = M_DEFAULT_CAMERA_POS_Z;
-			m_rot = Math::Quaternion(Math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z));
+			m_rot = math::Quaternion(math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z));
 			m_nearPlane = M_DEFAULT_CAMERA_NEAR_PLANE;
 			m_farPlane = M_DEFAULT_CAMERA_FAR_PLANE;
 			// m_projectionMatrix is built from other member variables so there is no need to set default value to it.
 			m_sensitivity = M_DEFAULT_CAMERA_SENSITIVITY;
 		}
 
-		RENDERING_API CameraBuilder& SetPos(Math::Real posX, Math::Real posY, Math::Real posZ)
+		RENDERING_API CameraBuilder& SetPos(math::Real posX, math::Real posY, math::Real posZ)
 		{
 			m_pos.x = posX;
 			m_pos.y = posY;
 			m_pos.z = posZ;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetPos(const Math::Vector3D& position)
+		RENDERING_API CameraBuilder& SetPos(const math::Vector3D& position)
 		{
 			m_pos = position;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetPosX(Math::Real posX)
+		RENDERING_API CameraBuilder& SetPosX(math::Real posX)
 		{
 			m_pos.x = posX;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetPosY(Math::Real posY)
+		RENDERING_API CameraBuilder& SetPosY(math::Real posY)
 		{
 			m_pos.y = posY;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetPosZ(Math::Real posZ)
+		RENDERING_API CameraBuilder& SetPosZ(math::Real posZ)
 		{
 			m_pos.z = posZ;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetRot(const Math::Quaternion& rotation)
+		RENDERING_API CameraBuilder& SetRot(const math::Quaternion& rotation)
 		{
 			m_rot = rotation;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetNearPlane(Math::Real nearPlane) { m_nearPlane = nearPlane; return *this; }
-		RENDERING_API CameraBuilder& SetFarPlane(Math::Real farPlane) { m_farPlane = farPlane; return *this; }
-		RENDERING_API CameraBuilder& SetSensitivity(Math::Real sensitivity)
+		RENDERING_API CameraBuilder& SetNearPlane(math::Real nearPlane) { m_nearPlane = nearPlane; return *this; }
+		RENDERING_API CameraBuilder& SetFarPlane(math::Real farPlane) { m_farPlane = farPlane; return *this; }
+		RENDERING_API CameraBuilder& SetSensitivity(math::Real sensitivity)
 		{
 			m_sensitivity = sensitivity;
 			return *this;
@@ -117,21 +117,21 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Math::Real M_DEFAULT_CAMERA_POS_X; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_POS_Y; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_POS_Z; // TODO: Make it a static constexpr in the future.
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X; // TODO: Make it a static constexpr in the future.
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y; // TODO: Make it a static constexpr in the future.
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_NEAR_PLANE; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_FAR_PLANE; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_SENSITIVITY; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_POS_X; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_POS_Y; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_POS_Z; // TODO: Make it a static constexpr in the future.
+		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X; // TODO: Make it a static constexpr in the future.
+		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y; // TODO: Make it a static constexpr in the future.
+		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_NEAR_PLANE; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_FAR_PLANE; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_SENSITIVITY; // TODO: Make it a static constexpr in the future.
 
-		Math::Vector3D m_pos;
-		Math::Quaternion m_rot;
-		Math::Real m_nearPlane, m_farPlane;
-		Math::Matrix4D m_projectionMatrix;
-		Math::Real m_sensitivity;
+		math::Vector3D m_pos;
+		math::Quaternion m_rot;
+		math::Real m_nearPlane, m_farPlane;
+		math::Matrix4D m_projectionMatrix;
+		math::Real m_sensitivity;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 
@@ -174,21 +174,21 @@ namespace Rendering
 	public:
 		RENDERING_API virtual void BuildProjectionMatrix() override;
 
-		RENDERING_API OrthoCameraBuilder& SetLeft(Math::Real left) { m_left = left; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetRight(Math::Real right) { m_right = right; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetBottom(Math::Real bottom) { m_bottom = bottom; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetTop(Math::Real top) { m_top = top; return *this; }
+		RENDERING_API OrthoCameraBuilder& SetLeft(math::Real left) { m_left = left; return *this; }
+		RENDERING_API OrthoCameraBuilder& SetRight(math::Real right) { m_right = right; return *this; }
+		RENDERING_API OrthoCameraBuilder& SetBottom(math::Real bottom) { m_bottom = bottom; return *this; }
+		RENDERING_API OrthoCameraBuilder& SetTop(math::Real top) { m_top = top; return *this; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Real M_DEFAULT_CAMERA_LEFT_PLANE; // TODO: Make it a static constexpr in the future.
-		Math::Real M_DEFAULT_CAMERA_RIGHT_PLANE; // TODO: Make it a static constexpr in the future.
-		Math::Real M_DEFAULT_CAMERA_BOTTOM_PLANE; // TODO: Make it a static constexpr in the future.
-		Math::Real M_DEFAULT_CAMERA_TOP_PLANE; // TODO: Make it a static constexpr in the future.
+		math::Real M_DEFAULT_CAMERA_LEFT_PLANE; // TODO: Make it a static constexpr in the future.
+		math::Real M_DEFAULT_CAMERA_RIGHT_PLANE; // TODO: Make it a static constexpr in the future.
+		math::Real M_DEFAULT_CAMERA_BOTTOM_PLANE; // TODO: Make it a static constexpr in the future.
+		math::Real M_DEFAULT_CAMERA_TOP_PLANE; // TODO: Make it a static constexpr in the future.
 
-		Math::Real m_left, m_right;
-		Math::Real m_bottom, m_top;
+		math::Real m_left, m_right;
+		math::Real m_bottom, m_top;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class OrthoCameraBuilder */
 
@@ -211,17 +211,17 @@ namespace Rendering
 	public:
 		RENDERING_API virtual void BuildProjectionMatrix() override;
 
-		RENDERING_API PerspectiveCameraBuilder& SetFieldOfView(const Math::Angle& fieldOfView) { m_fov = fieldOfView; return *this; }
-		RENDERING_API PerspectiveCameraBuilder& SetAspectRatio(Math::Real aspectRatio) { m_aspectRatio = aspectRatio; return *this; }
+		RENDERING_API PerspectiveCameraBuilder& SetFieldOfView(const math::Angle& fieldOfView) { m_fov = fieldOfView; return *this; }
+		RENDERING_API PerspectiveCameraBuilder& SetAspectRatio(math::Real aspectRatio) { m_aspectRatio = aspectRatio; return *this; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Math::Angle M_DEFAULT_CAMERA_FIELD_OF_VIEW; // TODO: Make it a static constexpr in the future.
-		const Math::Real M_DEFAULT_CAMERA_ASPECT_RATIO; // TODO: Make it a static constexpr in the future.
+		const math::Angle M_DEFAULT_CAMERA_FIELD_OF_VIEW; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_CAMERA_ASPECT_RATIO; // TODO: Make it a static constexpr in the future.
 
-		Math::Angle m_fov;
-		Math::Real m_aspectRatio;
+		math::Angle m_fov;
+		math::Real m_aspectRatio;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PerspectiveCameraBuilder */
 } /* end namespace Game */

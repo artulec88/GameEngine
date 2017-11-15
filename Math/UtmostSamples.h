@@ -6,8 +6,8 @@
 #include <string>
 #include <array>
 
-namespace Math {
-	namespace Statistics
+namespace math {
+	namespace statistics
 	{
 
 		/// <summary>The class responsible for maintaining the list of utmost observations in the samples.</summary>
@@ -42,8 +42,8 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class UtmostTimeSamples */
 
-	} /* end namespace Statistics */
+	} /* end namespace statistics */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_UTMOST_TIME_SAMPLES_H__ */

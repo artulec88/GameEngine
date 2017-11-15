@@ -8,7 +8,7 @@
 
 #define PASS_QUATERNION_BY_VALUE
 
-namespace Math
+namespace math
 {
 
 	/// <summary>
@@ -86,7 +86,7 @@ namespace Math
 		/// <param name="y">New value for the Y component of the quaternion. </param>
 		/// <param name="z">New value for the Z component of the quaternion. </param>
 		/// <param name="w">New value for the W component of the quaternion. </param>
-		inline void Set(Math::Real x, Math::Real y, Math::Real z, Math::Real w)
+		inline void Set(Real x, Real y, Real z, Real w)
 		{
 			m_x = x;
 			m_y = y;
@@ -218,6 +218,6 @@ namespace Math
 
 	constexpr Quaternion NO_ROTATION_QUATERNION{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE };
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_QUATERNION_H__ */

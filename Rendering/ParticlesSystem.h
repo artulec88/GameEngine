@@ -59,7 +59,7 @@ namespace Rendering
 			/// Updates the particles system. The simulation moves forward in time by the specified <paramref name="deltaTime"/> value.
 			/// </summary>
 			/// <param name="deltaTime"> The amount of time passed since the last update. </param>
-			RENDERING_API void Update(Math::Real deltaTime);
+			RENDERING_API void Update(math::Real deltaTime);
 			RENDERING_API void Reset();
 			RENDERING_API int GetTextureID() const { return m_textureID; }
 			RENDERING_API int GetShaderID() const { return m_shaderID; }
@@ -67,10 +67,10 @@ namespace Rendering
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
 			RENDERING_API void AddUpdater(ParticlesUpdater* updater) { m_updaters.push_back(updater); }
-			RENDERING_API const Math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
-			RENDERING_API const Math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
-			RENDERING_API Math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
-			RENDERING_API Math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
+			RENDERING_API const math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
+			RENDERING_API const math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
+			RENDERING_API math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
+			RENDERING_API math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
 			
 			/// <summary> Determines whether the specified <paramref name="attribute"/> is maintained by the particles in the system. </summary>
 			/// <param name="attribute"> The property that we want to know if it is being maintained by each particle. </param>

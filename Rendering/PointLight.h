@@ -17,7 +17,7 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+			RENDERING_API PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation);
 
 			/// <summary> Point light destructor. </summary>
@@ -41,7 +41,7 @@ namespace Rendering {
 			
 			/// <summary> Gets the range of the point light. </summary>
 			/// <returns> The range of the point light. </returns>			
-			RENDERING_API Math::Real GetRange() const noexcept { return m_range; }
+			RENDERING_API math::Real GetRange() const noexcept { return m_range; }
 
 			//RENDERING_API void SetAttenuation(const Attenuation& attenuation)
 			//{
@@ -49,7 +49,7 @@ namespace Rendering {
 			//	m_range = CalculateRange();
 			//}
 		private:
-			Math::Real CalculateRange();
+			math::Real CalculateRange();
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -58,7 +58,7 @@ namespace Rendering {
 			Attenuation m_attenuation;
 
 			/// <summary> The range of the point light. </summary>
-			Math::Real m_range;
+			math::Real m_range;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class PointLight */
 

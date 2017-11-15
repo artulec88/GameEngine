@@ -17,7 +17,7 @@ AngleTestGroup::~AngleTestGroup()
 /* ==================== class AngleTestGroup end ==================== */
 
 /* ==================== class AngleTestBase begin ==================== */
-AngleTestBase::AngleTestBase(const Math::Angle& angle) :
+AngleTestBase::AngleTestBase(const math::Angle& angle) :
 	Test(),
 	m_angle(angle)
 {
@@ -29,7 +29,7 @@ AngleTestBase::~AngleTestBase()
 /* ==================== class AngleTestBase end ==================== */
 
 /* ==================== class AngleTestTrigonometry begin ==================== */
-AngleTestTrigonometry::AngleTestTrigonometry(const Math::Angle& angle, Math::Real expectedTrigonometryOperatorValue) :
+AngleTestTrigonometry::AngleTestTrigonometry(const math::Angle& angle, math::Real expectedTrigonometryOperatorValue) :
 	AngleTestBase(angle),
 	m_expectedTrigonometryOperatorValue(expectedTrigonometryOperatorValue)
 {
@@ -41,7 +41,7 @@ AngleTestTrigonometry::~AngleTestTrigonometry()
 /* ==================== class AngleTestTrigonometry end ==================== */
 
 /* ==================== class AngleTestSin begin ==================== */
-AngleTestSin::AngleTestSin(const Math::Angle& angle, Math::Real expectedSinValue) :
+AngleTestSin::AngleTestSin(const math::Angle& angle, math::Real expectedSinValue) :
 	AngleTestTrigonometry(angle, expectedSinValue)
 {
 }
@@ -55,7 +55,7 @@ void AngleTestSin::StartTest()
 	auto diffThreshold = 0.002f;
 
 	auto sinValue = m_angle.Sin();
-	auto sinEqual = Math::AlmostEqual(sinValue, m_expectedTrigonometryOperatorValue);
+	auto sinEqual = math::AlmostEqual(sinValue, m_expectedTrigonometryOperatorValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, utility::logging::ERR,
 		"The sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
@@ -80,7 +80,7 @@ void AngleTestSin::StartTimeTest(unsigned int iterationsCount)
 /* ==================== class AngleTestSin end ==================== */
 
 /* ==================== class AngleTestCos begin ==================== */
-AngleTestCos::AngleTestCos(const Math::Angle& angle, Math::Real expectedCosValue) :
+AngleTestCos::AngleTestCos(const math::Angle& angle, math::Real expectedCosValue) :
 	AngleTestTrigonometry(angle, expectedCosValue)
 {
 }
@@ -91,10 +91,10 @@ AngleTestCos::~AngleTestCos()
 
 void AngleTestCos::StartTest()
 {
-	const Math::Real diffThreshold = 0.002f;
+	const math::Real diffThreshold = 0.002f;
 
-	Math::Real cosValue = m_angle.Cos();
-	bool cosEqual = Math::AlmostEqual(cosValue, m_expectedTrigonometryOperatorValue);
+	math::Real cosValue = m_angle.Cos();
+	bool cosEqual = math::AlmostEqual(cosValue, m_expectedTrigonometryOperatorValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, utility::logging::ERR,
 		"The cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
@@ -119,7 +119,7 @@ void AngleTestCos::StartTimeTest(unsigned int iterationsCount)
 /* ==================== class AngleTestCos end ==================== */
 
 /* ==================== class AngleTestTan begin ==================== */
-AngleTestTan::AngleTestTan(const Math::Angle& angle, Math::Real expectedTanValue) :
+AngleTestTan::AngleTestTan(const math::Angle& angle, math::Real expectedTanValue) :
 	AngleTestTrigonometry(angle, expectedTanValue)
 {
 }
@@ -130,12 +130,12 @@ AngleTestTan::~AngleTestTan()
 
 void AngleTestTan::StartTest()
 {
-	if (!Math::AlmostEqual(m_angle.Cos(), REAL_ZERO))
+	if (!math::AlmostEqual(m_angle.Cos(), REAL_ZERO))
 	{
-		const Math::Real diffThreshold = 0.002f;
+		const math::Real diffThreshold = 0.002f;
 
-		Math::Real tanValue = m_angle.Tan();
-		bool tanEqual = Math::AlmostEqual(tanValue, m_expectedTrigonometryOperatorValue);
+		math::Real tanValue = m_angle.Tan();
+		bool tanEqual = math::AlmostEqual(tanValue, m_expectedTrigonometryOperatorValue);
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, utility::logging::ERR,
 			"The tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTrigonometryOperatorValue, ".");
 
@@ -161,7 +161,7 @@ void AngleTestTan::StartTimeTest(unsigned int iterationsCount)
 /* ==================== class AngleTestTan end ==================== */
 
 /* ==================== class AngleTestCompare begin ==================== */
-AngleTestCompare::AngleTestCompare(const Math::Angle& angle1, const Math::Angle& angle2, bool expectedCompareResult, bool expectedLessResult, bool expectedGreaterResult) :
+AngleTestCompare::AngleTestCompare(const math::Angle& angle1, const math::Angle& angle2, bool expectedCompareResult, bool expectedLessResult, bool expectedGreaterResult) :
 	AngleTestBase(angle1),
 	m_compareAngle(angle2),
 	m_expectedCompareResult(expectedCompareResult),
@@ -217,7 +217,7 @@ void AngleTestCompare::StartTimeTest(unsigned int iterationsCount)
 		bool compareResult = (m_angle == m_compareAngle);
 	}
 	m_timer.Stop();
-	DEBUG_LOG_MATH_TEST("Angle operator == takes: ", static_cast<Math::Real>(m_timer.GetDuration(utility::timing::NANOSECOND)) / iterationsCount,
+	DEBUG_LOG_MATH_TEST("Angle operator == takes: ", static_cast<math::Real>(m_timer.GetDuration(utility::timing::NANOSECOND)) / iterationsCount,
 		" [ns] on average.");
 
 	m_timer.Start();
@@ -250,7 +250,7 @@ void AngleTestCompare::StartTimeTest(unsigned int iterationsCount)
 /* ==================== class AngleTestCompare end ==================== */
 
 /* ==================== class AngleTestSum begin ==================== */
-AngleTestSum::AngleTestSum(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesSum) :
+AngleTestSum::AngleTestSum(const math::Angle& angle1, const math::Angle& angle2, const math::Angle& expectedAnglesSum) :
 	AngleTestOperator(angle1, angle2, expectedAnglesSum)
 {
 }
@@ -261,9 +261,9 @@ AngleTestSum::~AngleTestSum()
 
 void AngleTestSum::StartTest()
 {
-	const Math::Angle angleCopy(m_angle);
+	const math::Angle angleCopy(m_angle);
 
-	const Math::Angle anglesSum = m_angle + m_value;
+	const math::Angle anglesSum = m_angle + m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(anglesSum == m_expectedResult, utility::logging::ERR,
 		"The sum of angle ", m_angle, " and angle ", m_value, " equals ", anglesSum,
 		" while it was expected to equal ", m_expectedResult);
@@ -277,13 +277,13 @@ void AngleTestSum::StartTimeTest(unsigned int iterationsCount)
 {
 	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
-		const Math::Angle anglesSum = m_angle + m_value;
+		const math::Angle anglesSum = m_angle + m_value;
 	}
 }
 /* ==================== class AngleTestSum end ==================== */
 
 /* ==================== class AngleTestDiff begin ==================== */
-AngleTestDiff::AngleTestDiff(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesDiff) :
+AngleTestDiff::AngleTestDiff(const math::Angle& angle1, const math::Angle& angle2, const math::Angle& expectedAnglesDiff) :
 	AngleTestOperator(angle1, angle2, expectedAnglesDiff)
 {
 }
@@ -294,9 +294,9 @@ AngleTestDiff::~AngleTestDiff()
 
 void AngleTestDiff::StartTest()
 {
-	const Math::Angle angleCopy(m_angle);
+	const math::Angle angleCopy(m_angle);
 
-	const Math::Angle anglesDiff = m_angle - m_value;
+	const math::Angle anglesDiff = m_angle - m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(anglesDiff == m_expectedResult, utility::logging::ERR,
 		"The difference between angle ", m_angle, " and angle ", m_value, " equals ", anglesDiff,
 		" while it was expected to equal ", m_expectedResult);
@@ -310,13 +310,13 @@ void AngleTestDiff::StartTimeTest(unsigned int iterationsCount)
 {
 	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
-		const Math::Angle anglesDiff = m_angle - m_value;
+		const math::Angle anglesDiff = m_angle - m_value;
 	}
 }
 /* ==================== class AngleTestDiff end ==================== */
 
 /* ==================== class AngleTestMultiplyByValue begin ==================== */
-AngleTestMultiplyByValue::AngleTestMultiplyByValue(const Math::Angle& angle1, Math::Real multValue, const Math::Angle& expectedMultResult) :
+AngleTestMultiplyByValue::AngleTestMultiplyByValue(const math::Angle& angle1, math::Real multValue, const math::Angle& expectedMultResult) :
 	AngleTestOperator(angle1, multValue, expectedMultResult)
 {
 }
@@ -327,8 +327,8 @@ AngleTestMultiplyByValue::~AngleTestMultiplyByValue()
 
 void AngleTestMultiplyByValue::StartTest()
 {
-	const Math::Angle angleCopy(m_angle);
-	const Math::Angle angle1TimesValue = m_angle * m_value;
+	const math::Angle angleCopy(m_angle);
+	const math::Angle angle1TimesValue = m_angle * m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle1TimesValue == m_expectedResult, utility::logging::ERR,
 		"The angle ", m_angle, " multiplied by ", m_value, " equals ", angle1TimesValue,
 		" while it was expected to equal ", m_expectedResult);
@@ -342,13 +342,13 @@ void AngleTestMultiplyByValue::StartTimeTest(unsigned int iterationsCount)
 {
 	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
-		const Math::Angle anglesDiff = m_angle * m_value;
+		const math::Angle anglesDiff = m_angle * m_value;
 	}
 }
 /* ==================== class AngleTestMultiplyByValue end ==================== */
 
 /* ==================== class AngleTestDivideByValue begin ==================== */
-AngleTestDivideByValue::AngleTestDivideByValue(const Math::Angle& angle1, Math::Real divValue, const Math::Angle& expectedDivResult) :
+AngleTestDivideByValue::AngleTestDivideByValue(const math::Angle& angle1, math::Real divValue, const math::Angle& expectedDivResult) :
 	AngleTestOperator(angle1, divValue, expectedDivResult)
 {
 }
@@ -359,8 +359,8 @@ AngleTestDivideByValue::~AngleTestDivideByValue()
 
 void AngleTestDivideByValue::StartTest()
 {
-	const Math::Angle angleCopy(m_angle);
-	const Math::Angle angle1OverValue = m_angle / m_value;
+	const math::Angle angleCopy(m_angle);
+	const math::Angle angle1OverValue = m_angle / m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle1OverValue == m_expectedResult, utility::logging::ERR,
 		"The angle ", m_angle, " divided by ", m_value, " equals ", angle1OverValue,
 		" while it was expected to equal ", m_expectedResult);
@@ -374,7 +374,7 @@ void AngleTestDivideByValue::StartTimeTest(unsigned int iterationsCount)
 {
 	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
-		const Math::Angle anglesDiff = m_angle / m_value;
+		const math::Angle anglesDiff = m_angle / m_value;
 	}
 }
 /* ==================== class AngleTestDivideByValue end ==================== */

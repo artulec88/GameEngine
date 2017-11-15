@@ -28,7 +28,7 @@ Rendering::Particles::ParticlesSystem::~ParticlesSystem()
 {
 }
 
-void Rendering::Particles::ParticlesSystem::Update(Math::Real deltaTime)
+void Rendering::Particles::ParticlesSystem::Update(math::Real deltaTime)
 {
 	DEBUG_LOG_RENDERING("Emitting new particles started");
 	//CRITICAL_LOG_RENDERING("Particles before emission = ");
@@ -38,7 +38,7 @@ void Rendering::Particles::ParticlesSystem::Update(Math::Real deltaTime)
 		emitter.Emit(deltaTime, &m_particles);
 	}
 
-	//constexpr Math::Vector3D zeroVector{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
+	//constexpr math::Vector3D zeroVector{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
 	//for (size_t i = 0; i < m_count; ++i)
 	//{
 	//	m_particles.SetAcceleration(i, zeroVector);

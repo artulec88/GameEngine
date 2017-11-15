@@ -48,7 +48,7 @@ namespace Rendering
 			/// <param name="scale">
 			/// The scale of the GUI control.
 			/// </param>
-			RENDERING_API GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
+			RENDERING_API GuiControl(const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale);
 
 			/// <summary>
 			/// Destroys the GUI control.
@@ -76,9 +76,9 @@ namespace Rendering
 			/// <returns>
 			/// The special <code>IntersectInfo</code> object storing information about whether the specified position is inside the GUI control or not.
 			/// </returns>
-			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const
+			RENDERING_API math::IntersectInfo DoesContainPoint(math::Real x, math::Real y) const
 			{
-				//const Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
+				//const math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
 				//CRITICAL_LOG_RENDERING("GUI text \"", m_text, "\" intersect info with point (", x, "; ", y, ") = ", intersectInfo.GetDistance());
 				//return intersectInfo;
 				return m_aabr.DoesContainPoint(x, y);
@@ -91,7 +91,7 @@ namespace Rendering
 			/// <returns>
 			/// The screen-space position of the top-left corner of this GUI text.
 			/// </returns>
-			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
+			RENDERING_API const math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
 
 			/// <summary>
 			/// The rotation of the GUI control.
@@ -99,7 +99,7 @@ namespace Rendering
 			/// <returns>
 			/// The angle representing the rotation of the GUI control.
 			/// </returns>
-			RENDERING_API const Math::Angle& GetScreenRotation() const { return m_screenRotation; }
+			RENDERING_API const math::Angle& GetScreenRotation() const { return m_screenRotation; }
 
 			/// <summary>
 			/// The scale of the GUI control.
@@ -107,7 +107,7 @@ namespace Rendering
 			/// <returns>
 			/// The scale of the GUI control.
 			/// </returns>
-			RENDERING_API const Math::Vector2D& GetScale() const { return m_scale; }
+			RENDERING_API const math::Vector2D& GetScale() const { return m_scale; }
 
 			/// <summary>
 			/// The transformation matrix of this GUI control.
@@ -115,7 +115,7 @@ namespace Rendering
 			/// <returns>
 			/// The transformation matrix representing the scale, rotation and translation operations of the GUI control.
 			/// </returns>
-			RENDERING_API const Math::Matrix4D& GetTransformMatrix() const { return m_transformMatrix; }
+			RENDERING_API const math::Matrix4D& GetTransformMatrix() const { return m_transformMatrix; }
 
 			/// <summary>
 			/// Draws the GUI control on the screen using the specified rendering engine.
@@ -124,24 +124,24 @@ namespace Rendering
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI control.</param>
 			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const = 0;
 
-			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) = 0;
-			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) = 0;
-			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) = 0;
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect) = 0;
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) = 0;
-			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect) = 0;
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) = 0;
+			RENDERING_API virtual void ApplyColorEffect(const math::effects::Effect<Color>& effect) = 0;
+			RENDERING_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) = 0;
+			RENDERING_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) = 0;
+			RENDERING_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
+			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
+			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
+			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
 		protected:
-			void MoveAABR(Math::Real bottomLeftOffsetX, Math::Real bottomLeftOffsetY, Math::Real topRightOffsetX, Math::Real topRightOffsetY);
+			void MoveAABR(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Math::Vector2D m_screenPosition;
-			Math::Angle m_screenRotation;
-			Math::Vector2D m_scale;
-			Math::Matrix4D m_transformMatrix;
-			Math::AABR m_aabr;
+			math::Vector2D m_screenPosition;
+			math::Angle m_screenRotation;
+			math::Vector2D m_scale;
+			math::Matrix4D m_transformMatrix;
+			math::AABR m_aabr;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiControl */
 	} /* end namespace Controls */

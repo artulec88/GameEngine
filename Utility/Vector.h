@@ -54,7 +54,6 @@ namespace utility {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			T* GetData() { return &m_data[0]; }
 			const T* GetData() const { return &m_data[0]; }
 			T& operator[](unsigned int i);

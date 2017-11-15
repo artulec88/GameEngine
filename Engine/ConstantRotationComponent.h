@@ -15,7 +15,7 @@ namespace engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ConstantRotationComponent(const Math::Vector3D& rotationAxis, const Math::Angle& rotationSpeedAngle);
+		ENGINE_API ConstantRotationComponent(const math::Vector3D& rotationAxis, const math::Angle& rotationSpeedAngle);
 		ENGINE_API virtual ~ConstantRotationComponent(void);
 		ConstantRotationComponent(const ConstantRotationComponent& constantRotationComponent) = delete;
 		ConstantRotationComponent(ConstantRotationComponent&& constantRotationComponent) = default;
@@ -25,13 +25,13 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real elapsedTime);
+		ENGINE_API virtual void Update(math::Real elapsedTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Vector3D m_rotationAxis;
-		Math::Angle m_rotationSpeedAngle;
+		math::Vector3D m_rotationAxis;
+		math::Angle m_rotationSpeedAngle;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ConstantRotationComponent */
 

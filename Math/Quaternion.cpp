@@ -2,7 +2,7 @@
 #include "Quaternion.h"
 #include "FloatingPoint.h"
 
-Math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
+math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 {
 	Angle halfAngle(angle / 2);
 	Real sinHalfAngle = halfAngle.Sin();
@@ -14,7 +14,7 @@ Math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 }
 
 // From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
-Math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
+math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
 {
 	// FIXME: TRANSFORMATIONS ORDER
 	/*Real m00 = rotMatrix.GetElement(0, 0);
@@ -112,7 +112,7 @@ Math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
 	m_w /= length;
 }
 
-Math::Matrix4D Math::Quaternion::ToRotationMatrix() const
+math::Matrix4D math::Quaternion::ToRotationMatrix() const
 {
 	// FIXME: TRANSFORMATIONS ORDER
 	// This function was tested and proved to be the fastest of 6 variants of the same function.
@@ -124,25 +124,25 @@ Math::Matrix4D Math::Quaternion::ToRotationMatrix() const
 	// TODO: Read Computer Graphics From Pixels to Programmable Graphics Hardware by Alexey Boreskov- chapter Transformations in 3D, projections, quaternions (page 79).
 }
 
-Math::Real Math::Quaternion::Length() const
+math::Real math::Quaternion::Length() const
 {
 	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
 }
 
-void Math::Quaternion::InvertPitch()
+void math::Quaternion::InvertPitch()
 {
 	// TODO: Warning. This function has not yet been tested. Use with caution.
 	m_x = -m_x;
 	m_z = -m_z;
 }
 
-Math::Quaternion Math::Quaternion::Normalized() const
+math::Quaternion math::Quaternion::Normalized() const
 {
 	Real length = Length();
 	return Quaternion(m_x / length, m_y / length, m_z / length, m_w / length);
 }
 
-Math::Quaternion& Math::Quaternion::Normalize()
+math::Quaternion& math::Quaternion::Normalize()
 {
 	CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(LengthSquared(), REAL_ONE), Utility::Logging::DEBUG, "The quaternion is already normalized");
 	Real length = Length();
@@ -153,20 +153,20 @@ Math::Quaternion& Math::Quaternion::Normalize()
 	return *this;
 }
 
-bool Math::Quaternion::IsNormalized() const
+bool math::Quaternion::IsNormalized() const
 {
 	Real lengthSquared = LengthSquared();
 	return AlmostEqual(lengthSquared, REAL_ONE);
 }
 
-Math::Quaternion Math::Quaternion::Negated() const
+math::Quaternion math::Quaternion::Negated() const
 {
 	/*return operator-();*/
 	/*return -(*this);*/
 	return Quaternion(-m_x, -m_y, -m_z, -m_w);
 }
 
-Math::Quaternion& Math::Quaternion::Negate()
+math::Quaternion& math::Quaternion::Negate()
 {
 	m_x = -m_x;
 	m_y = -m_y;
@@ -176,7 +176,7 @@ Math::Quaternion& Math::Quaternion::Negate()
 }
 
 #ifdef PASS_QUATERNION_BY_VALUE
-Math::Quaternion Math::Quaternion::operator*(Quaternion q) const
+math::Quaternion math::Quaternion::operator*(Quaternion q) const
 {
 	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
 	q.Set(m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY(),
@@ -186,13 +186,13 @@ Math::Quaternion Math::Quaternion::operator*(Quaternion q) const
 	return q;
 }
 
-Math::Quaternion Math::Quaternion::Nlerp(Quaternion q, Real nlerpFactor, bool shortest) const
+math::Quaternion math::Quaternion::Nlerp(Quaternion q, Real nlerpFactor, bool shortest) const
 {
 	if (shortest && (Dot(q) < REAL_ZERO))
 	{
 		q.Negate();
 	}
-	const Math::Real oneMinusNLerpFactor = REAL_ONE - nlerpFactor;
+	const math::Real oneMinusNLerpFactor = REAL_ONE - nlerpFactor;
 	q.Set(m_x * oneMinusNLerpFactor + q.GetX() * nlerpFactor,
 		m_y * oneMinusNLerpFactor + q.GetY() * nlerpFactor,
 		m_z * oneMinusNLerpFactor + q.GetZ() * nlerpFactor,
@@ -201,7 +201,7 @@ Math::Quaternion Math::Quaternion::Nlerp(Quaternion q, Real nlerpFactor, bool sh
 	return q;
 }
 
-Math::Quaternion Math::Quaternion::Slerp(Quaternion q, Real slerpFactor, bool shortest) const
+math::Quaternion math::Quaternion::Slerp(Quaternion q, Real slerpFactor, bool shortest) const
 {
 	// CHECKED
 	Real cos = Dot(q);
@@ -216,7 +216,7 @@ Math::Quaternion Math::Quaternion::Slerp(Quaternion q, Real slerpFactor, bool sh
 	{
 		// use normal interpolation, but instead of calling "return Nlerp(q, slerpFactor, false);"
 		// which would cause another quaternion to be copy constructed we simply copy and paste the function NLerp here.
-		const Math::Real oneMinusSLerpFactor = REAL_ONE - slerpFactor;
+		const math::Real oneMinusSLerpFactor = REAL_ONE - slerpFactor;
 		q.Set(m_x * oneMinusSLerpFactor + q.GetX() * slerpFactor,
 			m_y * oneMinusSLerpFactor + q.GetY() * slerpFactor,
 			m_z * oneMinusSLerpFactor + q.GetZ() * slerpFactor,
@@ -241,7 +241,7 @@ Math::Quaternion Math::Quaternion::Slerp(Quaternion q, Real slerpFactor, bool sh
 	//return Quaternion((*this) * srcFactor + q * destFactor); // FIXME: Check quaternion multiplication
 }
 #else
-Math::Quaternion Math::Quaternion::operator*(const Quaternion& q) const
+math::Quaternion math::Quaternion::operator*(const Quaternion& q) const
 {
 	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
 	return Quaternion(m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY(),
@@ -250,7 +250,7 @@ Math::Quaternion Math::Quaternion::operator*(const Quaternion& q) const
 		m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ());
 }
 
-Math::Quaternion Math::Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const
+math::Quaternion math::Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
 	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
 	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();  // FIXME: Check quaternion multiplication
@@ -265,7 +265,7 @@ Math::Quaternion Math::Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, 
 	//}
 }
 
-Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
+math::Quaternion math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
 {
 	// CHECKED
 	Real cos = Dot(q);
@@ -293,7 +293,7 @@ Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, 
 }
 #endif
 
-Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
+math::Quaternion math::Quaternion::operator*(const Vector3D& vec) const
 {
 	// CHECKED
 	Real w = -m_x * vec.x - m_y * vec.y - m_z * vec.z;
@@ -304,42 +304,42 @@ Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
 	return Quaternion(x, y, z, w);
 }
 
-Math::Real Math::Quaternion::Dot(const Quaternion& q) const
+math::Real math::Quaternion::Dot(const Quaternion& q) const
 {
 	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
 }
 
-Math::Vector3D Math::Quaternion::GetBack() const
+math::Vector3D math::Quaternion::GetBack() const
 {
 	return Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE).Rotate(*this);
 }
 
-Math::Vector3D Math::Quaternion::GetUp() const
+math::Vector3D math::Quaternion::GetUp() const
 {
 	return Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO).Rotate(*this);
 }
 
-Math::Vector3D Math::Quaternion::GetDown() const
+math::Vector3D math::Quaternion::GetDown() const
 {
 	return Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO).Rotate(*this);
 }
 
-Math::Vector3D Math::Quaternion::GetRight() const
+math::Vector3D math::Quaternion::GetRight() const
 {
 	return Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
-Math::Vector3D Math::Quaternion::GetLeft() const
+math::Vector3D math::Quaternion::GetLeft() const
 {
 	return Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
-bool Math::Quaternion::operator==(const Quaternion& q) const
+bool math::Quaternion::operator==(const Quaternion& q) const
 {
 	return ( AlmostEqual(m_x, q.GetX()) && AlmostEqual(m_y, q.GetY()) && AlmostEqual(m_z, q.GetZ()) && AlmostEqual(m_w, q.GetW()) );
 }
 
-bool Math::Quaternion::operator!=(const Quaternion& q) const
+bool math::Quaternion::operator!=(const Quaternion& q) const
 {
 	return ( !AlmostEqual(m_x, q.GetX()) || !AlmostEqual(m_y, q.GetY()) || !AlmostEqual(m_z, q.GetZ()) || !AlmostEqual(m_w, q.GetW()) );
 }

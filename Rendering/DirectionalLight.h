@@ -34,10 +34,10 @@ namespace Rendering {
 			/// <param nane="shadowInfoLightBleedingReductionFactor"> The light bleeding reduction factor. </param>
 			/// <param name="shadowInfoMinVariance"> The minimal variance in Variance Shadow Mapping calculation for the directional light. </param>
 			/// <param name="halfShadowArea"> The half shadow area for the directiona light. </param>
-			RENDERING_API DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+			RENDERING_API DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
-				bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness,
-				Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance, Math::Real halfShadowArea);
+				bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness,
+				math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea);
 
 			/// <summary> Directional light destructor. </summary>
 			RENDERING_API virtual ~DirectionalLight(void);
@@ -54,9 +54,9 @@ namespace Rendering {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
+			//math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
-			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
+			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const;
 
 			friend std::ostream& operator<<(std::ostream& out, const DirectionalLight& directionalLight)
 			{
@@ -68,7 +68,7 @@ namespace Rendering {
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Math::Real m_halfShadowArea;
+			math::Real m_halfShadowArea;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class DirectionalLight */
 

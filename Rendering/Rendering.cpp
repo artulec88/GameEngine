@@ -29,8 +29,8 @@ bool Rendering::glDepthClampEnabled, Rendering::glDepthClampEnabledOld;
 /* ==================== Depth test parameters begin ==================== */
 bool Rendering::glDepthTestEnabled, Rendering::glDepthTestEnabledOld;
 GLenum Rendering::glDepthTestFunc, Rendering::glDepthTestFuncOld;
-Math::Real Rendering::glDepthRangeNearValue, Rendering::glDepthRangeNearValueOld;
-Math::Real Rendering::glDepthRangeFarValue, Rendering::glDepthRangeFarValueOld;
+math::Real Rendering::glDepthRangeNearValue, Rendering::glDepthRangeNearValueOld;
+math::Real Rendering::glDepthRangeFarValue, Rendering::glDepthRangeFarValueOld;
 /* ==================== Depth test parameters end ==================== */
 
 /* ==================== Dithering parameters begin ==================== */
@@ -185,7 +185,7 @@ void Rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod
 //	glEnable(GL_ALPHA_TEST); // Perform ALPHA testing
 //
 //	std::string alphaFuncStr = GET_CONFIG_VALUE_STR_RENDERING("GL_ALPHA_TEST_FUNC", "GL_LESS");
-//	Math::Real alphaFuncRefValue = GET_CONFIG_VALUE_RENDERING("GL_ALPHA_TEST_REF", 0.1f);
+//	math::Real alphaFuncRefValue = GET_CONFIG_VALUE_RENDERING("GL_ALPHA_TEST_REF", 0.1f);
 //	if (alphaFuncStr == "GL_NEVER") { glAlphaFunc(GL_NEVER, alphaFuncRefValue); }
 //	else if (alphaFuncStr == "GL_LESS") { glAlphaFunc(GL_LESS, alphaFuncRefValue); }
 //	else if (alphaFuncStr == "GL_EQUAL") { glAlphaFunc(GL_EQUAL, alphaFuncRefValue); }

@@ -18,7 +18,7 @@ namespace Physics
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PHYSICS_API AABBCollider(const Math::Vector3D& bottomLeftPos, const Math::Vector3D& topRightPos);
+		PHYSICS_API AABBCollider(const math::Vector3D& bottomLeftPos, const math::Vector3D& topRightPos);
 		PHYSICS_API virtual ~AABBCollider(void);
 	private:
 		AABBCollider(const AABBCollider& aabbCollider);
@@ -27,12 +27,12 @@ namespace Physics
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
-		virtual Math::IntersectInfo Intersect(const Collider& collider) const;
+		virtual math::IntersectInfo Intersect(const Collider& collider) const;
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Math::AABB m_aabb;
+		math::AABB m_aabb;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABBCollider */
 

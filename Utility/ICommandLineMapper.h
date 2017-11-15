@@ -19,50 +19,36 @@ namespace utility
 		/// <remarks>
 		/// To hide the specific implementation from the client we provide the factory-like method to create specific command instances.
 		/// </remarks>
-		UTILITY_API static std::unique_ptr<utility::ICommandLineMapper> CreateCommandLineMapper(int argc, char* argv[]);
+		UTILITY_API static std::unique_ptr<ICommandLineMapper> CreateCommandLineMapper(int argc, char* argv[]);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
-		/// <summary>
-		/// Command line mapper interface constructor.
-		/// </summary>
+		/// <summary> Command line mapper interface constructor. </summary>
 		ICommandLineMapper();
 
-		/// <summary>
-		/// Command line mapper interface destructor.
-		/// </summary>
+		/// <summary> Command line mapper interface destructor. </summary>
 		virtual ~ICommandLineMapper();
 
-		/// <summary>
-		/// Command line mapper interface copy constructor.
-		/// </summary>
+		/// <summary> Command line mapper interface copy constructor. </summary>
 		/// <param name="commandLineMapper"> The reference to the command line mapper interface we want to copy construct from. </param>
 		ICommandLineMapper(const ICommandLineMapper& commandLineMapper) = delete;
 
-		/// <summary>
-		/// Command line mapper interface move constructor.
-		/// </summary>
+		/// <summary> Command line mapper interface move constructor. </summary>
 		/// <param name="commandLineMapper"> The r-value reference to the command line mapper interface we want to move construct from. </param>
 		ICommandLineMapper(ICommandLineMapper&& commandLineMapper) = delete;
 
-		/// <summary>
-		/// Command line mapper interface copy assignment operator.
-		/// </summary>
+		/// <summary> Command line mapper interface copy assignment operator. </summary>
 		/// <param name="commandLineMapper"> The reference to the command line mapper interface we want to copy assign from. </param>
 		/// <returns> The reference to the newly copy-assigned command line mapper interface object. </returns>
 		ICommandLineMapper& operator=(const ICommandLineMapper& commandLineMapper) = delete;
 
-		/// <summary>
-		/// Command line mapper interface move assignment operator.
-		/// </summary>
+		/// <summary> Command line mapper interface move assignment operator. </summary>
 		/// <param name="commandLineMapper"> The r-value reference to the command line mapper interface we want to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned command line mapper interface object. </returns>
 		ICommandLineMapper& operator=(ICommandLineMapper&& commandLineMapper) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Gives a simple <code>true</code> or <code>false</code> answer to the question whether the specified program argument
 		/// <paramref name="opt"/> is defined or not.

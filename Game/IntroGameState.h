@@ -34,7 +34,7 @@ namespace Game
 		virtual void Revealed();
 		virtual void Handle(engine::Actions::Action action);
 		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 		/* ==================== Non-static member functions end ==================== */
@@ -43,7 +43,7 @@ namespace Game
 	private:
 		engine::GameManager* m_gameManager;
 #ifdef PROFILING_GAME_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IntroGameState */

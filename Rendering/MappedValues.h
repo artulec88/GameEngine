@@ -29,18 +29,18 @@ namespace Rendering
 		// the same change can be seen in the MappedValues container, so there is no need to call SetVector4D("ambientLightColor") again.
 
 		//typedef std::map<std::string, Color> StrToColorMap;
-		typedef std::map<std::string, Math::Real> StrToRealMap;
-		typedef std::map<std::string, Math::Vector2D> StrToVec2DMap;
-		typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
-		typedef std::map<std::string, Math::Vector4D> StrToVec4DMap;
+		typedef std::map<std::string, math::Real> StrToRealMap;
+		typedef std::map<std::string, math::Vector2D> StrToVec2DMap;
+		typedef std::map<std::string, math::Vector3D> StrToVec3DMap;
+		typedef std::map<std::string, math::Vector4D> StrToVec4DMap;
 		typedef std::map<std::string, const Texture*> StrToTextureMap;
 
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr Math::Real DEFAULT_VALUE = REAL_ZERO;
-		static constexpr Math::Vector2D DEFAULT_VECTOR2D{ REAL_ZERO, REAL_ZERO };
-		static constexpr Math::Vector3D DEFAULT_VECTOR3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
-		static constexpr Math::Vector4D DEFAULT_VECTOR4D{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO };
+		static constexpr math::Real DEFAULT_VALUE = REAL_ZERO;
+		static constexpr math::Vector2D DEFAULT_VECTOR2D{ REAL_ZERO, REAL_ZERO };
+		static constexpr math::Vector3D DEFAULT_VECTOR3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
+		static constexpr math::Vector4D DEFAULT_VECTOR4D{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -74,12 +74,12 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		inline void SetReal(const std::string& name, Math::Real value)
+		inline void SetReal(const std::string& name, math::Real value)
 		{
 			if (realMap.find(name) == realMap.end())
 			{
 				DEBUG_LOG_RENDERING("The real value with name \"", name, "\" is not found in the map. Creating a new real value with this name.");
-				realMap.insert(std::pair<std::string, Math::Real>(name, value));
+				realMap.insert(std::pair<std::string, math::Real>(name, value));
 			}
 			else
 			{
@@ -88,12 +88,12 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector2D(const std::string& name, const Math::Vector2D& vec)
+		inline void SetVector2D(const std::string& name, const math::Vector2D& vec)
 		{
 			if (vec2DMap.find(name) == vec2DMap.end())
 			{
 				DEBUG_LOG_RENDERING("Vector2D with name \"", name, "\" cannot be found in the map. Creating a new vector with this name.");
-				vec2DMap.insert(std::pair<std::string, Math::Vector2D>(name, vec));
+				vec2DMap.insert(std::pair<std::string, math::Vector2D>(name, vec));
 			}
 			else
 			{
@@ -102,12 +102,12 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector3D(const std::string& name, const Math::Vector3D& vec)
+		inline void SetVector3D(const std::string& name, const math::Vector3D& vec)
 		{
 			if (vec3DMap.find(name) == vec3DMap.end())
 			{
 				DEBUG_LOG_RENDERING("Vector3D with name \"", name, "\" cannot be found in the map. Creating a new vector with this name.");
-				vec3DMap.insert(std::pair<std::string, Math::Vector3D>(name, vec));
+				vec3DMap.insert(std::pair<std::string, math::Vector3D>(name, vec));
 			}
 			else
 			{
@@ -116,12 +116,12 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector4D(const std::string& name, const Math::Vector4D& vec)
+		inline void SetVector4D(const std::string& name, const math::Vector4D& vec)
 		{
 			if (m_vec4DMap.find(name) == m_vec4DMap.end())
 			{
 				DEBUG_LOG_RENDERING("Vector 4D with name \"", name, "\" cannot be found in the map. Creating a new vector with this name.");
-				m_vec4DMap.insert(std::pair<std::string, Math::Vector4D>(name, vec));
+				m_vec4DMap.insert(std::pair<std::string, math::Vector4D>(name, vec));
 			}
 			else
 			{
@@ -135,7 +135,7 @@ namespace Rendering
 		//	if (m_vec4DMap.find(name) == m_vec4DMap.end())
 		//	{
 		//		DEBUG_LOG_RENDERING("Color with name \"", name, "\" cannot be found in the map. Creating a new color with this name.");
-		//		m_vec4DMap.insert(std::pair<std::string, Math::Vector4D>(name, color.GetValues()));
+		//		m_vec4DMap.insert(std::pair<std::string, math::Vector4D>(name, color.GetValues()));
 		//	}
 		//	else
 		//	{
@@ -181,9 +181,9 @@ namespace Rendering
 			}
 		}
 
-		inline const Math::Real& GetReal(const std::string& name) const
+		inline const math::Real& GetReal(const std::string& name) const
 		{
-			std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
+			std::map<std::string, math::Real>::const_iterator itr = realMap.find(name);
 			if (itr == realMap.end()) // number not found
 			{
 				WARNING_LOG_RENDERING("Real number with name \"", name, "\" has not been found");
@@ -192,10 +192,10 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const Math::Vector2D& GetVec2D(const std::string& name) const
+		inline const math::Vector2D& GetVec2D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, Math::Vector2D>::const_iterator itr = vec2DMap.find(name);
+			std::map<std::string, math::Vector2D>::const_iterator itr = vec2DMap.find(name);
 			if (itr == vec2DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector2D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -204,10 +204,10 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const Math::Vector3D& GetVec3D(const std::string& name) const
+		inline const math::Vector3D& GetVec3D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
+			std::map<std::string, math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 			if (itr == vec3DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector3D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -216,10 +216,10 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const Math::Vector4D& GetVec4D(const std::string& name) const
+		inline const math::Vector4D& GetVec4D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
+			std::map<std::string, math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
 			if (itr == m_vec4DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector4D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -274,7 +274,7 @@ namespace Rendering
 		//{
 		//	for (StrToRealMap::const_iterator realItr = realMap.begin(); realItr != realMap.end(); ++realItr)
 		//	{
-		//		Math::Real rValue = mappedValues.GetReal(realItr->first);
+		//		math::Real rValue = mappedValues.GetReal(realItr->first);
 		//		if ((realItr->second < rValue) || (realItr->second > rValue))
 		//		{
 		//			return false;

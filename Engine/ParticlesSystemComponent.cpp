@@ -32,7 +32,7 @@ engine::ParticlesSystemComponent& engine::ParticlesSystemComponent::operator=(Pa
 	particlesSystemComponent.m_particlesSystem = NULL;
 }
 
-void engine::ParticlesSystemComponent::Update(Math::Real deltaTime)
+void engine::ParticlesSystemComponent::Update(math::Real deltaTime)
 {
 	m_particlesSystem->Update(deltaTime);
 }

@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace Math
+namespace math
 {
 	/// <summary>
 	/// The mathematical representation of a surface. The vertices on the surface are always laid out uniformly.
@@ -178,6 +178,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Surface */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_SURFACE_H__ */

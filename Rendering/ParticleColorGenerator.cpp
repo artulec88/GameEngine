@@ -5,7 +5,7 @@
 #include "ParticleAccelerationGenerator.h"
 
 /* ==================== class ConstantColorGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantColorGenerator::ConstantColorGenerator(Math::Real red /* = REAL_ONE */, Math::Real green /* = REAL_ONE */, Math::Real blue /* = REAL_ONE */, Math::Real alpha /* = REAL_ONE */) :
+Rendering::Particles::Generators::ConstantColorGenerator::ConstantColorGenerator(math::Real red /* = REAL_ONE */, math::Real green /* = REAL_ONE */, math::Real blue /* = REAL_ONE */, math::Real alpha /* = REAL_ONE */) :
 	ColorGenerator(),
 	m_color(red, green, blue, alpha)
 {
@@ -21,7 +21,7 @@ Rendering::Particles::Generators::ConstantColorGenerator::~ConstantColorGenerato
 {
 }
 
-void Rendering::Particles::Generators::ConstantColorGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::ConstantColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -34,7 +34,7 @@ void Rendering::Particles::Generators::ConstantColorGenerator::Generate(Math::Re
 Rendering::Particles::Generators::FromSetColorGenerator::FromSetColorGenerator(std::initializer_list<Color> colors) :
 	ColorGenerator(),
 	m_colors(colors),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
+	m_randomGenerator(math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE))
 {
 }
 
@@ -42,7 +42,7 @@ Rendering::Particles::Generators::FromSetColorGenerator::~FromSetColorGenerator(
 {
 }
 
-void Rendering::Particles::Generators::FromSetColorGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::FromSetColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -63,7 +63,7 @@ Rendering::Particles::Generators::RangeColorGenerator::RangeColorGenerator(const
 	m_maxBlue(minColor.GetBlue() > maxColor.GetBlue() ? minColor.GetBlue() : maxColor.GetBlue()),
 	m_minAlpha(minColor.GetAlpha() < maxColor.GetAlpha() ? minColor.GetAlpha() : maxColor.GetAlpha()),
 	m_maxAlpha(minColor.GetAlpha() > maxColor.GetAlpha() ? minColor.GetAlpha() : maxColor.GetAlpha()),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
+	m_randomGenerator(math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE))
 {
 }
 
@@ -71,7 +71,7 @@ Rendering::Particles::Generators::RangeColorGenerator::~RangeColorGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeColorGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::RangeColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

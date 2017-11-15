@@ -94,7 +94,7 @@ namespace engine
 		ENGINE_API inline const std::vector<Rendering::Particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
-		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
+		ENGINE_API virtual math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
 		ENGINE_API const Rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) const;
@@ -144,15 +144,15 @@ namespace engine
 			}
 			return *actionToGameCommandItr->second;
 		}
-		//ENGINE_API Rendering::Effects::Effect<Math::Real>* GetSingleValueEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+		//ENGINE_API Rendering::effects::Effect<math::Real>* GetSingleValueEffect(Rendering::effects::EffectType effectType, unsigned int variant)
 		//{
 		//	return m_effectFactory.GetSingleValueEffect(effectType, variant);
 		//}
-		//ENGINE_API Rendering::Effects::Effect<Math::Vector2D>* GetVec2DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+		//ENGINE_API Rendering::effects::Effect<math::Vector2D>* GetVec2DEffect(Rendering::effects::EffectType effectType, unsigned int variant)
 		//{
 		//	return m_effectFactory.GetVec2DEffect(effectType, variant);
 		//}
-		//ENGINE_API Rendering::Effects::Effect<Math::Vector3D>* GetVec3DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+		//ENGINE_API Rendering::effects::Effect<math::Vector3D>* GetVec3DEffect(Rendering::effects::EffectType effectType, unsigned int variant)
 		//{
 		//	return m_effectFactory.GetVec3DEffect(effectType, variant);
 		//}
@@ -160,7 +160,7 @@ namespace engine
 		ENGINE_API void CentralizeCursor() const;
 
 		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
-		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const;
+		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, math::Real volume, math::Real pitch) const;
 	public:
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
@@ -176,7 +176,7 @@ namespace engine
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//ActionsToHandlersMap m_actionsToHandlersMap;
 
-		//Rendering::Effects::EffectFactory m_effectFactory;
+		//Rendering::effects::EffectFactory m_effectFactory;
 
 		/// <summary>
 		/// The list of game nodes that are interested in handling the particular action event that occurred in the game.
@@ -198,7 +198,7 @@ namespace engine
 #endif
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameManager */

@@ -38,19 +38,23 @@ namespace utility {
 
 			/// <summary> Array copy assignment operator. </summary>
 			/// <param name="arr"> Array to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned array object. </returns>
 			Array& operator=(const Array& arr) = default;
 
 			/// <summary> Array move assignment operator. </summary>
 			/// <param name="arr"> Array to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned array object. </returns>
 			Array& operator=(Array&& arr) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
+			/// <summary> Calculates and returns the size of the array. </summary>
+			/// <returns> The size of the array. </returns>
 			unsigned int GetSize() const
 			{
 				return static_cast<unsigned int>(m_data.size());
 			}
+
 			T* GetData() { return m_data.data(); }
 			const T* GetData() const { return m_data.data(); }
 			T& operator[](const unsigned int i);

@@ -19,7 +19,7 @@ MatrixTestGroup::~MatrixTestGroup()
 /* ==================== class MatrixTestGroup end ==================== */
 
 /* ==================== class MatrixTestBase begin ==================== */
-MatrixTestBase::MatrixTestBase(const Math::Matrix4D& matrix) :
+MatrixTestBase::MatrixTestBase(const math::Matrix4D& matrix) :
 	Test(),
 	m_matrix(matrix)
 {
@@ -31,7 +31,7 @@ MatrixTestBase::~MatrixTestBase()
 /* ==================== class MatrixTestBase end ==================== */
 
 /* ==================== class MatrixTestCompare begin ==================== */
-MatrixTestCompare::MatrixTestCompare(const Math::Matrix4D& matrix1, const Math::Matrix4D& matrix2, bool expectedCompareResult) :
+MatrixTestCompare::MatrixTestCompare(const math::Matrix4D& matrix1, const math::Matrix4D& matrix2, bool expectedCompareResult) :
 	MatrixTestBase(matrix1),
 	m_compareMatrix(matrix2),
 	m_expectedCompareResult(expectedCompareResult)
@@ -58,7 +58,7 @@ void MatrixTestCompare::StartTimeTest(unsigned int iterationsCount)
 
 
 /* ==================== class MatrixTestMultiplyByMatrixOperator begin ==================== */
-MatrixTestMultiplyByMatrixOperator::MatrixTestMultiplyByMatrixOperator(const Math::Matrix4D& matrix1, const Math::Matrix4D& matrix2, const Math::Matrix4D& expectedMultiplyResultMatrix) :
+MatrixTestMultiplyByMatrixOperator::MatrixTestMultiplyByMatrixOperator(const math::Matrix4D& matrix1, const math::Matrix4D& matrix2, const math::Matrix4D& expectedMultiplyResultMatrix) :
 	MatrixTestBase(matrix1),
 	m_matrix2(matrix2),
 	m_expectedMultiplyResultMatrix(expectedMultiplyResultMatrix)
@@ -70,7 +70,7 @@ MatrixTestMultiplyByMatrixOperator::~MatrixTestMultiplyByMatrixOperator()
 
 void MatrixTestMultiplyByMatrixOperator::StartTest()
 {
-	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
+	math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultMatrix == m_expectedMultiplyResultMatrix, utility::logging::ERR,
 		"The multiplication of matrices:\n", m_matrix, " and:\n", m_matrix2, " equals:\n", multiplyResultMatrix,
 		". It is different than expected:\n", m_expectedMultiplyResultMatrix);
@@ -83,7 +83,7 @@ void MatrixTestMultiplyByMatrixOperator::StartTimeTest(unsigned int iterationsCo
 
 
 /* ==================== class MatrixTestMultiplyByVectorOperator begin ==================== */
-MatrixTestMultiplyByVectorOperator::MatrixTestMultiplyByVectorOperator(const Math::Matrix4D& matrix, const Math::Vector3D& vector, const Math::Vector3D& expectedMultiplyResultVector) :
+MatrixTestMultiplyByVectorOperator::MatrixTestMultiplyByVectorOperator(const math::Matrix4D& matrix, const math::Vector3D& vector, const math::Vector3D& expectedMultiplyResultVector) :
 	MatrixTestBase(matrix),
 	m_vector(vector),
 	m_expectedMultiplyResultVector(expectedMultiplyResultVector)
@@ -95,7 +95,7 @@ MatrixTestMultiplyByVectorOperator::~MatrixTestMultiplyByVectorOperator()
 
 void MatrixTestMultiplyByVectorOperator::StartTest()
 {
-	Math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
+	math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultVector == m_expectedMultiplyResultVector, utility::logging::ERR,
 		"The multiplication of matrix:\n", m_matrix, " and vector ", m_vector, " equals ", multiplyResultVector,
 		". It is different than expected ", m_expectedMultiplyResultVector, ".");

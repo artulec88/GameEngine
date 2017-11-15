@@ -2,7 +2,7 @@
 #include "Triangle.h"
 #include "FloatingPoint.h"
 
-Math::Triangle::Triangle(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) noexcept :
+math::Triangle::Triangle(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) noexcept :
 	m_v1(v1),
 	m_v2(v2),
 	m_v3(v3)
@@ -10,43 +10,43 @@ Math::Triangle::Triangle(const Vector3D& v1, const Vector3D& v2, const Vector3D&
 }
 
 
-Math::Triangle::~Triangle()
+math::Triangle::~Triangle()
 {
 }
 
-Math::Real Math::Triangle::CalculatePerimeter() const noexcept
+math::Real math::Triangle::CalculatePerimeter() const noexcept
 {
 	return CalculateEdgeLength1() + CalculateEdgeLength2() + CalculateEdgeLength3();
 }
 
-Math::Angle Math::Triangle::CalculateAngle1() const noexcept
+math::Angle math::Triangle::CalculateAngle1() const noexcept
 {
 	const Real edgeLength1 = CalculateEdgeLength1();
 	const Real edgeLength2 = CalculateEdgeLength2();
 	const Real edgeLength3 = CalculateEdgeLength3();
 	const Real radians = acos(edgeLength2 * edgeLength2 + edgeLength3 * edgeLength3 - edgeLength1 * edgeLength1) / (2.0f * edgeLength2 * edgeLength3);
-	return Angle(radians, Unit::RADIAN);
+	return Angle(radians, units::RADIAN);
 }
 
-Math::Angle Math::Triangle::CalculateAngle2() const noexcept
+math::Angle math::Triangle::CalculateAngle2() const noexcept
 {
 	const Real edgeLength1 = CalculateEdgeLength1();
 	const Real edgeLength2 = CalculateEdgeLength2();
 	const Real edgeLength3 = CalculateEdgeLength3();
 	const Real radians = acos(edgeLength1 * edgeLength1 + edgeLength3 * edgeLength3 - edgeLength2 * edgeLength2) / (2.0f * edgeLength1 * edgeLength3);
-	return Angle(radians, Unit::RADIAN);
+	return Angle(radians, units::RADIAN);
 }
 
-Math::Angle Math::Triangle::CalculateAngle3() const noexcept
+math::Angle math::Triangle::CalculateAngle3() const noexcept
 {
 	const Real edgeLength1 = CalculateEdgeLength1();
 	const Real edgeLength2 = CalculateEdgeLength2();
 	const Real edgeLength3 = CalculateEdgeLength3();
 	const Real radians = acos(edgeLength1 * edgeLength1 + edgeLength2 * edgeLength2 - edgeLength3 * edgeLength3) / (2.0f * edgeLength1 * edgeLength2);
-	return Angle(radians, Unit::RADIAN);
+	return Angle(radians, units::RADIAN);
 }
 
-Math::Real Math::Triangle::CalculateArea() const noexcept
+math::Real math::Triangle::CalculateArea() const noexcept
 {
 	// ==================== Heron's formula implementation begin ==================== */
 	//const Real edgeLength1 = CalculateEdgeLength1();
@@ -57,13 +57,13 @@ Math::Real Math::Triangle::CalculateArea() const noexcept
 	// ==================== Heron's formula implementation end ==================== */
 
 	// ==================== "3D math primer for graphics and game development" (page 273) implementation begin ==================== */
-	const Math::Vector3D edge1 = m_v3 - m_v2;
-	const Math::Vector3D edge2 = m_v1 - m_v3;
+	const math::Vector3D edge1 = m_v3 - m_v2;
+	const math::Vector3D edge2 = m_v1 - m_v3;
 	return (edge1.Cross(edge2).Length()) / 2.0f;
 	// ==================== "3D math primer for graphics and game development" (page 273) implementation end ==================== */
 }
 
-Math::Vector3D Math::Triangle::CalculateBarycentricCoordinates(const Vector3D& vec) const noexcept
+math::Vector3D math::Triangle::CalculateBarycentricCoordinates(const Vector3D& vec) const noexcept
 {
 	const Vector3D edge1 = m_v3 - m_v2;
 	const Vector3D edge2 = m_v1 - m_v3;
@@ -84,12 +84,12 @@ Math::Vector3D Math::Triangle::CalculateBarycentricCoordinates(const Vector3D& v
 	return Vector3D(b1, b2, b3);
 }
 
-Math::Vector3D Math::Triangle::CalculatePositionFromBarycentricCoordinates(Real barycentricWeight1, Real barycentricWeight2) const noexcept
+math::Vector3D math::Triangle::CalculatePositionFromBarycentricCoordinates(Real barycentricWeight1, Real barycentricWeight2) const noexcept
 {
 	return (m_v1 * barycentricWeight1) + (m_v2 * barycentricWeight2) + (m_v3 * (REAL_ONE- barycentricWeight1 - barycentricWeight2));
 }
 
-Math::Vector3D Math::Triangle::CalculateIncenter() const noexcept
+math::Vector3D math::Triangle::CalculateIncenter() const noexcept
 {
 	const Real edgeLength1 = CalculateEdgeLength1();
 	const Real edgeLength2 = CalculateEdgeLength2();
@@ -98,7 +98,7 @@ Math::Vector3D Math::Triangle::CalculateIncenter() const noexcept
 	return ((m_v1 * edgeLength1) + (m_v2 * edgeLength2) + (m_v3 * edgeLength3)) / (edgeLength1 + edgeLength2 + edgeLength3);
 }
 
-Math::Vector3D Math::Triangle::CalculateCircumcenter() const noexcept
+math::Vector3D math::Triangle::CalculateCircumcenter() const noexcept
 {
 	const Vector3D edge1 = m_v3 - m_v2;
 	const Vector3D edge2 = m_v1 - m_v3;
@@ -115,7 +115,7 @@ Math::Vector3D Math::Triangle::CalculateCircumcenter() const noexcept
 	return ((m_v1 * (c2 + c3)) + (m_v2 * (c3 + c1)) + (m_v3 * (c1 + c2))) / (2.0f * c);
 }
 
-bool Math::Triangle::IsCorrect() const noexcept
+bool math::Triangle::IsCorrect() const noexcept
 {
 	const Real edgeLength1 = CalculateEdgeLength1();
 	const Real edgeLength2 = CalculateEdgeLength2();

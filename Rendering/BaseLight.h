@@ -32,7 +32,7 @@ namespace Rendering
 			/// <param name="transform"> The light transform. </param>
 			/// <param name="color"> The color of the light. </param>
 			/// <param name="intensity"> The intensity of the light. </param>
-			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+			RENDERING_API BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled = false);
 
 			/// <summary>The base light destructor.</summary>
@@ -63,11 +63,11 @@ namespace Rendering
 
 			/// <summary> Gets the current intensity of the light. </summary>
 			/// <returns> Current intensity of the light. </returns>
-			RENDERING_API Math::Real GetIntensity() const { return m_intensity; }
+			RENDERING_API math::Real GetIntensity() const { return m_intensity; }
 
 			/// <summary> Sets new intensity for the light. </summary>
 			/// <param name="intensity"> New intensity for the light. </returns>
-			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
+			RENDERING_API void SetIntensity(math::Real intensity) { m_intensity = intensity; }
 
 			/// <summary> Gives information whether light casts shadows or not. </summary>
 			/// <returns> <code>true</code> if the light casts shadows and <code>false</code> otherwise. </returns>
@@ -79,11 +79,11 @@ namespace Rendering
 
 			/// <summary> Gets the current light transform. </summary>
 			/// <returns> Light transform reference. </returns>
-			RENDERING_API Math::Transform& GetTransform() { return m_transform; }
+			RENDERING_API math::Transform& GetTransform() { return m_transform; }
 
 			/// <summary> Gets the current light transform. </summary>
 			/// <returns> Constant light transform reference. </returns>
-			RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
+			RENDERING_API const math::Transform& GetTransform() const { return m_transform; }
 
 			RENDERING_API inline int GetShaderID() const { return m_shaderID; }
 			RENDERING_API inline int GetTerrainShaderID() const { return m_terrainShaderID; }
@@ -92,29 +92,29 @@ namespace Rendering
 
 			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
 
-			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
+			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const;
 
-			RENDERING_API void SetTransform(const Math::Transform& transform) { m_transform = transform; }
+			RENDERING_API void SetTransform(const math::Transform& transform) { m_transform = transform; }
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
 #ifdef ANT_TWEAK_BAR_ENABLED
 			RENDERING_API virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
 		protected:
-			void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
-				Math::Real shadowSoftness, Math::Real lightBleedingReductionFactor, Math::Real minVariance);
+			void SetShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+				math::Real shadowSoftness, math::Real lightBleedingReductionFactor, math::Real minVariance);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			/// <summary> The base light transform. </summary>
-			Math::Transform m_transform;
+			math::Transform m_transform;
 
 			/// <summary>The light color.</summary>
 			Color m_color;
 
 			/// <summary>The light intensity.</summary>
-			Math::Real m_intensity;
+			math::Real m_intensity;
 
 			/// <summary>The ID of the default shader for the light.</summary>
 			int m_shaderID;

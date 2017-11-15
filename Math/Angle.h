@@ -9,10 +9,10 @@
 #include "StatisticsStorage.h"
 #endif
 
-namespace Math
+namespace math
 {
 
-	namespace Unit
+	namespace units
 	{
 		// TODO: Make this enum scoped.
 		/// <summary>
@@ -23,7 +23,7 @@ namespace Math
 			DEGREE = 0,
 			RADIAN
 		};
-	} /* end namespace Unit */
+	} /* end namespace units */
 
 	/// <summary>
 	/// Angle class is responsible for handling the angle.
@@ -56,8 +56,8 @@ namespace Math
 		/// <remarks>
 		/// Explicit constructor is used, so that <code>Real</code> cannot be easily cast to Angle without the developer knowing about that.
 		/// </remarks>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH explicit Angle(Real angle, Unit::UnitType unit = Unit::DEGREE) :
-			m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle))
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH explicit Angle(Real angle, units::UnitType unit = units::DEGREE) :
+			m_angle((unit == units::RADIAN) ? angle : ToRad(angle))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
@@ -97,32 +97,32 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		/// <summary> Returns the value of the angle in <code>Unit::RADIAN</code>. </summary>
-		/// <returns> The value of the angle in <code>Unit::RADIAN</code>. </returns>
+		/// <summary> Returns the value of the angle in <code>units::RADIAN</code>. </summary>
+		/// <returns> The value of the angle in <code>units::RADIAN</code>. </returns>
 		MATH_API inline Real Get() const { return m_angle; }
 
 		/// <summary>
 		/// Returns the value of the angle converted accordingly to the specified <paramref name="unitType"/>.
-		/// For efficiency purposes, it is recommended to use the unparameterized <code>Get()</code> function if one wants to get the angle in <code>Unit::RADIAN</code>.
+		/// For efficiency purposes, it is recommended to use the unparameterized <code>Get()</code> function if one wants to get the angle in <code>units::RADIAN</code>.
 		/// </summary>
 		/// <returns> The value of the angle in the specified <paramref name="unitType"/>. </returns>
-		MATH_API inline Real Get(Unit::UnitType unitType) const
+		MATH_API inline Real Get(units::UnitType unitType) const
 		{
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
-			return (unitType == Unit::DEGREE) ? ToDeg(m_angle) : m_angle;
+			return (unitType == units::DEGREE) ? ToDeg(m_angle) : m_angle;
 		}
 
 		/// <summary> Sets the value of the angle to the given <paramref name="angle"/> specified in the passed <paramref name="unitType"/>. </summary>
-		MATH_API void Set(Real angle, Unit::UnitType unitType)
+		MATH_API void Set(Real angle, units::UnitType unitType)
 		{
 			START_PROFILING_MATH(false, "");
 			switch (unitType)
 			{
-			case Unit::DEGREE:
+			case units::DEGREE:
 				m_angle = ToRad(angle);
 				break;
-			case Unit::RADIAN:
+			case units::RADIAN:
 				m_angle = angle;
 				break;
 			default:
@@ -265,7 +265,7 @@ namespace Math
 
 		friend std::ostream& operator<<(std::ostream& out, const Angle& angle)
 		{
-			out << Math::ToDeg(angle.m_angle) << " degrees";
+			out << ToDeg(angle.m_angle) << " degrees";
 			return out;
 		}
 		/* ==================== Non-static member functions end ==================== */
@@ -273,12 +273,12 @@ namespace Math
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		/// <summary>
-		/// The value of an angle, specified in <code>Unit::RADIAN</code>.
+		/// The value of an angle, specified in <code>units::RADIAN</code>.
 		/// </summary>
 		Real m_angle; // TODO: Compiler warning C4820: '4' bytes padding added after data member 'm_angle'.
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
-		Statistics::ClassStats& m_classStats;
+		statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Angle */
@@ -358,6 +358,6 @@ namespace Math
 			0.0533740603 * pow(m_angle, 7) + 0.0245650893 * pow(m_angle, 9) + 0.0029005250 * pow(m_angle, 11) + 0.0095168091 * pow(m_angle, 13));
 	}
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_ANGLE_H__ */

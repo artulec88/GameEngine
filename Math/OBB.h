@@ -3,7 +3,7 @@
 
 #include "Math.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo;
@@ -47,6 +47,6 @@ namespace Math
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class OBB */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_OBB_H__ */

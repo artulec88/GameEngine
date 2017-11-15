@@ -28,19 +28,19 @@ Rendering::Particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 {
 	//switch (m_particleEffect)
 	//{
-	//case ParticleEffects::RAIN:
+	//case Particleeffects::RAIN:
 	//	m_configurationSuffix = "_Rain";
 	//	m_textureID = TextureIDs::PARTICLE_WATER;
 	//	break;
-	//case ParticleEffects::FIRE:
+	//case Particleeffects::FIRE:
 	//	m_configurationSuffix = "_Fire";
 	//	m_textureID = TextureIDs::PARTICLE_FIRE;
 	//	break;
-	//case ParticleEffects::FOUNTAIN:
+	//case Particleeffects::FOUNTAIN:
 	//	m_configurationSuffix = "_Fountain";
 	//	m_textureID = TextureIDs::PARTICLE_WATER;
 	//	break;
-	//case ParticleEffects::SMOKE:
+	//case Particleeffects::SMOKE:
 	//	m_configurationSuffix = "_Smoke";
 	//	m_textureID = TextureIDs::PARTICLE_SMOKE;
 	//	break;
@@ -144,9 +144,9 @@ void Rendering::Particles::ParticlesSystemBuilder::Build()
 //	//	const std::string iStr = std::to_string(i + 1);
 //	//	// TODO: Configurable updaters
 //	//}
-//	m_updaters.push_back(new EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f)));
+//	m_updaters.push_back(new EulerParticlesUpdater(math::Vector3D(0.0f, 0.0f, 0.0f)));
 //	m_updaters.push_back(new LifeSpanParticlesUpdater());
-//	//m_updaters.push_back(new RotationParticlesUpdater(Math::Angle(90.0f, Math::Unit::DEGREE)));
+//	//m_updaters.push_back(new RotationParticlesUpdater(math::Angle(90.0f, math::units::DEGREE)));
 //
 //	m_object->SetMaxParticlesCount(GET_CONFIG_VALUE_RENDERING("particleMaxParticlesCount" + m_configurationSuffix, 5000));
 //	m_object->SetAttributesMask(m_attributesMask);
@@ -307,14 +307,14 @@ void Rendering::Particles::ParticlesSystemBuilder::AddRotationGenerator(Particle
 	//switch (rotationGeneratorType)
 	//{
 	//case Generators::RotationGeneratorTypes::CONSTANT:
-	//	emitter->AddGenerator(new Generators::ConstantRotationGenerator(Math::Angle(
+	//	emitter->AddGenerator(new Generators::ConstantRotationGenerator(math::Angle(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGenerator" + m_configurationSuffix + "_" + indexStr, 5.0f))
 	//		));
 	//	break;
 	//case Generators::RotationGeneratorTypes::RANGE:
 	//	emitter->AddGenerator(new Generators::RangeRotationGenerator(
-	//		Math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMin" + m_configurationSuffix + "_" + indexStr, 2.0f)),
-	//		Math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMax" + m_configurationSuffix + "_" + indexStr, 3.0f))));
+	//		math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMin" + m_configurationSuffix + "_" + indexStr, 2.0f)),
+	//		math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMax" + m_configurationSuffix + "_" + indexStr, 3.0f))));
 	//	break;
 	//default:
 	//	ERROR_LOG_RENDERING("Unknown particle rotation generator type: %d", rotationGeneratorType);

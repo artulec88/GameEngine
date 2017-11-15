@@ -3,9 +3,9 @@
 #include <sstream>
 #include <fstream>
 
-/* static */ Math::Statistics::StatisticsStorage Math::Statistics::StatisticsStorage::statsStorage;
+/* static */ math::statistics::StatisticsStorage math::statistics::StatisticsStorage::statsStorage;
 
-Math::Statistics::StatisticsStorage::StatisticsStorage() :
+math::statistics::StatisticsStorage::StatisticsStorage() :
 	m_classStatistics(),
 	m_timer()
 {
@@ -13,14 +13,14 @@ Math::Statistics::StatisticsStorage::StatisticsStorage() :
 	//CRITICAL_LOG_MATH("Creating new statistics storage");
 }
 
-Math::Statistics::StatisticsStorage::~StatisticsStorage()
+math::statistics::StatisticsStorage::~StatisticsStorage()
 {
 	//m_timer.Stop();
 	//PrintReport();
 	//DEBUG_LOG_MATH("StatisticsStorage destructor");
 }
 
-Math::Statistics::ClassStats& Math::Statistics::StatisticsStorage::GetClassStats(const std::string& className)
+math::statistics::ClassStats& math::statistics::StatisticsStorage::GetClassStats(const std::string& className)
 {
 	ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.find(className);
 	if (classStatsItr == m_classStatistics.end())
@@ -33,7 +33,7 @@ Math::Statistics::ClassStats& Math::Statistics::StatisticsStorage::GetClassStats
 	return *classStatsItr->second;
 }
 
-void Math::Statistics::StatisticsStorage::PrintSimpleReport() const
+void math::statistics::StatisticsStorage::PrintSimpleReport() const
 {
 	std::stringstream ss("");
 	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
@@ -43,7 +43,7 @@ void Math::Statistics::StatisticsStorage::PrintSimpleReport() const
 	INFO_LOG_MATH("Simple report = \"", ss.str(), "\"");
 }
 
-void Math::Statistics::StatisticsStorage::PrintReport() const
+void math::statistics::StatisticsStorage::PrintReport() const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
 	utility::logging::ILogger::GetLogger("Math").AddStream("ApplicationStats.txt");

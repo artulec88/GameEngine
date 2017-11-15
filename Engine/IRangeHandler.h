@@ -39,7 +39,7 @@ namespace engine
 		/// </summary>
 		/// <param name="range"> The range that must be handled. </param>
 		/// <param name="value"> The value associated with the range. </param>
-		ENGINE_API virtual void Handle(Ranges::Range range, Math::Real value) = 0;
+		ENGINE_API virtual void Handle(Ranges::Range range, math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

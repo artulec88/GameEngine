@@ -3,8 +3,8 @@
 
 #include "Math.h"
 
-namespace Math {
-	namespace SpacePartitioning
+namespace math {
+	namespace space_partitioning
 	{
 		/// <summary>
 		/// The representation of the Binary Space Partitioning Tree in the system for space partitioning functionality. BSP is a tree where each node has two children.
@@ -28,17 +28,14 @@ namespace Math {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			// TODO: Create a "RayIntersect" method. Read "3D Math Primer for Graphics and Game Development" 16.5 section ("BSP trees").
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			// TODO: There should be a list of objects stored in the current node
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BSPTree */
-
-	} /* end namespace SpacePartitioning */
-} /* end namespace Math */
+	} /* end namespace space_partitioning */
+} /* end namespace math */
 
 #endif /* __MATH_BSP_TREE_H__ */

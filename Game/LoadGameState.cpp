@@ -60,7 +60,7 @@ void Game::LoadGameState::Handle(engine::States::State state)
 {
 }
 
-void Game::LoadGameState::Handle(engine::Ranges::Range range, Math::Real value)
+void Game::LoadGameState::Handle(engine::Ranges::Range range, math::Real value)
 {
 }
 
@@ -73,7 +73,7 @@ void Game::LoadGameState::Render(Rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::LoadGameState::Update(Math::Real elapsedTime)
+void Game::LoadGameState::Update(math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state updating");

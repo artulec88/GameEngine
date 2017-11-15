@@ -20,7 +20,7 @@ namespace Rendering
 		{
 			/* ==================== Static variables begin ==================== */
 		public:
-			static constexpr Math::Real LINE_HEIGHT = 0.03f;
+			static constexpr math::Real LINE_HEIGHT = 0.03f;
 			static constexpr int SPACE_ASCII_CODE = 32;
 		private:
 			static constexpr int PADDING_TOP_INDEX = 0;
@@ -57,10 +57,10 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 		public:
 			const Character& GetCharacter(int asciiCode) const;
-			Math::Real GetSpaceWidth() const { return m_spaceWidth; }
+			math::Real GetSpaceWidth() const { return m_spaceWidth; }
 			const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
-			void Bind(const Math::Vector2D& translation, const Math::Vector2D& offset, const Color& color, const Color& outlineColor,
-				Math::Real characterWidth, Math::Real characterEdgeTransitionWidth, Math::Real borderWidth, Math::Real borderEdgeTransitionWidth) const;
+			void Bind(const math::Vector2D& translation, const math::Vector2D& offset, const Color& color, const Color& outlineColor,
+				math::Real characterWidth, math::Real characterEdgeTransitionWidth, math::Real borderWidth, math::Real borderEdgeTransitionWidth) const;
 		private:
 			void ReadMetaDataFile(const std::string& fontMetaDataFileName);
 			void AddCharacter(std::vector<std::string>& tokens, int imageWidth);
@@ -72,13 +72,13 @@ namespace Rendering
 			Texture m_textureAtlas;
 			const std::string m_metaDataFileName;
 
-			Math::Real m_aspectRatio;
+			math::Real m_aspectRatio;
 
 			std::array<int, PADDING_SIDES_COUNT> m_padding;
-			Math::Real m_verticalPerPixelSize;
-			Math::Real m_horizontalPerPixelSize;
+			math::Real m_verticalPerPixelSize;
+			math::Real m_horizontalPerPixelSize;
 
-			Math::Real m_spaceWidth;
+			math::Real m_spaceWidth;
 
 			std::map<int, Character> m_metaData;
 			/* ==================== Non-static member variables end ==================== */

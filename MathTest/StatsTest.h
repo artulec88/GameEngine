@@ -22,7 +22,7 @@ namespace math_test
 	private:
 		void NestedMethod4();
 #ifdef PROFILING_MATH_TEST_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 	};
 	/* ==================== class StatsTest1 end ==================== */
@@ -41,7 +41,7 @@ namespace math_test
 	private:
 		void NestedMethod4();
 #ifdef PROFILING_MATH_TEST_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 	};
 	/* ==================== class StatsTest2 end ==================== */

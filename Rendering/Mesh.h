@@ -235,14 +235,14 @@ namespace Rendering
 		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
 		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates = nullptr, Math::Vector3D* normals = nullptr, Math::Vector3D* tangents = nullptr, Math::Vector3D* bitangents = nullptr, bool calcNormalsEnabled = false, GLenum mode = GL_TRIANGLES);
+		Mesh(int* indices, int indicesCount, int verticesCount, math::Vector3D* positions, math::Vector2D* textureCoordinates = nullptr, math::Vector3D* normals = nullptr, math::Vector3D* tangents = nullptr, math::Vector3D* bitangents = nullptr, bool calcNormalsEnabled = false, GLenum mode = GL_TRIANGLES);
 
 		/// <summary> Mesh constructor. </summary>
 		/// <param name="positions"> The array of 2D screen positions in the mesh. </param>
 		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
 		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode);
+		Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode);
 
 		/// <summary> Mesh destructor. </summary>
 		virtual ~Mesh(void);
@@ -277,17 +277,17 @@ namespace Rendering
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(int), 1);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Real* data, int dataCount)
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Real* data, int dataCount)
 		{
-			ReplaceData(buffer, data, dataCount, sizeof(Math::Real), 1);
+			ReplaceData(buffer, data, dataCount, sizeof(math::Real), 1);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Vector2D* data, int dataCount)
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Vector2D* data, int dataCount)
 		{
-			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector2D), 2);
+			ReplaceData(buffer, data, dataCount, sizeof(math::Vector2D), 2);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Vector3D* data, int dataCount)
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Vector3D* data, int dataCount)
 		{
-			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector3D), 3);
+			ReplaceData(buffer, data, dataCount, sizeof(math::Vector3D), 3);
 		}
 
 		/// <summary> Returns the size of the buffer indicated by the parameter <paramref name="bufferType"/>. </summary>
@@ -312,12 +312,12 @@ namespace Rendering
 	protected:
 		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
-		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, Math::Real* data, unsigned int dataCount);
+		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
 
-		void AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount);
-		void AddVertices(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
-		void CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const;
-		void CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* positions, Math::Vector2D* textureCoordinates, size_t verticesCount) const;
+		void AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount);
+		void AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
+		void CalcNormals(math::Vector3D*& normals, math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const;
+		void CalcTangents(math::Vector3D*& tangents, math::Vector3D* positions, math::Vector2D* textureCoordinates, size_t verticesCount) const;
 		//void CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 		//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
 	/* ==================== Non-static member functions end ==================== */
@@ -347,7 +347,7 @@ namespace Rendering
 		/// <param name="modelMatricesValues"> The array of model matrices for each billboard. </param>
 		/// <param name="billboardsCount"> The number of billboards that will use this billboards mesh. </param>
 		/// <param name="billboardDataLength"> The data length for a single billboard in the <paramref name="modelMatricesValues"/>. </param>
-		BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
+		BillboardMesh(math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
 		/// <summary> Billboards mesh destructor. </summary>
 		virtual ~BillboardMesh(void);
 		/// <summary> Billboards mesh copy constructor. </summary>
@@ -386,7 +386,7 @@ namespace Rendering
 		/// <summary>
 		/// Instance mesh constructor.
 		/// </summary>
-		InstanceMesh(Math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
+		InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
 		/// <summary>
 		/// Instance mesh destructor.
 		/// </summary>
@@ -414,7 +414,7 @@ namespace Rendering
 		/// <summary> Gives information about the amount of data one instance uses. </summary>
 		/// <returns> The amount of data used by every instance. </returns>
 		unsigned int GetInstanceDataLength() const { return m_instanceDataLength; }
-		void Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const;
+		void Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -435,9 +435,9 @@ namespace Rendering
 //		/// The maximal height of the terrain. The negative value represents the minimal height of the terrain.
 //		/// In other words, the terrain height always lies in range [-HEIGHTMAP_MAX_HEIGHT; HEIGHTMAP_MAX_HEIGHT].
 //		/// </summary>
-//		static constexpr Math::Real HEIGHTMAP_MAX_HEIGHT = 5.0f;
+//		static constexpr math::Real HEIGHTMAP_MAX_HEIGHT = 5.0f;
 //		/// <summary> The maximum value for color of the single pixel in the height map. </summary>
-//		static constexpr Math::Real MAX_PIXEL_COLOR = 255.0f;
+//		static constexpr math::Real MAX_PIXEL_COLOR = 255.0f;
 //		/* ==================== Static variables end ==================== */
 //
 //		/* ==================== Constructors and destructors begin ==================== */
@@ -460,7 +460,7 @@ namespace Rendering
 //		/// <param name="heightsGenerator"> The heights generator. </param>
 //		/// <param name="vertexCount"> The number of vertices for the terrain. </param>
 //		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-//		TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
+//		TerrainMesh(int gridX, int gridZ, const math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
 //		/// <summary> Terrain mesh destructor. </summary>
 //		virtual ~TerrainMesh(void);
 //		/// <summary> Terrain mesh copy constructor. </summary>
@@ -475,15 +475,15 @@ namespace Rendering
 //
 //		/* ==================== Non-static member functions begin ==================== */
 //	public:
-//		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
-//		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
-//		RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
+//		RENDERING_API math::Real GetHeightAt(const math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
+//		RENDERING_API math::Real GetHeightAt(math::Real x, math::Real y) const;
+//		RENDERING_API void TransformPositions(const math::Matrix4D& transformationMatrix);
 //	private:
 //		int GetHeightMapIndex(int x, int z) const;
-//		Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
-//		Math::Real CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator);
-//		Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData);
-//		Math::Vector3D CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator);
+//		math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
+//		math::Real CalculateHeightAt(int x, int z, const math::HeightsGenerator& heightsGenerator);
+//		math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData);
+//		math::Vector3D CalculateNormal(int x, int z, const math::HeightsGenerator& heightsGenerator);
 //		/* ==================== Non-static member functions end ==================== */
 //
 //
@@ -496,13 +496,13 @@ namespace Rendering
 //
 //		int m_vertexCount;
 //#ifdef HEIGHTS_KD_TREE
-//		std::vector<Math::Vector3D> m_positions;
+//		std::vector<math::Vector3D> m_positions;
 //		const unsigned int m_kdTreeSamples;
-//		std::unique_ptr<Math::KDTree> m_kdTree;
+//		std::unique_ptr<math::KDTree> m_kdTree;
 //#elif defined HEIGHTS_HEIGHTMAP
 //		int m_heightMapWidth, m_heightMapHeight;
-//		std::vector<Math::Real> m_heights;
-//		Math::Real m_gridSquareSize;
+//		std::vector<math::Real> m_heights;
+//		math::Real m_gridSquareSize;
 //#endif
 //		/* ==================== Non-static member variables end ==================== */
 //	}; /* end class TerrainMesh */

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "FogInfo.h"
 
-Rendering::FogEffect::FogInfo::FogInfo(Color fogColor /* = Color(ColorIDs::GAINSBORO) */, Math::Real fogStartDistance /* = 8.0f */, Math::Real fogEndDistance /* = 50.0f */, Math::Real fogDensityFactor /* = 0.2f */,
-	Math::Real fogGradient /* = 0.005f */, FogFallOffType fogFallOffType /* = EXPONENTIAL */, FogCalculationType fogCalculationType /* = RANGE_BASED */, bool isEnabled /* = true */) noexcept :
+Rendering::FogEffect::FogInfo::FogInfo(Color fogColor /* = Color(ColorIDs::GAINSBORO) */, math::Real fogStartDistance /* = 8.0f */, math::Real fogEndDistance /* = 50.0f */, math::Real fogDensityFactor /* = 0.2f */,
+	math::Real fogGradient /* = 0.005f */, FogFallOffType fogFallOffType /* = EXPONENTIAL */, FogCalculationType fogCalculationType /* = RANGE_BASED */, bool isEnabled /* = true */) noexcept :
 	m_color(fogColor),
 	m_startDistance(fogStartDistance),
 	m_endDistance(fogEndDistance),

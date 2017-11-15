@@ -30,9 +30,9 @@ namespace Rendering
 		/// The maximal height of the terrain. The negative value represents the minimal height of the terrain.
 		/// In other words, the terrain height always lies in range [-HEIGHTMAP_MAX_HEIGHT; HEIGHTMAP_MAX_HEIGHT].
 		/// </summary>
-		static constexpr Math::Real HEIGHTMAP_MAX_HEIGHT = 5.0f;
+		static constexpr math::Real HEIGHTMAP_MAX_HEIGHT = 5.0f;
 		/// <summary> The maximum value for color of the single pixel in the height map. </summary>
-		static constexpr Math::Real MAX_PIXEL_COLOR = 255.0f;
+		static constexpr math::Real MAX_PIXEL_COLOR = 255.0f;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -42,7 +42,7 @@ namespace Rendering
 		/// The surface of the terrain storing the information about each vertex on the grid and its respective height.
 		/// </param>
 		/// <param name="terrainTransform"> The world transform of the terrain. </param>
-		RENDERING_API Terrain(const Math::Surface& surface, const Math::Transform& terrainTransform);
+		RENDERING_API Terrain(const math::Surface& surface, const math::Transform& terrainTransform);
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="gridX"> The X position on the grid. </param>
 		/// <param name="gridZ"> The Z position on the grid. </param>
@@ -57,7 +57,7 @@ namespace Rendering
 		/// <param name="heightsGenerator"> The heights generator. </param>
 		/// <param name="vertexCount"> The number of vertices for the terrain. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		//Terrain(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
+		//Terrain(int gridX, int gridZ, const math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
 		/// <summary> Terrain mesh destructor. </summary>
 		RENDERING_API ~Terrain(void);
 		/// <summary> Terrain mesh copy constructor. </summary>
@@ -80,7 +80,7 @@ namespace Rendering
 		/// The output of the function will represent the height of the terrain at that particular location.
 		/// </param>
 		/// <returns> The height of the terrain at location <paramref name="xz"/>. </returns>
-		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
+		RENDERING_API math::Real GetHeightAt(const math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
 
 		/// <summary>
 		/// Finds and returns the height of the terrain at location given by the two specified X and Z components
@@ -96,13 +96,13 @@ namespace Rendering
 		/// The height of the terrain at location given by the two specified X and Z components
 		/// (<paramref name="x"/> and <paramref name="z"/> respectively).
 		/// </returns>
-		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
+		RENDERING_API math::Real GetHeightAt(math::Real x, math::Real y) const;
 	private:
 		//int GetHeightMapIndex(int x, int z) const;
-		//Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
-		//Math::Real CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator);
-		//Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData);
-		//Math::Vector3D CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator);
+		//math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
+		//math::Real CalculateHeightAt(int x, int z, const math::HeightsGenerator& heightsGenerator);
+		//math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData);
+		//math::Vector3D CalculateNormal(int x, int z, const math::HeightsGenerator& heightsGenerator);
 		/* ==================== Non-static member functions end ==================== */
 
 
@@ -116,9 +116,9 @@ namespace Rendering
 		int m_z;
 
 #ifdef HEIGHTS_KD_TREE
-		Math::KDTree m_kdTree;
+		math::KDTree m_kdTree;
 #elif defined HEIGHTS_SURFACE
-		Math::Surface m_surface;
+		math::Surface m_surface;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Terrain */

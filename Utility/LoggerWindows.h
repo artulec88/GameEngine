@@ -35,16 +35,14 @@ namespace utility
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Fill(const std::string& strLevel, LogLevel level) override;
-			virtual void ResetConsoleColor() const override;
+			void Fill(const std::string& strLevel, LogLevel level) override;
+			void ResetConsoleColor() const override;
 		protected:
-			virtual void SetConsoleColor(LogLevel level) const override;
-			virtual void ReadConsoleColorsFromConfigFile() override;
+			void SetConsoleColor(LogLevel level) const override;
+			void ReadConsoleColorsFromConfigFile() override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		protected:
 			int m_indentDepth; // TODO: Compiler warning C4820: '4' bytes padding added after data member m_indentDepth
 			const char* m_dateTimeFormat;
 			HANDLE m_console;

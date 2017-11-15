@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Vector.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo;
@@ -31,8 +31,8 @@ namespace Math
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		MATH_API IntersectInfo DoesIntersectSphere(const Sphere& sphere) const;
-		MATH_API inline const Math::Vector3D& GetCenter() const { return m_center; }
-		MATH_API inline Math::Real GetRadius() const { return m_radius; }
+		MATH_API const Vector3D& GetCenter() const { return m_center; }
+		MATH_API Real GetRadius() const { return m_radius; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -42,6 +42,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Sphere */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_SPHERE_H__ */

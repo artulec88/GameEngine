@@ -3,9 +3,9 @@
 
 #include "Math.h"
 
-namespace Math
+namespace math
 {
-	namespace Effects
+	namespace effects
 	{
 		enum EffectType
 		{
@@ -59,7 +59,7 @@ namespace Math
 			/* ==================== Non-static member variables begin ==================== */
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class EffectFactory */
-	} /* end namespace Effects */
-} /* end namespace Math */
+	} /* end namespace effects */
+} /* end namespace math */
 
 #endif /* __MATH_EFFECTS_EFFECT_FACTORY_H__ */

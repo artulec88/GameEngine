@@ -2,7 +2,7 @@
 #include "Word.h"
 #include <sstream>
 
-Rendering::Text::Word::Word(Math::Real fontSize) :
+Rendering::Text::Word::Word(math::Real fontSize) :
 	m_width(REAL_ZERO),
 	m_fontSize(fontSize)
 {

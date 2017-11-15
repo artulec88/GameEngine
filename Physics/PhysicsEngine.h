@@ -44,7 +44,7 @@ namespace Physics
 		/// If object interaction is desired, collision detection and response must be performed afterwards.
 		/// </summary>
 		/// <param name="passedTime">The amount of time to simulate the physics world.</param>
-		PHYSICS_API void Simulate(Math::Real passedTime);
+		PHYSICS_API void Simulate(math::Real passedTime);
 
 		PHYSICS_API void HandleCollisions();
 
@@ -60,7 +60,7 @@ namespace Physics
 		typedef std::vector<PhysicsObject*> PhysicObjectsContainer;
 		PhysicObjectsContainer m_physicsObjects;
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class PhysicsEngine */

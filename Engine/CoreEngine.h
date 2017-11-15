@@ -113,13 +113,13 @@ namespace engine
 		int GetWindowWidth() const { return m_windowWidth; };
 		int GetWindowHeight() const { return m_windowHeight; };
 
-		void SetCursorPos(Math::Real xPos, Math::Real yPos);
+		void SetCursorPos(math::Real xPos, math::Real yPos);
 		ENGINE_API void CentralizeCursor();
 
-		Math::Real GetTime() const;
+		math::Real GetTime() const;
 		void ClearScreen() const;
 		//void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
-		//void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
+		//void ConvertTimeOfDay(math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
 		audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
 
@@ -186,7 +186,7 @@ namespace engine
 		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void SetCallbacks();
-		void StopTimer(utility::timing::Timer& timer, long& countStats, Math::Statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
+		void StopTimer(utility::timing::Timer& timer, long& countStats, math::statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
 		{
 			if (timer.IsRunning())
 			{
@@ -214,7 +214,7 @@ namespace engine
 		int m_windowWidth;
 		int m_windowHeight;
 		const char* m_windowTitle;
-		const Math::Real m_frameTime;
+		const math::Real m_frameTime;
 		GameManager* m_game;
 		std::unique_ptr<audio::IAudioEngine> m_audioEngine;
 		Physics::PhysicsEngine* m_physicsEngine;
@@ -233,39 +233,39 @@ namespace engine
 		/// <summary> Specifies where to look for the audio files. </summary>
 		const std::string m_audioDirectory;
 
-		const std::map<int, Input::RawInputKeys::RawInputKey> m_glfwKeysToRawInputKeysMap;
+		const std::map<int, Input::raw_input_keys::RawInputKey> m_glfwKeysToRawInputKeysMap;
 		Input::InputMapping m_inputMapping;
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 		long m_countStats1;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime1;
+		math::statistics::UtmostSamples<long long> m_minMaxTime1;
 		double m_timeSum1;
 
 		long m_countStats2;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime2;
+		math::statistics::UtmostSamples<long long> m_minMaxTime2;
 		double m_timeSum2;
 
 		long m_countStats2_1;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_1;
+		math::statistics::UtmostSamples<long long> m_minMaxTime2_1;
 		double m_timeSum2_1;
 
 		long m_countStats2_2;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_2;
+		math::statistics::UtmostSamples<long long> m_minMaxTime2_2;
 		double m_timeSum2_2;
 
 		long m_countStats2_3;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_3;
+		math::statistics::UtmostSamples<long long> m_minMaxTime2_3;
 		double m_timeSum2_3;
 
 		long m_countStats3;
-		Math::Statistics::UtmostSamples<long long> m_minMaxTime3;
+		math::statistics::UtmostSamples<long long> m_minMaxTime3;
 		double m_timeSum3;
 
 		mutable int m_renderingRequiredCount;
 		mutable int m_renderingNotRequiredCount;
 		mutable bool m_isSamplingSpf;
-		Math::Statistics::ClassStats& m_classStats;
-		mutable Math::Statistics::Stats<Math::Real> m_stats;
+		math::statistics::ClassStats& m_classStats;
+		mutable math::statistics::Stats<math::Real> m_stats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CoreEngine */

@@ -16,7 +16,7 @@ Rendering::CameraBuilder::CameraBuilder() :
 	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f)),
 	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_RENDERING("defaultCameraSensitivity", 0.005f)),
 	m_pos(M_DEFAULT_CAMERA_POS_X, M_DEFAULT_CAMERA_POS_Y, M_DEFAULT_CAMERA_POS_Z),
-	m_rot(Math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z)),
+	m_rot(math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z)),
 	m_nearPlane(M_DEFAULT_CAMERA_NEAR_PLANE),
 	m_farPlane(M_DEFAULT_CAMERA_FAR_PLANE),
 	m_projectionMatrix(),
@@ -36,26 +36,26 @@ Rendering::CameraBuilder::~CameraBuilder()
 //		GET_CONFIG_VALUE_RENDERING("cameraPosZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetZ()));
 //
 //	// Setting rotation
-//	Math::Angle angleX(GET_CONFIG_VALUE_RENDERING("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-//	Math::Angle angleY(GET_CONFIG_VALUE_RENDERING("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-//	Math::Angle angleZ(GET_CONFIG_VALUE_RENDERING("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+//	math::Angle angleX(GET_CONFIG_VALUE_RENDERING("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(math::units::DEGREE)));
+//	math::Angle angleY(GET_CONFIG_VALUE_RENDERING("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(math::units::DEGREE)));
+//	math::Angle angleZ(GET_CONFIG_VALUE_RENDERING("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(math::units::DEGREE)));
 //	DELOCUST_LOG_ENGINE("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-//	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+//	m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
 //void Rendering::CameraBuilder::BuildPart2()
 //{
 //	// Setting camera parameters
-//	m_fov.Set(GET_CONFIG_VALUE_RENDERING("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+//	m_fov.Set(GET_CONFIG_VALUE_RENDERING("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(math::units::DEGREE)), math::units::DEGREE);
 //	m_aspectRatio = GET_CONFIG_VALUE_RENDERING("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
 //	m_nearPlane = GET_CONFIG_VALUE_RENDERING("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
 //	m_farPlane = GET_CONFIG_VALUE_RENDERING("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
 //	m_sensitivity = GET_CONFIG_VALUE_RENDERING("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
 //
-//	//Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_RENDERING("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
-//	//Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_RENDERING("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
-//	//Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_RENDERING("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
-//	//Math::Angle initialPitchAngle(GET_CONFIG_VALUE_RENDERING("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.Get(Math::Unit::DEGREE)));
+//	//math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_RENDERING("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
+//	//math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_RENDERING("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
+//	//math::Real pitchRotationSpeed = GET_CONFIG_VALUE_RENDERING("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
+//	//math::Angle initialPitchAngle(GET_CONFIG_VALUE_RENDERING("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.Get(math::units::DEGREE)));
 //
 //	//Engine::CameraComponent* cameraComponent = new Engine::CameraFollowComponent(camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 //	////Engine::CameraComponent* cameraComponent = new Engine::CameraMoveComponent(camera);
@@ -67,7 +67,7 @@ Rendering::CameraBuilder::~CameraBuilder()
 //	m_object->GetTransform().SetPos(m_pos);
 //	m_object->GetTransform().SetRot(m_rot);
 //	m_object->SetSensitivity(m_sensitivity);
-//	m_object->SetProjection(Math::Matrix4D(m_fov, m_aspectRatio, m_nearPlane, m_farPlane));
+//	m_object->SetProjection(math::Matrix4D(m_fov, m_aspectRatio, m_nearPlane, m_farPlane));
 //}
 /* ==================== CameraBuilder implementation end ==================== */
 
@@ -99,7 +99,7 @@ void Rendering::OrthoCameraBuilder::BuildProjectionMatrix()
 Rendering::PerspectiveCameraBuilder::PerspectiveCameraBuilder() :
 	CameraBuilder(),
 	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)),
-	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
+	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<math::Real>(800) / 600)),
 	m_fov(M_DEFAULT_CAMERA_FIELD_OF_VIEW),
 	m_aspectRatio(M_DEFAULT_CAMERA_ASPECT_RATIO)
 {

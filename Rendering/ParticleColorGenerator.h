@@ -64,14 +64,14 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantColorGenerator(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = REAL_ONE);
+				RENDERING_API ConstantColorGenerator(math::Real red, math::Real green, math::Real blue, math::Real alpha = REAL_ONE);
 				RENDERING_API ConstantColorGenerator(const Color& color);
 				RENDERING_API virtual ~ConstantColorGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -97,13 +97,13 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
 				std::vector<Color> m_colors;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class FromSetColorGenerator */
 
@@ -134,20 +134,20 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_minRed;
-				Math::Real m_maxRed;
-				Math::Real m_minGreen;
-				Math::Real m_maxGreen;
-				Math::Real m_minBlue;
-				Math::Real m_maxBlue;
-				Math::Real m_minAlpha;
-				Math::Real m_maxAlpha;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				math::Real m_minRed;
+				math::Real m_maxRed;
+				math::Real m_minGreen;
+				math::Real m_maxGreen;
+				math::Real m_minBlue;
+				math::Real m_maxBlue;
+				math::Real m_minAlpha;
+				math::Real m_maxAlpha;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeColorGenerator */
 		} /* end namespace Generators */

@@ -35,7 +35,7 @@ namespace engine
 				{
 				}
 
-				Converter(Math::Real minInput, Math::Real maxInput, Math::Real minOutput, Math::Real maxOutput) :
+				Converter(math::Real minInput, math::Real maxInput, math::Real minOutput, math::Real maxOutput) :
 					m_minInput(minInput),
 					m_maxInput(maxInput),
 					m_minOutput(minOutput),
@@ -46,7 +46,7 @@ namespace engine
 				template <typename RangeType>
 				RangeType Convert(RangeType inputValue) const
 				{
-					Math::Real v = static_cast<Math::Real>(inputValue);
+					math::Real v = static_cast<math::Real>(inputValue);
 					DELOCUST_LOG_ENGINE("v = ", v, "; minInput = ", m_minInput, "; maxInput = ", m_maxInput, "; minOutput = ", m_minOutput, "; maxOutput = ", m_maxOutput);
 					if (v < m_minInput)
 					{
@@ -56,13 +56,13 @@ namespace engine
 					{
 						v = m_maxInput;
 					}
-					return Math::Interpolation::InterpolateLinear<RangeType>(m_minOutput, m_maxOutput, (v - m_minInput) / (m_maxInput - m_minInput));
+					return math::interpolation::InterpolateLinear<RangeType>(m_minOutput, m_maxOutput, (v - m_minInput) / (m_maxInput - m_minInput));
 				}
 
-				Math::Real m_minInput;
-				Math::Real m_maxInput;
-				Math::Real m_minOutput;
-				Math::Real m_maxOutput;
+				math::Real m_minInput;
+				math::Real m_maxInput;
+				math::Real m_minOutput;
+				math::Real m_maxOutput;
 			}; /* end struct Converter */
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
@@ -75,7 +75,6 @@ namespace engine
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			template <typename RangeType>
 			RangeType Convert(Ranges::Range rangeId, RangeType inputValue) const
 			{

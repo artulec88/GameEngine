@@ -45,7 +45,7 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				inline void Set(ParticlesContainer* particleContainer, size_t i, const Math::Angle& rotationAngle)
+				inline void Set(ParticlesContainer* particleContainer, size_t i, const math::Angle& rotationAngle)
 				{
 					particleContainer->SetRotation(i, rotationAngle);
 				}
@@ -66,18 +66,18 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantRotationGenerator(const Math::Angle& angle);
+				RENDERING_API ConstantRotationGenerator(const math::Angle& angle);
 				RENDERING_API virtual ~ConstantRotationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Angle m_angle;
+				math::Angle m_angle;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ConstantRotationGenerator */
 
@@ -91,20 +91,20 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API RangeRotationGenerator(const Math::Angle& minAngle, const Math::Angle& maxAngle);
+				RENDERING_API RangeRotationGenerator(const math::Angle& minAngle, const math::Angle& maxAngle);
 				RENDERING_API virtual ~RangeRotationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_minAngleInRadians;
-				Math::Real m_maxAngleInRadians;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				math::Real m_minAngleInRadians;
+				math::Real m_maxAngleInRadians;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeRotationGenerator */
 		} /* end namespace Generators */

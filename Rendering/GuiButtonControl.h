@@ -62,9 +62,9 @@ namespace Rendering
 			/// </param>
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
-			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
-				const Math::Angle& screenRotationAngle, const Math::Vector2D& scale, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
-				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
+			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, math::Real fontSize, const Texture* iconTexture, const math::Vector2D& screenPosition,
+				const math::Angle& screenRotationAngle, const math::Vector2D& scale, math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const math::Vector2D& offset, bool isCentered = false,
+				math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 
 			/// <summary> GUI button control destructor. </summary>
 			RENDERING_API virtual ~GuiButtonControl(void);
@@ -87,16 +87,16 @@ namespace Rendering
 			/// <summary>
 			/// Updates GUI text's graphical effects. Does not change the text itself, nor its size, nor font.
 			/// </summary>
-			RENDERING_API void Update(Math::Real deltaTime)
+			RENDERING_API void Update(math::Real deltaTime)
 			{
 				//m_colorEffect->Update(deltaTime);
 				//m_outlineColorEffect->Update(deltaTime);
 				//m_offsetEffect->Update(deltaTime);
 			}
 
-			//RENDERING_API void acceptColorEffect(const Math::Effects::Effect<Color>& effect) { effect.Apply(&m_color); }
-			//RENDERING_API void acceptOutlineColorEffect(const Math::Effects::Effect<Color>& effect) { effect.Apply(&m_outlineColor); }
-			RENDERING_API void acceptOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) { effect.Apply(&m_offset); }
+			//RENDERING_API void acceptColorEffect(const math::effects::Effect<Color>& effect) { effect.Apply(&m_color); }
+			//RENDERING_API void acceptOutlineColorEffect(const math::effects::Effect<Color>& effect) { effect.Apply(&m_outlineColor); }
+			RENDERING_API void acceptOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) { effect.Apply(&m_offset); }
 
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>
@@ -111,11 +111,11 @@ namespace Rendering
 
 			RENDERING_API const Color& GetOutlineColor() const { return m_outlineColor; }
 
-			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
-			RENDERING_API Math::Real GetCharacterWidth() const { return m_characterWidth; }
-			RENDERING_API Math::Real GetCharacterEdgeTransitionWidth() const { return m_characterEdgeTransitionWidth; }
-			RENDERING_API Math::Real GetBorderWidth() const { return m_borderWidth; }
-			RENDERING_API Math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
+			RENDERING_API const math::Vector2D& GetOffset() const { return m_offset; }
+			RENDERING_API math::Real GetCharacterWidth() const { return m_characterWidth; }
+			RENDERING_API math::Real GetCharacterEdgeTransitionWidth() const { return m_characterEdgeTransitionWidth; }
+			RENDERING_API math::Real GetBorderWidth() const { return m_borderWidth; }
+			RENDERING_API math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
 
 			/// <summary>
 			/// Draws the GUI button on the screen using the specified rendering engine and shader.
@@ -124,13 +124,13 @@ namespace Rendering
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI button.</param>
 			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
-			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) override;
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
+			RENDERING_API virtual void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
+			RENDERING_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -150,20 +150,20 @@ namespace Rendering
 			std::unique_ptr<Mesh> m_mesh;
 			std::string m_text;
 			const Text::Font* m_font;
-			Math::Real m_fontSize;
+			math::Real m_fontSize;
 			const Texture* m_iconTexture;
-			const Math::Matrix4D m_iconTransformationMatrix;
+			const math::Matrix4D m_iconTransformationMatrix;
 			Color m_color;
 			Color m_outlineColor;
-			Math::Vector2D m_offset;
-			Math::Real m_maxLineLength;
+			math::Vector2D m_offset;
+			math::Real m_maxLineLength;
 			int m_linesCount;
 			bool m_isCentered;
 
-			Math::Real m_characterWidth;
-			Math::Real m_characterEdgeTransitionWidth;
-			Math::Real m_borderWidth;
-			Math::Real m_borderEdgeTransitionWidth;
+			math::Real m_characterWidth;
+			math::Real m_characterEdgeTransitionWidth;
+			math::Real m_borderWidth;
+			math::Real m_borderEdgeTransitionWidth;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiButtonControl */
 	} /* end namespace Controls */

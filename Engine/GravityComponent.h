@@ -19,7 +19,7 @@ namespace engine
 	private:
 		// TODO: Don't hard-code any value! Ever!
 		// TODO: This variable should be moved into the Physics engine and be accessible from anywhere (similarily as stdlog is accessible).
-		static constexpr Math::Vector3D GRAVITY_ACCELERATION{ 0.0f, -9.8f, 0.0f };
+		static constexpr math::Vector3D GRAVITY_ACCELERATION{ 0.0f, -9.8f, 0.0f };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -34,14 +34,14 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void Update(math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const Rendering::Terrain* m_terrain;
-		Math::Real m_lastX, m_lastZ, m_lastHeight;
-		Math::Real m_heightAdjustment;
+		math::Real m_lastX, m_lastZ, m_lastHeight;
+		math::Real m_heightAdjustment;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GravityComponent */
 

@@ -21,7 +21,7 @@ namespace Rendering
 			/// <param name="spaceWidth"> The screen-space width of a space character. </param>
 			/// <param name="fontSize"> The size of font being used. </param>
 			/// <param name="maxLength"> The screen-space maximum length of a line. </param>
-			Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength);
+			Line(math::Real spaceWidth, math::Real fontSize, math::Real maxLength);
 			~Line(void);
 			//private:
 			//	Line(Line& line) {};
@@ -37,8 +37,8 @@ namespace Rendering
 			/// <param name="word"> The word to try to add. </param>
 			/// <returns><code>True</code> if the word has successfully been added to the line and <code>false</code> otherwise. </returns>
 			bool AttemptToAddWord(const Word& word);
-			Math::Real GetMaxLength() const { return m_maxLength; }
-			Math::Real GetLineLength() const { return m_currentLineLength; }
+			math::Real GetMaxLength() const { return m_maxLength; }
+			math::Real GetLineLength() const { return m_currentLineLength; }
 			const std::vector<Word>& GetWords() const { return m_words; }
 			void Clear()
 			{
@@ -49,10 +49,10 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Math::Real m_spaceSize;
-			Math::Real m_maxLength;
+			math::Real m_spaceSize;
+			math::Real m_maxLength;
 			std::vector<Word> m_words;
-			Math::Real m_currentLineLength;
+			math::Real m_currentLineLength;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Line */
 	} /* end namespace Text */

@@ -50,7 +50,7 @@ namespace audio
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//AUDIO_API void Update(Math::Real deltaTime);
+		//AUDIO_API void Update(math::Real deltaTime);
 		//AUDIO_API void CreateSound(const std::string& soundFileName);
 		//AUDIO_API void Play(bool inLoop = false);
 	/* ==================== Non-static member functions end ==================== */

@@ -26,7 +26,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		explicit AngleTestBase(const Math::Angle& angle);
+		explicit AngleTestBase(const math::Angle& angle);
 		virtual ~AngleTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -35,7 +35,7 @@ namespace math_test
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Angle m_angle;
+		math::Angle m_angle;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestBase */
 
@@ -43,7 +43,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestTrigonometry(const Math::Angle& angle, Math::Real expectedTrigonometryOperatorValue);
+		AngleTestTrigonometry(const math::Angle& angle, math::Real expectedTrigonometryOperatorValue);
 		virtual ~AngleTestTrigonometry();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -52,7 +52,7 @@ namespace math_test
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Real m_expectedTrigonometryOperatorValue;
+		math::Real m_expectedTrigonometryOperatorValue;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestTrigonometry */
 
@@ -60,7 +60,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestSin(const Math::Angle& angle, Math::Real expectedSinValue);
+		AngleTestSin(const math::Angle& angle, math::Real expectedSinValue);
 		virtual ~AngleTestSin();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -78,7 +78,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestCos(const Math::Angle& angle, Math::Real expectedCosValue);
+		AngleTestCos(const math::Angle& angle, math::Real expectedCosValue);
 		virtual ~AngleTestCos();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -96,7 +96,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestTan(const Math::Angle& angle, Math::Real expectedTanValue);
+		AngleTestTan(const math::Angle& angle, math::Real expectedTanValue);
 		virtual ~AngleTestTan();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -118,7 +118,7 @@ namespace math_test
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestCompare(const Math::Angle& angle1, const Math::Angle& angle2, bool expectedCompareResult, bool expectedLessResult, bool expectedGreaterResult);
+		AngleTestCompare(const math::Angle& angle1, const math::Angle& angle2, bool expectedCompareResult, bool expectedLessResult, bool expectedGreaterResult);
 		virtual ~AngleTestCompare();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -130,7 +130,7 @@ namespace math_test
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Angle m_compareAngle;
+		math::Angle m_compareAngle;
 		bool m_expectedCompareResult;
 		bool m_expectedLessResult;
 		bool m_expectedGreaterResult;
@@ -142,9 +142,9 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		//AngleTestOperator(const Math::Angle& angle1, const Math::Angle& angle2, Math::Real value, Math::Angle& expectedAnglesSum, const Math::Angle& expectedAnglesDiff,
-		//	const Math::Angle& expectedAngle1TimesValue, const Math::Angle& expectedAngle1OverValue, const Math::Angle& expectedAngle2TimesValue, const Math::Angle& expectedAngle2OverValue);
-		AngleTestOperator(const Math::Angle& angle1, const T& value, const Math::Angle& expectedResult) :
+		//AngleTestOperator(const math::Angle& angle1, const math::Angle& angle2, math::Real value, math::Angle& expectedAnglesSum, const math::Angle& expectedAnglesDiff,
+		//	const math::Angle& expectedAngle1TimesValue, const math::Angle& expectedAngle1OverValue, const math::Angle& expectedAngle2TimesValue, const math::Angle& expectedAngle2OverValue);
+		AngleTestOperator(const math::Angle& angle1, const T& value, const math::Angle& expectedResult) :
 			AngleTestBase(angle1),
 			m_value(value),
 			m_expectedResult(expectedResult)
@@ -162,15 +162,15 @@ namespace math_test
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const T m_value;
-		const Math::Angle m_expectedResult;
+		const math::Angle m_expectedResult;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestOperator */
 
-	class AngleTestSum : public AngleTestOperator<Math::Angle>
+	class AngleTestSum : public AngleTestOperator<math::Angle>
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestSum(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesSum);
+		AngleTestSum(const math::Angle& angle1, const math::Angle& angle2, const math::Angle& expectedAnglesSum);
 		virtual ~AngleTestSum();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -184,11 +184,11 @@ namespace math_test
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestSum */
 
-	class AngleTestDiff : public AngleTestOperator<Math::Angle>
+	class AngleTestDiff : public AngleTestOperator<math::Angle>
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestDiff(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesDiff);
+		AngleTestDiff(const math::Angle& angle1, const math::Angle& angle2, const math::Angle& expectedAnglesDiff);
 		virtual ~AngleTestDiff();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -202,11 +202,11 @@ namespace math_test
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestDiff */
 
-	class AngleTestMultiplyByValue : public AngleTestOperator<Math::Real>
+	class AngleTestMultiplyByValue : public AngleTestOperator<math::Real>
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestMultiplyByValue(const Math::Angle& angle1, Math::Real multValue, const Math::Angle& expectedMultResult);
+		AngleTestMultiplyByValue(const math::Angle& angle1, math::Real multValue, const math::Angle& expectedMultResult);
 		virtual ~AngleTestMultiplyByValue();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -220,11 +220,11 @@ namespace math_test
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestMultiplyByValue */
 
-	class AngleTestDivideByValue : public AngleTestOperator<Math::Real>
+	class AngleTestDivideByValue : public AngleTestOperator<math::Real>
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestDivideByValue(const Math::Angle& angle1, Math::Real divValue, const Math::Angle& expectedDivResult);
+		AngleTestDivideByValue(const math::Angle& angle1, math::Real divValue, const math::Angle& expectedDivResult);
 		virtual ~AngleTestDivideByValue();
 		/* ==================== Constructors and destructors end ==================== */
 

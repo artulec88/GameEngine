@@ -77,53 +77,53 @@ namespace Rendering
 			inline size_t GetAliveCount() const { return m_countAlive; }
 
 			inline bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
-			inline const Math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
-			inline const Math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
-			inline const Math::Vector3D& GetAcceleration(size_t i) const { return m_accelerations[i]; }
-			inline Math::Real GetGravityEffectFactor(size_t i) const { return m_gravityEffectFactors[i]; }
-			inline Math::Real GetLifeSpanLimit(size_t i) const { return m_lifeSpanLimits[i]; }
-			inline Math::Real GetLifeSpan(size_t i) const { return m_lifeSpans[i]; }
-			inline const Math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
-			inline Math::Real GetScale(size_t i) const { return m_scales[i]; }
-			inline Math::Real* GetScalePtr(size_t i) { return &m_scales[i]; }
-			inline void SetPosition(size_t i, const Math::Vector3D& newPosition) { m_positions[i] = newPosition; }
-			inline void SetPosition(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			inline const math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
+			inline const math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
+			inline const math::Vector3D& GetAcceleration(size_t i) const { return m_accelerations[i]; }
+			inline math::Real GetGravityEffectFactor(size_t i) const { return m_gravityEffectFactors[i]; }
+			inline math::Real GetLifeSpanLimit(size_t i) const { return m_lifeSpanLimits[i]; }
+			inline math::Real GetLifeSpan(size_t i) const { return m_lifeSpans[i]; }
+			inline const math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
+			inline math::Real GetScale(size_t i) const { return m_scales[i]; }
+			inline math::Real* GetScalePtr(size_t i) { return &m_scales[i]; }
+			inline void SetPosition(size_t i, const math::Vector3D& newPosition) { m_positions[i] = newPosition; }
+			inline void SetPosition(size_t i, math::Real x, math::Real y, math::Real z)
 			{
 				m_positions[i].x = x;
 				m_positions[i].y = y;
 				m_positions[i].z = z;
 			}
-			inline void SetVelocity(size_t i, const Math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
-			inline void SetVelocity(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			inline void SetVelocity(size_t i, const math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
+			inline void SetVelocity(size_t i, math::Real x, math::Real y, math::Real z)
 			{
 				m_velocities[i].x = x;
 				m_velocities[i].y = y;
 				m_velocities[i].z = z;
 			}
-			inline void SetAcceleration(size_t i, const Math::Vector3D& newAcceleration) { m_accelerations[i] = newAcceleration; }
-			inline void SetAcceleration(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			inline void SetAcceleration(size_t i, const math::Vector3D& newAcceleration) { m_accelerations[i] = newAcceleration; }
+			inline void SetAcceleration(size_t i, math::Real x, math::Real y, math::Real z)
 			{
 				m_accelerations[i].x = x;
 				m_accelerations[i].y = y;
 				m_accelerations[i].z = z;
 			}
-			inline void SetGravityEffectFactor(size_t i, Math::Real newGravityEffectFactor) { m_gravityEffectFactors[i] = newGravityEffectFactor; }
-			inline void SetLifeSpanLimit(size_t i, Math::Real newLifeSpanLimit) { m_lifeSpanLimits[i] = newLifeSpanLimit; }
-			inline void SetLifeSpan(size_t i, Math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }
-			inline void SetRotation(size_t i, const Math::Angle& newRotation) { m_rotations[i] = newRotation; }
-			inline void SetRotation(size_t i, Math::Real angle, Math::Unit::UnitType angleUnit = Math::Unit::RADIAN) { m_rotations[i].Set(angle, angleUnit); }
-			inline void SetScale(size_t i, Math::Real newScale) { m_scales[i] = newScale; }
-			inline void SetTextureOffset(size_t i, const Math::Vector2D& newTextureOffset) { m_textureOffsets[i] = newTextureOffset; }
+			inline void SetGravityEffectFactor(size_t i, math::Real newGravityEffectFactor) { m_gravityEffectFactors[i] = newGravityEffectFactor; }
+			inline void SetLifeSpanLimit(size_t i, math::Real newLifeSpanLimit) { m_lifeSpanLimits[i] = newLifeSpanLimit; }
+			inline void SetLifeSpan(size_t i, math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }
+			inline void SetRotation(size_t i, const math::Angle& newRotation) { m_rotations[i] = newRotation; }
+			inline void SetRotation(size_t i, math::Real angle, math::units::UnitType angleUnit = math::units::RADIAN) { m_rotations[i].Set(angle, angleUnit); }
+			inline void SetScale(size_t i, math::Real newScale) { m_scales[i] = newScale; }
+			inline void SetTextureOffset(size_t i, const math::Vector2D& newTextureOffset) { m_textureOffsets[i] = newTextureOffset; }
 			inline void SetColor(size_t i, const Color& newColor) { m_colors[i] = newColor; }
 			inline void SetID(size_t i, int ID) { m_IDs[i] = ID; }
-			inline void IncreasePosition(size_t i, const Math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
-			inline void IncreaseVelocity(size_t i, const Math::Vector3D& velocityIncrease) { m_velocities[i] += velocityIncrease; }
-			inline void IncreaseAcceleration(size_t i, const Math::Vector3D& accelerationIncrease) { m_accelerations[i] += accelerationIncrease; }
-			inline void IncreaseGravityEffectFactor(size_t i, Math::Real gravityEffectFactorIncrease) { m_gravityEffectFactors[i] += gravityEffectFactorIncrease; }
-			inline void IncreaseLifeSpanLimit(size_t i, Math::Real lifeSpanLimitIncrease) { m_lifeSpanLimits[i] += lifeSpanLimitIncrease; }
-			inline void IncreaseLifeSpan(size_t i, Math::Real lifeSpanIncrease) { m_lifeSpans[i] += lifeSpanIncrease; }
-			inline void IncreaseRotation(size_t i, const Math::Angle& rotationIncrease) { m_rotations[i] += rotationIncrease; }
-			inline void IncreaseScale(size_t i, Math::Real scaleIncrease) { m_scales[i] += scaleIncrease; }
+			inline void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
+			inline void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) { m_velocities[i] += velocityIncrease; }
+			inline void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) { m_accelerations[i] += accelerationIncrease; }
+			inline void IncreaseGravityEffectFactor(size_t i, math::Real gravityEffectFactorIncrease) { m_gravityEffectFactors[i] += gravityEffectFactorIncrease; }
+			inline void IncreaseLifeSpanLimit(size_t i, math::Real lifeSpanLimitIncrease) { m_lifeSpanLimits[i] += lifeSpanLimitIncrease; }
+			inline void IncreaseLifeSpan(size_t i, math::Real lifeSpanIncrease) { m_lifeSpans[i] += lifeSpanIncrease; }
+			inline void IncreaseRotation(size_t i, const math::Angle& rotationIncrease) { m_rotations[i] += rotationIncrease; }
+			inline void IncreaseScale(size_t i, math::Real scaleIncrease) { m_scales[i] += scaleIncrease; }
 			
 			/// <summary>
 			/// Kills the particle stored under the specified index <paramref name="id"/>.
@@ -139,7 +139,7 @@ namespace Rendering
 			/// <param name="id"> The index of the particle requested to be revived. </param>
 			void Revive(size_t id);
 			void SwapData(size_t a, size_t b);
-			Math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
+			math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
 			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
 			inline void SetMaxParticlesCount(size_t maxCount) { m_maxCount = maxCount; }
 			void SetAttributesMask(Attributes::AttributesMask attributesMask);
@@ -155,17 +155,17 @@ namespace Rendering
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			Attributes::AttributesMask m_attributesMask;
-			std::unique_ptr<Math::Vector3D[]> m_positions;
-			std::unique_ptr<Math::Vector3D[]> m_velocities;
-			std::unique_ptr<Math::Vector3D[]> m_accelerations;
-			std::unique_ptr<Math::Real[]> m_gravityEffectFactors;
-			std::unique_ptr<Math::Real[]> m_lifeSpanLimits;
-			std::unique_ptr<Math::Real[]> m_lifeSpans;
-			std::unique_ptr<Math::Angle[]> m_rotations;
-			std::unique_ptr<Math::Real[]>  m_scales;
-			std::unique_ptr<Math::Vector2D[]> m_textureOffsets;
+			std::unique_ptr<math::Vector3D[]> m_positions;
+			std::unique_ptr<math::Vector3D[]> m_velocities;
+			std::unique_ptr<math::Vector3D[]> m_accelerations;
+			std::unique_ptr<math::Real[]> m_gravityEffectFactors;
+			std::unique_ptr<math::Real[]> m_lifeSpanLimits;
+			std::unique_ptr<math::Real[]> m_lifeSpans;
+			std::unique_ptr<math::Angle[]> m_rotations;
+			std::unique_ptr<math::Real[]>  m_scales;
+			std::unique_ptr<math::Vector2D[]> m_textureOffsets;
 			std::unique_ptr<Color[]> m_colors;
-			std::unique_ptr<Math::Real[]> m_masses;
+			std::unique_ptr<math::Real[]> m_masses;
 			std::unique_ptr<bool[]> m_aliveFlags;
 			std::unique_ptr<int[]> m_IDs;
 

@@ -7,7 +7,7 @@ namespace engine
 {
 	namespace Input
 	{
-		namespace RawInputKeys
+		namespace raw_input_keys
 		{
 			enum RawInputKey
 			{
@@ -111,7 +111,7 @@ namespace engine
 				MOUSE_KEY_MIDDLE,
 				MOUSE_KEY_RIGHT
 			}; /* end enum RawInputKey */
-		} /* end namespace RawInputKeys */
+		} /* end namespace raw_input_keys */
 
 		namespace RawInputAxes
 		{

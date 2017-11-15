@@ -115,7 +115,7 @@ engine::GameNode engine::GameNode::Clone() const
 	return cloneGameNode;
 }
 
-void engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)
+void engine::GameNode::CreatePhysicsObject(math::Real mass, const math::Vector3D& linearVelocity)
 {
 	m_physicsObject = std::make_unique<Physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
 	engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
@@ -150,7 +150,7 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 	return this;
 }
 
-//void Engine::GameNode::InputAll(Math::Real delta)
+//void Engine::GameNode::InputAll(math::Real delta)
 //{
 //transform.Update();
 
@@ -204,7 +204,7 @@ void engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 	}
 }
 
-void engine::GameNode::Update(Math::Real delta)
+void engine::GameNode::Update(math::Real delta)
 {
 	for (std::vector<IUpdateable*>::iterator gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
 	{

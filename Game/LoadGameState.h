@@ -41,20 +41,20 @@ namespace Game
 		virtual void Revealed();
 		virtual void Handle(engine::Actions::Action action);
 		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, math::Real value);
 
 		virtual void Render(Rendering::Renderer* renderer) const;
 
-		virtual void Update(Math::Real elapsedTime);
+		virtual void Update(math::Real elapsedTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		engine::GameManager* m_gameManager;
-		Math::Real m_loadingProgress;
+		math::Real m_loadingProgress;
 		std::thread* m_loadingThread;
 #ifdef PROFILING_GAME_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LoadGameState */

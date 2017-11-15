@@ -73,8 +73,8 @@ namespace engine
 		ENGINE_API void MousePosEvent(double xPos, double yPos);
 		ENGINE_API void ScrollEvent(double xOffset, double yOffset);
 
-		//ENGINE_API void InputAll(Math::Real delta);
-		ENGINE_API void Update(Math::Real elapsedTime);
+		//ENGINE_API void InputAll(math::Real delta);
+		ENGINE_API void Update(math::Real elapsedTime);
 		ENGINE_API void Render(int shaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API void RegisterCommandForAction(Actions::Action action, GameNodeCommand* gameNodeCommand)
 		{
@@ -99,11 +99,11 @@ namespace engine
 			}
 		}
 
-		ENGINE_API Math::Transform& GetTransform() { return m_transform; };
-		ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }
+		ENGINE_API math::Transform& GetTransform() { return m_transform; };
+		ENGINE_API const math::Transform& GetTransform() const { return m_transform; }
 
 		ENGINE_API Physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject.get(); }
-		ENGINE_API void CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity);
+		ENGINE_API void CreatePhysicsObject(math::Real mass, const math::Vector3D& linearVelocity);
 
 		ENGINE_API std::vector<GameNode*> GetAllDescendants() const;
 		/* ==================== Non-static member functions end ==================== */
@@ -119,7 +119,7 @@ namespace engine
 		std::vector<IRenderable*> m_renderableComponents;
 		std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 		std::vector<IUpdateable*> m_updateableComponents;
-		Math::Transform m_transform;
+		math::Transform m_transform;
 		std::unique_ptr<Physics::PhysicsObject> m_physicsObject;
 		ActionsToGameNodeCommands m_actionsToCommands;
 		StatesToGameNodeCommands m_statesToCommands;

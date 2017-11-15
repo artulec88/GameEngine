@@ -31,7 +31,7 @@ std::vector<std::string> utility::FileManager::ListAllFilesInDirectory(const std
 
 	// Find the first file in the directory
 	WIN32_FIND_DATA ffd;
-	const HANDLE hFind = FindFirstFile(szDir, &ffd);
+	const auto hFind = FindFirstFile(szDir, &ffd);
 	CHECK_CONDITION_EXIT_ALWAYS_UTILITY(INVALID_HANDLE_VALUE != hFind, logging::ERR, "Cannot list files in a directory \"",
 		directoryPath, "\". FindFirstFile() function failed.");
 
@@ -56,7 +56,7 @@ std::vector<std::string> utility::FileManager::ListAllFilesInDirectory(const std
 		}
 	} while (FindNextFile(hFind, &ffd) != 0);
 
-	const DWORD dwError = GetLastError();
+	const auto dwError = GetLastError();
 	CHECK_CONDITION_ALWAYS_UTILITY(ERROR_NO_MORE_FILES != dwError, logging::ERR, "No more files.");
 
 	FindClose(hFind);

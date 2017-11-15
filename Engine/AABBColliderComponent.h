@@ -20,7 +20,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API AABBColliderComponent(const Math::Vector3D& bottomLeftPos, const Math::Vector3D& topRightPos);
+		ENGINE_API AABBColliderComponent(const math::Vector3D& bottomLeftPos, const math::Vector3D& topRightPos);
 		ENGINE_API virtual ~AABBColliderComponent(void);
 		AABBColliderComponent(const AABBColliderComponent& aabbColliderComponent) = delete;
 		ENGINE_API AABBColliderComponent(AABBColliderComponent&& aabbColliderComponent) = default;
@@ -30,7 +30,7 @@ namespace engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//ENGINE_API virtual void Update(Math::Real deltaTime);
+		//ENGINE_API virtual void Update(math::Real deltaTime);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

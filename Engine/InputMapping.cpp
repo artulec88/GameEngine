@@ -51,7 +51,7 @@ void engine::Input::InputMapping::ClearRanges()
 	m_currentMappedInput.m_ranges.clear();
 }
 
-void engine::Input::InputMapping::SetRawButtonState(RawInputKeys::RawInputKey button, bool pressed, bool previouslyPressed)
+void engine::Input::InputMapping::SetRawButtonState(raw_input_keys::RawInputKey button, bool pressed, bool previouslyPressed)
 {
 	DEBUG_LOG_ENGINE("Key = ", button, ", pressed = ", pressed, ", previously pressed = ", previouslyPressed);
 	if (pressed)
@@ -77,7 +77,7 @@ void engine::Input::InputMapping::SetRawButtonState(RawInputKeys::RawInputKey bu
 	}
 }
 
-void engine::Input::InputMapping::SetRawAxisValue(RawInputAxes::RawInputAxis axis, Math::Real value)
+void engine::Input::InputMapping::SetRawAxisValue(RawInputAxes::RawInputAxis axis, math::Real value)
 {
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
 	{
@@ -124,7 +124,7 @@ void engine::Input::InputMapping::PopContext()
 //
 // Helper: map a button to an action in the active context(s)
 //
-engine::Actions::Action engine::Input::InputMapping::MapButtonToAction(RawInputKeys::RawInputKey button) const
+engine::Actions::Action engine::Input::InputMapping::MapButtonToAction(raw_input_keys::RawInputKey button) const
 {
 	Actions::Action action = Actions::INVALID;
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
@@ -143,7 +143,7 @@ engine::Actions::Action engine::Input::InputMapping::MapButtonToAction(RawInputK
 //
 // Helper: map a button to a state in the active context(s)
 //
-engine::States::State engine::Input::InputMapping::MapButtonToState(RawInputKeys::RawInputKey button) const
+engine::States::State engine::Input::InputMapping::MapButtonToState(raw_input_keys::RawInputKey button) const
 {
 	States::State state = States::INVALID;
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
@@ -158,7 +158,7 @@ engine::States::State engine::Input::InputMapping::MapButtonToState(RawInputKeys
 	return state;
 }
 
-void engine::Input::InputMapping::MapAndConsumeButton(RawInputKeys::RawInputKey button)
+void engine::Input::InputMapping::MapAndConsumeButton(raw_input_keys::RawInputKey button)
 {
 	Actions::Action action = MapButtonToAction(button);
 	if (action != Actions::INVALID)

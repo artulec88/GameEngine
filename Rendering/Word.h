@@ -22,7 +22,7 @@ namespace Rendering
 			/// Creates a new word.
 			/// </summary>
 			/// <param name="fontSize"> The size of font of the text this word belongs to. </param>
-			Word(Math::Real fontSize);
+			Word(math::Real fontSize);
 			~Word(void);
 			//private:
 			//	Word(Word& word) {};
@@ -37,7 +37,7 @@ namespace Rendering
 			/// <param name="character">The character to be appended to the word.</param>
 			void AddCharacter(const Character& character);
 			inline const std::vector<Character>& GetCharacters() const { return m_characters; }
-			inline Math::Real GetWordWidth() const { return m_width; }
+			inline math::Real GetWordWidth() const { return m_width; }
 			void Clear();
 
 			friend std::ostream& operator<<(std::ostream& out, const Word& word)
@@ -53,8 +53,8 @@ namespace Rendering
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			std::vector<Character> m_characters;
-			Math::Real m_width;
-			Math::Real m_fontSize;
+			math::Real m_width;
+			math::Real m_fontSize;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Word */
 	} /* end namespace Text */

@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Vector.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo;

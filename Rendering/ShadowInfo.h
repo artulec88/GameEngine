@@ -13,14 +13,14 @@ namespace Rendering
 	/// </summary>
 	struct ShadowCameraTransform
 	{
-		ShadowCameraTransform(const Math::Vector3D& position, const Math::Quaternion& rotation) :
+		ShadowCameraTransform(const math::Vector3D& position, const math::Quaternion& rotation) :
 			m_pos(position),
 			m_rot(rotation)
 		{
 		}
 
-		Math::Vector3D m_pos;
-		Math::Quaternion m_rot;
+		math::Vector3D m_pos;
+		math::Quaternion m_rot;
 	};
 
 	/// <summary>
@@ -46,15 +46,15 @@ namespace Rendering
 		/// <param name="shadowSoftness"> The softness of the shadow. </param>
 		/// <param name="lightBleedingReductionFactor"> The light bleeding reduction factor. </param>
 		/// <param name="minVariance"></param>
-		ShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled,
-			int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
-			Math::Real lightBleedingReductionFactor = static_cast<Math::Real>(0.2f),
-			Math::Real minVariance = static_cast<Math::Real>(0.00002f));
+		ShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled,
+			int shadowMapSizeAsPowerOf2, math::Real shadowSoftness = REAL_ONE,
+			math::Real lightBleedingReductionFactor = static_cast<math::Real>(0.2f),
+			math::Real minVariance = static_cast<math::Real>(0.00002f));
 
-		//ShadowInfo(Math::Matrix4D&& projection, bool flipFacesEnabled,
-		//	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
-		//	Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-		//	Math::Real minVariance = static_cast<Math::Real>(0.00002f));
+		//ShadowInfo(math::Matrix4D&& projection, bool flipFacesEnabled,
+		//	int shadowMapSizeAsPowerOf2, math::Real shadowSoftness = REAL_ONE,
+		//	math::Real lightBleedingReductionAmount = static_cast<math::Real>(0.2f),
+		//	math::Real minVariance = static_cast<math::Real>(0.00002f));
 
 		/// <summary> Shadow info destructor. </summary>
 		~ShadowInfo();
@@ -82,19 +82,19 @@ namespace Rendering
 	public:
 		/// <summary> Gets the projection matrix that shadow info uses. </summary>
 		/// <returns> The projection matrix that shadow info uses. </returns>
-		RENDERING_API inline const Math::Matrix4D& GetProjection() const noexcept { return m_projectionMatrix; }
+		RENDERING_API inline const math::Matrix4D& GetProjection() const noexcept { return m_projectionMatrix; }
 
 		/// <summary> Gets the shadow softness value. </summary>
 		/// <returns> The shadow softness value. </returns>
-		RENDERING_API inline Math::Real GetShadowSoftness() const noexcept { return m_shadowSoftness; }
+		RENDERING_API inline math::Real GetShadowSoftness() const noexcept { return m_shadowSoftness; }
 
 		/// <summary> Gets the minimal variance of the shadow info. </summary>
 		/// <returns> The minimal variance of the shadow info. </returns>
-		RENDERING_API inline Math::Real GetMinVariance() const noexcept { return m_minVariance; }
+		RENDERING_API inline math::Real GetMinVariance() const noexcept { return m_minVariance; }
 
 		/// <summary> Gets the light bleeding reduction factor. </summary>
 		/// <returns> The light bleeding reduction factor. </returns>
-		RENDERING_API inline Math::Real GetLightBleedingReductionFactor() const noexcept { return m_lightBleedingReductionFactor; }
+		RENDERING_API inline math::Real GetLightBleedingReductionFactor() const noexcept { return m_lightBleedingReductionFactor; }
 
 		/// <summary> Gets the information whether or not the rendering engine should first turn on backface culling before rendering to the shadow map. </summary>
 		/// <returns> <code>true</code> when before rendering to shadow map we should turn on backface culling. Otherwise <code>false</code>. </returns>
@@ -111,7 +111,7 @@ namespace Rendering
 		/// The projection matrix used by the camera when rendering to the shadow map
 		/// (e.g. for directional light this is an orthogonal projection matrix, because all its rays go in parallel to one another).
 		/// </summary>
-		Math::Matrix4D m_projectionMatrix;
+		math::Matrix4D m_projectionMatrix;
 
 		/// <summary>
 		/// Stores the information whether or not we are supposed to flip the culling faces (from back to front and vice versa) before rendering to the shadow map.
@@ -126,9 +126,9 @@ namespace Rendering
 		/// The exponent that determines the size of the shadow map the shadow info uses. The shadow map size is equal to <code>2^(m_shadowMapSizeAsPowerOf2)</code>.
 		/// </summary>
 		int m_shadowMapSizeAsPowerOf2;
-		Math::Real m_shadowSoftness;
-		Math::Real m_lightBleedingReductionFactor;
-		Math::Real m_minVariance;
+		math::Real m_shadowSoftness;
+		math::Real m_lightBleedingReductionFactor;
+		math::Real m_minVariance;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShadowInfo */
 

@@ -168,7 +168,7 @@ void engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 	}
 }
 
-void engine::DefaultGameStateManager::Update(Math::Real deltaTime)
+void engine::DefaultGameStateManager::Update(math::Real deltaTime)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
 	{
@@ -316,7 +316,7 @@ void engine::DefaultGameStateManager::Handle(engine::States::State state)
 	}
 }
 
-void engine::DefaultGameStateManager::Handle(engine::Ranges::Range range, Math::Real value)
+void engine::DefaultGameStateManager::Handle(engine::Ranges::Range range, math::Real value)
 {
 	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{

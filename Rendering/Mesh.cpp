@@ -123,15 +123,15 @@ Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 {
 }
 
-Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates /* = nullptr */,
-	Math::Vector3D* normals /* = nullptr */, Math::Vector3D* tangents /* = nullptr */, Math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, math::Vector3D* positions, math::Vector2D* textureCoordinates /* = nullptr */,
+	math::Vector3D* normals /* = nullptr */, math::Vector3D* tangents /* = nullptr */, math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
 	m_mode(mode),
 	m_meshData(nullptr)
 {
 	AddVertices(positions, textureCoordinates, normals, tangents, bitangents, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
+Rendering::Mesh::Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -155,7 +155,7 @@ Rendering::Mesh::Mesh(Mesh&& mesh) :
 #endif
 }
 
-void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount)
+void Rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started adding 2D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
@@ -174,7 +174,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 	m_meshData->Bind();
 	m_meshData->CreateVBO(MeshBufferTypes::POSITIONS);
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::POSITIONS));
-	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector2D), positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), positions, GL_STATIC_DRAW);
 	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
@@ -182,7 +182,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 	{
 		m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES);
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::TEXTURE_COORDINATES));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 	}
@@ -191,7 +191,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
 }
 
-void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, Math::Real* data, unsigned int dataCount)
+void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started adding new values to the Mesh");
 #ifdef DELOCUST_ENABLED
@@ -208,14 +208,14 @@ void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAtt
 		m_meshData->CreateVBO(buffer);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(buffer));
-	glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(Math::Real), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(math::Real), data, GL_STATIC_DRAW);
 	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, 0, 0); // TODO: The hard-coded values here are the possible reason for adding additional parameters to the function.
 	glEnableVertexAttribArray(attributeLocation);
 	m_meshData->Unbind();
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished adding new values to the Mesh");
 }
 
-void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled)
+void Rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started adding 3D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
@@ -242,14 +242,14 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::POSITIONS));
-	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), positions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), positions, GL_STATIC_DRAW);
 	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
 	if (textureCoordinates != nullptr)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 	}
@@ -257,7 +257,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	if (normals != nullptr)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::NORMALS));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), normals, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::NORMALS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::NORMALS);
 	}
@@ -265,7 +265,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	if (tangents != nullptr)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TANGENTS));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), tangents, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), tangents, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::TANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::TANGENTS);
 	}
@@ -273,7 +273,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	if (bitangents != nullptr)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::BITANGENTS));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), bitangents, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), bitangents, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::BITANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::BITANGENTS);
 	}
@@ -380,16 +380,16 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 		case MeshBufferTypes::NORMALS:
 		case MeshBufferTypes::TANGENTS:
 		case MeshBufferTypes::BITANGENTS:
-			*bufferEntriesCount = bufferSize / sizeof(Math::Vector3D);
+			*bufferEntriesCount = bufferSize / sizeof(math::Vector3D);
 			break;
 		case MeshBufferTypes::TEXTURE_COORDINATES:
-			*bufferEntriesCount = bufferSize / sizeof(Math::Vector2D);
+			*bufferEntriesCount = bufferSize / sizeof(math::Vector2D);
 			break;
 		case MeshBufferTypes::INDEX:
 			*bufferEntriesCount = bufferSize / sizeof(int);
 			break;
 		case MeshBufferTypes::INSTANCE:
-			*bufferEntriesCount = bufferSize / sizeof(Math::Real);
+			*bufferEntriesCount = bufferSize / sizeof(math::Real);
 			break;
 		default:
 			ERROR_LOG_RENDERING("Invalid buffer type (", buffer, ") specified. Cannot determine the number of entries in the buffer.");
@@ -399,7 +399,7 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 	return data;
 }
 
-void Rendering::Mesh::CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
+void Rendering::Mesh::CalcNormals(math::Vector3D*& normals, math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (GL_QUADS, GL_LINES) this iterationStep variable will be incorrect
@@ -410,9 +410,9 @@ void Rendering::Mesh::CalcNormals(Math::Vector3D*& normals, Math::Vector3D* posi
 		int i1 = indices[i + 1];
 		int i2 = indices[i + 2];
 		
-		Math::Vector3D v1 = positions[i1] - positions[i0];
-		Math::Vector3D v2 = positions[i2] - positions[i0];
-		Math::Vector3D normalVec = v1.Cross(v2).Normalized();
+		math::Vector3D v1 = positions[i1] - positions[i0];
+		math::Vector3D v2 = positions[i2] - positions[i0];
+		math::Vector3D normalVec = v1.Cross(v2).Normalized();
 		
 		normals[i0] += normalVec;
 		normals[i1] += normalVec;
@@ -425,7 +425,7 @@ void Rendering::Mesh::CalcNormals(Math::Vector3D*& normals, Math::Vector3D* posi
 	}
 }
 
-void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* positions, Math::Vector2D* textureCoordinates, size_t verticesCount) const
+void Rendering::Mesh::CalcTangents(math::Vector3D*& tangents, math::Vector3D* positions, math::Vector2D* textureCoordinates, size_t verticesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
@@ -433,16 +433,16 @@ void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* po
 	for (int i = 0; i < verticesCount - iterationStep + 1; i += iterationStep)
 	{
 		// Edges of the triangle: position delta
-		Math::Vector3D deltaPos1 = positions[i + 1] - positions[i];
-		Math::Vector3D deltaPos2 = positions[i + 2] - positions[i];
+		math::Vector3D deltaPos1 = positions[i + 1] - positions[i];
+		math::Vector3D deltaPos2 = positions[i + 2] - positions[i];
 
 		// UV delta
-		Math::Vector2D deltaUV1 = textureCoordinates[i + 1] - textureCoordinates[i];
-		Math::Vector2D deltaUV2 = textureCoordinates[i + 2] - textureCoordinates[i];
+		math::Vector2D deltaUV1 = textureCoordinates[i + 1] - textureCoordinates[i];
+		math::Vector2D deltaUV2 = textureCoordinates[i + 2] - textureCoordinates[i];
 
-		Math::Real r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
-		Math::Vector3D tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+		math::Real r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
+		math::Vector3D tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+		math::Vector3D bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
 		// Set the same tangent for all three vertices of the triangle. They will be merged later, during indexing.
 		tangents[i] = tangent;
@@ -458,16 +458,16 @@ void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* po
 	// See "http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#Going_further"
 	//for (int i = 0; i < verticesCount; ++i)
 	//{
-	//	Math::Vector3D& normal = vertices[i].normal;
-	//	Math::Vector3D& tangent = vertices[i].tangent;
-	//	//Math::Vector3D& bitangent = vertices[i].bitangent;
+	//	math::Vector3D& normal = vertices[i].normal;
+	//	math::Vector3D& tangent = vertices[i].tangent;
+	//	//math::Vector3D& bitangent = vertices[i].bitangent;
 
 	//	// Gram-Schmidt orthogonalization
 	//	tangent -= normal * normal.Dot(tangent);
 	//	tangent.Normalize();
 
 	//	// Calculate handedness
-	//	//Math::Vector3D cross = normal.Cross(tangent);
+	//	//math::Vector3D cross = normal.Cross(tangent);
 	//	//if (cross.Dot(bitangent) < 0)
 	//	//{
 	//	//	tangent.Negate();
@@ -477,11 +477,11 @@ void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* po
 /* ==================== Mesh class implementation end ==================== */
 
 /* ==================== BillboardMesh class implementation begin ==================== */
-Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength) :
+Rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength) :
 	Mesh(GL_POINTS),
 	m_billboardsCount(billboardsCount)
 {
-	Math::Vector3D zeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	math::Vector3D zeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	AddVertices(&zeroVector, nullptr, nullptr, nullptr, nullptr, 1, nullptr, 0, false);
 
 	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0 (", billboardsCount, ")");
@@ -489,17 +489,17 @@ Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigne
 
 	m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::INSTANCE));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_billboardsCount * billboardDataLength, modelMatricesValues, GL_STATIC_DRAW);
-	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_billboardsCount * billboardDataLength, modelMatricesValues, GL_STATIC_DRAW);
+	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)0);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
 	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
-	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(4 * sizeof(Math::Real)));
+	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)(4 * sizeof(math::Real)));
 	glEnableVertexAttribArray(2 /* MVP_MATRIX_COLUMN_2_LOCATION */);
 	glVertexAttribDivisor(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 1);
-	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(8 * sizeof(Math::Real)));
+	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)(8 * sizeof(math::Real)));
 	glEnableVertexAttribArray(3 /* MVP_MATRIX_COLUMN_3_LOCATION */);
 	glVertexAttribDivisor(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 1);
-	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(12 * sizeof(Math::Real)));
+	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)(12 * sizeof(math::Real)));
 	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
 	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
 
@@ -529,7 +529,7 @@ void Rendering::BillboardMesh::Draw() const
 
 
 /* ==================== InstanceMesh class implementation begin ==================== */
-Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength) :
+Rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength) :
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount),
 	m_maxParticlesCount(maxParticlesCount),
@@ -544,28 +544,28 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	m_meshData->Bind();
 	m_meshData->CreateVBO(MeshBufferTypes::INSTANCE); // instanced attributes will be stored in this VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_maxParticlesCount * m_instanceDataLength, nullptr, GL_STREAM_DRAW);
-	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, nullptr, GL_STREAM_DRAW);
+	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)0);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
 	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
-	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(4 * sizeof(Math::Real)));
+	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(4 * sizeof(math::Real)));
 	glEnableVertexAttribArray(2 /* MVP_MATRIX_COLUMN_2_LOCATION */);
 	glVertexAttribDivisor(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 1);
-	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(8 * sizeof(Math::Real)));
+	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(8 * sizeof(math::Real)));
 	glEnableVertexAttribArray(3 /* MVP_MATRIX_COLUMN_3_LOCATION */);
 	glVertexAttribDivisor(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 1);
-	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(12 * sizeof(Math::Real)));
+	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(12 * sizeof(math::Real)));
 	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
 	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	glVertexAttribPointer(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
+	glVertexAttribPointer(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(16 * sizeof(math::Real)));
 	glEnableVertexAttribArray(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */);
 	glVertexAttribDivisor(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 1);
-	glVertexAttribPointer(6 /* BLEND_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(20 * sizeof(Math::Real)));
+	glVertexAttribPointer(6 /* BLEND_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(20 * sizeof(math::Real)));
 	glEnableVertexAttribArray(6 /* BLEND_FACTOR_LOCATION */);
 	glVertexAttribDivisor(6 /* BLEND_FACTOR_LOCATION */, 1);
 #else
-	glVertexAttribPointer(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
+	glVertexAttribPointer(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(16 * sizeof(math::Real)));
 	glEnableVertexAttribArray(5 /* LIFE_STAGE_FACTOR_LOCATION */);
 	glVertexAttribDivisor(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1);
 #endif
@@ -585,15 +585,15 @@ Rendering::InstanceMesh::InstanceMesh(InstanceMesh&& instanceMesh) :
 {
 }
 
-void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
+void Rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_maxParticlesCount * m_instanceDataLength, data, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Math::Real) * dataSize, data);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, data, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(math::Real) * dataSize, data);
 	//m_meshData->Unbind();
 	// Updating the instance VBO end
 
@@ -669,25 +669,25 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 //#else
 //	m_heights.reserve(m_heightMapWidth * m_heightMapHeight);
-//	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
+//	m_gridSquareSize = static_cast<math::Real>(SIZE) / vertexCountMinusOne;
 //#endif
 //	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
 //
-//	std::vector<Math::Vector3D> positions;
+//	std::vector<math::Vector3D> positions;
 //	positions.reserve(m_vertexCount);
-//	std::vector<Math::Vector2D> textureCoordinates;
+//	std::vector<math::Vector2D> textureCoordinates;
 //	textureCoordinates.reserve(m_vertexCount);
-//	std::vector<Math::Vector3D> normals;
+//	std::vector<math::Vector3D> normals;
 //	normals.reserve(m_vertexCount);
-//	std::vector<Math::Vector3D> tangents;
+//	std::vector<math::Vector3D> tangents;
 //	tangents.reserve(m_vertexCount);
 //	for (int z = vertexCountMinusOne; z >= 0; --z)
 //	{
-//		const Math::Real zReal = static_cast<Math::Real>(z);
+//		const math::Real zReal = static_cast<math::Real>(z);
 //		for (int x = 0; x < m_vertexCount; ++x)
 //		{
-//			const Math::Real xReal = static_cast<Math::Real>(x);
-//			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
+//			const math::Real xReal = static_cast<math::Real>(x);
+//			math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
 //			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
 //			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 //			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
@@ -734,7 +734,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 //}
 //
-//Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
+//Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
 //	Mesh(mode),
 //	m_x(gridX),
 //	m_z(gridZ),
@@ -755,25 +755,25 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //#ifdef HEIGHTS_KD_TREE
 //	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 //#else
-//	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
+//	m_gridSquareSize = static_cast<math::Real>(SIZE) / vertexCountMinusOne;
 //#endif
 //	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
 //
-//	std::vector<Math::Vector3D> positions;
+//	std::vector<math::Vector3D> positions;
 //	positions.reserve(m_vertexCount);
-//	std::vector<Math::Vector2D> textureCoordinates;
+//	std::vector<math::Vector2D> textureCoordinates;
 //	textureCoordinates.reserve(m_vertexCount);
-//	std::vector<Math::Vector3D> normals;
+//	std::vector<math::Vector3D> normals;
 //	normals.reserve(m_vertexCount);
-//	std::vector<Math::Vector3D> tangents;
+//	std::vector<math::Vector3D> tangents;
 //	tangents.reserve(m_vertexCount);
 //	for (int z = vertexCountMinusOne; z >= 0; --z)
 //	{
-//		const Math::Real zReal = static_cast<Math::Real>(z);
+//		const math::Real zReal = static_cast<math::Real>(z);
 //		for (int x = 0; x < m_vertexCount; ++x)
 //		{
-//			const Math::Real xReal = static_cast<Math::Real>(x);
-//			Math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
+//			const math::Real xReal = static_cast<math::Real>(x);
+//			math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
 //			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
 //			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 //			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
@@ -831,7 +831,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	return (m_heightMapWidth * m_heightMapHeight) - ((z + 1) * m_heightMapWidth) + x;
 //}
 //
-//Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData)
+//math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData)
 //{
 //	// TODO: Range checking
 //	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
@@ -840,7 +840,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
 //		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 //	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-//	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
+//	math::Real height = static_cast<math::Real>(heightMapData[heightMapIndex]);
 //	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * HEIGHTMAP_MAX_HEIGHT;
 //#ifdef HEIGHTS_HEIGHTMAP
 //	m_heights[heightMapIndex] = height;
@@ -848,7 +848,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	return height;
 //}
 //
-//Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator)
+//math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const math::HeightsGenerator& heightsGenerator)
 //{
 //	// TODO: Range checking
 //	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
@@ -857,31 +857,31 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
 //		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 //	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-//	Math::Real height = heightsGenerator.GenerateHeight(static_cast<Math::Real>(x), static_cast<Math::Real>(z));
+//	math::Real height = heightsGenerator.GenerateHeight(static_cast<math::Real>(x), static_cast<math::Real>(z));
 //#ifdef HEIGHTS_HEIGHTMAP
 //	m_heights[heightMapIndex] = height;
 //#endif
 //	return height;
 //}
 //
-//Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData)
+//math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData)
 //{
-//	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightMapData) : REAL_ZERO;
-//	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightMapData) : REAL_ZERO;
-//	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightMapData) : REAL_ZERO;
-//	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightMapData) : REAL_ZERO;
-//	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+//	math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightMapData) : REAL_ZERO;
+//	math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightMapData) : REAL_ZERO;
+//	math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightMapData) : REAL_ZERO;
+//	math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightMapData) : REAL_ZERO;
+//	math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 //	normal.Normalize();
 //	return normal;
 //}
 //
-//Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator)
+//math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const math::HeightsGenerator& heightsGenerator)
 //{
-//	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightsGenerator) : REAL_ZERO;
-//	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightsGenerator) : REAL_ZERO;
-//	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightsGenerator) : REAL_ZERO;
-//	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightsGenerator) : REAL_ZERO;
-//	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+//	math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightsGenerator) : REAL_ZERO;
+//	math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightsGenerator) : REAL_ZERO;
+//	math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightsGenerator) : REAL_ZERO;
+//	math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightsGenerator) : REAL_ZERO;
+//	math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 //	normal.Normalize();
 //	return normal;
 //}
@@ -890,30 +890,30 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 // * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
 // * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
 // */
-//Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
+//math::Real Rendering::TerrainMesh::GetHeightAt(math::Real x, math::Real z) const
 //{
 //#ifdef MEASURE_MESH_TIME_ENABLED
 //	Utility::timing::Timer timer;
 //	timer.Start();
 //#endif
 //#if defined HEIGHTS_KD_TREE
-//	Math::Real y = m_kdTree->SearchNearestValue(x, z);
+//	math::Real y = m_kdTree->SearchNearestValue(x, z);
 //	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz, "\"");
 //#elif defined HEIGHTS_HEIGHTMAP
-//	Math::Real terrainX = x - m_x;
-//	Math::Real terrainZ = z - m_z;
-//	int gridX = Math::Floor(terrainX / m_gridSquareSize);
-//	int gridZ = Math::Floor(terrainZ / m_gridSquareSize);
+//	math::Real terrainX = x - m_x;
+//	math::Real terrainZ = z - m_z;
+//	int gridX = math::Floor(terrainX / m_gridSquareSize);
+//	int gridZ = math::Floor(terrainZ / m_gridSquareSize);
 //	if (gridX < 0 || gridX >= m_vertexCount - 1 || gridZ < 0 || gridZ >= m_vertexCount - 1)
 //	{
 //		return REAL_ZERO;
 //	}
-//	Math::Real xCoord = fmod(terrainX, m_gridSquareSize) / m_gridSquareSize;
-//	Math::Real zCoord = fmod(terrainZ, m_gridSquareSize) / m_gridSquareSize;
-//	Math::Real y;
+//	math::Real xCoord = fmod(terrainX, m_gridSquareSize) / m_gridSquareSize;
+//	math::Real zCoord = fmod(terrainZ, m_gridSquareSize) / m_gridSquareSize;
+//	math::Real y;
 //	if (xCoord <= (1.0f - zCoord))
 //	{
-//		y = Math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightMapIndex(gridX, gridZ)], 0.0f,
+//		y = math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightMapIndex(gridX, gridZ)], 0.0f,
 //			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
 //			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
 //			xCoord, zCoord);
@@ -932,7 +932,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	}
 //	else
 //	{
-//		y = Math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
+//		y = math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
 //			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], 1.0f,
 //			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
 //			xCoord, zCoord);
@@ -956,14 +956,14 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 // * TODO: See this page for a possible ways to optimize this function
 // * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
 // */
-//void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
+//void Rendering::TerrainMesh::SavePositions(const std::vector<math::Vector3D>& positions)
 //{
 //#ifdef HEIGHTS_KD_TREE
 //#ifdef MEASURE_MESH_TIME_ENABLED
 //	clock_t begin = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 //#endif
 //	DEBUG_LOG_RENDERING("Terrain consists of ", positions.size(), " positions");
-//	std::unordered_set<Math::Vector3D> verticesSet;
+//	std::unordered_set<math::Vector3D> verticesSet;
 //	for (unsigned int i = 0; i < positions.size(); ++i)
 //	{
 //		verticesSet.insert(positions[i]);
@@ -989,7 +989,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //	 */
 //}
 //
-//void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
+//void Rendering::TerrainMesh::TransformPositions(const math::Matrix4D& transformationMatrix)
 //{
 //#ifdef HEIGHTS_KD_TREE
 //	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix);
@@ -1003,7 +1003,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 //		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i]);
 //		//}
 //	}
-//	m_kdTree = std::make_unique<Math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);
+//	m_kdTree = std::make_unique<math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);
 //#endif
 //}
 /* ==================== TerrainMesh class implementation end ==================== */

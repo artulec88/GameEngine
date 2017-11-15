@@ -7,10 +7,10 @@
 #include "Utility\ILogger.h"
 #include "SortingParameters.h"
 
-namespace Math {
-	namespace Sorting
+namespace math {
+	namespace sorting
 	{
-		namespace SortingAlgorithms
+		namespace sorting_algorithms
 		{
 			/// <summary>
 			/// Possible algorithms for sorting.
@@ -64,7 +64,7 @@ namespace Math {
 
 				COUNT
 			}; /* end enum SortingAlgorithm */
-		} /* end enum SortingAlgorithms */
+		} /* end enum sorting_algorithms */
 
 		/// <summary>
 		/// The base class for all sorting classes. It also serves as a "factory", that is creating specific instances of <code>ISort</code> classes.
@@ -76,7 +76,7 @@ namespace Math {
 			/// <summary>
 			/// A factory-like method for creating specific sorting objects based on the given <paramref name="sortingAlgorithm"/>.
 			/// </summary>
-			MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithms::SortingAlgorithm sortingAlgorithm);
+			MATH_API static std::unique_ptr<ISort> GetSortingObject(sorting_algorithms::SortingAlgorithm sortingAlgorithm);
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
@@ -109,13 +109,13 @@ namespace Math {
 			/// <returns> The reference to the newly move-assigned <code>ISort</code> object. </returns>
 			ISort& operator=(ISort&& sortObject) = delete;
 		/* ==================== Constructors and destructors end ==================== */
-
+			
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			MATH_API virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
 			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 		protected:
@@ -126,13 +126,13 @@ namespace Math {
 			}
 
 			template <typename T>
-			bool NeedSwapping(const T& v1, const T& v2, Orders::Order sortingOrder)
+			bool NeedSwapping(const T& v1, const T& v2, orders::Order sortingOrder)
 			{
 				switch (sortingOrder)
 				{
-				case Orders::ASCENDING:
+				case orders::ASCENDING:
 					return (v2 < v1);
-				case Orders::DESCENDING:
+				case orders::DESCENDING:
 					return (v2 > v1);
 				default:
 					ERROR_LOG_MATH("Unknown sorting direction specified.");
@@ -141,19 +141,19 @@ namespace Math {
 			}
 
 			template <>
-			bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const SortingParametersChain& sortingParameters)
+			bool NeedSwapping(const Vector2D& vec1, const Vector2D& vec2, const SortingParametersChain& sortingParameters)
 			{
 				/* Checking parameters */
-				Orders::Order sortingOrder = sortingParameters.GetOrder();
-				Keys::Key sortingKey = sortingParameters.GetKey();
-				if (sortingKey == Keys::COMPONENT_Z)
+				orders::Order sortingOrder = sortingParameters.GetOrder();
+				keys::Key sortingKey = sortingParameters.GetKey();
+				if (sortingKey == keys::COMPONENT_Z)
 				{
 					ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 					return false;
 				}
 
-				Math::Real v1 = CollectValueByKey(vec1, sortingKey);
-				Math::Real v2 = CollectValueByKey(vec2, sortingKey);
+				Real v1 = CollectValueByKey(vec1, sortingKey);
+				Real v2 = CollectValueByKey(vec2, sortingKey);
 
 				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{
@@ -163,13 +163,13 @@ namespace Math {
 			}
 
 			template <>
-			bool NeedSwapping(const Math::Vector3D& vec1, const Math::Vector3D& vec2, const SortingParametersChain& sortingParameters)
+			bool NeedSwapping(const Vector3D& vec1, const Vector3D& vec2, const SortingParametersChain& sortingParameters)
 			{
-				Orders::Order sortingOrder = sortingParameters.GetOrder();
-				Keys::Key sortingKey = sortingParameters.GetKey();
+				orders::Order sortingOrder = sortingParameters.GetOrder();
+				keys::Key sortingKey = sortingParameters.GetKey();
 
-				Math::Real v1 = CollectValueByKey(vec1, sortingKey);
-				Math::Real v2 = CollectValueByKey(vec2, sortingKey);
+				Real v1 = CollectValueByKey(vec1, sortingKey);
+				Real v2 = CollectValueByKey(vec2, sortingKey);
 
 				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{
@@ -178,40 +178,40 @@ namespace Math {
 				return NeedSwapping(v1, v2, sortingOrder);
 			}
 
-			Math::Real CollectValueByKey(const Math::Vector2D& v, Keys::Key sortingKey)
+			Real CollectValueByKey(const Vector2D& v, keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
-				case Keys::VALUE:
+				case keys::VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 					return v.x;
-				case Keys::COMPONENT_X: return v.x;
-				case Keys::COMPONENT_Y: return v.y;
-				case Keys::COMPONENT_Z:
+				case keys::COMPONENT_X: return v.x;
+				case keys::COMPONENT_Y: return v.y;
+				case keys::COMPONENT_Z:
 					EMERGENCY_LOG_MATH("Cannot determine the value of the Z component for the 2D vector.");
 					exit(EXIT_FAILURE);
-				case Keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
-				case Keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
-				case Keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
+				case keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 					return v.x;
 				}
 			}
 
-			Math::Real CollectValueByKey(const Math::Vector3D& v, Keys::Key sortingKey)
+			Real CollectValueByKey(const Vector3D& v, keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
-				case Keys::VALUE:
+				case keys::VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 					return v.x;
-				case Keys::COMPONENT_X: return v.x;
-				case Keys::COMPONENT_Y: return v.y;
-				case Keys::COMPONENT_Z: return v.z;
-				case Keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
-				case Keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
-				case Keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
+				case keys::COMPONENT_X: return v.x;
+				case keys::COMPONENT_Y: return v.y;
+				case keys::COMPONENT_Z: return v.z;
+				case keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 					return v.x;
@@ -234,7 +234,6 @@ namespace Math {
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		protected:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ISort */
 

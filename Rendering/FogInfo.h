@@ -26,8 +26,8 @@ namespace Rendering
 			/// <param name="fallOffType"> The fall-off type for the fog. </param>
 			/// <param name="calculationType"> The calculation type of the fog. </param>
 			/// <param name="isEnabled"><code>true</code> when specified fog is enabled and <code>false</code> otherwise.</param>
-			FogInfo(Color fogColor = Color(ColorIDs::GAINSBORO), Math::Real fogStartDistance = 8.0f, Math::Real fogEndDistance = 50.0f, Math::Real fogDensityFactor = 0.2f,
-				Math::Real fogGradient = 0.005f, FogFallOffType fogFallOffType = EXPONENTIAL, FogCalculationType fogCalculationType = RANGE_BASED, bool isEnabled = true) noexcept;
+			FogInfo(Color fogColor = Color(ColorIDs::GAINSBORO), math::Real fogStartDistance = 8.0f, math::Real fogEndDistance = 50.0f, math::Real fogDensityFactor = 0.2f,
+				math::Real fogGradient = 0.005f, FogFallOffType fogFallOffType = EXPONENTIAL, FogCalculationType fogCalculationType = RANGE_BASED, bool isEnabled = true) noexcept;
 			
 			/// <summary> Fog information destructor. </summary>
 			~FogInfo() = default;
@@ -62,10 +62,10 @@ namespace Rendering
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			RENDERING_API inline const Color& GetColor() const { return m_color; }
-			RENDERING_API inline Math::Real GetStartDistance() const { return m_startDistance; }
-			RENDERING_API inline Math::Real GetEndDistance() const { return m_endDistance; }
-			RENDERING_API inline Math::Real GetDensityFactor() const { return m_densityFactor; }
-			RENDERING_API inline Math::Real GetGradient() const { return m_gradient; }
+			RENDERING_API inline math::Real GetStartDistance() const { return m_startDistance; }
+			RENDERING_API inline math::Real GetEndDistance() const { return m_endDistance; }
+			RENDERING_API inline math::Real GetDensityFactor() const { return m_densityFactor; }
+			RENDERING_API inline math::Real GetGradient() const { return m_gradient; }
 			RENDERING_API inline FogFallOffType GetFallOffType() const { return m_fallOffType; }
 			RENDERING_API inline FogCalculationType GetCalculationType() const { return m_calculationType; }
 			RENDERING_API inline bool IsEnabled() const { return m_isEnabled; }
@@ -73,10 +73,10 @@ namespace Rendering
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 			inline Color* GetColorPtr() { return &m_color; }
-			inline Math::Real* GetStartDistancePtr() { return &m_startDistance; }
-			inline Math::Real* GetEndDistancePtr() { return &m_endDistance; }
-			inline Math::Real* GetDensityFactorPtr() { return &m_densityFactor; }
-			inline Math::Real* GetGradientPtr() { return &m_gradient; }
+			inline math::Real* GetStartDistancePtr() { return &m_startDistance; }
+			inline math::Real* GetEndDistancePtr() { return &m_endDistance; }
+			inline math::Real* GetDensityFactorPtr() { return &m_densityFactor; }
+			inline math::Real* GetGradientPtr() { return &m_gradient; }
 			inline FogFallOffType* GetFallOffTypePtr() { return &m_fallOffType; }
 			inline FogCalculationType* GetCalculationTypePtr() { return &m_calculationType; }
 			inline bool* IsEnabledPtr() { return &m_isEnabled; }
@@ -89,18 +89,18 @@ namespace Rendering
 			Color m_color;
 
 			/// <summary> Represents the distance where fog begins to appear. </summary>
-			Math::Real m_startDistance;
+			math::Real m_startDistance;
 			/// <summary> Represents the distance where fog ceases to appear. </summary>
-			Math::Real m_endDistance;
+			math::Real m_endDistance;
 
 			/// <summary> Represents the thickness of the fog. Increasing this value will generally decrease the visibility of the scene. </summary>
-			Math::Real m_densityFactor;
+			math::Real m_densityFactor;
 
 			/// <summary>
 			/// Represents how fast the transition between no-fog and complete fog is performed.
 			/// In other words it determines how quickly the visibility of the scene decreases with distance.
 			/// </summary>
-			Math::Real m_gradient;
+			math::Real m_gradient;
 
 			/// <summary> The fall-off type of the fog. </summary>
 			FogFallOffType m_fallOffType;

@@ -2,11 +2,11 @@
 #include "OBB.h"
 
 
-Math::OBB::OBB()
+math::OBB::OBB()
 {
 }
 
 
-Math::OBB::~OBB()
+math::OBB::~OBB()
 {
 }

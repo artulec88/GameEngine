@@ -40,10 +40,10 @@ engine::Input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStr
 		Converter converter;
 
 		range = static_cast<Ranges::Range>(utility::FileManager::AttemptRead<unsigned>(inFileStream));
-		converter.m_minInput = utility::FileManager::AttemptRead<Math::Real>(inFileStream);
-		converter.m_maxInput = utility::FileManager::AttemptRead<Math::Real>(inFileStream);
-		converter.m_minOutput = utility::FileManager::AttemptRead<Math::Real>(inFileStream);
-		converter.m_maxOutput = utility::FileManager::AttemptRead<Math::Real>(inFileStream);
+		converter.m_minInput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
+		converter.m_maxInput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
+		converter.m_minOutput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
+		converter.m_maxOutput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
 
 		CHECK_CONDITION_EXIT_ALWAYS_ENGINE(converter.m_maxInput >= converter.m_minInput, utility::logging::ERR,
 			"Invalid input range. Max input range (", converter.m_maxInput, ") must not be less than min input range (", converter.m_minInput, ")");

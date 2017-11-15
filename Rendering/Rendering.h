@@ -201,8 +201,8 @@ namespace Rendering
 	/* ==================== Depth test parameters begin ==================== */
 	extern bool glDepthTestEnabled, glDepthTestEnabledOld;
 	extern GLenum glDepthTestFunc, glDepthTestFuncOld;
-	extern Math::Real glDepthRangeNearValue, glDepthRangeNearValueOld;
-	extern Math::Real glDepthRangeFarValue, glDepthRangeFarValueOld;
+	extern math::Real glDepthRangeNearValue, glDepthRangeNearValueOld;
+	extern math::Real glDepthRangeFarValue, glDepthRangeFarValueOld;
 	/* ==================== Depth test parameters end ==================== */
 
 	/* ==================== Dithering parameters begin ==================== */

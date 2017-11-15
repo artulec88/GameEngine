@@ -4,9 +4,9 @@
 #include "Math.h"
 #include <random>
 
-namespace Math
+namespace math
 {
-	namespace Random
+	namespace random
 	{
 		/// <summary>
 		/// The random number generator.
@@ -69,11 +69,10 @@ namespace Math
 			MATH_API virtual Real NextFloat(Real lowerBound, Real upperBound) const = 0;
 		protected:
 			bool CheckIfInRange(int value, int lowerBound, int upperBound) const;
-			bool CheckIfInRange(Math::Real value, Math::Real lowerBound, Math::Real upperBound) const;
+			bool CheckIfInRange(Real value, Real lowerBound, Real upperBound) const;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-		protected:
 			unsigned m_seed;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class RandomGenerator */
@@ -100,11 +99,10 @@ namespace Math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Returns a pseudo-random integral number in the range between <code>0</code> and <code>RAND_MAX</code>.
 			/// </summary>
-			MATH_API virtual int NextInt() const override;
+			MATH_API int NextInt() const override;
 
 			/// <summary>
 			/// Returns a pseudo-random integral number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>).
@@ -113,19 +111,19 @@ namespace Math
 			/// </summary>
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random integer result. </param>
 			/// <param name="upperBound">Specifies the upper bound (exclusive) of the random integer result. </param>
-			MATH_API virtual int NextInt(int lowerBound, int upperBound) const override;
+			MATH_API int NextInt(int lowerBound, int upperBound) const override;
 
 			/// <summary>
 			/// Returns a pseudo-random floating-point number in the range [0; 1].
 			/// </summary>
-			MATH_API virtual Real NextFloat() const override;
+			MATH_API Real NextFloat() const override;
 
 			/// <summary>
 			/// Returns a pseudo-random floating-point number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>).
 			/// </summary>
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random floating-point result. </param>
 			/// <param name="upperBound">Specifies the upper bound (exclusive) of the random floating-point result. </param>
-			MATH_API virtual Real NextFloat(Real lowerBound, Real upperBound) const override;
+			MATH_API Real NextFloat(Real lowerBound, Real upperBound) const override;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -154,11 +152,10 @@ namespace Math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Returns a pseudo-random integral number in the range between <code>0</code> and <code>RAND_MAX</code>.
 			/// </summary>
-			MATH_API virtual int NextInt() const override;
+			MATH_API int NextInt() const override;
 
 			/// <summary>
 			/// Returns a pseudo-random integral number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>).
@@ -167,19 +164,19 @@ namespace Math
 			/// </summary>
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random integer result. </param>
 			/// <param name="upperBound">Specifies the upper bound (exclusive) of the random integer result. </param>
-			MATH_API virtual int NextInt(int lowerBound, int upperBound) const override;
+			MATH_API int NextInt(int lowerBound, int upperBound) const override;
 
 			/// <summary>
 			/// Returns a pseudo-random floating-point number in the range [0; 1].
 			/// </summary>
-			MATH_API virtual Real NextFloat() const override;
+			MATH_API Real NextFloat() const override;
 
 			/// <summary>
 			/// Returns a pseudo-random floating-point number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>).
 			/// </summary>
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random floating-point result. </param>
 			/// <param name="upperBound">Specifies the upper bound (exclusive) of the random floating-point result. </param>
-			MATH_API virtual Real NextFloat(Real lowerBound, Real upperBound) const override;
+			MATH_API Real NextFloat(Real lowerBound, Real upperBound) const override;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -187,8 +184,8 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class DefaultRandomGenerator */
 
-	} /* end namespace Random */
+	} /* end namespace random */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_RANDOM_GENERATOR_H__ */

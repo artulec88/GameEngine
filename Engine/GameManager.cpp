@@ -221,7 +221,7 @@ void engine::GameManager::Input(const engine::Input::MappedInput& input)
 	{
 		// TODO: Ranges processing.
 		const Ranges::Range range = rangeItr->first;
-		const Math::Real value = rangeItr->second;
+		const math::Real value = rangeItr->second;
 		m_gameStateManager->Handle(range, value);
 	}
 }
@@ -273,7 +273,7 @@ void engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName
 	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(soundEffectFileName);
 }
 
-void engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const
+void engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName, math::Real volume, math::Real pitch) const
 {
 	CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(soundEffectFileName, volume, pitch);
 }

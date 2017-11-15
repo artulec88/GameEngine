@@ -27,7 +27,7 @@ namespace math_test
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	protected:
-		explicit TransformTestBase(const Math::Transform& transform);
+		explicit TransformTestBase(const math::Transform& transform);
 		virtual ~TransformTestBase();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -36,34 +36,34 @@ namespace math_test
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Transform m_transform;
+		math::Transform m_transform;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TransformTestBase */
 
 	class TransformTestCompare : public TransformTestBase
 	{
 	public:
-		TransformTestCompare(const Math::Transform& transform1, const Math::Transform& transform2, bool expectedCompareResult);
+		TransformTestCompare(const math::Transform& transform1, const math::Transform& transform2, bool expectedCompareResult);
 		virtual ~TransformTestCompare();
 	public:
 		virtual void StartTest() override;
 		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
-		Math::Transform m_compareTransform;
+		math::Transform m_compareTransform;
 		bool m_expectedCompareResult;
 	}; /* end class TransformTestCompare */
 
 	class TransformTestParent : public TransformTestBase
 	{
 	public:
-		TransformTestParent(const Math::Transform& parentTransform, const Math::Transform& childTransform, const Math::Transform& expectedChildFinalTransform);
+		TransformTestParent(const math::Transform& parentTransform, const math::Transform& childTransform, const math::Transform& expectedChildFinalTransform);
 		virtual ~TransformTestParent();
 	public:
 		virtual void StartTest() override;
 		virtual void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
-		Math::Transform m_childTransform;
-		Math::Transform m_expectedChildFinalTransform;
+		math::Transform m_childTransform;
+		math::Transform m_expectedChildFinalTransform;
 	}; /* end class TransformTestParent */
 
 } /* end namespace MathTest */

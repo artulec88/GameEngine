@@ -6,7 +6,7 @@
 #include <sstream>
 
 template <class T>
-Math::Statistics::UtmostSamples<T>::UtmostSamples() :
+math::statistics::UtmostSamples<T>::UtmostSamples() :
 	m_minSamples(),
 	m_maxSamples()
 {
@@ -18,12 +18,12 @@ Math::Statistics::UtmostSamples<T>::UtmostSamples() :
 }
 
 template <class T>
-Math::Statistics::UtmostSamples<T>::~UtmostSamples()
+math::statistics::UtmostSamples<T>::~UtmostSamples()
 {
 }
 
 template <class T>
-void Math::Statistics::UtmostSamples<T>::ProcessSample(const T& sample)
+void math::statistics::UtmostSamples<T>::ProcessSample(const T& sample)
 {
 	bool maxFound = false;
 	bool minFound = false;
@@ -53,7 +53,7 @@ void Math::Statistics::UtmostSamples<T>::ProcessSample(const T& sample)
 }
 
 template <class T>
-std::string Math::Statistics::UtmostSamples<T>::ToString()
+std::string math::statistics::UtmostSamples<T>::ToString()
 {
 	std::stringstream ss("");
 	ss << "minSamples = { ";

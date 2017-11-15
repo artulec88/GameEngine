@@ -34,7 +34,7 @@ namespace Rendering
 			/// The number of particles to generate per second.
 			/// The value does not necessarily have to be an integer.
 			/// </param>
-			RENDERING_API explicit ParticlesEmitter(Math::Real numberOfParticlesToGeneratePerSecond);
+			RENDERING_API explicit ParticlesEmitter(math::Real numberOfParticlesToGeneratePerSecond);
 
 			/// <summary> Particles emitter destructor. </summary>
 			RENDERING_API ~ParticlesEmitter();
@@ -65,7 +65,7 @@ namespace Rendering
 			/// The number of particles to generate per second.
 			/// The value does not necessarily have to be an integer.
 			/// </param>
-			RENDERING_API void SetParticlesCountToGeneratePerSecond(Math::Real numberOfParticlesToGeneratePerSecond)
+			RENDERING_API void SetParticlesCountToGeneratePerSecond(math::Real numberOfParticlesToGeneratePerSecond)
 			{
 				m_timeToEmitOneParticle = REAL_ONE / numberOfParticlesToGeneratePerSecond;
 			}
@@ -77,7 +77,7 @@ namespace Rendering
 			/// </summary>
 			/// <param name="deltaTime"> The time that has passed since the last emission. </param>
 			/// <param name="particleContainer"> The container of particles that will store the emitted particles. </param>
-			RENDERING_API void Emit(Math::Real deltaTime, ParticlesContainer* particleContainer);
+			RENDERING_API void Emit(math::Real deltaTime, ParticlesContainer* particleContainer);
 
 			/// <summary>
 			/// Adds additional particle attribute generator to the emitter.
@@ -92,12 +92,12 @@ namespace Rendering
 			/// <summary>
 			/// Elapsed time since last particles emission in seconds.
 			/// </summary>
-			Math::Real m_currentTimer; // TODO: Replace with timespan object
+			math::Real m_currentTimer; // TODO: Replace with timespan object
 
 			/// <summary>
 			/// The time in seconds that needs to pass for the one particle to be generated.
 			/// </summary>
-			Math::Real m_timeToEmitOneParticle;
+			math::Real m_timeToEmitOneParticle;
 
 			/// <summary>
 			/// The generators that particles emitter uses.

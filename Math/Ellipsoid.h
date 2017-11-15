@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Vector.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo;
@@ -114,6 +114,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Ellipsoid */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_ELLIPSOID_H__ */

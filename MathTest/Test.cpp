@@ -55,9 +55,9 @@ TestGroup::~TestGroup()
 {
 	if (!m_testTimeSpans.empty())
 	{
-		Math::Real testsTotalTimeSpan = 0.0f;
-		Math::Real minTimeSpan = REAL_MAX;
-		Math::Real maxTimeSpan = 0.0f;
+		math::Real testsTotalTimeSpan = 0.0f;
+		math::Real minTimeSpan = REAL_MAX;
+		math::Real maxTimeSpan = 0.0f;
 		for (auto testTimeSpanItr = m_testTimeSpans.begin(); testTimeSpanItr != m_testTimeSpans.end(); ++testTimeSpanItr)
 		{
 			testsTotalTimeSpan += *testTimeSpanItr;
@@ -119,7 +119,7 @@ void TestGroup::StartTimeTests()
 		(*testItr)->BeforeTimeTest();
 		(*testItr)->StartTimeTest(m_testTimeIterationsCount);
 		utility::timing::TimeSpan timeSpan = (*testItr)->AfterTimeTest();
-		m_testTimeSpans.push_back(static_cast<Math::Real>(timeSpan.GetValue()) / m_testTimeIterationsCount);
+		m_testTimeSpans.push_back(static_cast<math::Real>(timeSpan.GetValue()) / m_testTimeIterationsCount);
 	}
 	for (std::vector<TestGroup*>::iterator testGroupItr = m_testGroups.begin(); testGroupItr != m_testGroups.end(); ++testGroupItr)
 	{

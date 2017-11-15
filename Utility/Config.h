@@ -40,14 +40,13 @@ namespace utility
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Load configuration from a given config file. The correct format for storing configuration data is:
 		/// <code>name = value</code> - defines parameter "name" with value "val".
 		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed.
 		/// </summary>
 		/// <param name="fileName"> The file name to read the configuration from. </param>
-		virtual void LoadFromFile(const std::string& fileName) override;
+		void LoadFromFile(const std::string& fileName) override;
 
 		/// <summary>
 		/// Returns the value for the given attribute with the specified <paramref name="name"/>.
@@ -61,7 +60,7 @@ namespace utility
 		/// Value assigned to the configuration attribute with the given name <paramref name="name"/>.
 		/// If attribute cannot be found then <paramref name="defValue"/> is returned.
 		/// </returns>
-		virtual std::string GetArg(const std::string& name, const std::string& defValue) const override;
+		std::string GetArg(const std::string& name, const std::string& defValue) const override;
 
 		/// <summary>
 		/// Returns <code>true</code> if the specified parameter <paramref name="name"/> has been
@@ -74,7 +73,7 @@ namespace utility
 		/// <code>true</code> if the specified parameter <paramref name="name"/> has been
 		/// given a value in the configuration. Otherwise <code>false</code> is returned.
 		/// </returns>
-		virtual bool HasArg(const std::string& name) const override;
+		bool HasArg(const std::string& name) const override;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

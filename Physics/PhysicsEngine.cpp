@@ -22,7 +22,7 @@ void Physics::PhysicsEngine::AddPhysicsObject(PhysicsObject* physicsObject)
 	m_physicsObjects.push_back(physicsObject);
 }
 
-void Physics::PhysicsEngine::Simulate(Math::Real passedTime)
+void Physics::PhysicsEngine::Simulate(math::Real passedTime)
 {
 	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
 	{
@@ -40,7 +40,7 @@ void Physics::PhysicsEngine::HandleCollisions()
 	{
 		for (PhysicObjectsContainer::iterator otherPhysicsObjectItr = physicsObjectItr + 1; otherPhysicsObjectItr != m_physicsObjects.end(); ++otherPhysicsObjectItr)
 		{
-			Math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(*(*otherPhysicsObjectItr));
+			math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(*(*otherPhysicsObjectItr));
 			if (intersectInfo.IsIntersecting())
 			{
 				DEBUG_LOG_PHYSICS("The objects collided"); // TODO: Better log message

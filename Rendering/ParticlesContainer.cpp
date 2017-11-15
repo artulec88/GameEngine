@@ -131,23 +131,23 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 {
 	m_attributesMask = attributesMask;
 
-	//m_positions.reset(new Math::Vector3D[m_count]);
-	//m_velocities.reset(new Math::Vector3D[m_count]);
-	//m_accelerations.reset(new Math::Vector3D[m_count]);
-	//m_gravityEffectFactors.reset(new Math::Real[m_count]);
-	//m_lifeSpanLimits.reset(new Math::Real[m_count]);
-	//m_lifeSpans.reset(new Math::Real[m_count]);
-	//m_rotations.reset(new Math::Angle[m_count]);
-	//m_scales.reset(new Math::Real[m_count]);
-	//m_textureOffsets.reset(new Math::Vector2D[m_count]);
+	//m_positions.reset(new math::Vector3D[m_count]);
+	//m_velocities.reset(new math::Vector3D[m_count]);
+	//m_accelerations.reset(new math::Vector3D[m_count]);
+	//m_gravityEffectFactors.reset(new math::Real[m_count]);
+	//m_lifeSpanLimits.reset(new math::Real[m_count]);
+	//m_lifeSpans.reset(new math::Real[m_count]);
+	//m_rotations.reset(new math::Angle[m_count]);
+	//m_scales.reset(new math::Real[m_count]);
+	//m_textureOffsets.reset(new math::Vector2D[m_count]);
 	//m_colors.reset(new Color[m_count]);
-	//m_masses.reset(new Math::Real[m_count]);
+	//m_masses.reset(new math::Real[m_count]);
 	//m_aliveFlags.reset(new bool[m_count]);
 	//m_IDs.reset(new int[m_count]);
 
 	if (m_attributesMask.IsAttributeEnabled(Attributes::POSITION))
 	{
-		m_positions.reset(new Math::Vector3D[m_maxCount]);
+		m_positions.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_positions[i].Zero();
@@ -155,7 +155,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
 	{
-		m_velocities.reset(new Math::Vector3D[m_maxCount]);
+		m_velocities.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_velocities[i].Zero();
@@ -163,7 +163,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
 	{
-		m_accelerations.reset(new Math::Vector3D[m_maxCount]);
+		m_accelerations.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_accelerations[i].Zero();
@@ -171,7 +171,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))
 	{
-		m_gravityEffectFactors.reset(new Math::Real[m_maxCount]);
+		m_gravityEffectFactors.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_gravityEffectFactors[i] = REAL_ZERO;
@@ -179,12 +179,12 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN))
 	{
-		m_lifeSpanLimits.reset(new Math::Real[m_maxCount]);
+		m_lifeSpanLimits.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_lifeSpanLimits[i] = REAL_ZERO;
 		}
-		m_lifeSpans.reset(new Math::Real[m_maxCount]);
+		m_lifeSpans.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_lifeSpans[i] = REAL_ZERO;
@@ -192,15 +192,15 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ROTATION))
 	{
-		m_rotations.reset(new Math::Angle[m_maxCount]);
+		m_rotations.reset(new math::Angle[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
-			m_rotations[i].Set(REAL_ZERO, Math::Unit::RADIAN);
+			m_rotations[i].Set(REAL_ZERO, math::units::RADIAN);
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::SCALE))
 	{
-		m_scales.reset(new Math::Real[m_maxCount]);
+		m_scales.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_scales[i] = REAL_ONE;
@@ -208,7 +208,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET))
 	{
-		m_textureOffsets.reset(new Math::Vector2D[m_maxCount]);
+		m_textureOffsets.reset(new math::Vector2D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_textureOffsets[i].x = REAL_ZERO;
@@ -225,7 +225,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::MASS))
 	{
-		m_masses.reset(new Math::Real[m_maxCount]);
+		m_masses.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_masses[i] = REAL_ZERO;

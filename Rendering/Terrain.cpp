@@ -2,13 +2,13 @@
 #include "Terrain.h"
 
 
-Rendering::Terrain::Terrain(const Math::Surface& surface, const Math::Transform& terrainTransform) :
+Rendering::Terrain::Terrain(const math::Surface& surface, const math::Transform& terrainTransform) :
 	//m_terrainMesh(terrainMesh),
 	m_x(0),
 	m_z(0),
 #ifdef HEIGHTS_KD_TREE
-	m_kdTree(transformationMatrix.TransformPositions(static_cast<Math::Vector3D*>(terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, nullptr)), terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D)),
-		terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D), 2, 0)
+	m_kdTree(transformationMatrix.TransformPositions(static_cast<math::Vector3D*>(terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, nullptr)), terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(math::Vector3D)),
+		terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(math::Vector3D), 2, 0)
 #elif defined HEIGHTS_SURFACE
 	m_surface(surface)
 #endif
@@ -20,11 +20,11 @@ Rendering::Terrain::~Terrain()
 {
 }
 
-Math::Real Rendering::Terrain::GetHeightAt(Math::Real x, Math::Real z) const
+math::Real Rendering::Terrain::GetHeightAt(math::Real x, math::Real z) const
 {
 #ifdef HEIGHTS_KD_TREE
 #ifdef DEBUG_LOGGING_ENABLED
-	Math::Real y = m_kdTree.SearchNearestValue(x, z);
+	math::Real y = m_kdTree.SearchNearestValue(x, z);
 	DEBUG_LOG_RENDERING("Height ", y, " returned for position [", x, "; ", z, "].");
 	return y;
 #else
@@ -32,7 +32,7 @@ Math::Real Rendering::Terrain::GetHeightAt(Math::Real x, Math::Real z) const
 #endif
 #elif defined HEIGHTS_SURFACE
 #ifdef DEBUG_LOGGING_ENABLED
-	Math::Real y = m_surface.GetHeightAt(x, z);
+	math::Real y = m_surface.GetHeightAt(x, z);
 	DEBUG_LOG_RENDERING("Height ", y, " returned for position [", x, "; ", z, "].");
 	return y;
 #else

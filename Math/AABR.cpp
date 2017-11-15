@@ -3,7 +3,7 @@
 #include "IntersectInfo.h"
 #include "Utility\ILogger.h"
 
-Math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
+math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
 	m_bottomLeftPos(bottomLeftPos),
 	m_topRightPos(topRightPos)
 {
@@ -15,27 +15,27 @@ Math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noe
 		") cannot be less than Y component of the top right vertex (", m_topRightPos.GetY(), ")");
 }
 
-Math::AABR::~AABR()
+math::AABR::~AABR()
 {
 }
 
-Math::IntersectInfo Math::AABR::DoesContainPoint(Real x, Real y) const noexcept
+math::IntersectInfo math::AABR::DoesContainPoint(const Real x, const Real y) const noexcept
 {
-	Real distanceX = CalcDistanceToNearestFaceX(x);
-	Real distanceY = CalcDistanceToNearestFaceY(y);
+	const Real distanceX = CalcDistanceToNearestFaceX(x);
+	const Real distanceY = CalcDistanceToNearestFaceY(y);
 	//DELOCUST_LOG_MATH("DistanceX = ", distanceX, ", distanceY = ", distanceY);
 	return IntersectInfo((distanceX < distanceY) ? distanceX : distanceY);
 }
 
-Math::IntersectInfo Math::AABR::DoesIntersectAABR(const AABR& aabr) const noexcept
+math::IntersectInfo math::AABR::DoesIntersectAABR(const AABR& aabr) const noexcept
 {
 	// TODO: Remove intermediate local variables.
-	Vector2D distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
-	Vector2D distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
+	const Vector2D distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
+	const Vector2D distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
 	return IntersectInfo(distances1.Max(distances2).Max());
 }
 
-Math::Real Math::AABR::CalcDistanceToNearestFaceX(Real x) const noexcept
+math::Real math::AABR::CalcDistanceToNearestFaceX(const Real x) const noexcept
 {
 	Real distanceX;
 	if (x < m_bottomLeftPos.x)
@@ -61,7 +61,7 @@ Math::Real Math::AABR::CalcDistanceToNearestFaceX(Real x) const noexcept
 	return distanceX;
 }
 
-Math::Real Math::AABR::CalcDistanceToNearestFaceY(Real y) const noexcept
+math::Real math::AABR::CalcDistanceToNearestFaceY(const Real y) const noexcept
 {
 	Real distanceY;
 	if (y < m_topRightPos.y)

@@ -24,8 +24,8 @@ namespace engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
-		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
+		//virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		//virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

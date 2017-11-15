@@ -18,12 +18,12 @@ namespace engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		//static const Math::Real GRAVITY; // TODO: Decide whether this value should be stored here or somewhere else.
+		//static const math::Real GRAVITY; // TODO: Decide whether this value should be stored here or somewhere else.
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce);
+		ENGINE_API PhysicsComponent(math::Real movementSpeed, math::Real jumpForce);
 		ENGINE_API virtual ~PhysicsComponent(void);
 		PhysicsComponent(const PhysicsComponent& physicsComponent) = delete;
 		PhysicsComponent(PhysicsComponent&& physicsComponent) = default;
@@ -33,13 +33,13 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void Update(math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Math::Real m_moveSpeed;
-		Math::Vector3D m_jumpAcceleration;
+		math::Real m_moveSpeed;
+		math::Vector3D m_jumpAcceleration;
 		bool m_isJumping;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayerComponent */

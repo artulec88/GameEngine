@@ -6,40 +6,39 @@
 
 /* ==================== Effect<T> class begin ==================== */
 template <class T>
-Math::Effects::Effect<T>::Effect(const T& initialValue) :
+math::effects::Effect<T>::Effect(const T& initialValue) :
 	m_value(initialValue)
 {
 }
 
 template <class T>
-Math::Effects::Effect<T>::~Effect()
+math::effects::Effect<T>::~Effect()
 {
 }
 /* ==================== Effect<T> class end ==================== */
 
 /* ==================== NoEffect<T> class begin ==================== */
 template <class T>
-Math::Effects::NoEffect<T>::NoEffect(const T& initialValue) :
+math::effects::NoEffect<T>::NoEffect(const T& initialValue) :
 	Effect(initialValue)
 {
 }
 
 template <class T>
-Math::Effects::NoEffect<T>::~NoEffect()
+math::effects::NoEffect<T>::~NoEffect()
 {
 }
 
 template <class T>
-void Math::Effects::NoEffect<T>::Update(Real deltaTime)
+void math::effects::NoEffect<T>::Update(Real deltaTime)
 {
 	// NOP
-	return;
 }
 /* ==================== NoEffect<T> class end ==================== */
 
 /* ==================== SmoothTransitionEffect<T> class begin ==================== */
 template <class T>
-Math::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values, const Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
+math::effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values, const Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
 	Effect(values[0]),
 	m_valuesInterpolator(values, times, valuesCount),
 	m_timer(times[0]),
@@ -49,12 +48,12 @@ Math::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values
 }
 
 template <class T>
-Math::Effects::SmoothTransitionEffect<T>::~SmoothTransitionEffect()
+math::effects::SmoothTransitionEffect<T>::~SmoothTransitionEffect()
 {
 }
 
 template <class T>
-void Math::Effects::SmoothTransitionEffect<T>::Update(Real deltaTime)
+void math::effects::SmoothTransitionEffect<T>::Update(Real deltaTime)
 {
 	if (m_isTimerIncreasing)
 	{
@@ -87,7 +86,7 @@ void Math::Effects::SmoothTransitionEffect<T>::Update(Real deltaTime)
 
 /* ==================== BlinkEffect<T> class begin ==================== */
 template <class T>
-Math::Effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount) :
+math::effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount) :
 	Effect(values[0]),
 	m_currentIndex(0),
 	m_timer(0.0f)
@@ -108,12 +107,12 @@ Math::Effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* duration
 }
 
 template <class T>
-Math::Effects::BlinkEffect<T>::~BlinkEffect()
+math::effects::BlinkEffect<T>::~BlinkEffect()
 {
 }
 
 template <class T>
-void Math::Effects::BlinkEffect<T>::Update(Real deltaTime)
+void math::effects::BlinkEffect<T>::Update(Real deltaTime)
 {
 	m_timer += deltaTime;
 	if (m_timer >= m_durations[m_currentIndex])

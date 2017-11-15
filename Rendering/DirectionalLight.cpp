@@ -5,16 +5,16 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+Rendering::Lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
-	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness,
-	Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance, Math::Real halfShadowArea) :
+	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness,
+	math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea) :
 	BaseLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, (shadowInfoShadowMapSizeAsPowerOf2 != 0)),
 	m_halfShadowArea(halfShadowArea)
 {
 	if (IsShadowingEnabled())
 	{
-		SetShadowInfo(Math::Matrix4D(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea),
+		SetShadowInfo(math::Matrix4D(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea),
 			true, shadowInfoShadowMapSizeAsPowerOf2, shadowInfoShadowSoftness, shadowInfoLightBleedingReductionFactor, shadowInfoMinVariance);
 	}
 }
@@ -23,7 +23,7 @@ Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
 {
 }
 
-Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const
+Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const
 {
 	//return BaseLight::CalcShadowCameraTransform(cameraPos, cameraRot);
 
@@ -38,14 +38,14 @@ Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShad
 	 * To fix the shimmering effect we have to make sure we only move by the multiple of the texel size.
 	 */
 	/* ==================== Fixing the shimmering effect begin ==================== */
-	Math::Real shadowMapSize = static_cast<Math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
-	Math::Real worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
+	math::Real shadowMapSize = static_cast<math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
+	math::Real worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
 	// Now we transform from the world space into the light space
-	Math::Vector3D lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
+	math::Vector3D lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
 
 	// Now we need to snap the lightSpaceCameraPos to shadow map texel size increments
-	lightSpaceCameraPos.x = worldSpaceShadowMapTexelSize * Math::Floor(lightSpaceCameraPos.x / worldSpaceShadowMapTexelSize);
-	lightSpaceCameraPos.y = worldSpaceShadowMapTexelSize * Math::Floor(lightSpaceCameraPos.y / worldSpaceShadowMapTexelSize);
+	lightSpaceCameraPos.x = worldSpaceShadowMapTexelSize * math::Floor(lightSpaceCameraPos.x / worldSpaceShadowMapTexelSize);
+	lightSpaceCameraPos.y = worldSpaceShadowMapTexelSize * math::Floor(lightSpaceCameraPos.y / worldSpaceShadowMapTexelSize);
 
 	// Now we transform back from the light space into the world space
 	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);

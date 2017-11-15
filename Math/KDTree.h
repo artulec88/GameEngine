@@ -8,7 +8,7 @@
 #include "StatisticsStorage.h"
 #endif
 
-namespace Math
+namespace math
 {
 	/// <summary>
 	/// The implementation of the k-d tree structure. A k-d tree is a space-partitioning data structure for organizing points in a k-dimensional space.
@@ -65,7 +65,6 @@ namespace Math
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Searches the tree to find specific number of (<see cref="m_numberOfSamples"/>) closest tree nodes to the given <paramref name="position"/>.
 		/// Then it interpolates their values based on their distances to the specified <paramref name="position"/> and returns the result.
@@ -86,7 +85,7 @@ namespace Math
 		/// <param name="posX">The X component of the position for which we want to determine the nearest value.</param>
 		/// <param name="posZ">The Z component of the position for which we want to determine the nearest value.</param>
 		/// <returns>The interpolated nearest value for the given <paramref name="position"/>.</returns>
-		MATH_API Real SearchNearestValue(Math::Real posX, Math::Real posZ) const;
+		MATH_API Real SearchNearestValue(Real posX, Real posZ) const;
 
 		/// <summary>
 		/// Returns <code>true</code> if current node is a leaf in a tree hierarchy. If current node has left or right child <code>false</code> is returned.
@@ -109,12 +108,12 @@ namespace Math
 		//	return out;
 		//}
 	private:
-		void BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth);
+		void BuildTree(Vector3D* positions, size_t positionsCount, int depth);
 		void SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 		{
 			SearchNearestValue(position.x, position.y, depth, minDistanceValues, minDistances);
 		}
-		void SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
+		void SearchNearestValue(Real x, Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
 		
 		/// <summary>
 		/// See: http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml,
@@ -125,19 +124,18 @@ namespace Math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		std::unique_ptr<KDTree> m_leftTree;
 		std::unique_ptr<KDTree> m_rightTree;
 		int m_numberOfSamples;
 		Vector2D m_position;
 		Real m_value;
 #ifdef PROFILING_MATH_MODULE_ENABLED
-		Statistics::ClassStats& m_classStats;
+		statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 
 	}; /* end class KDTree */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_KD_TREE_H__ */

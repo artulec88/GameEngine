@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "MeshIDs.h"
 
-Rendering::Controls::GuiImageControl::GuiImageControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale) :
+Rendering::Controls::GuiImageControl::GuiImageControl(Texture* texture, const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale) :
 	GuiControl(screenPosition, screenRotationAngle, scale),
 	m_texture(texture)
 {
@@ -29,37 +29,37 @@ void Rendering::Controls::GuiImageControl::Draw(const Shader* guiControlShader, 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Rendering::Controls::GuiImageControl::ApplyColorEffect(const Math::Effects::Effect<Color>& effect)
+void Rendering::Controls::GuiImageControl::ApplyColorEffect(const math::effects::Effect<Color>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect)
+void Rendering::Controls::GuiImageControl::ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+void Rendering::Controls::GuiImageControl::ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiImageControl::ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiImageControl::ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiImageControl::ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }
 
-void Rendering::Controls::GuiImageControl::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void Rendering::Controls::GuiImageControl::ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	ERROR_LOG_RENDERING("GuiImage control doesn't support applying effects yet.");
 }

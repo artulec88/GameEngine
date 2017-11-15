@@ -40,7 +40,7 @@ namespace engine
 		/// <remarks>
 		/// In this call, the object should advance its own simulation according to the amount of elapsed time.
 		/// </remarks>
-		virtual void Update(Math::Real elapsedTime) = 0;
+		virtual void Update(math::Real elapsedTime) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

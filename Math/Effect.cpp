@@ -2,12 +2,12 @@
 #include "Effect.h"
 #include "Effect_impl.h"
 
-template class MATH_API Math::Effects::Effect<Math::Real>;
-template class MATH_API Math::Effects::Effect<Math::Vector2D>;
-template class MATH_API Math::Effects::Effect<Math::Vector3D>;
-template class MATH_API Math::Effects::SmoothTransitionEffect<Math::Real>;
-template class MATH_API Math::Effects::SmoothTransitionEffect<Math::Vector2D>;
-template class MATH_API Math::Effects::SmoothTransitionEffect<Math::Vector3D>;
-template class MATH_API Math::Effects::BlinkEffect<Math::Real>;
-template class MATH_API Math::Effects::BlinkEffect<Math::Vector2D>;
-template class MATH_API Math::Effects::BlinkEffect<Math::Vector3D>;
+template class MATH_API math::effects::Effect<math::Real>;
+template class MATH_API math::effects::Effect<math::Vector2D>;
+template class MATH_API math::effects::Effect<math::Vector3D>;
+template class MATH_API math::effects::SmoothTransitionEffect<math::Real>;
+template class MATH_API math::effects::SmoothTransitionEffect<math::Vector2D>;
+template class MATH_API math::effects::SmoothTransitionEffect<math::Vector3D>;
+template class MATH_API math::effects::BlinkEffect<math::Real>;
+template class MATH_API math::effects::BlinkEffect<math::Vector2D>;
+template class MATH_API math::effects::BlinkEffect<math::Vector3D>;

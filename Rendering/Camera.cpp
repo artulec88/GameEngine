@@ -12,18 +12,18 @@
 #include <sstream>
 
 Rendering::Camera::Camera() :
-	BaseCamera(Math::Matrix4D::IDENTITY_MATRIX, 0.05f /* TODO: Don't ever use hard-coded values */),
-	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, Math::NO_ROTATION_QUATERNION, REAL_ONE)
+	BaseCamera(math::Matrix4D::IDENTITY_MATRIX, 0.05f /* TODO: Don't ever use hard-coded values */),
+	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, math::NO_ROTATION_QUATERNION, REAL_ONE)
 {
 }
 
-Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
+Rendering::Camera::Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Matrix4D& projectionMatrix, math::Real sensitivity) :
 	BaseCamera(projectionMatrix, sensitivity),
 	m_transform(position, rotation, REAL_ONE)
 {
 }
 
-Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
+Rendering::Camera::Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity) :
 	BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_transform(position, rotation, REAL_ONE)
 {

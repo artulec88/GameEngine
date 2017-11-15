@@ -10,7 +10,7 @@
 #include "StatisticsStorage.h"
 #endif
 
-namespace Math
+namespace math
 {
 
 	template<size_t size>
@@ -136,7 +136,7 @@ namespace Math
 		};
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
-		Statistics::ClassStats& m_classStats;
+		statistics::ClassStats& m_classStats;
 #endif
 
 		/**
@@ -209,6 +209,6 @@ namespace Math
 		//return areEqual;
 	}
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_FLOATING_POINT_H__ */

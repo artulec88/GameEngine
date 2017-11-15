@@ -12,9 +12,9 @@
 #include <sstream>
 
 /* ==================== MenuEntry class begin ==================== */
-engine::MenuEntry::MenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture, const Math::Vector2D& screenPosition,
-	const Math::Angle& screenRotation, const Math::Vector2D& scale, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */,
-	Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+engine::MenuEntry::MenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture, const math::Vector2D& screenPosition,
+	const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset, bool isCentered /* = false */,
+	math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */, math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_parentMenuEntry(NULL),
 	// TODO: Create a GuiControlFactory which will create GUI controls based on the special enum value (e.g.GuiControlType).
 	m_guiControl(std::make_unique<Rendering::Controls::GuiButtonControl>(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth))
@@ -35,42 +35,42 @@ void engine::MenuEntry::AddChild(MenuEntry* childMenuEntry)
 	ERROR_LOG_ENGINE("Only composite menu entry can have children menu entries.");
 }
 
-void engine::MenuEntry::ApplyColorEffect(const Math::Effects::Effect<Rendering::Color>& effect)
+void engine::MenuEntry::ApplyColorEffect(const math::effects::Effect<Rendering::Color>& effect)
 {
 	m_guiControl->ApplyColorEffect(effect);
 }
 
-void engine::MenuEntry::ApplyOutlineColorEffect(const Math::Effects::Effect<Rendering::Color>& effect)
+void engine::MenuEntry::ApplyOutlineColorEffect(const math::effects::Effect<Rendering::Color>& effect)
 {
 	m_guiControl->ApplyOutlineColorEffect(effect);
 }
 
-void engine::MenuEntry::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+void engine::MenuEntry::ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect)
 {
 	m_guiControl->ApplyOffsetEffect(effect);
 }
 
-void engine::MenuEntry::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void engine::MenuEntry::ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	m_guiControl->ApplyCharacterWidthEffect(effect);
 }
 
-void engine::MenuEntry::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void engine::MenuEntry::ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	m_guiControl->ApplyCharacterEdgeTransitionWidthEffect(effect);
 }
 
-void engine::MenuEntry::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void engine::MenuEntry::ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	m_guiControl->ApplyBorderWidthEffect(effect);
 }
 
-void engine::MenuEntry::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+void engine::MenuEntry::ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect)
 {
 	m_guiControl->ApplyBorderEdgeTransitionWidthEffect(effect);
 }
 
-bool engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
+bool engine::MenuEntry::DoesMouseHoverOver(math::Real xPos, math::Real yPos) const
 {
 	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
@@ -82,10 +82,10 @@ void engine::MenuEntry::SetParent(CompositeMenuEntry* parentMenuEntry)
 /* ==================== MenuEntry class end ==================== */
 
 /* ==================== CompositeMenuEntry class begin ==================== */
-engine::CompositeMenuEntry::CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-	const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, const Math::Vector2D& scale, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor,
-	const Math::Vector2D& offset, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
-	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+engine::CompositeMenuEntry::CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
+	const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor,
+	const math::Vector2D& offset, bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
+	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	MenuEntry(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
@@ -113,7 +113,7 @@ void engine::CompositeMenuEntry::RenderAll(int guiControlShaderID, Rendering::Re
 	}
 }
 
-size_t engine::CompositeMenuEntry::GetSelectedChildIndex(Math::Real xPos, Math::Real yPos) const
+size_t engine::CompositeMenuEntry::GetSelectedChildIndex(math::Real xPos, math::Real yPos) const
 {
 	if (!m_childrenMenuEntries[m_selectedMenuEntryIndex]->DoesMouseHoverOver(xPos, yPos))
 	{
@@ -141,7 +141,7 @@ void engine::CompositeMenuEntry::Dispatch()
 	GameManager::GetGameManager()->Input(engine::Actions::GO_TO_CHILD_MENU_ENTRY);
 }
 
-void engine::CompositeMenuEntry::ApplyColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect)
+void engine::CompositeMenuEntry::ApplyColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -149,7 +149,7 @@ void engine::CompositeMenuEntry::ApplyColorEffectToAll(const Math::Effects::Effe
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyOutlineColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect)
+void engine::CompositeMenuEntry::ApplyOutlineColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -157,7 +157,7 @@ void engine::CompositeMenuEntry::ApplyOutlineColorEffectToAll(const Math::Effect
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyOffsetEffectToAll(const Math::Effects::Effect<Math::Vector2D>& effect)
+void engine::CompositeMenuEntry::ApplyOffsetEffectToAll(const math::effects::Effect<math::Vector2D>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -165,7 +165,7 @@ void engine::CompositeMenuEntry::ApplyOffsetEffectToAll(const Math::Effects::Eff
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyCharacterWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+void engine::CompositeMenuEntry::ApplyCharacterWidthEffectToAll(const math::effects::Effect<math::Real>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -173,7 +173,7 @@ void engine::CompositeMenuEntry::ApplyCharacterWidthEffectToAll(const Math::Effe
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyCharacterEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+void engine::CompositeMenuEntry::ApplyCharacterEdgeTransitionWidthEffectToAll(const math::effects::Effect<math::Real>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -181,7 +181,7 @@ void engine::CompositeMenuEntry::ApplyCharacterEdgeTransitionWidthEffectToAll(co
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyBorderWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+void engine::CompositeMenuEntry::ApplyBorderWidthEffectToAll(const math::effects::Effect<math::Real>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -189,7 +189,7 @@ void engine::CompositeMenuEntry::ApplyBorderWidthEffectToAll(const Math::Effects
 	}
 }
 
-void engine::CompositeMenuEntry::ApplyBorderEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+void engine::CompositeMenuEntry::ApplyBorderEdgeTransitionWidthEffectToAll(const math::effects::Effect<math::Real>& effect)
 {
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
@@ -212,17 +212,17 @@ engine::MenuEntry* engine::CompositeMenuEntry::SelectChild(size_t index)
 	// TODO: Range check
 	if (index != m_selectedMenuEntryIndex)
 	{
-		m_selectedMenuEntryIndex = Math::Clamp(index, (size_t)0, m_childrenMenuEntries.size());
+		m_selectedMenuEntryIndex = math::Clamp(index, (size_t)0, m_childrenMenuEntries.size());
 	}
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 }
 /* ==================== CompositeMenuEntry class end ==================== */
 
 /* ==================== ActionMenuEntry class begin ==================== */
-engine::ActionMenuEntry::ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-	const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, const Math::Vector2D& scale, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
-	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
-	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+engine::ActionMenuEntry::ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
+	const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
+	bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
+	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	MenuEntry(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	m_actionID(actionID)
 {
@@ -244,10 +244,10 @@ void engine::ActionMenuEntry::Dispatch()
 /* ==================== ActionMenuEntry class end ==================== */
 
 /* ==================== ValueMenuEntry class begin ==================== */
-engine::ValueMenuEntry::ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-	const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, const Math::Vector2D& scale, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
-	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
-	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+engine::ValueMenuEntry::ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
+	const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
+	bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
+	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	MenuEntry(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth)
 {
 }
@@ -285,16 +285,16 @@ void engine::ValueMenuEntry::Dispatch()
 //	return static_cast<int>(m_childrenMenuEntries.size());
 //}
 //
-//bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const
+//bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, math::Real xPos, math::Real yPos) const
 //{
 //	CHECK_CONDITION_RETURN_ENGINE(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::ERR,
 //		"Cannot find child menu entry AABR. The given index (", index, ") is not within range [0;", GetChildrenCount(), ")");
 //	return m_childrenMenuEntries[index]->GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
 //}
 //
-//bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
+//bool Engine::MenuEntry::DoesMouseHoverOver(math::Real xPos, math::Real yPos) const
 //{
-//	//Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
+//	//math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
 //	//DEBUG_LOG_ENGINE("DoesMouseHoverOver(xPos = ", xPos, ", yPos = ", yPos, ") = ", intersectInfo.GetDistance());
 //	//return intersectInfo.IsIntersecting();
 //

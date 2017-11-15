@@ -2,7 +2,7 @@
 #include "GameNodeMoveCommand.h"
 
 
-engine::GameNodeMoveCommand::GameNodeMoveCommand(/* Math::Real movementSpeed */) :
+engine::GameNodeMoveCommand::GameNodeMoveCommand(/* math::Real movementSpeed */) :
 	GameNodeCommand()
 {
 }

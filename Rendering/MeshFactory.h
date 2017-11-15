@@ -72,9 +72,9 @@ namespace Rendering
 		/// The surface. It will be used to create mesh positions, texture coordinates, normals etc.
 		/// </param>
 		/// <returns> The procedurally generated mesh from the specified surface. </returns>
-		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const Math::Surface& surface);
+		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const math::Surface& surface);
 
-		//RENDERING_API const TerrainMesh* CreateTerrainMesh(int meshID, int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount);
+		//RENDERING_API const TerrainMesh* CreateTerrainMesh(int meshID, int gridX, int gridZ, const math::HeightsGenerator& heightsGenerator, int vertexCount);
 		//RENDERING_API const Mesh* CreateBillboardMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateInstanceMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateTerrainMesh(int meshID, const std::string& meshFileName);
@@ -90,9 +90,9 @@ namespace Rendering
 		{
 			return zIndex * horizontalVerticesCount + xIndex;
 		}
-		Math::Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const;
-		Math::Real CalculateHeightAt(int x, int z, int heightMapWidth, const Math::HeightsGenerator& heightsGenerator) const;
-		Math::Vector3D CalculateNormal(int x, int z, const Math::Surface& surface) const;
+		math::Real CalculateHeightAt(int x, int z, const Image& heightMapImage, math::Real heightMapMaxHeight) const;
+		math::Real CalculateHeightAt(int x, int z, int heightMapWidth, const math::HeightsGenerator& heightsGenerator) const;
+		math::Vector3D CalculateNormal(int x, int z, const math::Surface& surface) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

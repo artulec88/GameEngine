@@ -5,9 +5,9 @@
 #include "Utility\IConfig.h"
 #include "Utility\Time.h"
 
-engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
-	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
-	const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel) :
+engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
+	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
+	const math::Angle& firstElevationLevel, const math::Angle& secondElevationLevel, const math::Angle& thirdElevationLevel) :
 	GameComponent(),
 #ifdef SIMULATE_SUN_BEHAVIOR
 	IUpdateable(),
@@ -75,15 +75,15 @@ engine::DirectionalLightComponent& engine::DirectionalLightComponent::operator=(
 }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
-void engine::DirectionalLightComponent::Update(Math::Real delta)
+void engine::DirectionalLightComponent::Update(math::Real delta)
 {
 	DELOCUST_LOG_ENGINE("Directional light update with delta time = ", delta);
 
 	//CRITICAL_LOG_ENGINE("In-game time: ", m_inGameDateTime->ToDateString());
 
 	//CoreEngine* coreEngine = CoreEngine::GetCoreEngine();
-	//Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
-	//Math::Real daytimeTransitionFactor;
+	//math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
+	//math::Real daytimeTransitionFactor;
 	//Utility::timing::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
 
 	//m_directionalLight->SetIsEnabled(daytime != Utility::timing::NIGHT);
@@ -113,8 +113,8 @@ void engine::DirectionalLightComponent::Update(Math::Real delta)
 	//	m_directionalLight->SetIntensity(daytimeTransitionFactor * m_maxIntensity);
 	//	break;
 	//}
-	//Math::Matrix4D rotMatrix(-m_sunElevation, -m_sunAzimuth);
-	//GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
+	//math::Matrix4D rotMatrix(-m_sunElevation, -m_sunAzimuth);
+	//GetTransform().SetRot(math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
 }
 #endif
 
@@ -122,28 +122,28 @@ void engine::DirectionalLightComponent::CalculateSunElevationAndAzimuth()
 {
 	//const int timeGMTdifference = 1;
 
-	//const Math::Angle b(0.9863014f * (m_inGameDateTime->GetDayInYear() - 81)); // 0,98630136986301369863013698630137 = 360 / 365
-	//const Math::Real bSin = b.Sin();
-	//const Math::Real bCos = b.Cos();
+	//const math::Angle b(0.9863014f * (m_inGameDateTime->GetDayInYear() - 81)); // 0,98630136986301369863013698630137 = 360 / 365
+	//const math::Real bSin = b.Sin();
+	//const math::Real bCos = b.Cos();
 
-	//const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
-	//const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
-	//const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
+	//const math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
+	//const math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
+	//const math::Angle declinationAngle(asin(declinationSin), math::units::RADIAN);
 	////DEBUG_LOG_ENGINE("Declination in degrees = ", declinationAngle.GetAngleInDegrees());
 
-	//const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (m_longitude.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
-	//const Math::Real localSolarTime = m_inGameDateTime->GetDayTime() + timeCorrectionInSeconds;
+	//const math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (m_longitude.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
+	//const math::Real localSolarTime = m_inGameDateTime->GetDayTime() + timeCorrectionInSeconds;
 	////DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
 	////DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
-	//const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
+	//const math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::timing::DateTime::SECONDS_PER_HOUR) / Utility::timing::DateTime::SECONDS_PER_HOUR);
 	////DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
-	//const Math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
+	//const math::Real sunElevationSin = declinationSin * m_latitude.Sin() + declinationAngle.Cos() * m_latitude.Cos() * hourAngle.Cos();
 	//m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
 	////DEBUG_LOG_ENGINE("Sun elevation = ", m_sunElevation.GetAngleInDegrees());
 
-	//const Math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
+	//const math::Real sunAzimuthCos = ((declinationSin * m_latitude.Cos()) - (declinationAngle.Cos() * m_latitude.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	//m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
 	//bool isAfternoon = (localSolarTime > 12.0f * Utility::timing::DateTime::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
 	//if (isAfternoon)

@@ -231,19 +231,19 @@ namespace Rendering
 		/// <param name="green"> The value of the GREEN component of the color to be used. </param>
 		/// <param name="blue"> The value of the BLUE component of the color to be used. </param>
 		/// <param name="alpha"> The value of the ALPHA component of the color to be used. </param>
-		RENDERING_API explicit Color(Math::Real red = REAL_ONE, Math::Real green = REAL_ONE, Math::Real blue = REAL_ONE, Math::Real alpha = REAL_ONE) noexcept;
+		RENDERING_API explicit Color(math::Real red = REAL_ONE, math::Real green = REAL_ONE, math::Real blue = REAL_ONE, math::Real alpha = REAL_ONE) noexcept;
 
 		/// <summary> Color constructor. </summary>
 		/// <param name="rgbVector">
 		/// The RGB three-dimensional vector containing red, green and blue values respectively in X, Y and Z components.
 		/// </param>
-		RENDERING_API explicit Color(const Math::Vector3D& rgbVector) noexcept;
+		RENDERING_API explicit Color(const math::Vector3D& rgbVector) noexcept;
 
 		/// <summary> Color constructor. </summary>
 		/// <param name="rgbaVector">
 		/// The RGBA four-dimensional vector containing red, green, blue and alpha values respectively in X, Y, Z and W components.
 		/// </param>
-		RENDERING_API explicit Color(const Math::Vector4D& rgbaVector) noexcept;
+		RENDERING_API explicit Color(const math::Vector4D& rgbaVector) noexcept;
 
 		/// <summary> Color copy constructor. </summary>
 		/// <param name="color"> The color to copy construct from. </param>
@@ -271,42 +271,42 @@ namespace Rendering
 	public:
 		/// <summary> Retrieves the red component of the color. </summary>
 		/// <returns> The red component of the color. </returns>
-		RENDERING_API Math::Real GetRed() const noexcept { return m_values.x; }
+		RENDERING_API math::Real GetRed() const noexcept { return m_values.x; }
 
 		/// <summary> Retrieves the green component of the color. </summary>
 		/// <returns> The green component of the color. </returns>
-		RENDERING_API Math::Real GetGreen() const noexcept { return m_values.y; }
+		RENDERING_API math::Real GetGreen() const noexcept { return m_values.y; }
 
 		/// <summary> Retrieves the blue component of the color. </summary>
 		/// <returns> The blue component of the color. </returns>
-		RENDERING_API Math::Real GetBlue() const noexcept { return m_values.z; }
+		RENDERING_API math::Real GetBlue() const noexcept { return m_values.z; }
 
 		/// <summary> Retrieves the alpha component of the color. </summary>
 		/// <returns> The alpha component of the color. </returns>
-		RENDERING_API Math::Real GetAlpha() const noexcept { return m_values.w; }
+		RENDERING_API math::Real GetAlpha() const noexcept { return m_values.w; }
 
-		RENDERING_API const Math::Vector4D& GetValues() const noexcept { return m_values; }
+		RENDERING_API const math::Vector4D& GetValues() const noexcept { return m_values; }
 
-		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha) noexcept
+		RENDERING_API void Set(math::Real red, math::Real green, math::Real blue, math::Real alpha) noexcept
 		{
 			SetRed(red);
 			SetGreen(green);
 			SetBlue(blue);
 			SetAlpha(alpha);
 		}
-		RENDERING_API inline void SetRed(Math::Real red) noexcept { m_values.x = red; }
-		RENDERING_API inline void SetGreen(Math::Real green) noexcept { m_values.y = green; }
-		RENDERING_API inline void SetBlue(Math::Real blue) noexcept { m_values.z = blue; }
-		RENDERING_API inline void SetAlpha(Math::Real alpha) noexcept { m_values.w = alpha; }
+		RENDERING_API inline void SetRed(math::Real red) noexcept { m_values.x = red; }
+		RENDERING_API inline void SetGreen(math::Real green) noexcept { m_values.y = green; }
+		RENDERING_API inline void SetBlue(math::Real blue) noexcept { m_values.z = blue; }
+		RENDERING_API inline void SetAlpha(math::Real alpha) noexcept { m_values.w = alpha; }
 
 		RENDERING_API Color operator+(const Color& color) const noexcept;
 		RENDERING_API Color& operator+=(const Color& color) noexcept;
-		RENDERING_API Color operator*(Math::Real value) const noexcept;
-		RENDERING_API Color& operator*=(Math::Real value) noexcept;
+		RENDERING_API Color operator*(math::Real value) const noexcept;
+		RENDERING_API Color& operator*=(math::Real value) noexcept;
 		RENDERING_API Color operator*(const Color& color) const noexcept;
 		RENDERING_API Color& operator*=(const Color& color) noexcept;
 
-		RENDERING_API Color Lerp(const Color& color, Math::Real lerpFactor) const noexcept
+		RENDERING_API Color Lerp(const Color& color, math::Real lerpFactor) const noexcept
 		{
 			return Color(m_values.Lerp(color.m_values, lerpFactor));
 		}
@@ -321,7 +321,7 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Math::Vector4D m_values;
+		math::Vector4D m_values;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Color */
 

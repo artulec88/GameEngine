@@ -42,7 +42,7 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				void Set(ParticlesContainer* particleContainer, size_t i, const Math::Vector3D& acceleration)
+				void Set(ParticlesContainer* particleContainer, size_t i, const math::Vector3D& acceleration)
 				{
 					particleContainer->SetAcceleration(i, acceleration);
 				}
@@ -63,19 +63,19 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantAccelerationGenerator(Math::Real accelerationX, Math::Real accelerationY, Math::Real accelerationZ);
-				RENDERING_API ConstantAccelerationGenerator(const Math::Vector3D& acceleration);
+				RENDERING_API ConstantAccelerationGenerator(math::Real accelerationX, math::Real accelerationY, math::Real accelerationZ);
+				RENDERING_API ConstantAccelerationGenerator(const math::Vector3D& acceleration);
 				RENDERING_API virtual ~ConstantAccelerationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Vector3D m_acceleration;
+				math::Vector3D m_acceleration;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ConstantAccelerationGenerator */
 
@@ -89,24 +89,24 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API RangeAccelerationGenerator(Math::Real minAccelerationX, Math::Real maxAccelerationX, Math::Real minAccelerationY, Math::Real maxAccelerationY, Math::Real minAccelerationZ, Math::Real maxAccelerationZ);
+				RENDERING_API RangeAccelerationGenerator(math::Real minAccelerationX, math::Real maxAccelerationX, math::Real minAccelerationY, math::Real maxAccelerationY, math::Real minAccelerationZ, math::Real maxAccelerationZ);
 				RENDERING_API virtual ~RangeAccelerationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_minAccelerationX;
-				Math::Real m_maxAccelerationX;
-				Math::Real m_minAccelerationY;
-				Math::Real m_maxAccelerationY;
-				Math::Real m_minAccelerationZ;
-				Math::Real m_maxAccelerationZ;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				math::Real m_minAccelerationX;
+				math::Real m_maxAccelerationX;
+				math::Real m_minAccelerationY;
+				math::Real m_maxAccelerationY;
+				math::Real m_minAccelerationZ;
+				math::Real m_maxAccelerationZ;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeAccelerationGenerator */
 		} /* end namespace Generators */

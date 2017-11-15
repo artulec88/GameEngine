@@ -153,13 +153,12 @@ namespace utility
 			/* ==================== Static variables and functions begin ==================== */
 		protected:
 			static std::map<std::string, std::unique_ptr<ILogger>> loggers;
-			UTILITY_API static const std::array<std::string, COUNT> LOGGING_LEVEL_NAMES;
+			UTILITY_API static const std::array<std::string, COUNT> s_loggingLevelNames;
 		public:
 			UTILITY_API static ILogger& GetLogger(const std::string& moduleName);
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
-		public:
 			/// <summary> Base logger constructor. </summary>
 			/// <param name="fileName">
 			/// The name of the file name to be used to store the logs.
@@ -190,8 +189,10 @@ namespace utility
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
+			/// <summary> Returns the logging level currently set. </summary>
+			/// <returns> The logging level. </returns>
 			UTILITY_API LogLevel GetLevel() const { return m_level; }
+
 			template <typename... Args>
 			void Log(LogLevel level, const char* file, int line, const Args&... args)
 			{
@@ -226,7 +227,7 @@ namespace utility
 				//	(*outItr) << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
 				//		file << "(" << line << "): " << msg.str() << std::endl;
 				//}
-				std::cout << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << utility::timing::DateTime::Now().ToString("%H:%M:%S" /* TODO: Don't use hard-coded format */) << "] " <<
+				std::cout << "[" << s_loggingLevelNames[level] << "] [" << timing::DateTime::Now().ToString("%H:%M:%S" /* TODO: Don't use hard-coded format */) << "] " <<
 					file << "(" << line << "): " << msg.str() << std::endl;
 			}
 			/* ==================== Non-static member functions end ==================== */

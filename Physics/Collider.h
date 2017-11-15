@@ -37,7 +37,7 @@ namespace Physics
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		inline ColliderType GetType() const { return m_type; }
-		virtual Math::IntersectInfo Intersect(const Collider& collider) const;
+		virtual math::IntersectInfo Intersect(const Collider& collider) const;
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

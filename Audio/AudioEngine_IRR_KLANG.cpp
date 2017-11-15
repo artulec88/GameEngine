@@ -24,7 +24,7 @@ audio::AudioEngine_IRR_KLANG::~AudioEngine_IRR_KLANG()
 	m_engine->drop();
 }
 
-void audio::AudioEngine_IRR_KLANG::Update(Math::Real deltaTime)
+void audio::AudioEngine_IRR_KLANG::Update(math::Real deltaTime)
 {
 	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
 	{
@@ -104,7 +104,7 @@ void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	m_engine->play2D(soundItr->second, false, false, false, false);
 }
 
-void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch)
+void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
 	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
@@ -127,7 +127,7 @@ void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	}
 }
 
-void audio::AudioEngine_IRR_KLANG::PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity)
+void audio::AudioEngine_IRR_KLANG::PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity)
 {
 }
 
@@ -180,22 +180,22 @@ void audio::AudioEngine_IRR_KLANG::StopSong()
 	m_nextSongPath.clear();
 }
 
-void audio::AudioEngine_IRR_KLANG::SetMasterVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetMasterVolume(math::Real volume)
 {
 	// TODO: volume must lie in range [0; 1]. Check that it does.
 	m_engine->setSoundVolume(volume);
 }
 
-void audio::AudioEngine_IRR_KLANG::SetSoundEffectsVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetSoundEffectsVolume(math::Real volume)
 {
 	SetVolume(Categories::SOUND_EFFECT, volume);
 }
 
-void audio::AudioEngine_IRR_KLANG::SetSongsVolume(Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetSongsVolume(math::Real volume)
 {
 }
 
-void audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Real volume)
+void audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, math::Real volume)
 {
 	for (Filenames2SoundSources::iterator soundSourceItr = m_soundSources[type].begin(); soundSourceItr != m_soundSources[type].end(); ++soundSourceItr)
 	{
@@ -203,12 +203,12 @@ void audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Re
 	}
 }
 
-Math::Real audio::AudioEngine_IRR_KLANG::ChangeOctave(Math::Real frequency, Math::Real variation) const
+math::Real audio::AudioEngine_IRR_KLANG::ChangeOctave(math::Real frequency, math::Real variation) const
 {
 	return 0.0f;
 }
 
-Math::Real audio::AudioEngine_IRR_KLANG::ChangeSemitone(Math::Real frequency, Math::Real variation) const
+math::Real audio::AudioEngine_IRR_KLANG::ChangeSemitone(math::Real frequency, math::Real variation) const
 {
 	return 0.0f;
 }

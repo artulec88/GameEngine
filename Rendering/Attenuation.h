@@ -18,7 +18,7 @@ namespace Rendering
 		/// <param name="constant"> Constant attribute of attenuation </param>
 		/// <param name="linear"> Linear attribute of attenuation </param>
 		/// <param name="exponent"> Exponent attribute of attenuation </param>
-		RENDERING_API explicit Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) noexcept :
+		RENDERING_API explicit Attenuation(math::Real constant = REAL_ZERO, math::Real linear = REAL_ZERO, math::Real exponent = REAL_ONE) noexcept :
 			m_constant(constant),
 			m_linear(linear),
 			m_exponent(exponent)
@@ -52,15 +52,15 @@ namespace Rendering
 	public:
 		/// <summary> Gets the constant factor of the attenuation. </summary>
 		/// <returns> The constant factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline Math::Real GetConstant() const noexcept { return m_constant; };
+		RENDERING_API inline math::Real GetConstant() const noexcept { return m_constant; };
 
 		/// <summary> Gets the linear factor of the attenuation. </summary>
 		/// <returns> The linear factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline Math::Real GetLinear() const noexcept { return m_linear; };
+		RENDERING_API inline math::Real GetLinear() const noexcept { return m_linear; };
 
 		/// <summary> Gets the exponent factor of the attenuation. </summary>
 		/// <returns> The exponent factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline Math::Real GetExponent() const noexcept { return m_exponent; };
+		RENDERING_API inline math::Real GetExponent() const noexcept { return m_exponent; };
 		/* ==================== Non-static member variables end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -68,17 +68,17 @@ namespace Rendering
 		/// <summary>
 		/// The constant attribute of attenuation. Determines the constant gradual loss in intensity.
 		/// </summary>
-		Math::Real m_constant;
+		math::Real m_constant;
 
 		/// <summary>
 		/// The linear attribute of attenuation. Determines the gradual loss (growing linearly) in intensity.
 		/// </summary>
-		Math::Real m_linear;
+		math::Real m_linear;
 
 		/// <summary>
 		/// The exponent attribute of attenuation. Determines the gradual loss (growing exponentially) in intensity.
 		/// </summary>
-		Math::Real m_exponent;
+		math::Real m_exponent;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Attenuation */
 } /* end namespace Rendering */

@@ -18,91 +18,91 @@
 #include "Utility\IConfig.h"
 #include "Utility\BuilderDirector.h"
 
-Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize) :
+Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, math::Real mainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	//m_particlesSystem(NULL),
-	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL, Math::ZERO_VECTOR_2D, Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorIDs::BLACK),
-		Rendering::Color(Rendering::ColorIDs::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
-	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
+	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorIDs::BLACK),
+		Rendering::Color(Rendering::ColorIDs::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
+	m_notSelectedMenuEntryColorEffect(std::make_unique<math::effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorBlue", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorAlpha", 1.0f)))),
-	m_selectedMenuEntryColorEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Rendering::Color>>(
+	m_selectedMenuEntryColorEffect(std::make_unique<math::effects::SmoothTransitionEffect<Rendering::Color>>(
 		std::vector<Rendering::Color>{
 			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_1", 0.0f)),
 			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_2", 0.0f)),
 			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_3", 1.0f)) }.data(),
-		std::vector<Math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_3", 2.0f) }.data(), 3, false)),
-	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorRed", 1.0f),
+		std::vector<math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_3", 2.0f) }.data(), 3, false)),
+	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorBlue", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorAlpha", 1.0f)))),
-		m_selectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::BlinkEffect<Rendering::Color>>(
+		m_selectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::BlinkEffect<Rendering::Color>>(
 			std::vector<Rendering::Color>{
 				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_1", 0.0f)),
 				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_2", 0.0f)),
 				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_3", 1.0f)) }.data(),
-			std::vector<Math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_3", 2.0f) }.data(), 3)),
-		m_notSelectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::NoEffect<Math::Vector2D>>(Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetX", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetY", 0.0f)))),
-			m_selectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Vector2D>>(
-				std::vector<Math::Vector2D>{
-					Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_1", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_1", 0.015f)),
-					Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_2", 0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_2", 0.015f)),
-					Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_3", 0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_3", -0.015f)),
-					Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_4", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_3", -0.015f)),
-					Math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_5", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_5", 0.015f)) }.data(),
-				std::vector<Math::Real>{
+			std::vector<math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_3", 2.0f) }.data(), 3)),
+		m_notSelectedMenuEntryOffsetEffect(std::make_unique<math::effects::NoEffect<math::Vector2D>>(math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetX", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetY", 0.0f)))),
+			m_selectedMenuEntryOffsetEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Vector2D>>(
+				std::vector<math::Vector2D>{
+					math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_1", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_1", 0.015f)),
+					math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_2", 0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_2", 0.015f)),
+					math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_3", 0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_3", -0.015f)),
+					math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_4", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_3", -0.015f)),
+					math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetX_5", -0.015f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetY_5", 0.015f)) }.data(),
+				std::vector<math::Real>{
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetTime_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetTime_2", 0.75f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetTime_3", 1.5f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetTime_4", 2.25f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOffsetTime_5", 3.0f)}.data(), 5, true)),
-			m_notSelectedMenuEntryCharacterWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryCharacterWidth", 0.5f))),
-			m_selectedMenuEntryCharacterWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(
-				std::vector<Math::Real>{
+			m_notSelectedMenuEntryCharacterWidthEffect(std::make_unique<math::effects::NoEffect<math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryCharacterWidth", 0.5f))),
+			m_selectedMenuEntryCharacterWidthEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Real>>(
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidth_1", 0.4f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidth_2", 0.45f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidth_3", 0.5f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidth_4", 0.55f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidth_5", 0.6f)}.data(),
-				std::vector<Math::Real>{
+				std::vector<math::Real>{
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidthTime_1", 0.0f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidthTime_2", 0.2f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidthTime_3", 0.4f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidthTime_4", 0.6f),
 						GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterWidthTime_5", 0.8f) }.data(), 5, false)),
-			m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryCharacterEdgeTransitionWidth", 0.1f))),
-			m_selectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(
-				std::vector<Math::Real>{
+			m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<math::effects::NoEffect<math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryCharacterEdgeTransitionWidth", 0.1f))),
+			m_selectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Real>>(
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidth_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidth_2", 0.1f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidth_3", 0.2f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidth_4", 0.3f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidth_5", 0.4f) }.data(),
-				std::vector<Math::Real>{
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidthTime_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidthTime_2", 1.5f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidthTime_3", 3.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidthTime_4", 4.5f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryCharacterEdgeTransitionWidthTime_5", 6.0f) }.data(), 5, true)),
-			m_notSelectedMenuEntryBorderWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryBorderWidth", 0.4f))),
-			m_selectedMenuEntryBorderWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(
-				std::vector<Math::Real>{
+			m_notSelectedMenuEntryBorderWidthEffect(std::make_unique<math::effects::NoEffect<math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryBorderWidth", 0.4f))),
+			m_selectedMenuEntryBorderWidthEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Real>>(
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidth_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidth_2", 0.12f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidth_3", 0.24f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidth_4", 0.36f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidth_5", 0.48f) }.data(),
-				std::vector<Math::Real>{
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidthTime_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidthTime_2", 1.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidthTime_3", 2.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidthTime_4", 3.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderWidthTime_5", 4.0f) }.data(), 5, false)),
-			m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryBorderEdgeTransitionWidth", 0.1f))),
-			m_selectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(
-				std::vector<Math::Real>{
+			m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<math::effects::NoEffect<math::Real>>(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryBorderEdgeTransitionWidth", 0.1f))),
+			m_selectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Real>>(
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidth_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidth_2", 0.1f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidth_3", 0.2f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidth_4", 0.3f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidth_5", 0.4f) }.data(),
-				std::vector<Math::Real>{
+				std::vector<math::Real>{
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidthTime_1", 0.0f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidthTime_2", 0.1f),
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidthTime_3", 0.2f),
@@ -119,28 +119,28 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	engine::MenuEntry* mainMenuLoadMenuEntry = new engine::CompositeMenuEntry("Load", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.34f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true);
+	engine::MenuEntry* mainMenuLoadMenuEntry = new engine::CompositeMenuEntry("Load", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.34f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
 	// TODO: Populate "Load" menu entry with children.
-	engine::MenuEntry* mainMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.51f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true);
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.2f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.4f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.6f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+	engine::MenuEntry* mainMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.51f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.2f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.4f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.6f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::ActionMenuEntry(engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
-		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::START_GAME, "New game", mainMenuFont,
-		mainMenuFontSize, NULL /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, Math::Vector2D(0.25f, 0.17f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, NULL /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, math::Vector2D(0.25f, 0.17f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuLoadMenuEntry);
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
-		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.68f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
-		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.85f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 
 	m_gameManager->LoadSoundEffect("bounce.wav");
 
@@ -160,7 +160,7 @@ Game::MenuGameState::~MenuGameState(void)
 
 void Game::MenuGameState::Entered()
 {
-	//ParticlesSystemBuilder particlesSystemBuilder(m_gameManager, ParticleEffects::FOUNTAIN);
+	//ParticlesSystemBuilder particlesSystemBuilder(m_gameManager, Particleeffects::FOUNTAIN);
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
 	//particlesSystemBuilderDirector.Construct();
 	//m_particlesSystem = particlesSystemBuilder.Get();
@@ -237,7 +237,7 @@ void Game::MenuGameState::Handle(engine::States::State state)
 	}
 }
 
-void Game::MenuGameState::Handle(engine::Ranges::Range range, Math::Real value)
+void Game::MenuGameState::Handle(engine::Ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
@@ -327,8 +327,8 @@ void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
 //	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
 //	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 //
-//	m_mousePosX = static_cast<Math::Real>(xPos);
-//	m_mousePosY = static_cast<Math::Real>(yPos);
+//	m_mousePosX = static_cast<math::Real>(xPos);
+//	m_mousePosY = static_cast<math::Real>(yPos);
 //
 //	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 //	//EMERGENCY_LOG_GAME("Menu mouse position event (", m_mousePosX, ", ", m_mousePosY, ")");
@@ -350,7 +350,7 @@ void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
 //{
 //}
 
-void Game::MenuGameState::Update(Math::Real deltaTime)
+void Game::MenuGameState::Update(math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
 	if (m_notSelectedMenuEntryColorEffect != NULL)

@@ -4,49 +4,49 @@
 #include "IntersectInfo.h"
 #include "RandomGeneratorFactory.h"
 
-Math::Plane::Plane(const Vector3D& normal, Real distance) :
+math::Plane::Plane(const Vector3D& normal, Real distance) :
 	m_normal(normal),
 	m_distance(distance)
 {
 }
 
-Math::Plane::~Plane(void)
+math::Plane::~Plane(void)
 {
 }
 
-Math::Plane Math::Plane::Normalized() const
+math::Plane math::Plane::Normalized() const
 {
-	Math::Real length = m_normal.Length();
+	Real length = m_normal.Length();
 	return Plane(m_normal.Normalized(), m_distance / length);
 }
 
-Math::IntersectInfo Math::Plane::DoesIntersectSphere(const Sphere& sphere) const
+math::IntersectInfo math::Plane::DoesIntersectSphere(const Sphere& sphere) const
 {
 	// how far the sphere center is along the plane normal vector
-	Math::Real distanceFromSphereCenter = m_normal.Dot(sphere.GetCenter());
+	Real distanceFromSphereCenter = m_normal.Dot(sphere.GetCenter());
 	distanceFromSphereCenter += m_distance; // now it represents the distance between the plane and the sphere
-	distanceFromSphereCenter = Math::Absolute(distanceFromSphereCenter);
+	distanceFromSphereCenter = Absolute(distanceFromSphereCenter);
 	return IntersectInfo(distanceFromSphereCenter - sphere.GetRadius());
 }
 
-Math::Vector3D Math::Plane::CalculatePointClosestToOrigin() const
+math::Vector3D math::Plane::CalculatePointClosestToOrigin() const
 {
-	Math::Real normalVectorLengthSquared = m_normal.LengthSquared();
-	return Math::Vector3D(m_normal.x * -m_distance / normalVectorLengthSquared,
+	Real normalVectorLengthSquared = m_normal.LengthSquared();
+	return Vector3D(m_normal.x * -m_distance / normalVectorLengthSquared,
 		m_normal.y * -m_distance / normalVectorLengthSquared,
 		m_normal.z * -m_distance / normalVectorLengthSquared);
 }
 
-Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius, const Math::Vector3D& translationPoint) const
+math::Vector3D math::Plane::GenerateRandomPositionWithinRadius(Real radius, const Vector3D& translationPoint) const
 {
-	Math::Vector3D w(Math::AlmostEqual(m_normal.x, REAL_ZERO) ?
-		m_normal.Cross(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO)) :
-		m_normal.Cross(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE)));
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
+	Vector3D w(AlmostEqual(m_normal.x, REAL_ZERO) ?
+		m_normal.Cross(Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO)) :
+		m_normal.Cross(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE)));
+	const random::RandomGenerator& randomGenerator = random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(random::generator_ids::SIMPLE);
 	//ERROR_LOG_MATH("Before rotation: ", w);
-	w = w.Rotate(m_normal, Math::Angle(randomGenerator.NextFloat(REAL_ZERO, 360.0f)));
+	w = w.Rotate(m_normal, Angle(randomGenerator.NextFloat(REAL_ZERO, 360.0f)));
 	//ERROR_LOG_MATH("After rotation: ", w);
-	if (Math::AlmostEqual(radius, REAL_ZERO))
+	if (AlmostEqual(radius, REAL_ZERO))
 	{
 		w.Normalize();
 	}
@@ -54,7 +54,7 @@ Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius
 	{
 		w *= (randomGenerator.NextFloat(REAL_ZERO, radius) / w.Length());
 	}
-	if (!Math::AlmostEqual(m_distance, REAL_ZERO))
+	if (!AlmostEqual(m_distance, REAL_ZERO))
 	{
 		w += translationPoint;
 	}

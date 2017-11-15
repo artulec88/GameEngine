@@ -26,22 +26,38 @@ namespace utility
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
+		/// <summary> Base configuration holder constructor. </summary>
 		IConfig();
+
+		/// <summary> Base configuration holder destructor. </summary>
 		virtual ~IConfig();
+
+		/// <summary> Base configuration holder copy constructor. </summary>
+		/// <param name="config"> The configuration holder to copy construct from. </param>
 		IConfig(const IConfig& config) = delete;
+
+		/// <summary> Base configuration holder move constructor. </summary>
+		/// <param name="config"> The configuration holder to move construct from. </param>
 		IConfig(IConfig&& config) = delete;
+
+		/// <summary> Base configuration holder copy constructor. </summary>
+		/// <param name="config"> The configuration holder to copy construct from. </param>
+		/// <returns> The reference to the newly copy-assigned configuration holder. </returns>
 		IConfig& operator=(const IConfig& config) = delete;
+
+		/// <summary> Base configuration holder move constructor. </summary>
+		/// <param name="config"> The configuration holder to move construct from. </param>
+		/// <returns> The reference to the newly move-assigned configuration holder. </returns>
 		IConfig& operator=(IConfig&& config) = delete;
 		/* ==================== Constructors and destructors begin ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Load configuration from a given config file. The correct format for storing configuration data is:
 		/// <code>name = value</code> - defines parameter "name" with value "val".
 		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed
 		/// </summary>
+		/// <param name="fileName"> The name of the file containing the configuration to be loaded. </param>
 		virtual void LoadFromFile(const std::string& fileName) = 0;
 
 		/// <summary>

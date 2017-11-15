@@ -38,12 +38,12 @@ namespace engine
 		/// <param name="yPos">The Y component of the 2D viewport coordinates.</param>
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="viewMatrix">The view matrix of the camera.</param>
-		ENGINE_API void CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix);
+		ENGINE_API void CalculateCurrentRay(double xPos, double yPos, const math::Matrix4D& projectionMatrix, const math::Matrix4D& viewMatrix);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Math::Vector3D m_currentRay;
+		math::Vector3D m_currentRay;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class MousePicker */
 

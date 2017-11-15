@@ -32,8 +32,8 @@ void utility::Config::LoadFromFile(const std::string& fileName)
 	{
 		//file >> name;
 		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), logging::EMERGENCY, "Error occured in the stream while reading the configuration file ", fileName);
-		std::getline(file, line);
-		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
+		getline(file, line);
+		if (line.empty() || line[0] == '#') // ignore comment lines
 		{
 			continue;
 		}
@@ -66,7 +66,7 @@ void utility::Config::LoadFromFile(const std::string& fileName)
 
 std::string utility::Config::GetArg(const std::string& name, const std::string& defValue) const
 {
-	const ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
+	const auto valueMapIt = m_cfgValues.find(name);
 	if (valueMapIt == m_cfgValues.end())
 	{
 		WARNING_LOG_UTILITY("The parameter \"", name, "\" has not been specified. Using default value \"", defValue, "\"");

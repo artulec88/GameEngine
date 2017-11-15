@@ -1,14 +1,14 @@
 #include "StdAfx.h"
 #include "Transform.h"
 
-Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
-	const Quaternion& rotation /* = Math::NO_ROTATION_QUATERNION */,
+math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
+	const Quaternion& rotation /* = math::NO_ROTATION_QUATERNION */,
 	Real scale /* = REAL_ONE */) :
 	Transform(pos.x, pos.y, pos.z, rotation, scale)
 {
 }
 
-Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& rot /* = Math::NO_ROTATION_QUATERNION */, Real scale /* = REAL_ONE */) :
+math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& rot /* = math::NO_ROTATION_QUATERNION */, Real scale /* = REAL_ONE */) :
 	m_pos(posX, posY, posZ),
 	m_rotation(rot),
 	m_scale(scale),
@@ -19,7 +19,7 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 {
 }
 
-//Math::Transform::Transform(const Transform& transform) :
+//math::Transform::Transform(const Transform& transform) :
 //	m_pos(transform.m_pos),
 //	m_rotation(transform.m_rotation),
 //	m_scale(transform.m_scale),
@@ -30,7 +30,7 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //{
 //}
 
-//Math::Transform::Transform(Transform&& transform) :
+//math::Transform::Transform(Transform&& transform) :
 //	m_pos(std::move(transform.m_pos)),
 //	m_rotation(std::move(transform.m_rotation)),
 //	m_scale(std::move(transform.m_scale)),
@@ -42,7 +42,7 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //	//transform.m_parentTransform = NULL;
 //}
 
-//Math::Transform& Math::Transform::operator=(const Transform& transform)
+//math::Transform& math::Transform::operator=(const Transform& transform)
 //{
 //	m_pos = transform.m_pos;
 //	m_rotation = transform.m_rotation;
@@ -55,7 +55,7 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //	return *this;
 //}
 
-//Math::Transform& Math::Transform::operator=(Transform&& transform)
+//math::Transform& math::Transform::operator=(Transform&& transform)
 //{
 //	m_pos = std::move(transform.m_pos);
 //	m_rotation = std::move(transform.m_rotation);
@@ -70,12 +70,12 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //	return *this;
 //}
 
-Math::Transform::~Transform()
+math::Transform::~Transform()
 {
 	//DEBUG_LOG_MATH("Transform is being destroyed");
 }
 
-//Math::Transform& Math::Transform::operator=(const Transform& transform)
+//math::Transform& math::Transform::operator=(const Transform& transform)
 //{
 //	m_pos = transform.m_pos;
 //	m_rotation = transform.m_rotation;
@@ -87,7 +87,7 @@ Math::Transform::~Transform()
 //	return *this;
 //}
 
-//Math::Transform& Math::Transform::operator=(Transform&& transform)
+//math::Transform& math::Transform::operator=(Transform&& transform)
 //{
 //	m_pos = std::move(transform.m_pos);
 //	m_rotation = std::move(transform.m_rotation);
@@ -99,7 +99,7 @@ Math::Transform::~Transform()
 //	return *this;
 //}
 
-//bool Math::Transform::IsHierarchyChanged() const
+//bool math::Transform::IsHierarchyChanged() const
 //{
 //	// TODO: Check this function
 //	if ((parentTransform == NULL) || isChanged)
@@ -115,7 +115,7 @@ Math::Transform::~Transform()
 int isChangedCount = 0;
 int isNotChangedCount = 0;
 
-Math::Matrix4D Math::Transform::GetTransformation() const
+math::Matrix4D math::Transform::GetTransformation() const
 {
 	// TODO: Fix this function
 	if (m_isChanged)
@@ -155,7 +155,7 @@ Math::Matrix4D Math::Transform::GetTransformation() const
 	}
 }
 
-//Math::Matrix4D Math::Transform::GetProjectedTransformation(const Camera& camera) const
+//math::Matrix4D math::Transform::GetProjectedTransformation(const Camera& camera) const
 //{
 //	Matrix4D transformationMatrix = GetTransformation();
 //
@@ -164,26 +164,26 @@ Math::Matrix4D Math::Transform::GetTransformation() const
 //	return result;
 //}
 
-void Math::Transform::Rotate(const Vector3D& axis, const Angle& angle)
+void math::Transform::Rotate(const Vector3D& axis, const Angle& angle)
 {
 	Rotate(Quaternion(axis, angle));
 	m_isChanged = true;
 }
 
-void Math::Transform::Rotate(const Quaternion& rot)
+void math::Transform::Rotate(const Quaternion& rot)
 {
 	//DEBUG_LOG_MATH("Rotating the transformation by the quaternion ", rot);
 	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
 }
 
-void Math::Transform::LookAt(const Vector3D& point, const Vector3D& up)
+void math::Transform::LookAt(const Vector3D& point, const Vector3D& up)
 {
 	m_rotation = GetLookAtRotation(point, up);
 	m_isChanged = true;
 }
 
-Math::Quaternion Math::Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& up) const
+math::Quaternion math::Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& up) const
 {
 	return Quaternion(Matrix4D((point - m_pos).Normalized(), up));
 	//Vector3D forward = point - pos;
@@ -201,19 +201,19 @@ Math::Quaternion Math::Transform::GetLookAtRotation(const Vector3D& point, const
 	//return Quaternion(rotMatrix);
 }
 
-void Math::Transform::SetParent(Transform* t)
+void math::Transform::SetParent(Transform* t)
 {
 	m_parentTransform = t;
 	m_isChanged = true;
 }
 
 
-bool Math::Transform::operator==(const Transform& transform) const
+bool math::Transform::operator==(const Transform& transform) const
 {
 	return GetTransformation() == transform.GetTransformation();
 }
 
-bool Math::Transform::operator!=(const Transform& transform) const
+bool math::Transform::operator!=(const Transform& transform) const
 {
 	return !operator==(transform);
 }

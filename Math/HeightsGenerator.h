@@ -5,7 +5,7 @@
 #include "RandomGeneratorFactory.h"
 #include "Interpolation.h"
 
-namespace Math
+namespace math
 {
 	/// <summary> The random floating-point values generator for a given input positions. </summary>
 	class HeightsGenerator
@@ -26,7 +26,7 @@ namespace Math
 		/// <param name="roughness"> The roughness of the heights generator. It indicates how much we decrease the amplitude by for each higher-frequency octave. </param>
 		/// <remarks>
 		/// </remarks>
-		MATH_API HeightsGenerator(int gridX, int gridZ, int vertexCount, Real heightAmplitude, int octaves, Math::Real roughness);
+		MATH_API HeightsGenerator(int gridX, int gridZ, int vertexCount, Real heightAmplitude, int octaves, Real roughness);
 
 		/// <summary>
 		/// Destroys the heights generator.
@@ -105,13 +105,13 @@ namespace Math
 		/// <summary>
 		/// The frequency factor. The higher the value the more...
 		/// </summary>
-		Math::Real m_freqFactor;
+		Real m_freqFactor;
 
 		/// <summary>
 		/// The amount that we decrease the amplitude by for each higher-frequency octave.
 		/// In other words, this value will determine how rough the final output of the generation process (e.g. terrain) will be.
 		/// </summary>
-		Math::Real m_roughness;
+		Real m_roughness;
 
 		Real m_smoothCornersFactor;
 		Real m_smoothSidesFactor;
@@ -120,12 +120,12 @@ namespace Math
 		/// <summary>
 		/// The interpolator type we use in heights generation process.
 		/// </summary>
-		Interpolation::InterpolationTypes::InterpolationType m_interpolationType;
+		interpolation::interpolation_types::InterpolationType m_interpolationType;
 
-		const Random::RandomGenerator& m_randomGenerator;
+		const random::RandomGenerator& m_randomGenerator;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class HeightsGenerator */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif // __MATH_HEIGHTS_GENERATOR_H__

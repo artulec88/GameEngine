@@ -9,14 +9,14 @@
 
 /* ==================== class Interpolator begin ==================== */
 template <class T>
-Math::Interpolation::Interpolator<T>::Interpolator()
+math::interpolation::Interpolator<T>::Interpolator()
 {
 	//m_interpolationObjects.push_back(firstInterpolationObject);
 	//m_times.push_back(REAL_ZERO);
 }
 
 template <class T>
-Math::Interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount)
+math::interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount)
 {
 	for (int i = 0; i < interpolationObjectsCount; ++i)
 	{
@@ -26,15 +26,15 @@ Math::Interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects
 }
 
 template <class T>
-Math::Interpolation::Interpolator<T>::~Interpolator()
+math::interpolation::Interpolator<T>::~Interpolator()
 {
 }
 
-template <class T>
-void Math::Interpolation::Interpolator<T>::PushInterpolationObject(const T& interpolationObject, Real time)
+template <typename T>
+void math::interpolation::Interpolator<T>::PushInterpolationObject(const T& interpolationObject, Real time)
 {
 	std::vector<T>::iterator interpolationObjectItr = m_interpolationObjects.begin();
-	for (std::vector<Math::Real>::iterator timeItr = m_times.begin(); timeItr != m_times.end(); ++timeItr, ++interpolationObjectItr)
+	for (std::vector<Real>::iterator timeItr = m_times.begin(); timeItr != m_times.end(); ++timeItr, ++interpolationObjectItr)
 	{
 		if (time < *timeItr)
 		{
@@ -53,24 +53,24 @@ void Math::Interpolation::Interpolator<T>::PushInterpolationObject(const T& inte
 
 /* ==================== class LinearInterpolator begin ==================== */
 template <class T>
-Math::Interpolation::LinearInterpolator<T>::LinearInterpolator() :
+math::interpolation::LinearInterpolator<T>::LinearInterpolator() :
 	Interpolator()
 {
 }
 
 template <class T>
-Math::Interpolation::LinearInterpolator<T>::LinearInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
+math::interpolation::LinearInterpolator<T>::LinearInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount)
 {
 }
 
 template <class T>
-Math::Interpolation::LinearInterpolator<T>::~LinearInterpolator()
+math::interpolation::LinearInterpolator<T>::~LinearInterpolator()
 {
 }
 
 template <class T>
-T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
+T math::interpolation::LinearInterpolator<T>::Interpolate(Real time) const
 {
 	// Handle boundary conditions
 	if (time < GetStartTime() || (m_times.size() == 1))
@@ -91,9 +91,9 @@ T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 			break;
 		}
 	}
-	Math::Real time0 = m_times[index - 1];
-	Math::Real time1 = m_times[index];
-	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+	Real time0 = m_times[index - 1];
+	Real time1 = m_times[index];
+	Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	return InterpolateLinear(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
@@ -101,24 +101,24 @@ T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 
 /* ==================== class CosineInterpolator begin ==================== */
 template <class T>
-Math::Interpolation::CosineInterpolator<T>::CosineInterpolator() :
+math::interpolation::CosineInterpolator<T>::CosineInterpolator() :
 	Interpolator()
 {
 }
 
 template <class T>
-Math::Interpolation::CosineInterpolator<T>::CosineInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
+math::interpolation::CosineInterpolator<T>::CosineInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount)
 {
 }
 
 template <class T>
-Math::Interpolation::CosineInterpolator<T>::~CosineInterpolator()
+math::interpolation::CosineInterpolator<T>::~CosineInterpolator()
 {
 }
 
 template <class T>
-T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
+T math::interpolation::CosineInterpolator<T>::Interpolate(Real time) const
 {
 	// Handle boundary conditions
 	if (time < GetStartTime() || (m_times.size() == 1))
@@ -139,9 +139,9 @@ T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
 			break;
 		}
 	}
-	Math::Real time0 = m_times[index - 1];
-	Math::Real time1 = m_times[index];
-	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+	Real time0 = m_times[index - 1];
+	Real time1 = m_times[index];
+	Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	return InterpolateCosine(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
@@ -149,14 +149,14 @@ T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
 
 /* ==================== class HermiteInterpolator begin ==================== */
 template <class T>
-Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator() :
+math::interpolation::HermiteInterpolator<T>::HermiteInterpolator() :
 	Interpolator(),
 	m_derivatives(nullptr)
 {
 }
 
 template <class T>
-Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
+math::interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
 	m_derivatives(NULL)
 {
@@ -164,7 +164,7 @@ Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interp
 }
 
 template <class T>
-Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount, const T& derivative0, const T& derivativeN) :
+math::interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount, const T& derivative0, const T& derivativeN) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
 	m_derivatives(interpolationObjectsCount)
 {
@@ -172,19 +172,19 @@ Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interp
 }
 
 template <class T>
-Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, const T* derivatives, int interpolationObjectsCount) :
+math::interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, const T* derivatives, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
 	m_derivatives(derivatives, derivatives + interpolationObjectsCount)
 {
 }
 
 template <class T>
-Math::Interpolation::HermiteInterpolator<T>::~HermiteInterpolator()
+math::interpolation::HermiteInterpolator<T>::~HermiteInterpolator()
 {
 }
 
 template <class T>
-void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN)
+void math::interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN)
 {
 	// TODO: Calculate derivatives according to the "Essential Mathematics for Games and Interactive Applications 2nd Edition"- section 10.2.3 ("Hermite curves").
 	WARNING_LOG_MATH("This function has not been tested yet");
@@ -208,7 +208,7 @@ void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 }
 
 template <class T>
-T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) const
+T math::interpolation::HermiteInterpolator<T>::Interpolate(Real time) const
 {
 	WARNING_LOG_MATH("This function has not been tested yet");
 	// Handle boundary conditions
@@ -230,9 +230,9 @@ T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) cons
 			break;
 		}
 	}
-	Math::Real time0 = m_times[index];
-	Math::Real time1 = m_times[index + 1];
-	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+	Real time0 = m_times[index];
+	Real time1 = m_times[index + 1];
+	Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
 	return InterpolateHermite(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
@@ -242,24 +242,24 @@ T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) cons
 
 /* ==================== class BarycentricInterpolator begin ==================== */
 template <class T>
-Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator() :
+math::interpolation::BarycentricInterpolator<T>::BarycentricInterpolator() :
 	Interpolator()
 {
 }
 
 template <class T>
-Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
+math::interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount)
 {
 }
 
 template <class T>
-Math::Interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
+math::interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
 {
 }
 
 template <class T>
-T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time) const
+T math::interpolation::BarycentricInterpolator<T>::Interpolate(Real time) const
 {
 	WARNING_LOG_MATH("This function has not been tested yet");
 	// Handle boundary conditions
@@ -281,9 +281,9 @@ T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time) 
 			break;
 		}
 	}
-	Math::Real time0 = m_times[index];
-	Math::Real time1 = m_times[index + 1];
-	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+	Real time0 = m_times[index];
+	Real time1 = m_times[index + 1];
+	Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
 	return InterpolateBarycentric(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
@@ -292,17 +292,17 @@ T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time) 
 /* ==================== class BarycentricInterpolator end ==================== */
 
 template <class T>
-T Math::Interpolation::Interpolate(InterpolationTypes::InterpolationType interpolationType, const T& value1, const T& value2, Real factor)
+T math::interpolation::Interpolate(interpolation_types::InterpolationType interpolationType, const T& value1, const T& value2, Real factor)
 {
 	switch (interpolationType)
 	{
-	case InterpolationTypes::LINEAR:
+	case interpolation_types::LINEAR:
 		return InterpolateLinear(value1, value2, factor);
-	case InterpolationTypes::COSINE:
+	case interpolation_types::COSINE:
 		return InterpolateCosine(value1, value2, factor);
-	case InterpolationTypes::HERMITE:
+	case interpolation_types::HERMITE:
 		return InterpolateHermite(value1, value2, factor);
-	case InterpolationTypes::BARYCENTRIC:
+	case interpolation_types::BARYCENTRIC:
 		return InterpolateBarycentric(value1, value2, factor);
 	default:
 		WARNING_LOG_MATH("Incorrect interpolation type specified (", interpolationType, "). Linear interpolation will be used instead.");
@@ -311,27 +311,27 @@ T Math::Interpolation::Interpolate(InterpolationTypes::InterpolationType interpo
 }
 
 template <class T>
-T Math::Interpolation::InterpolateLinear(const T& value1, const T& value2, Real factor)
+T math::interpolation::InterpolateLinear(const T& value1, const T& value2, Real factor)
 {
 	return (value1 * (REAL_ONE - factor)) + (value2 * factor);
 }
 
 template <class T>
-T Math::Interpolation::InterpolateCosine(const T& value1, const T& value2, Real factor)
+T math::interpolation::InterpolateCosine(const T& value1, const T& value2, Real factor)
 {
-	const Angle angle(factor * PI, Math::Unit::RADIAN);
+	const Angle angle(factor * PI, units::RADIAN);
 	const Real cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
 	return (value1 * (REAL_ONE - cosineFactor)) + (value2 * cosineFactor);
 }
 
 template <class T>
-T Math::Interpolation::InterpolateHermite(const T& value1, const T& value2, Real factor)
+T math::interpolation::InterpolateHermite(const T& value1, const T& value2, Real factor)
 {
 	return value1;
 }
 
 template <class T>
-T Math::Interpolation::InterpolateBarycentric(const T& value1, const T& value2, Real factor)
+T math::interpolation::InterpolateBarycentric(const T& value1, const T& value2, Real factor)
 {
 	return value1;
 }

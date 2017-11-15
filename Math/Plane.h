@@ -5,7 +5,7 @@
 #include "Vector.h"
 #include "FloatingPoint.h"
 
-namespace Math
+namespace math
 {
 
 	class IntersectInfo;
@@ -51,21 +51,21 @@ namespace Math
 	public:
 		MATH_API Plane Normalized() const;
 		MATH_API IntersectInfo DoesIntersectSphere(const Sphere& sphere) const;
-		MATH_API bool IsPerpendicularToAxisX() const { return Math::AlmostEqual(m_normal.x, REAL_ZERO); }
-		MATH_API bool IsPerpendicularToAxisY() const { return Math::AlmostEqual(m_normal.y, REAL_ZERO); }
-		MATH_API bool IsPerpendicularToAxisZ() const { return Math::AlmostEqual(m_normal.z, REAL_ZERO); }
+		MATH_API bool IsPerpendicularToAxisX() const { return AlmostEqual(m_normal.x, REAL_ZERO); }
+		MATH_API bool IsPerpendicularToAxisY() const { return AlmostEqual(m_normal.y, REAL_ZERO); }
+		MATH_API bool IsPerpendicularToAxisZ() const { return AlmostEqual(m_normal.z, REAL_ZERO); }
 		MATH_API inline const Vector3D& GetNormal() const { return m_normal; }
 		MATH_API inline Real GetDistance() const { return m_distance; }
 		/// <summary>
 		/// Calculates the point on the plane that is closest to origin.
 		/// See https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_plane.
 		/// </summary>
-		MATH_API Math::Vector3D CalculatePointClosestToOrigin() const;
+		MATH_API Vector3D CalculatePointClosestToOrigin() const;
 		/// <summary>
 		/// Generates random position on the plane with the assumption that it must lie within <paramref name="radius"/> to the point on the plane being closest to the origin.
 		/// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c.
 		/// </summary>
-		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius) const
+		MATH_API Vector3D GenerateRandomPositionWithinRadius(Real radius) const
 		{
 			return GenerateRandomPositionWithinRadius(radius, CalculatePointClosestToOrigin());
 		}
@@ -73,7 +73,7 @@ namespace Math
 		/// Generates random position on the plane with the assumption that it must lie within <paramref name="radius"/> to the point on the plane being closest to the origin.
 		/// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c.
 		/// </summary>
-		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius, const Math::Vector3D& translationPoint) const;
+		MATH_API Vector3D GenerateRandomPositionWithinRadius(Real radius, const Vector3D& translationPoint) const;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -90,6 +90,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Plane */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_PLANE_H__ */

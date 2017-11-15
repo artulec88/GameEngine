@@ -24,7 +24,7 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void Update(math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

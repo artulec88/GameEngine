@@ -26,12 +26,12 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Update(Math::Real delta);
+		virtual void Update(math::Real delta);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Math::Transform& m_entityToLookAtTransform;
+		const math::Transform& m_entityToLookAtTransform;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LookAtComponent */
 

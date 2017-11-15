@@ -26,7 +26,7 @@ namespace audio
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		AUDIO_API virtual void Update(Math::Real deltaTime);
+		AUDIO_API virtual void Update(math::Real deltaTime);
 		AUDIO_API virtual void LoadSoundEffect(const std::string& path);
 		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path);
 		AUDIO_API virtual void LoadSong(const std::string& path);
@@ -40,18 +40,18 @@ namespace audio
 		/// Plays the sound effect specified in the <paramref name="path/>.
 		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch);
+		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch);
 		/// <summary>
 		/// Plays the 3D sound effect specified in the <paramref name="path/>.
 		/// The method searches for the sound in the correct map and plays it back setting the volume, pitch, position and velocity of the source beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity);
+		AUDIO_API virtual void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity);
 		AUDIO_API virtual void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */);
 		AUDIO_API virtual void StopSoundEffects();
 		AUDIO_API virtual void StopSong();
-		AUDIO_API virtual void SetMasterVolume(Math::Real volume);
-		AUDIO_API virtual void SetSoundEffectsVolume(Math::Real volume);
-		AUDIO_API virtual void SetSongsVolume(Math::Real volume);
+		AUDIO_API virtual void SetMasterVolume(math::Real volume);
+		AUDIO_API virtual void SetSoundEffectsVolume(math::Real volume);
+		AUDIO_API virtual void SetSongsVolume(math::Real volume);
 	private:
 		void Load(Categories::Category type, const std::string& path);
 
@@ -69,7 +69,7 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual Math::Real ChangeOctave(Math::Real frequency, Math::Real variation) const;
+		virtual math::Real ChangeOctave(math::Real frequency, math::Real variation) const;
 
 		/// <summary>
 		/// A helper method for calculating the semitones. By using this method it becomes simple to modify the pitch of a sound.
@@ -85,9 +85,9 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual Math::Real ChangeSemitone(Math::Real frequency, Math::Real variation) const;
+		virtual math::Real ChangeSemitone(math::Real frequency, math::Real variation) const;
 
-		void SetVolume(Categories::Category type, Math::Real volume);
+		void SetVolume(Categories::Category type, math::Real volume);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

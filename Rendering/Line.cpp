@@ -2,7 +2,7 @@
 #include "Line.h"
 
 
-Rendering::Text::Line::Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength) :
+Rendering::Text::Line::Line(math::Real spaceWidth, math::Real fontSize, math::Real maxLength) :
 	m_spaceSize(spaceWidth * fontSize),
 	m_maxLength(maxLength),
 	m_currentLineLength(REAL_ZERO)
@@ -16,7 +16,7 @@ Rendering::Text::Line::~Line()
 
 bool Rendering::Text::Line::AttemptToAddWord(const Word& word)
 {
-	Math::Real additionalLength = word.GetWordWidth();
+	math::Real additionalLength = word.GetWordWidth();
 	if (!m_words.empty())
 	{
 		additionalLength += m_spaceSize;

@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Vector.h"
 
-namespace Math
+namespace math
 {
 
 	/// <summary>
@@ -52,9 +52,8 @@ namespace Math
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
-		inline const Vector3D& GetPoint() const { return m_point; }
-		inline const Vector3D& GetDirection() const { return m_direction; }
+		const Vector3D& GetPoint() const { return m_point; }
+		const Vector3D& GetDirection() const { return m_direction; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -71,6 +70,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Line */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_LINE_H__ */

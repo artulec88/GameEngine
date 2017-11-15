@@ -50,11 +50,11 @@ void Game::CameraNodeBuilder::BuildTransform()
 	//		GET_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr, M_DEFAULT_CAMERA_POS.GetZ()));
 
 	//	// Setting rotation
-	//	Math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-	//	Math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-	//	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+	//	math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(math::units::DEGREE)));
+	//	math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(math::units::DEGREE)));
+	//	math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(math::units::DEGREE)));
 	//	DELOCUST_LOG_ENGINE("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-	//	m_rotations[i] = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+	//	m_rotations[i] = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 
 	//	// Setting camera type
 	//	Engine::camera_behavior_types::CameraBehaviorType cameraBehaviorType = ConvertToCameraBehaviorType(GET_CONFIG_VALUE_STR_GAME("cameraType" + indexStr, "Static"));
@@ -82,7 +82,7 @@ void Game::CameraNodeBuilder::BuildTransform()
 	//	}
 
 	//	// Setting camera parameters
-	//	m_fovs[i].Set(GET_CONFIG_VALUE_GAME("cameraFoV_" + indexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	//	m_fovs[i].Set(GET_CONFIG_VALUE_GAME("cameraFoV_" + indexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(math::units::DEGREE)), math::units::DEGREE);
 	//	m_aspectRatios[i] = GET_CONFIG_VALUE_GAME("cameraAspectRatio_" + indexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
 	//	m_nearPlanes[i] = GET_CONFIG_VALUE_GAME("cameraNearPlane_" + indexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
 	//	m_farPlanes[i] = GET_CONFIG_VALUE_GAME("cameraFarPlane_" + indexStr, M_DEFAULT_CAMERA_FAR_PLANE);
@@ -95,10 +95,10 @@ void Game::CameraNodeBuilder::BuildTransform()
 
 void Game::CameraNodeBuilder::BuildComponents()
 {
-	//Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_GAME("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f));
-	//Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_GAME("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f));
-	//Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_GAME("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f));
-	//Math::Angle initialPitchAngle(GET_CONFIG_VALUE_GAME("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)));
+	//math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_GAME("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f));
+	//math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_GAME("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f));
+	//math::Real pitchRotationSpeed = GET_CONFIG_VALUE_GAME("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f));
+	//math::Angle initialPitchAngle(GET_CONFIG_VALUE_GAME("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)));
 
 	//Engine::CameraComponent* cameraComponent = new Engine::CameraComponent(
 	//for (std::size_t i = 0; i < m_camerasCount; ++i)
@@ -153,6 +153,6 @@ void Game::SkyboxBuilder::BuildComponents()
 	m_gameManager->AddMesh(MeshIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
 	m_gameNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial));
 
-	m_gameNode.AddComponent(new engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
+	m_gameNode.AddComponent(new engine::ConstantRotationComponent(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
 }
 /* ==================== SkyboxBuilder implementation end ==================== */

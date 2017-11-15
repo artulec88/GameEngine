@@ -13,7 +13,7 @@ Rendering::Particles::ParticlesUpdater::~ParticlesUpdater()
 /* ==================== class ParticlesUpdater end ==================== */
 
 /* ==================== class EulerParticlesUpdater begin ==================== */
-Rendering::Particles::EulerParticlesUpdater::EulerParticlesUpdater(const Math::Vector3D& acceleration) :
+Rendering::Particles::EulerParticlesUpdater::EulerParticlesUpdater(const math::Vector3D& acceleration) :
 	ParticlesUpdater(),
 	m_acceleration(acceleration)
 {
@@ -23,7 +23,7 @@ Rendering::Particles::EulerParticlesUpdater::~EulerParticlesUpdater()
 {
 }
 
-void Rendering::Particles::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+void Rendering::Particles::EulerParticlesUpdater::Update(math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
@@ -52,7 +52,7 @@ Rendering::Particles::LifeSpanParticlesUpdater::~LifeSpanParticlesUpdater()
 {
 }
 
-void Rendering::Particles::LifeSpanParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+void Rendering::Particles::LifeSpanParticlesUpdater::Update(math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
@@ -66,7 +66,7 @@ void Rendering::Particles::LifeSpanParticlesUpdater::Update(Math::Real deltaTime
 /* ==================== class LifeSpanParticlesUpdater end ==================== */
 
 /* ==================== class RotationParticlesUpdater begin ==================== */
-Rendering::Particles::RotationParticlesUpdater::RotationParticlesUpdater(const Math::Angle& rotationSpeedAngle) :
+Rendering::Particles::RotationParticlesUpdater::RotationParticlesUpdater(const math::Angle& rotationSpeedAngle) :
 	ParticlesUpdater(),
 	m_rotationSpeedAngle(rotationSpeedAngle)
 {
@@ -76,7 +76,7 @@ Rendering::Particles::RotationParticlesUpdater::~RotationParticlesUpdater()
 {
 }
 
-void Rendering::Particles::RotationParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+void Rendering::Particles::RotationParticlesUpdater::Update(math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
@@ -86,7 +86,7 @@ void Rendering::Particles::RotationParticlesUpdater::Update(Math::Real deltaTime
 /* ==================== class RotationParticlesUpdater end ==================== */
 
 /* ==================== class ScaleEffectParticlesUpdater begin ==================== */
-Rendering::Particles::ScaleEffectParticlesUpdater::ScaleEffectParticlesUpdater(Math::Effects::Effect<Math::Real>* effect) :
+Rendering::Particles::ScaleEffectParticlesUpdater::ScaleEffectParticlesUpdater(math::effects::Effect<math::Real>* effect) :
 	ParticlesUpdater(),
 	m_effect(effect)
 {
@@ -96,7 +96,7 @@ Rendering::Particles::ScaleEffectParticlesUpdater::~ScaleEffectParticlesUpdater(
 {
 }
 
-void Rendering::Particles::ScaleEffectParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+void Rendering::Particles::ScaleEffectParticlesUpdater::Update(math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	m_effect->Update(deltaTime);
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)

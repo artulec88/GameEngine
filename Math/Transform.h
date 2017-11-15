@@ -7,7 +7,7 @@
 #include "Quaternion.h"
 #include "Matrix.h"
 
-namespace Math
+namespace math
 {
 
 	class Transform
@@ -16,12 +16,12 @@ namespace Math
 	public:
 		/// <summary> Transform constructor. </summary>
 		MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-			const Quaternion& rotation = Math::NO_ROTATION_QUATERNION,
+			const Quaternion& rotation = NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform constructor. </summary>
 		MATH_API Transform(Real posX, Real posY, Real posZ,
-			const Quaternion& rotation = Math::NO_ROTATION_QUATERNION,
+			const Quaternion& rotation = NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform copy constructor. </summary>
@@ -202,6 +202,6 @@ namespace Math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Transform */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_TRANSFORM_H__ */

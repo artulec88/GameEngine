@@ -22,8 +22,8 @@
 #define STOP_PROFILING(moduleName, param)
 #endif
 
-namespace Math {
-	namespace Statistics
+namespace math {
+	namespace statistics
 	{
 		extern const int STATS_SAMPLES_FIRST_LEVEL;
 		extern const int STATS_SAMPLES_SECOND_LEVEL;
@@ -145,12 +145,12 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			//MATH_API void Push(const std::string& statsID, Math::Real sample);
+			//MATH_API void Push(const std::string& statsID, Real sample);
 			//MATH_API int Size() const;
 			//MATH_API int Size(const std::string& statsID) const;
 
-			//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
-			//MATH_API Math::Real CalculateMedian(const std::string& statsID);
+			//MATH_API Real CalculateMean(const std::string& statsID) const;
+			//MATH_API Real CalculateMedian(const std::string& statsID);
 
 			MATH_API void PrintReport(const utility::timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const;
 
@@ -187,8 +187,8 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ClassStats */
 
-	} /* end namespace Statistics */
+	} /* end namespace statistics */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif // __MATH_STATISTICS_H__

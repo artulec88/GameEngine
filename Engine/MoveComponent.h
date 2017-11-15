@@ -23,7 +23,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MoveComponent(Physics::PhysicsObject* physicsObject, Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
+		ENGINE_API MoveComponent(Physics::PhysicsObject* physicsObject, math::Real movementSpeed, math::Real runSpeedFactor, math::Angle& rotationSpeed, math::Real strafeSpeed, math::Real jumpSpeed);
 		ENGINE_API virtual ~MoveComponent(void);
 		MoveComponent(const MoveComponent& moveComponent) = delete;
 		MoveComponent(MoveComponent&& moveComponent) = default;
@@ -33,7 +33,7 @@ namespace engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void Update(math::Real deltaTime);
 		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
 		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
 		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
@@ -42,22 +42,22 @@ namespace engine
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Physics::PhysicsObject* m_physicsObject;
-		const Math::Real m_movementSpeed;
+		const math::Real m_movementSpeed;
 		/// <summary>
 		/// Specifies the ratio between running speed and the standard walking speed.
 		/// </summary>
 		/// <remarks>
 		/// The value should be greater or equal to 1.0.
 		/// </remarks>
-		const Math::Real m_runSpeedFactor;
-		const Math::Angle m_rotationSpeed;
-		const Math::Real m_strafeSpeed;
-		const Math::Real m_jumpSpeed;
+		const math::Real m_runSpeedFactor;
+		const math::Angle m_rotationSpeed;
+		const math::Real m_strafeSpeed;
+		const math::Real m_jumpSpeed;
 
-		Math::Real m_currentMovementSpeed;
-		Math::Angle m_currentRotationSpeed;
-		Math::Real m_currentStrafeSpeed;
-		Math::Real m_currentJumpSpeed;
+		math::Real m_currentMovementSpeed;
+		math::Angle m_currentRotationSpeed;
+		math::Real m_currentStrafeSpeed;
+		math::Real m_currentJumpSpeed;
 		bool m_isJumping;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayerComponent */

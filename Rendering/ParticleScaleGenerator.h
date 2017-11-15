@@ -45,7 +45,7 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				inline void Set(ParticlesContainer* particleContainer, size_t i, Math::Real scale)
+				inline void Set(ParticlesContainer* particleContainer, size_t i, math::Real scale)
 				{
 					particleContainer->SetScale(i, scale);
 				}
@@ -66,18 +66,18 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantScaleGenerator(Math::Real scale);
+				RENDERING_API ConstantScaleGenerator(math::Real scale);
 				RENDERING_API virtual ~ConstantScaleGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_scale;
+				math::Real m_scale;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ConstantScaleGenerator */
 
@@ -91,20 +91,20 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API RangeScaleGenerator(Math::Real minScale, Math::Real maxScale);
+				RENDERING_API RangeScaleGenerator(math::Real minScale, math::Real maxScale);
 				RENDERING_API virtual ~RangeScaleGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Math::Real m_minScale;
-				Math::Real m_maxScale;
-				const Math::Random::RandomGenerator& m_randomGenerator;
+				math::Real m_minScale;
+				math::Real m_maxScale;
+				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeScaleGenerator */
 		} /* end namespace Generators */

@@ -15,7 +15,7 @@
 
 //#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
-namespace Math
+namespace math
 {
 	/// <summary> The class representing the 4x4 matrix. </summary>
 	/// <remarks>
@@ -166,7 +166,7 @@ namespace Math
 		/// <summary>A simple matrix destructor.</summary>
 		MATH_API ~Matrix4D();
 	private:
-		Matrix4D(const Math::Real* values);
+		Matrix4D(const Real* values);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -269,7 +269,7 @@ namespace Math
 #endif
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
-		Statistics::ClassStats& m_classStats;
+		statistics::ClassStats& m_classStats;
 #else
 		std::array<uint8_t, 4> m_padding;
 #endif

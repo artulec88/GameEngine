@@ -98,7 +98,7 @@ namespace utility
 			/// The time span move constructor.
 			/// </summary>
 			TimeSpan(TimeSpan&& timeSpan) noexcept:
-				m_duration(std::move(timeSpan.m_duration))
+				m_duration(move(timeSpan.m_duration))
 			{
 			}
 
@@ -118,10 +118,9 @@ namespace utility
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary> Gets the time span value. </summary>
 			/// <returns> The value of the time span. </returns>
-			inline long long GetValue() const { return m_duration.count(); }
+			long long GetValue() const { return m_duration.count(); }
 
 			//TimeSpan& operator/=(double s)
 			//{

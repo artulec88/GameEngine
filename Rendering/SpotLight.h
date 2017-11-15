@@ -23,11 +23,11 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+			RENDERING_API SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
-				const Attenuation& attenuation, Math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled,
-				int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness, Math::Real shadowInfoLightBleedingReductionFactor,
-				Math::Real shadowInfoMinVariance, const Math::Angle& viewAngle);
+				const Attenuation& attenuation, math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled,
+				int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness, math::Real shadowInfoLightBleedingReductionFactor,
+				math::Real shadowInfoMinVariance, const math::Angle& viewAngle);
 
 			/// <summary> Spot light destructor. </summary>
 			RENDERING_API virtual ~SpotLight(void);
@@ -53,7 +53,7 @@ namespace Rendering {
 			/// If <code>cutoff == 1.0</code> then field of view equals 0 degrees.
 			/// </summary>
 			/// <returns> The cosine value of the view angle of the spot light. </returns>
-			RENDERING_API Math::Real GetCutoff() const noexcept { return m_cutoff; }
+			RENDERING_API math::Real GetCutoff() const noexcept { return m_cutoff; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -66,7 +66,7 @@ namespace Rendering {
 			/// If <code>cutoff == 0.0</code> then field of view is equal to 180 degrees.
 			/// If <code>cutoff == 1.0</code> then field of view equals 0 degrees.
 			/// </summary>
-			Math::Real m_cutoff;
+			math::Real m_cutoff;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SpotLight */
 

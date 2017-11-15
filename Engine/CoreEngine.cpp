@@ -178,18 +178,18 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory),
 	m_audioDirectory(audioDirectory),
-	m_glfwKeysToRawInputKeysMap({ {GLFW_KEY_A, Input::RawInputKeys::KEY_A}, { GLFW_KEY_B, Input::RawInputKeys::KEY_B },
-		{ GLFW_KEY_C, Input::RawInputKeys::KEY_C }, { GLFW_KEY_D, Input::RawInputKeys::KEY_D }, { GLFW_KEY_E, Input::RawInputKeys::KEY_E }, { GLFW_KEY_F, Input::RawInputKeys::KEY_F },
-		{ GLFW_KEY_G, Input::RawInputKeys::KEY_G }, { GLFW_KEY_H, Input::RawInputKeys::KEY_H }, { GLFW_KEY_I, Input::RawInputKeys::KEY_I }, { GLFW_KEY_J, Input::RawInputKeys::KEY_J },
-		{ GLFW_KEY_K, Input::RawInputKeys::KEY_K }, { GLFW_KEY_L, Input::RawInputKeys::KEY_L }, { GLFW_KEY_M, Input::RawInputKeys::KEY_M }, { GLFW_KEY_N, Input::RawInputKeys::KEY_N },
-		{ GLFW_KEY_O, Input::RawInputKeys::KEY_O }, { GLFW_KEY_P, Input::RawInputKeys::KEY_P }, { GLFW_KEY_Q, Input::RawInputKeys::KEY_Q }, { GLFW_KEY_R, Input::RawInputKeys::KEY_R },
-		{ GLFW_KEY_S, Input::RawInputKeys::KEY_S }, { GLFW_KEY_T, Input::RawInputKeys::KEY_T }, { GLFW_KEY_U, Input::RawInputKeys::KEY_U }, { GLFW_KEY_V, Input::RawInputKeys::KEY_V },
-		{ GLFW_KEY_W, Input::RawInputKeys::KEY_W }, { GLFW_KEY_X, Input::RawInputKeys::KEY_X }, { GLFW_KEY_Y, Input::RawInputKeys::KEY_Y }, { GLFW_KEY_Z, Input::RawInputKeys::KEY_Z },
-		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
-		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT },
-		{ GLFW_KEY_SPACE, Input::RawInputKeys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, Input::RawInputKeys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, Input::RawInputKeys::KEY_LEFT_ALT },
-		{ GLFW_KEY_LEFT_SHIFT, Input::RawInputKeys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, Input::RawInputKeys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, Input::RawInputKeys::KEY_RIGHT_ALT },
-		{ GLFW_KEY_RIGHT_SHIFT, Input::RawInputKeys::KEY_RIGHT_SHIFT } }),
+	m_glfwKeysToRawInputKeysMap({ {GLFW_KEY_A, Input::raw_input_keys::KEY_A}, { GLFW_KEY_B, Input::raw_input_keys::KEY_B },
+		{ GLFW_KEY_C, Input::raw_input_keys::KEY_C }, { GLFW_KEY_D, Input::raw_input_keys::KEY_D }, { GLFW_KEY_E, Input::raw_input_keys::KEY_E }, { GLFW_KEY_F, Input::raw_input_keys::KEY_F },
+		{ GLFW_KEY_G, Input::raw_input_keys::KEY_G }, { GLFW_KEY_H, Input::raw_input_keys::KEY_H }, { GLFW_KEY_I, Input::raw_input_keys::KEY_I }, { GLFW_KEY_J, Input::raw_input_keys::KEY_J },
+		{ GLFW_KEY_K, Input::raw_input_keys::KEY_K }, { GLFW_KEY_L, Input::raw_input_keys::KEY_L }, { GLFW_KEY_M, Input::raw_input_keys::KEY_M }, { GLFW_KEY_N, Input::raw_input_keys::KEY_N },
+		{ GLFW_KEY_O, Input::raw_input_keys::KEY_O }, { GLFW_KEY_P, Input::raw_input_keys::KEY_P }, { GLFW_KEY_Q, Input::raw_input_keys::KEY_Q }, { GLFW_KEY_R, Input::raw_input_keys::KEY_R },
+		{ GLFW_KEY_S, Input::raw_input_keys::KEY_S }, { GLFW_KEY_T, Input::raw_input_keys::KEY_T }, { GLFW_KEY_U, Input::raw_input_keys::KEY_U }, { GLFW_KEY_V, Input::raw_input_keys::KEY_V },
+		{ GLFW_KEY_W, Input::raw_input_keys::KEY_W }, { GLFW_KEY_X, Input::raw_input_keys::KEY_X }, { GLFW_KEY_Y, Input::raw_input_keys::KEY_Y }, { GLFW_KEY_Z, Input::raw_input_keys::KEY_Z },
+		{ GLFW_KEY_UP, Input::raw_input_keys::KEY_UP }, { GLFW_KEY_DOWN, Input::raw_input_keys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::raw_input_keys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::raw_input_keys::KEY_ENTER },
+		{ GLFW_MOUSE_BUTTON_LEFT, Input::raw_input_keys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::raw_input_keys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::raw_input_keys::MOUSE_KEY_RIGHT },
+		{ GLFW_KEY_SPACE, Input::raw_input_keys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, Input::raw_input_keys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, Input::raw_input_keys::KEY_LEFT_ALT },
+		{ GLFW_KEY_LEFT_SHIFT, Input::raw_input_keys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, Input::raw_input_keys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, Input::raw_input_keys::KEY_RIGHT_ALT },
+		{ GLFW_KEY_RIGHT_SHIFT, Input::raw_input_keys::KEY_RIGHT_SHIFT } }),
 	m_inputMapping(m_configDirectory, GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),
@@ -245,9 +245,9 @@ engine::CoreEngine::~CoreEngine(void)
 	STATS_STORAGE.StopTimer();
 	STATS_STORAGE.PrintReport();
 
-	//Math::Real minSpf, maxSpf, stdDevSpf;
-	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
-	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
+	//math::Real minSpf, maxSpf, stdDevSpf;
+	math::Real meanSpf = m_stats.CalculateMean(math::statistics::SPF);
+	math::Real medianSpf = m_stats.CalculateMedian(math::statistics::SPF);
 	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]\nMedian SPF =\t", medianSpf, " [ms]");
 	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]");
 #endif
@@ -438,7 +438,7 @@ void engine::CoreEngine::Stop()
 	//QueryPerformanceCounter(&t1);
 	//tthread::this_thread::sleep_for(tthread::chrono::seconds(1));
 	//QueryPerformanceCounter(&t2);
-	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
+	//double elapsedTime = static_cast<double>(static_cast<math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 	//INFO_LOG_ENGINE("Elapsed time = ", elapsedTime, " [us]");
 	STOP_PROFILING_ENGINE("");
 }
@@ -449,17 +449,17 @@ void engine::CoreEngine::Run()
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
-	//Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	//Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
-	//Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	//Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
+	//math::Vector3D fpsColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
+	//math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
+	//math::Vector3D inGameTimeColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
+	//math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
 	Rendering::Controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
-		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
+		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
+		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
 		Rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
+		math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
 #endif
@@ -474,19 +474,19 @@ void engine::CoreEngine::Run()
 	m_isRunning = true;
 
 #ifdef COUNT_FPS
-	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
+	math::Real fpsSample = static_cast<math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
-	Math::Real frameTimeCounter = REAL_ZERO;
+	math::Real frameTimeCounter = REAL_ZERO;
 	int fps = 0;
-	Math::Real spf = REAL_ZERO;
+	math::Real spf = REAL_ZERO;
 #endif
 
 	m_audioEngine->LoadSong("520387_Horizon_short.mp3");
 	m_audioEngine->PlaySong("520387_Horizon_short.mp3");
 	//m_audioEngine->play2D("520387_Horizon_short.mp3".c_str(), true);
 
-	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
-	Math::Real previousTime = GetTime();
+	math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	math::Real previousTime = GetTime();
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	//LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
@@ -499,8 +499,8 @@ void engine::CoreEngine::Run()
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		Math::Real currentTime = GetTime();
-		Math::Real passedTime = currentTime - previousTime;
+		math::Real currentTime = GetTime();
+		math::Real passedTime = currentTime - previousTime;
 		DELOCUST_LOG_ENGINE("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;
@@ -519,7 +519,7 @@ void engine::CoreEngine::Run()
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 			if (m_isSamplingSpf)
 			{
-				m_stats.Push(Math::Statistics::SPF, spf);
+				m_stats.Push(math::statistics::SPF, spf);
 			}
 #endif
 			//DEBUG_LOG_ENGINE("FPS = ", fps, "\t Average time per frame = ", spf, " [ms]");
@@ -685,7 +685,7 @@ void engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
 
 void engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
+	std::map<int, Input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Key ", key, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
@@ -696,7 +696,7 @@ void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
 	DELOCUST_LOG_ENGINE("Mouse button event: button=", button, "\t action=", action, "\t mods=", mods);
 
-	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
+	std::map<int, Input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Button ", button, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
@@ -725,9 +725,9 @@ void engine::CoreEngine::PollEvents()
 	glfwPollEvents();
 }
 
-Math::Real engine::CoreEngine::GetTime() const
+math::Real engine::CoreEngine::GetTime() const
 {
-	return static_cast<Math::Real>(glfwGetTime());
+	return static_cast<math::Real>(glfwGetTime());
 	//return Time(glfwGetTime());
 
 	//return Time::Now();
@@ -737,7 +737,7 @@ void engine::CoreEngine::ClearScreen() const
 {
 }
 
-void engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
+void engine::CoreEngine::SetCursorPos(math::Real xPos, math::Real yPos)
 {
 	if (m_renderer == NULL)
 	{
@@ -749,7 +749,7 @@ void engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 
 void engine::CoreEngine::CentralizeCursor()
 {
-	SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
+	SetCursorPos(static_cast<math::Real>(m_windowWidth) / 2, static_cast<math::Real>(m_windowHeight) / 2);
 }
 
 void engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
@@ -812,7 +812,7 @@ void engine::CoreEngine::InitializeGameTweakBars()
 #endif
 
 //#ifdef PROFILING_RENDERING_MODULE_ENABLED
-//Math::Real Engine::CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
+//math::Real Engine::CoreEngine::CalculateAverageSpf(math::Real& minSpf, math::Real& maxSpf, math::Real& stdDev) const
 //{
 //	if (m_secondsPerFrameStats.empty())
 //	{
@@ -824,10 +824,10 @@ void engine::CoreEngine::InitializeGameTweakBars()
 //
 //	minSpf = REAL_MAX;
 //	maxSpf = REAL_MIN;
-//	Math::Real spfSum = REAL_ZERO;
-//	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+//	math::Real spfSum = REAL_ZERO;
+//	for (std::vector<math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
 //	{
-//		Math::Real spf = *spfItr;
+//		math::Real spf = *spfItr;
 //		if (spf < minSpf)
 //		{
 //			minSpf = spf;
@@ -839,11 +839,11 @@ void engine::CoreEngine::InitializeGameTweakBars()
 //		spfSum += spf;
 //	}
 //
-//	Math::Real average = spfSum / m_secondsPerFrameStats.size();
+//	math::Real average = spfSum / m_secondsPerFrameStats.size();
 //
 //	/* ==================== Calculating standard deviation begin ==================== */
 //	stdDev = REAL_ZERO;
-//	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+//	for (std::vector<math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
 //	{
 //		stdDev += (average - *spfItr) * (average - *spfItr);
 //	}

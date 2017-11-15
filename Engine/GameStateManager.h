@@ -74,7 +74,7 @@ namespace engine
 
 		/// <summary> Advances the time of the active game states </summary>
 		/// <param name="deltaTime"> Elapsed simulation time </param>
-		virtual void Update(Math::Real deltaTime) = 0;
+		virtual void Update(math::Real deltaTime) = 0;
 
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
@@ -97,7 +97,7 @@ namespace engine
 		/// </summary>
 		/// <param name="range"> The range that must be handled. </param>
 		/// <param name="value"> The value associated with the range. </param>
-		ENGINE_API virtual void Handle(Ranges::Range range, Math::Real value) = 0;
+		ENGINE_API virtual void Handle(Ranges::Range range, math::Real value) = 0;
 
 		void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
 		void PerformStateTransition();
@@ -159,7 +159,7 @@ namespace engine
 
 		/// <summary> Advances the time of the active game states </summary>
 		/// <param name="deltaTime"> Elapsed simulation time </param>
-		void Update(Math::Real deltaTime);
+		void Update(math::Real deltaTime);
 
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
@@ -182,7 +182,7 @@ namespace engine
 		/// </summary>
 		/// <param name="range"> The range that must be handled by active game states. </param>
 		/// <param name="value"> The value associated with the specified range. </param>
-		virtual void Handle(engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, math::Real value);
 	private:
 		/// <summary>
 		///   Adds the specified game state to the exposed Drawables or Updateables if it

@@ -59,7 +59,7 @@ void Game::IntroGameState::Handle(engine::States::State state)
 {
 }
 
-void Game::IntroGameState::Handle(engine::Ranges::Range range, Math::Real value)
+void Game::IntroGameState::Handle(engine::Ranges::Range range, math::Real value)
 {
 }
 

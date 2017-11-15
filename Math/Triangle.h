@@ -5,7 +5,7 @@
 #include "Vector.h"
 #include "Angle.h"
 
-namespace Math
+namespace math
 {
 
 	/// <summary>

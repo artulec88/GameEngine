@@ -38,7 +38,7 @@ namespace engine
 	public:
 		virtual void Handle(Rendering::BaseCamera* camera, Actions::Action action) = 0;
 		virtual void Handle(Rendering::BaseCamera* camera, States::State state) = 0;
-		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value) = 0;
+		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -65,7 +65,7 @@ namespace engine
 	public:
 		virtual void Handle(Rendering::BaseCamera* camera, Actions::Action action);
 		virtual void Handle(Rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value);
+		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -92,7 +92,7 @@ namespace engine
 	public:
 		virtual void Handle(Rendering::BaseCamera* camera, Actions::Action action);
 		virtual void Handle(Rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value);
+		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -119,7 +119,7 @@ namespace engine
 	public:
 		virtual void Handle(Rendering::BaseCamera* camera, Actions::Action action);
 		virtual void Handle(Rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, Math::Real value);
+		virtual void Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

@@ -4,9 +4,9 @@
 #include "Math\Quaternion.h"
 #include "CoreEngine.h"
 
-///* static */ const Math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
+///* static */ const math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
-engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce) :
+engine::PhysicsComponent::PhysicsComponent(math::Real movementSpeed, math::Real jumpForce) :
 	GameComponent(),
 	IUpdateable(),
 	m_moveSpeed(movementSpeed),
@@ -22,7 +22,7 @@ engine::PhysicsComponent::~PhysicsComponent()
 	//SAFE_DELETE(m_physicsObject);
 }
 
-void engine::PhysicsComponent::Update(Math::Real deltaTime)
+void engine::PhysicsComponent::Update(math::Real deltaTime)
 {
 	if (m_isJumping)
 	{

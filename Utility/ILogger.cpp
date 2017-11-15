@@ -5,7 +5,7 @@
 
 /* static */ std::map<std::string, std::unique_ptr<utility::logging::ILogger>> utility::logging::ILogger::loggers;
 
-/* static */ const std::array<std::string, utility::logging::COUNT> utility::logging::ILogger::LOGGING_LEVEL_NAMES =
+/* static */ const std::array<std::string, utility::logging::COUNT> utility::logging::ILogger::s_loggingLevelNames =
 {
 	"Critical",
 	"Emergency",
@@ -19,11 +19,11 @@
 
 /* static */ utility::logging::ILogger& utility::logging::ILogger::GetLogger(const std::string& moduleName)
 {
-	if (ILogger::loggers.find(moduleName) == ILogger::loggers.end())
+	if (loggers.find(moduleName) == loggers.end())
 	{
-		ILogger::loggers[moduleName] = std::make_unique<LoggerWindows>(); // TODO: Create object in accordance to the platform we are currently using.
+		loggers[moduleName] = std::make_unique<LoggerWindows>(); // TODO: Create object in accordance to the platform we are currently using.
 	}
-	return *ILogger::loggers[moduleName];
+	return *loggers[moduleName];
 }
 
 utility::logging::ILogger::ILogger(const char* fileName /* = nullptr */) :
@@ -38,7 +38,7 @@ utility::logging::ILogger::ILogger(const char* fileName /* = nullptr */) :
 
 utility::logging::ILogger::~ILogger()
 {
-	for (Outs::iterator outItr = m_outs.begin(); outItr != m_outs.end(); ++outItr)
+	for (auto outItr = m_outs.begin(); outItr != m_outs.end(); ++outItr)
 	{
 		(*outItr).close();
 	}
@@ -61,6 +61,5 @@ void utility::logging::ILogger::SetLevel(const LogLevel level)
 void utility::logging::ILogger::AddStream(const char* fileName)
 {
 	WARNING_LOG_UTILITY("Logging to files doesn't work. This function call will be ignored.");
-	return;
 	//m_outs.push_back(std::move(std::ofstream(fileName, std::ios::out)));
 }

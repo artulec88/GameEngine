@@ -5,7 +5,7 @@
 
 #include "Utility\ILogger.h"
 
-Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
+math::KDTree::KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
 	m_leftTree(nullptr),
 	m_rightTree(nullptr),
 	m_numberOfSamples(numberOfSamples),
@@ -64,21 +64,21 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 	STOP_PROFILING_MATH("");
 }
 
-Math::KDTree::~KDTree()
+math::KDTree::~KDTree()
 {
 }
 
-void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
+void math::KDTree::BuildTree(Vector3D* positions, size_t positionsCount, int depth)
 {
 	START_PROFILING_MATH(true, "");
-	Sorting::Keys::Key sortingKey = (depth % 2 == 0) ? Sorting::Keys::COMPONENT_X : Sorting::Keys::COMPONENT_Z;
+	sorting::keys::Key sortingKey = (depth % 2 == 0) ? sorting::keys::COMPONENT_X : sorting::keys::COMPONENT_Z;
 	//DEBUG_LOG_MATH("Before sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{
 	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
-	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::Orders::ASCENDING);
-	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
+	sorting::SortingParametersChain sortingParameters(sortingKey, sorting::orders::ASCENDING);
+	sorting::ISort::GetSortingObject(sorting::sorting_algorithms::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
 	//DEBUG_LOG_MATH("After sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{
@@ -102,7 +102,7 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 
 //int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
 
-Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
+math::Real math::KDTree::SearchNearestValue(Real posX, Real posZ) const
 {
 	START_PROFILING_MATH(true, "");
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
@@ -134,7 +134,7 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 	return result;
 }
 
-void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void math::KDTree::SearchNearestValue(Real x, Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	START_PROFILING_MATH(true, "");
 	//++numberOfPositionsChecked;
@@ -208,7 +208,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 	STOP_PROFILING_MATH("");
 }
 
-Math::Real Math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+math::Real math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	/* ==================== METHOD #1 (Inverse Distance Weighting- http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml) begin ==================== */
 	//const Real exponent = 4.0f;
@@ -249,12 +249,12 @@ Math::Real Math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::
 	/* ==================== METHOD #2 end ==================== */
 }
 
-std::string Math::KDTree::ToString() const
+std::string math::KDTree::ToString() const
 {
 	return ToString(0);
 }
 
-std::string Math::KDTree::ToString(int depth) const
+std::string math::KDTree::ToString(int depth) const
 {
 	constexpr char* INDENTATION_STRING = "  ";
 	std::stringstream s("");

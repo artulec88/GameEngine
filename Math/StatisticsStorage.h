@@ -9,10 +9,10 @@
 #include <map>
 #include <string>
 
-#define STATS_STORAGE Math::Statistics::StatisticsStorage::GetStatisticsStorage()
+#define STATS_STORAGE math::statistics::StatisticsStorage::GetStatisticsStorage()
 
-namespace Math {
-	namespace Statistics
+namespace math {
+	namespace statistics
 	{
 
 		class StatisticsStorage
@@ -56,8 +56,8 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class StatisticsStorage */
 
-	} /* end namespace Statistics */
+	} /* end namespace statistics */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif // __MATH_STATISTICS_STORAGE_H__

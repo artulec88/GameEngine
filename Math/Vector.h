@@ -8,7 +8,7 @@
 
 #define PASS_VECTOR_BY_VALUE
 
-namespace Math
+namespace math
 {
 	class Quaternion;
 
@@ -100,7 +100,7 @@ namespace Math
 		/// Increases the values of the X and Y components.
 		/// </summary>
 		/// <param name="translation"> The 2D vector representing the translation of the current vector. </param>
-		inline void Increase(const Math::Vector2D& translation) noexcept { operator+=(translation); }
+		inline void Increase(const Vector2D& translation) noexcept { operator+=(translation); }
 
 		/// <summary>
 		/// Resets the values of both X and Y components of the vector.
@@ -358,7 +358,7 @@ namespace Math
 	public:
 		inline void Set(Real _x, Real _y, Real _z) noexcept { x = _x; y = _y; z = _z; }
 		inline void Increase(Real _x, Real _y, Real _z) noexcept { x += _x; y += _y; z += _z; }
-		inline void Increase(const Math::Vector3D& translation) noexcept { operator+=(translation); }
+		inline void Increase(const Vector3D& translation) noexcept { operator+=(translation); }
 		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
 
 		constexpr Real SumOfComponents() const noexcept { return x + y + z; }
@@ -559,7 +559,7 @@ namespace Math
 	public:
 		inline void Set(Real _x, Real _y, Real _z, Real _w) noexcept { x = _x; y = _y; z = _z; w = _w; }
 		inline void Increase(Real _x, Real _y, Real _z, Real _w) noexcept { x += _x; y += _y; z += _z; w += _w; }
-		inline void Increase(const Math::Vector4D& translation) noexcept { operator+=(translation); }
+		inline void Increase(const Vector4D& translation) noexcept { operator+=(translation); }
 		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO); }
 		
 		constexpr Real SumOfComponents() const noexcept { return x + y + z + w; }
@@ -734,18 +734,18 @@ namespace Math
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end struct Vector4D */
 
-	namespace Interpolation
+	namespace interpolation
 	{
-		MATH_API Math::Real BarycentricInterpolation(const Vector3D& pos1, const Vector3D& pos2, const Vector3D& pos3, Real xPos, Real zPos);
-		MATH_API Math::Real BarycentricInterpolation(Real xPos1, Real yPos1, Real zPos1,
+		MATH_API math::Real BarycentricInterpolation(const Vector3D& pos1, const Vector3D& pos2, const Vector3D& pos3, Real xPos, Real zPos);
+		MATH_API math::Real BarycentricInterpolation(Real xPos1, Real yPos1, Real zPos1,
 			Real xPos2, Real yPos2, Real zPos2,
 			Real xPos3, Real yPos3, Real zPos3,
 			Real xPos, Real zPos);
-	} /* end namespace Interpolation */
+	} /* end namespace interpolation */
 
 	constexpr Vector2D ZERO_VECTOR_2D{ REAL_ZERO, REAL_ZERO };
 	constexpr Vector3D ZERO_VECTOR_3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_VECTOR_H__ */

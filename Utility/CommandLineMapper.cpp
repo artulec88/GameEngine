@@ -11,9 +11,9 @@ utility::CommandLineMapper::CommandLineMapper(const int argc, char* argv[]) : IC
 	CHECK_CONDITION_UTILITY(argc >= 1, Utility::Logging::ERR, "Incorrect number of program parameters specified (", argc, ")");
 	CHECK_CONDITION_UTILITY(argv != nullptr, Utility::Logging::ERR, "Incorrect program parameters specified.");
 	// We specifically ignore the argv[0] argument, because it's just the name of the program.
-	for (int i = 1; i < argc - 1; i += 2)
+	for (auto i = 1; i < argc - 1; i += 2)
 	{
-		m_argsToValuesMap.insert(std::make_pair(std::string(argv[i]), std::string(argv[i + 1])));
+		m_argsToValuesMap.insert(make_pair(std::string(argv[i]), std::string(argv[i + 1])));
 	}
 }
 
@@ -25,6 +25,6 @@ utility::CommandLineMapper::~CommandLineMapper()
 
 const std::string& utility::CommandLineMapper::Get(const std::string& opt, const std::string& defaultValue) const
 {
-	const ArgsToValuesMap::const_iterator argToValueItr = m_argsToValuesMap.find(opt);
-	return (argToValueItr != m_argsToValuesMap.end()) ? argToValueItr->second : defaultValue;
+	const auto argToValueItr = m_argsToValuesMap.find(opt);
+	return argToValueItr != m_argsToValuesMap.end() ? argToValueItr->second : defaultValue;
 }

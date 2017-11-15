@@ -4,13 +4,13 @@
 #include "Math.h"
 #include "Vector.h"
 
-namespace Math
+namespace math
 {
 
-	namespace Interpolation
+	namespace interpolation
 	{
 
-		namespace InterpolationTypes
+		namespace interpolation_types
 		{
 			enum InterpolationType
 			{
@@ -19,7 +19,7 @@ namespace Math
 				HERMITE,
 				BARYCENTRIC
 			}; /* end enum InterpolationType */
-		} /* end namespace InterpolationTypes */
+		} /* end namespace interpolation_types */
 
 		/// <summary> Interpolator class serves as a base class for all types of interpolation methods. </summary>
 		template <class T>
@@ -337,7 +337,7 @@ namespace Math
 		/// interpolation the client wanted to use.
 		/// </returns>
 		template <class T>
-		T Interpolate(InterpolationTypes::InterpolationType interpolationType, const T& value1, const T& value2, Real factor);
+		T Interpolate(interpolation_types::InterpolationType interpolationType, const T& value1, const T& value2, Real factor);
 
 		/// <summary> Linearly interpolates between two given values. </summary>
 		/// <param name="value1"> The first input value we interpolate. </param>
@@ -405,8 +405,8 @@ namespace Math
 		T InterpolateBarycentric(const T& value1, const T& value2, Real factor);
 
 
-	} /* end namespace Interpolation */
+	} /* end namespace interpolation */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_INTERPOLATION_H__ */

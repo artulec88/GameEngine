@@ -5,7 +5,7 @@
 //#include "Triangle.h"
 
 
-Math::Surface::Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWidth, int surfaceDepth,
+math::Surface::Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWidth, int surfaceDepth,
 	int surfaceHorizontalVerticesCount, int surfaceVerticalVerticesCount, Real* heights) :
 	m_position(surfaceBottomLeftPosition),
 	m_horizontalVerticesCount(surfaceHorizontalVerticesCount),
@@ -20,7 +20,7 @@ Math::Surface::Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWid
 	}
 }
 
-Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
+math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	m_position(),
 	m_horizontalVerticesCount(0),
 	m_verticalVerticesCount(0),
@@ -89,18 +89,18 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	}
 }
 
-Math::Real Math::Surface::GetHeightAt(int x, int z) const
+math::Real math::Surface::GetHeightAt(int x, int z) const
 {
 	return (x < 0 || x >= m_horizontalVerticesCount || z < 0 || z >= m_verticalVerticesCount) ?
 		REAL_ZERO : m_heights[GetHeightsIndex(x, z)];
 }
 
-Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
+math::Real math::Surface::GetHeightAt(Real x, Real z) const
 {
 	const Real surfaceX = x - m_position.x;
 	const Real surfaceZ = z - m_position.y;
-	int gridX = Math::Floor(surfaceX / m_squareWidth);
-	int gridZ = Math::Floor(surfaceZ / m_squareDepth);
+	int gridX = math::Floor(surfaceX / m_squareWidth);
+	int gridZ = math::Floor(surfaceZ / m_squareDepth);
 	if (gridX < 0 || gridX >= m_horizontalVerticesCount || gridZ < 0 || gridZ >= m_verticalVerticesCount)
 	{
 		return REAL_ZERO;
@@ -120,7 +120,7 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	{
 		DEBUG_LOG_MATH("Left triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = Math::Interpolation::BarycentricInterpolation(0.0f, GetHeightAt(gridX, gridZ), 0.0f,
+		y = math::interpolation::BarycentricInterpolation(0.0f, GetHeightAt(gridX, gridZ), 0.0f,
 			1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
 			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
@@ -129,7 +129,7 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	{
 		DEBUG_LOG_MATH("Right triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX + 1, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ + 1),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = Math::Interpolation::BarycentricInterpolation(1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
+		y = math::interpolation::BarycentricInterpolation(1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
 			1.0f, GetHeightAt(gridX + 1, gridZ + 1), 1.0f,
 			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
@@ -137,7 +137,7 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	return y;
 }
 
-Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* vectors, unsigned int vectorsCount) const
+math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* vectors, unsigned int vectorsCount) const
 {
 	std::vector<Vector2D> positionsSortedByX;
 	for (unsigned int i = 0; i < vectorsCount; ++i)
@@ -146,10 +146,10 @@ Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* ve
 	}
 	std::vector<Vector2D> positionsSortedByZ(positionsSortedByX.begin(), positionsSortedByX.end());
 
-	Sorting::SortingParametersChain sortParamsX(Sorting::Keys::COMPONENT_X, Sorting::Orders::ASCENDING);
-	Sorting::SortingParametersChain sortParamsZ(Sorting::Keys::COMPONENT_Y /* (sic!) this is not a mistake- we sort Vector2D objects so we need to use Y component */, Sorting::Orders::ASCENDING);
-	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::QUICK_SORT)->Sort(positionsSortedByX.data(), vectorsCount, sortParamsX);
-	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::QUICK_SORT)->Sort(positionsSortedByZ.data(), vectorsCount, sortParamsZ);
+	sorting::SortingParametersChain sortParamsX(sorting::keys::COMPONENT_X, sorting::orders::ASCENDING);
+	sorting::SortingParametersChain sortParamsZ(sorting::keys::COMPONENT_Y /* (sic!) this is not a mistake- we sort Vector2D objects so we need to use Y component */, sorting::orders::ASCENDING);
+	sorting::ISort::GetSortingObject(sorting::sorting_algorithms::QUICK_SORT)->Sort(positionsSortedByX.data(), vectorsCount, sortParamsX);
+	sorting::ISort::GetSortingObject(sorting::sorting_algorithms::QUICK_SORT)->Sort(positionsSortedByZ.data(), vectorsCount, sortParamsZ);
 
 	//for (unsigned int i = 0; i < positionsSortedByX.size(); ++i)
 	//{
@@ -164,7 +164,7 @@ Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* ve
 	return sqrt(FindMinimumDistanceBetweenPairOfPositions(positionsSortedByX, positionsSortedByZ));
 }
 
-Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<Vector2D>& vectorsSortedByX, std::vector<Vector2D>& vectorsSortedByZ) const
+math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<Vector2D>& vectorsSortedByX, std::vector<Vector2D>& vectorsSortedByZ) const
 {
 	CHECK_CONDITION_MATH(vectorsSortedByX.size() == vectorsSortedByZ.size(), Utility::Logging::ERR,
 		"Error when trying to find the minimum distance between any two positions. The number of positions in two collections are not equal (",
@@ -224,7 +224,7 @@ Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<
 	return minDistance;
 }
 
-Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositionsBruteForce(std::vector<Vector2D>& vectors) const
+math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositionsBruteForce(std::vector<Vector2D>& vectors) const
 {
 	Real minDistance = REAL_MAX;
 	for (auto vectorItr = vectors.begin(); vectorItr != vectors.end(); ++vectorItr)

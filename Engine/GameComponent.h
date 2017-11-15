@@ -68,13 +68,13 @@ namespace engine
 		/// Retrieves the transform of the parent game node.
 		/// </summary>
 		/// <returns> The modifiable transform of the parent game node. </returns>
-		Math::Transform& GetTransform();
+		math::Transform& GetTransform();
 
 		/// <summary>
 		/// Retrieves the transform of the parent game node.
 		/// </summary>
 		/// <returns> The unmodifiable transform of the parent game node. </returns>
-		const Math::Transform& GetTransform() const;
+		const math::Transform& GetTransform() const;
 
 		Physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
 		/* ==================== Non-static member functions end ==================== */

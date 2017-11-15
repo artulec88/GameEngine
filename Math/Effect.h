@@ -6,9 +6,9 @@
 #include "Interpolation.h"
 #include "Interpolation_impl.h"
 
-namespace Math
+namespace math
 {
-	namespace Effects
+	namespace effects
 	{
 		/// <summary>
 		/// Base class for an effect. The base implementation does no change to the output value in the runtime.
@@ -173,7 +173,7 @@ namespace Math
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Interpolation::LinearInterpolator<T> m_valuesInterpolator;
+			interpolation::LinearInterpolator<T> m_valuesInterpolator;
 			Real m_timer;
 			bool m_isGoingBackAndForthEnabled;
 			bool m_isTimerIncreasing;

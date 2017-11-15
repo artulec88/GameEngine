@@ -22,7 +22,7 @@
 #include <algorithm>
 
 // TODO: BIAS_MATRIX could and should be a constexpr!
-/* static */ const Math::Matrix4D Rendering::Renderer::BIAS_MATRIX(Math::Matrix4D(0.5f /* scale matrix */) * Math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
+/* static */ const math::Matrix4D Rendering::Renderer::BIAS_MATRIX(math::Matrix4D(0.5f /* scale matrix */) * math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 
 Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, const std::string& texturesDirectory, const std::string& shadersDirectory,
@@ -52,9 +52,9 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_meshFactory(modelsDirectory, texturesDirectory),
 	m_textureFactory(texturesDirectory),
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
-	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
-	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
-	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
+	m_filterCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(180.0f)), math::Matrix4D::IDENTITY_MATRIX, 0.005f),
+	m_altCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), math::Matrix4D(), 0.005f),
+	m_filterTransform(math::Vector3D(), math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(m_meshFactory.GetMesh(MeshIDs::SIMPLE_PLANE)),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
@@ -164,7 +164,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_guiControls.push_back(std::make_unique<Controls::GuiImageControl>(&m_shadowMaps[9], Math::Vector2D(1.0, 0.0f), Math::Angle(30.0f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiControls.push_back(std::make_unique<Controls::GuiImageControl>(&m_shadowMaps[9], math::Vector2D(1.0, 0.0f), math::Angle(30.0f), math::Vector2D(0.25f, 0.25f)));
 #endif
 
 	STOP_PROFILING_RENDERING("");
@@ -207,7 +207,7 @@ const Rendering::Mesh* Rendering::Renderer::CreateMesh(int meshID, const std::st
 	return m_meshFactory.CreateMesh(meshID, meshFileName);
 }
 
-const Rendering::Mesh* Rendering::Renderer::CreateMeshFromSurface(int meshID, const Math::Surface& surface)
+const Rendering::Mesh* Rendering::Renderer::CreateMeshFromSurface(int meshID, const math::Surface& surface)
 {
 	return m_meshFactory.CreateMeshFromSurface(meshID, surface);
 }
@@ -231,7 +231,7 @@ const Rendering::Text::Font* Rendering::Renderer::GetFont(int fontID) const
 struct CameraDirection
 {
 	GLenum cubemapFace;
-	Math::Quaternion rotation;
+	math::Quaternion rotation;
 };
 
 CameraDirection gCameraDirections[6 /* number of cube map faces */] =
@@ -243,15 +243,15 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
 	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) }
 
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Math::Quaternion(Math::Matrix4D(Math::Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, math::Quaternion(math::Matrix4D(math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, math::Quaternion(math::Matrix4D(math::Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, math::Quaternion(math::Matrix4D(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, math::Quaternion(math::Matrix4D(math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, math::Quaternion(math::Matrix4D(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, math::Quaternion(math::Matrix4D(math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
-void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, Math::Real dayNightMixFactor)
+void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, math::Real dayNightMixFactor)
 {
 	START_PROFILING_RENDERING(true, "");
 
@@ -321,14 +321,14 @@ void Rendering::Renderer::FinalizeRenderScene(int filterShaderID)
 {
 	START_PROFILING_RENDERING(true, "");
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
-		Math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+		math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 	ApplyFilter(m_shaderFactory.GetShader(filterShaderID), m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Renderer::Render(int meshID, const Material* material, const Math::Transform& transform, int shaderID) const
+void Rendering::Renderer::Render(int meshID, const Material* material, const math::Transform& transform, int shaderID) const
 {
 	//START_PROFILING_RENDERING(true, "");
 	//shader.Bind();
@@ -337,18 +337,18 @@ void Rendering::Renderer::Render(int meshID, const Material* material, const Mat
 	//STOP_PROFILING_RENDERING;
 }
 
-//void Renderer::SetClippingPlane(const Math::Vector4D& clippingPlane)
+//void Renderer::SetClippingPlane(const math::Vector4D& clippingPlane)
 //{
 //	m_mappedValues.SetVector4D("clipPlane", clippingPlane);
 //}
 
-void Rendering::Renderer::EnableWaterReflectionClippingPlane(Math::Real height)
+void Rendering::Renderer::EnableWaterReflectionClippingPlane(math::Real height)
 {
 	m_waterReflectionClippingPlane.w = height;
 	m_mappedValues.SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 }
 
-void Rendering::Renderer::EnableWaterRefractionClippingPlane(Math::Real height)
+void Rendering::Renderer::EnableWaterRefractionClippingPlane(math::Real height)
 {
 	m_waterRefractionClippingPlane.w = height;
 	m_mappedValues.SetVector4D("clipPlane", m_waterRefractionClippingPlane);
@@ -415,7 +415,7 @@ void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles:
 	const Particles::ParticleTexture* particleTexture = static_cast<const Particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureID()));
 	particleTexture->Bind();
 	particleShader->SetUniformi("particleTexture", 0);
-	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
+	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<math::Real>(particleTexture->GetRowsCount()));
 	if (Rendering::glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -427,10 +427,10 @@ void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles:
 	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 
 	m_particleInstanceVboData.clear();
-	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
+	const math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
 	for (size_t i = 0; i < particlesSystem.GetAliveParticlesCount(); ++i)
 	{
-		Math::Matrix4D modelMatrix(particlesSystem.GetPosition(i));
+		math::Matrix4D modelMatrix(particlesSystem.GetPosition(i));
 		// To make the particle always face the camera we can either use the geometry shader (as in the Bilboard shader) or
 		// set the 3x3 top-left submatrix of the model matrix to be a transposed version of the 3x3 top-left submatrix of the camera's view matrix.
 		modelMatrix.SetElement(0, 0, cameraViewMatrix.GetElement(0, 0));
@@ -445,22 +445,22 @@ void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles:
 
 		if (particlesSystem.IsAttributeEnabled(Particles::Attributes::ROTATION))
 		{
-			Math::Matrix4D particleRotation(Math::Quaternion(Math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i)).ToRotationMatrix());
-			if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !Math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
+			math::Matrix4D particleRotation(math::Quaternion(math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i)).ToRotationMatrix());
+			if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
 			{
-				modelMatrix = modelMatrix * particleRotation * Math::Matrix4D(particlesSystem.GetScale(i));
+				modelMatrix = modelMatrix * particleRotation * math::Matrix4D(particlesSystem.GetScale(i));
 			}
 			else
 			{
 				modelMatrix = modelMatrix * particleRotation;
 			}
 		}
-		else if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !Math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
+		else if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
 		{
-			modelMatrix = modelMatrix * Math::Matrix4D(particlesSystem.GetScale(i));
+			modelMatrix = modelMatrix * math::Matrix4D(particlesSystem.GetScale(i));
 		}
 
-		Math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
+		math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 1));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 2));
@@ -479,9 +479,9 @@ void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles:
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 3));
 
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION		
-		Math::Vector2D textureOffset0;
-		Math::Vector2D textureOffset1;
-		Math::Real textureAtlasBlendFactor;
+		math::Vector2D textureOffset0;
+		math::Vector2D textureOffset1;
+		math::Real textureAtlasBlendFactor;
 		particles[i].CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
 		m_particleInstanceVboData.push_back(textureOffset0.GetX());
 		m_particleInstanceVboData.push_back(textureOffset0.GetY());
@@ -563,7 +563,7 @@ void Rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 		{
 			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
 			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-			if (!Math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
+			if (!math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
 			{
 				BlurShadowMap(m_shaderFactory.GetShader(filterShaderID), shadowMapIndex, shadowInfo->GetShadowSoftness());
 			}
@@ -571,16 +571,16 @@ void Rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 	}
 }
 
-void Rendering::Renderer::BlurShadowMap(const Shader* filterShader, int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
+void Rendering::Renderer::BlurShadowMap(const Shader* filterShader, int shadowMapIndex, math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING_RENDERING(true, "");
 	CHECK_CONDITION_RENDERING(shadowMapIndex >= 0 && shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::EMERGENCY,
 		"Cannot perform the blurring process. Specified shadow map index (", shadowMapIndex, ") lies outside of range [0; ", SHADOW_MAPS_COUNT, ").");
 
-	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / m_shadowMaps[shadowMapIndex].GetWidth(), REAL_ZERO, REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", math::Vector3D(blurAmount / m_shadowMaps[shadowMapIndex].GetWidth(), REAL_ZERO, REAL_ZERO));
 	ApplyFilter(filterShader, &m_shadowMaps[shadowMapIndex], &m_shadowMapTempTargets[shadowMapIndex]);
 	
-	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / m_shadowMaps[shadowMapIndex].GetHeight(), REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", math::Vector3D(REAL_ZERO, blurAmount / m_shadowMaps[shadowMapIndex].GetHeight(), REAL_ZERO));
 	ApplyFilter(filterShader, &m_shadowMapTempTargets[shadowMapIndex], &m_shadowMaps[shadowMapIndex]);
 	STOP_PROFILING_RENDERING("");
 }
@@ -684,53 +684,53 @@ void Rendering::Renderer::RenderDebugGuiControls(const Shader* guiShader)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Rendering::Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
-	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddLine(const math::Vector3D& fromPosition, const math::Vector3D& toPosition, const Color& color,
+	math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug line rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
-	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddSphere(const math::Sphere& sphere, const Color& color,
+	math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug sphere rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
-	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddCross(const math::Vector3D& position, const Color& color, math::Real size,
+	math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug cross rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
-	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddCircle(const math::Vector3D& centerPosition, const math::Vector3D& planeNormal, math::Real radius, const Color& color,
+	math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug circle rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddAxes(const Math::Transform& transform, const Color& color, Math::Real size,
-	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddAxes(const math::Transform& transform, const Color& color, math::Real size,
+	math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug axes rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
-	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddTriangle(const math::Vector3D& v0, const math::Vector3D& v1, const math::Vector3D& v2, const Color& color,
+	math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug triangle rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddAABB(const math::AABB& aabb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug AABB rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddOBB(const math::OBB& obb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug OBB rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddString(const math::Vector3D& pos, const char* text, const Color& color, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug text rendering is not yet supported by the engine");
 }

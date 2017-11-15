@@ -11,8 +11,8 @@ Rendering::Text::Font::Font(const Shader* fontShader, const std::string& fontTex
 	m_metaDataFileName(fontMetaDataFileName)
 {
 	DELOCUST_LOG_RENDERING("Creating font: (textureAtlas = ", fontTextureAtlasFileName, "; metaData = ", fontMetaDataFileName, ").");
-	m_aspectRatio = static_cast<Math::Real>(1600) / 900; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
-	//m_aspectRatio = static_cast<Math::Real>(900) / 1600; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
+	m_aspectRatio = static_cast<math::Real>(1600) / 900; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
+	//m_aspectRatio = static_cast<math::Real>(900) / 1600; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
 	ReadMetaDataFile(fontMetaDataFileName);
 	DEBUG_LOG_RENDERING("Font: (textureAtlas = ", fontTextureAtlasFileName, "; metaData = ", fontMetaDataFileName, ") is now created.");
 }
@@ -113,7 +113,7 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 	CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 		"No \"xadvance\" attribute found in the font meta data file");
 	const int metaDataXAdvance = utility::string_utility::ToInt(*(tokenItr + 1));
-	Math::Real xAdvance = static_cast<Math::Real>(metaDataXAdvance - m_padding[PADDING_LEFT_INDEX] - m_padding[PADDING_RIGHT_INDEX]) * m_horizontalPerPixelSize;
+	math::Real xAdvance = static_cast<math::Real>(metaDataXAdvance - m_padding[PADDING_LEFT_INDEX] - m_padding[PADDING_RIGHT_INDEX]) * m_horizontalPerPixelSize;
 
 	if (id == SPACE_ASCII_CODE)
 	{
@@ -124,12 +124,12 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		tokenItr = std::find(tokens.begin(), tokens.end(), "x");
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"x\" attribute found in the font meta data file");
-		Math::Real xTextureCoord = static_cast<Math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) / imageWidth;
+		math::Real xTextureCoord = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) / imageWidth;
 
 		tokenItr = std::find(tokens.begin(), tokens.end(), "y");
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"y\" attribute found in the font meta data file");
-		Math::Real yTextureCoord = static_cast<Math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) / imageWidth;
+		math::Real yTextureCoord = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) / imageWidth;
 
 		tokenItr = std::find(tokens.begin(), tokens.end(), "width");
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
@@ -140,25 +140,25 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"height\" attribute found in the font meta data file");
 		int height = utility::string_utility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX] + (2 * DESIRED_PADDING);
-		Math::Real quadWidth = width * m_horizontalPerPixelSize;
-		Math::Real quadHeight = height * m_verticalPerPixelSize;
-		Math::Real xTextureSize = static_cast<Math::Real>(width) / imageWidth;
-		Math::Real yTextureSize = static_cast<Math::Real>(height) / imageWidth;
+		math::Real quadWidth = width * m_horizontalPerPixelSize;
+		math::Real quadHeight = height * m_verticalPerPixelSize;
+		math::Real xTextureSize = static_cast<math::Real>(width) / imageWidth;
+		math::Real yTextureSize = static_cast<math::Real>(height) / imageWidth;
 
 		tokenItr = std::find(tokens.begin(), tokens.end(), "xoffset");
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"xoffset\" attribute found in the font meta data file");
-		Math::Real xOffset = static_cast<Math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) * m_horizontalPerPixelSize;
+		math::Real xOffset = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) * m_horizontalPerPixelSize;
 
 		tokenItr = std::find(tokens.begin(), tokens.end(), "yoffset");
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"yoffset\" attribute found in the font meta data file");
-		Math::Real yOffset = (utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
-		DELOCUST_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
-			Math::Vector2D(xTextureSize, yTextureSize), ",\n\toffset = ", Math::Vector2D(xOffset, yOffset), ",\n\tquadSize = ",
-			Math::Vector2D(quadWidth, quadHeight), ",\n\txAdvance = ", xAdvance);
-		m_metaData.insert(std::pair<int, Character>(id, Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance)));
-		//m_metaData[id] = Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance);
+		math::Real yOffset = (utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
+		DELOCUST_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
+			math::Vector2D(xTextureSize, yTextureSize), ",\n\toffset = ", math::Vector2D(xOffset, yOffset), ",\n\tquadSize = ",
+			math::Vector2D(quadWidth, quadHeight), ",\n\txAdvance = ", xAdvance);
+		m_metaData.insert(std::pair<int, Character>(id, Character(id, math::Vector2D(xTextureCoord, yTextureCoord), math::Vector2D(xTextureSize, yTextureSize), math::Vector2D(xOffset, yOffset), math::Vector2D(quadWidth, quadHeight), xAdvance)));
+		//m_metaData[id] = Character(id, math::Vector2D(xTextureCoord, yTextureCoord), math::Vector2D(xTextureSize, yTextureSize), math::Vector2D(xOffset, yOffset), math::Vector2D(quadWidth, quadHeight), xAdvance);
 	}
 }
 
@@ -170,8 +170,8 @@ const Rendering::Text::Character& Rendering::Text::Font::GetCharacter(int asciiC
 	return characterItr->second;
 }
 
-void Rendering::Text::Font::Bind(const Math::Vector2D& translation, const Math::Vector2D& offset, const Color& color, const Color& outlineColor,
-	Math::Real characterWidth, Math::Real characterEdgeTransitionWidth, Math::Real borderWidth, Math::Real borderEdgeTransitionWidth) const
+void Rendering::Text::Font::Bind(const math::Vector2D& translation, const math::Vector2D& offset, const Color& color, const Color& outlineColor,
+	math::Real characterWidth, math::Real characterEdgeTransitionWidth, math::Real borderWidth, math::Real borderEdgeTransitionWidth) const
 {
 	m_shader->Bind();
 	m_shader->SetUniformVector2D("translation", translation);

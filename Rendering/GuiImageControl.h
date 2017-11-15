@@ -26,7 +26,7 @@ namespace Rendering
 			/// </param>
 			/// <param name="screenRotationAngle"> The angle the GUI control will be rotated by. </param>
 			/// <param name="scale"> The scale of this GUI image control. </param>
-			RENDERING_API GuiImageControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
+			RENDERING_API GuiImageControl(Texture* texture, const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale);
 			
 			/// <summary> GUI image control destructor. </summary>
 			RENDERING_API virtual ~GuiImageControl(void);
@@ -53,13 +53,13 @@ namespace Rendering
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI image.</param>
 			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
-			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) override;
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
+			RENDERING_API virtual void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
+			RENDERING_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
 		private:
 			/* ==================== Non-static member functions end ==================== */
 

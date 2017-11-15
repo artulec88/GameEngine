@@ -24,14 +24,14 @@ void utility::logging::LoggerWindows::Fill(const std::string& strLevel /* = Empt
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
 	{
-		DELOCUST_LOG_UTILITY("Setting new logging level from \"", LOGGING_LEVEL_NAMES[static_cast<int>(GetLevel())], "\" to \"", LOGGING_LEVEL_NAMES[static_cast<int>(defaultLogLevel)], "\".");
+		DELOCUST_LOG_UTILITY("Setting new logging level from \"", s_loggingLevelNames[static_cast<int>(GetLevel())], "\" to \"", s_loggingLevelNames[static_cast<int>(defaultLogLevel)], "\".");
 		SetLevel(defaultLogLevel);
 		return;
 	}
-	int i = 0;
-	for (std::array<std::string, COUNT>::const_iterator levelNameItr = LOGGING_LEVEL_NAMES.begin(); levelNameItr != LOGGING_LEVEL_NAMES.end(); ++levelNameItr, ++i)
+	auto i = 0;
+	for (auto levelNameItr = s_loggingLevelNames.begin(); levelNameItr != s_loggingLevelNames.end(); ++levelNameItr, ++i)
 	{
-		if ((*levelNameItr) == strLevel)
+		if (*levelNameItr == strLevel)
 		{
 			SetLevel(static_cast<LogLevel>(i));
 			return;

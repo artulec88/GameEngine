@@ -15,7 +15,7 @@ namespace engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GameNodeMoveCommand(/* Math::Real movementSpeed */);
+		ENGINE_API GameNodeMoveCommand(/* math::Real movementSpeed */);
 		ENGINE_API virtual ~GameNodeMoveCommand();
 		/* ==================== Constructors and destructors end ==================== */
 

@@ -5,7 +5,7 @@
 
 #include "Utility\ILogger.h"
 
-Rendering::Particles::ParticlesEmitter::ParticlesEmitter(Math::Real numberOfParticlesToGeneratePerSecond) :
+Rendering::Particles::ParticlesEmitter::ParticlesEmitter(math::Real numberOfParticlesToGeneratePerSecond) :
 	m_currentTimer(REAL_ZERO),
 	m_timeToEmitOneParticle(REAL_ONE / numberOfParticlesToGeneratePerSecond)
 {
@@ -18,7 +18,7 @@ Rendering::Particles::ParticlesEmitter::~ParticlesEmitter()
 {
 }
 
-void Rendering::Particles::ParticlesEmitter::Emit(Math::Real deltaTime, ParticlesContainer* particleContainer)
+void Rendering::Particles::ParticlesEmitter::Emit(math::Real deltaTime, ParticlesContainer* particleContainer)
 {
 	m_currentTimer += deltaTime;
 	if (m_currentTimer > m_timeToEmitOneParticle)

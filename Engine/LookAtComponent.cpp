@@ -15,21 +15,21 @@ engine::LookAtComponent::~LookAtComponent(void)
 {
 }
 
-void engine::LookAtComponent::Update(Math::Real delta)
+void engine::LookAtComponent::Update(math::Real delta)
 {
-	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
-	Math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
+	//math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
+	math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
 
-	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
+	//GetTransform().LookAt(currentCameraPos, math::Vector3D(0, 1, 0));
 
 	//INFO_LOG_ENGINE("Current camera position = ", currentCameraPos.ToString());
-	//Math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, Math::Vector3D(0, 1, 0));
-	//Math::Quaternion interpolatedRotation = GetTransform().GetRot().Slerp(newRot, delta * 5, true);
+	//math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, math::Vector3D(0, 1, 0));
+	//math::Quaternion interpolatedRotation = GetTransform().GetRot().Slerp(newRot, delta * 5, true);
 	//GetTransform().SetRot(interpolatedRotation);
 	//GetTransform().Rotate(interpolatedRotation);
 	//GetTransform().SetRot(newRot);
 
-	//GetTransform().SetRot((GetTransform().GetRot() + Math::Quaternion(REAL_ZERO, 0.0001f, REAL_ZERO, REAL_ZERO)).Normalized());
+	//GetTransform().SetRot((GetTransform().GetRot() + math::Quaternion(REAL_ZERO, 0.0001f, REAL_ZERO, REAL_ZERO)).Normalized());
 
 	//DEBUG_LOG_ENGINE("LookAtComponent has just set a new rotation");
 }

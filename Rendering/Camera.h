@@ -30,7 +30,7 @@ namespace Rendering
 		/// <param name="rotation">The rotation of the camera in the world.</param>
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
+		RENDERING_API Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Matrix4D& projectionMatrix, math::Real sensitivity);
 		/// <summary>
 		/// The constructor of the camera object.
 		/// </summary>
@@ -41,8 +41,8 @@ namespace Rendering
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio,
-			Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
+		RENDERING_API Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& FoV, math::Real aspectRatio,
+			math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity);
 
 		/// <summary>
 		/// The destructor of the camera object.
@@ -64,14 +64,14 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual Math::Transform& GetTransform() { return m_transform; }
-		RENDERING_API virtual const Math::Transform& GetTransform() const { return m_transform; }
+		RENDERING_API virtual math::Transform& GetTransform() { return m_transform; }
+		RENDERING_API virtual const math::Transform& GetTransform() const { return m_transform; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		/// <summary> The camera transform. </summary>
-		Math::Transform m_transform;
+		math::Transform m_transform;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Camera */
 

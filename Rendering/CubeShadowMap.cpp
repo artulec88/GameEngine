@@ -39,8 +39,8 @@ void Rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 {
 	// See http://stackoverflow.com/questions/12879969/hardware-support-for-non-power-of-two-textures
 
-	unsigned int windowWidthPowerOfTwo = Math::RoundUpPow2(windowWidth);
-	unsigned int windowHeightPowerOfTwo = Math::RoundUpPow2(windowHeight);
+	unsigned int windowWidthPowerOfTwo = math::RoundUpPow2(windowWidth);
+	unsigned int windowHeightPowerOfTwo = math::RoundUpPow2(windowHeight);
 	unsigned int cubeMapSize = (windowWidthPowerOfTwo > windowHeightPowerOfTwo) ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
 
 	INFO_LOG_RENDERING("Initializing cube shadow map with width=", windowWidth, " and height=", windowHeight, " (cubeMapSize=", cubeMapSize, ")");

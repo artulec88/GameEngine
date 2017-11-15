@@ -89,7 +89,6 @@ namespace utility {
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
-		public:
 			/// <summary> Date time constructor. </summary>
 			/// <param name="year"> The year. </param>
 			/// <param name="month"> The month. The value must lie in range from <code>1</code>, which represents January, to <code>12</code>, which represents December. </param>
@@ -108,7 +107,6 @@ namespace utility {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			//DateTime operator+(const DateTime& dateTime);
 			//DateTime operator-(const DateTime& dateTime);
 			//DateTime& operator+=(const DateTime& dateTime);
@@ -176,22 +174,36 @@ namespace utility {
 		public:
 			/// <summary> Timer constructor. </summary>
 			UTILITY_API Timer();
+
 			/// <summary> Timer destructor. </summary>
 			UTILITY_API ~Timer();
+
+			/// <summary> Time copy constructor. </summary>
+			/// <param name="timer"> Timer to copy construct from. </param>
 			Timer(const Timer& timer) = delete;
+
+			/// <summary> Time move constructor. </summary>
+			/// <param name="timer"> The r-value reference to the timer to move construct from. </param>
 			Timer(Timer&& timer) = delete;
+
+			/// <summary> Time copy assignment operator. </summary>
+			/// <param name="timer"> Timer to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned timer. </returns>
 			Timer& operator=(const Timer& timer) = delete;
+
+			/// <summary> Time move assignment operator. </summary>
+			/// <param name="timer"> The r-value reference to the timer to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned timer. </returns>
 			Timer& operator=(Timer&& timer) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			UTILITY_API inline TimeSpan GetTimeSpan() const
+			UTILITY_API TimeSpan GetTimeSpan() const
 			{
 				return TimeSpan(std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime));
 			}
 
-			UTILITY_API inline long long GetDuration(const TimeUnit timeUnit) const
+			UTILITY_API long long GetDuration(const TimeUnit timeUnit) const
 			{
 				switch (timeUnit)
 				{

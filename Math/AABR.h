@@ -5,7 +5,7 @@
 #include "Vector.h"
 #include "IntersectInfo.h"
 
-namespace Math
+namespace math
 {
 
 	/// <summary>
@@ -79,7 +79,7 @@ namespace Math
 		/// The Y component of the 2D point for which we want to know whether it is inside or outside the AABR and what distance it is from the nearest edge of the AABR.
 		/// </param>
 		/// <returns> The intersection info. </returns>
-		MATH_API IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const noexcept;
+		MATH_API IntersectInfo DoesContainPoint(const Real x, const Real y) const noexcept;
 
 		/// <summary>
 		/// Gives information about the mutual location between the current axis-aligned bounding rectangle and given 2D point <paramref name="point"/>.
@@ -88,7 +88,7 @@ namespace Math
 		/// The 2D point for which we want to know whether it is inside or outside the AABR and what distance it is from the nearest edge of the AABR.
 		/// </param>
 		/// <returns> The intersection info. </returns>
-		MATH_API IntersectInfo DoesContainPoint(const Math::Vector2D& point) const noexcept { return DoesContainPoint(point.x, point.y); }
+		MATH_API IntersectInfo DoesContainPoint(const Vector2D& point) const noexcept { return DoesContainPoint(point.x, point.y); }
 
 		/// <summary>
 		/// Gives information about the potential intersection between the current axis-aligned bounding rectangle and given <paramref name="aabr"/>.
@@ -101,28 +101,28 @@ namespace Math
 		/// Gives the bottom left position of the axis-aligned bounding rectangle.
 		/// </summary>
 		/// <returns> The bottom left position of the AABR. </returns>
-		MATH_API inline const Vector2D& GetBottomLeftPos() const noexcept { return m_bottomLeftPos; }
+		MATH_API const Vector2D& GetBottomLeftPos() const noexcept { return m_bottomLeftPos; }
 
 		/// <summary>
 		/// Gives the top right position of the axis-aligned bounding rectangle.
 		/// </summary>
 		/// <returns> The top right position of the AABR. </returns>
-		MATH_API inline const Vector2D& GetTopRightPos() const noexcept { return m_topRightPos; }
+		MATH_API const Vector2D& GetTopRightPos() const noexcept { return m_topRightPos; }
 
 		/// <summary>
 		/// Sets the bottom left position of the axis-aligned bounding rectangle.
 		/// </summary>
 		/// <param name="bottomLeftPos"> The 3D position that is to be the bottom left vertex of the AABR. </param>
-		MATH_API void SetBottomLeftPos(const Math::Vector2D& bottomLeftPos) noexcept { m_bottomLeftPos = bottomLeftPos; }
+		MATH_API void SetBottomLeftPos(const Vector2D& bottomLeftPos) noexcept { m_bottomLeftPos = bottomLeftPos; }
 
 		/// <summary>
 		/// Sets the top right position of the axis-aligned bounding rectangle.
 		/// </summary>
 		/// <param name="topRightPos"> The 3D position that is to be the top right vertex of the AABR. </param>
-		MATH_API void SetTopRightPos(const Math::Vector2D& topRightPos) noexcept { m_topRightPos = topRightPos; }
+		MATH_API void SetTopRightPos(const Vector2D& topRightPos) noexcept { m_topRightPos = topRightPos; }
 	private:
-		Math::Real CalcDistanceToNearestFaceX(Math::Real x) const noexcept;
-		Math::Real CalcDistanceToNearestFaceY(Math::Real y) const noexcept;
+		Real CalcDistanceToNearestFaceX(const Real x) const noexcept;
+		Real CalcDistanceToNearestFaceY(const Real y) const noexcept;
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -139,6 +139,6 @@ namespace Math
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABR */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_AABR_H__ */

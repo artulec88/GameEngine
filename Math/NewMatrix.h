@@ -10,25 +10,25 @@
 //#include <type_traits> // for static_assert
 #include <array>
 
-namespace Math
+namespace math
 {
-	namespace MatrixOrderings
+	namespace matrix_orderings
 	{
 		enum MatrixOrdering
 		{
 			ROW_MAJOR = 0,
 			COLUMN_MAJOR
 		}; /* end enum MatrixOrdering */
-	} /* end MatrixOrderings */
+	} /* end matrix_orderings */
 
 	template <int...> struct seq {};
 	template <int N, int... S> struct gens : gens<N-1, N-1, S...> {};
 	template <int... S> struct gens<0, S...> { typedef seq<S...> type; };
 
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, MatrixOrderings::MatrixOrdering ORDERING = MatrixOrderings::ROW_MAJOR>
+	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, matrix_orderings::MatrixOrdering ORDERING = matrix_orderings::ROW_MAJOR>
 	class Matrix;
 
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, MatrixOrderings::MatrixOrdering ORDERING = MatrixOrderings::ROW_MAJOR>
+	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, matrix_orderings::MatrixOrdering ORDERING = matrix_orderings::ROW_MAJOR>
 	struct IdentityMatrix
 	{
 		constexpr IdentityMatrix()
@@ -73,7 +73,7 @@ namespace Math
 	/// See http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf for details.
 	/// http://stackoverflow.com/questions/10718061/should-arrays-be-used-in-c.
 	/// </remarks>
-	template <typename T, std::size_t ROWS, std::size_t COLS, MatrixOrderings::MatrixOrdering ORDERING>
+	template <typename T, std::size_t ROWS, std::size_t COLS, matrix_orderings::MatrixOrdering ORDERING>
 	class Matrix
 	{
 		/* ==================== Static variables and functions begin ==================== */

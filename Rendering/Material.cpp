@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Material.h"
 
-Rendering::Material::Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap, const Texture* displacementMap, Math::Real displacementScale /* = REAL_ZERO */, Math::Real displacementOffset /* = REAL_ZERO */) :
+Rendering::Material::Material(const Texture* diffuseTexture, math::Real specularIntensity, math::Real specularPower, const Texture* normalMap, const Texture* displacementMap, math::Real displacementScale /* = REAL_ZERO */, math::Real displacementOffset /* = REAL_ZERO */) :
 	m_mappedValues(),
 	m_hasMultipleTextures(false)
 {
@@ -15,7 +15,7 @@ Rendering::Material::Material(const Texture* diffuseTexture, Math::Real specular
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(displacementMap != nullptr, utility::logging::EMERGENCY, "Cannot create a material. No displacement map used.");
 	m_mappedValues.SetTexture("displacementMap", displacementMap);
 
-	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
+	math::Real baseBias = displacementScale / static_cast<math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_mappedValues.SetReal("displacementScale", displacementScale);
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 	DEBUG_LOG_RENDERING("Material has been created.");

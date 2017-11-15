@@ -39,7 +39,6 @@ namespace utility
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Sets the builder to be used by the director. </summary>
 		/// <param name="builder">
 		/// The specific builder for constructing the objects of type <code>T</code>.

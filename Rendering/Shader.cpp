@@ -574,11 +574,11 @@ void Rendering::Shader::UpdateMaterialUniforms(const Material* material) const
 {
 }
 
-void Rendering::Shader::UpdateTransformUniforms(const Math::Transform& transform) const
+void Rendering::Shader::UpdateTransformUniforms(const math::Transform& transform) const
 {
 }
 
-void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const
+void Rendering::Shader::UpdateUniforms(const math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
 	START_PROFILING_RENDERING(false, "");
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
@@ -614,7 +614,7 @@ void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) const
+void Rendering::Shader::SetUniformf(const std::string& name, math::Real value) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform float \"", name, "\":", value);
@@ -630,7 +630,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
+void Rendering::Shader::SetUniformVector2D(const std::string& name, const math::Vector2D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector);
@@ -644,7 +644,7 @@ void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
+void Rendering::Shader::SetUniformVector3D(const std::string& name, const math::Vector3D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector);
@@ -658,7 +658,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::Vector4D& vector) const
+void Rendering::Shader::SetUniformVector4D(const std::string& name, const math::Vector4D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector);
@@ -672,7 +672,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const
+void Rendering::Shader::SetUniformVector4D(const std::string& name, math::Real x, math::Real y, math::Real z, math::Real w) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
@@ -697,7 +697,7 @@ void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Co
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
+void Rendering::Shader::SetUniformMatrix(const std::string& name, const math::Matrix4D& matrix) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix);

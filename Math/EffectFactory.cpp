@@ -3,11 +3,11 @@
 
 
 /* ==================== EffectFactory class begin ==================== */
-Math::Effects::EffectFactory::EffectFactory()
+math::effects::EffectFactory::EffectFactory()
 {
 }
 
-Math::Effects::EffectFactory::~EffectFactory()
+math::effects::EffectFactory::~EffectFactory()
 {
 }
 /* ==================== EffectFactory class end ==================== */

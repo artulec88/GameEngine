@@ -23,9 +23,9 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LightBuilder(const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity,
-			bool defaultShadowInfoFlipFacesEnabled, int defaultShadowInfoShadowMapSizeAsPowerOf2, Math::Real defaultShadowInfoShadowSoftness, Math::Real defaultShadowInfoLightBleedingReductionFactor,
-			Math::Real defaultShadowInfoMinVariance) :
+		LightBuilder(const math::Vector3D& defaultPosition, const math::Quaternion& defaultRotation, const Color& defaultColor, math::Real defaultIntensity,
+			bool defaultShadowInfoFlipFacesEnabled, int defaultShadowInfoShadowMapSizeAsPowerOf2, math::Real defaultShadowInfoShadowSoftness, math::Real defaultShadowInfoLightBleedingReductionFactor,
+			math::Real defaultShadowInfoMinVariance) :
 			utility::Builder<T>(),
 			M_DEFAULT_POS(defaultPosition),
 			M_DEFAULT_ROT(defaultRotation),
@@ -81,11 +81,11 @@ namespace Rendering
 			m_shadowInfoMinVariance = M_DEFAULT_SHADOW_INFO_MIN_VARIANCE;
 		}
 
-		LightBuilder<T>& SetPosition(const Math::Vector3D& position)
+		LightBuilder<T>& SetPosition(const math::Vector3D& position)
 		{
 			return SetPosition(position.GetX(), position.GetY(), position.GetZ());
 		}
-		LightBuilder<T>& SetPosition(Math::Real posX, Math::Real posY, Math::Real posZ)
+		LightBuilder<T>& SetPosition(math::Real posX, math::Real posY, math::Real posZ)
 		{
 			m_pos.Set(posX, posY, posZ);
 			return *this;
@@ -95,7 +95,7 @@ namespace Rendering
 			m_color = Color(colorID);
 			return *this;
 		}
-		LightBuilder<T>& SetColor(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = REAL_ONE)
+		LightBuilder<T>& SetColor(math::Real red, math::Real green, math::Real blue, math::Real alpha = REAL_ONE)
 		{
 			m_color.Set(red, green, blue, alpha);
 			return *this;
@@ -105,7 +105,7 @@ namespace Rendering
 			m_color = color;
 			return *this;
 		}
-		LightBuilder<T>& SetIntensity(Math::Real intensity)
+		LightBuilder<T>& SetIntensity(math::Real intensity)
 		{
 			m_intensity = intensity;
 			return *this;
@@ -120,17 +120,17 @@ namespace Rendering
 			m_shadowInfoShadowMapSizeAsPowerOf2 = shadowInfoShadowMapSizeAsPowerOf2;
 			return *this;
 		}
-		LightBuilder<T>& SetShadowInfoShadowSoftness(Math::Real shadowInfoShadowSoftness)
+		LightBuilder<T>& SetShadowInfoShadowSoftness(math::Real shadowInfoShadowSoftness)
 		{
 			m_shadowInfoShadowSoftness = shadowInfoShadowSoftness;
 			return *this;
 		}
-		LightBuilder<T>& SetShadowInfoLightBleedingReductionFactor(Math::Real shadowInfoLightBleedingReductionFactor)
+		LightBuilder<T>& SetShadowInfoLightBleedingReductionFactor(math::Real shadowInfoLightBleedingReductionFactor)
 		{
 			m_shadowInfoLightBleedingReductionFactor = shadowInfoLightBleedingReductionFactor;
 			return *this;
 		}
-		LightBuilder<T>& SetShadowInfoMinVariance(Math::Real shadowInfoMinVariance)
+		LightBuilder<T>& SetShadowInfoMinVariance(math::Real shadowInfoMinVariance)
 		{
 			m_shadowInfoMinVariance = shadowInfoMinVariance;
 			return *this;
@@ -141,26 +141,26 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Math::Vector3D M_DEFAULT_POS; // TODO: Make it static constexpr in the future.
-		const Math::Quaternion M_DEFAULT_ROT; // TODO: Make it static constexpr in the future.
+		const math::Vector3D M_DEFAULT_POS; // TODO: Make it static constexpr in the future.
+		const math::Quaternion M_DEFAULT_ROT; // TODO: Make it static constexpr in the future.
 		const Color M_DEFAULT_COLOR; // TODO: Make it static constexpr in the future.
-		const Math::Real M_DEFAULT_INTENSITY; // TODO: Make it static constexpr in the future.
+		const math::Real M_DEFAULT_INTENSITY; // TODO: Make it static constexpr in the future.
 		const bool M_DEFAULT_SHADOW_INFO_FLIP_FACES_ENABLED; // TODO: Make it static constexpr in the future.
 		const int M_DEFAULT_SHADOW_INFO_SHADOW_MAP_SIZE_AS_POWER_OF_2; // TODO: Make it static constexpr in the future.
-		const Math::Real M_DEFAULT_SHADOW_INFO_SHADOW_SOFTNESS; // TODO: Make it static constexpr in the future.
-		const Math::Real M_DEFAULT_SHADOW_INFO_LIGHT_BLEEDING_REDUCTION_FACTOR; // TODO: Make it static constexpr in the future.
-		const Math::Real M_DEFAULT_SHADOW_INFO_MIN_VARIANCE; // TODO: Make it static constexpr in the future.
+		const math::Real M_DEFAULT_SHADOW_INFO_SHADOW_SOFTNESS; // TODO: Make it static constexpr in the future.
+		const math::Real M_DEFAULT_SHADOW_INFO_LIGHT_BLEEDING_REDUCTION_FACTOR; // TODO: Make it static constexpr in the future.
+		const math::Real M_DEFAULT_SHADOW_INFO_MIN_VARIANCE; // TODO: Make it static constexpr in the future.
 
-		Math::Vector3D m_pos;
-		Math::Quaternion m_rot;
+		math::Vector3D m_pos;
+		math::Quaternion m_rot;
 		Rendering::Color m_color;
-		Math::Real m_intensity;
+		math::Real m_intensity;
 
 		bool m_isShadowInfoFlipFacesEnabled;
 		int m_shadowInfoShadowMapSizeAsPowerOf2;
-		Math::Real m_shadowInfoShadowSoftness;
-		Math::Real m_shadowInfoLightBleedingReductionFactor;
-		Math::Real m_shadowInfoMinVariance;
+		math::Real m_shadowInfoShadowSoftness;
+		math::Real m_shadowInfoLightBleedingReductionFactor;
+		math::Real m_shadowInfoMinVariance;
 
 		int m_shaderID;
 		int m_terrainShaderID;
@@ -210,7 +210,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::DirectionalLight Get() override
 		{
-			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
+			return Lighting::DirectionalLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness, m_shadowInfoLightBleedingReductionFactor,
 				m_shadowInfoMinVariance, m_halfShadowArea);
 		}
@@ -218,9 +218,9 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Math::Real M_DEFAULT_HALF_SHADOW_AREA; // TODO: Make it a static constexpr in the future.
+		const math::Real M_DEFAULT_HALF_SHADOW_AREA; // TODO: Make it a static constexpr in the future.
 
-		Math::Real m_halfShadowArea;
+		math::Real m_halfShadowArea;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class DirectionalLightBuilder */
 
@@ -268,7 +268,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::PointLight Get() override
 		{
-			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
+			return Lighting::PointLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_attenuation);
 		}
 		/* ==================== Non-static member functions end ==================== */
@@ -325,7 +325,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::SpotLight Get() override
 		{
-			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
+			return Lighting::SpotLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_attenuation, m_shadowInfoProjectionNearPlane, m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness,
 				m_shadowInfoLightBleedingReductionFactor, m_shadowInfoMinVariance, m_viewAngle);
 		}
@@ -334,12 +334,12 @@ namespace Rendering
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		const Rendering::Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION; // TODO: Make it static constexpr in the future.
-		const Math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE; // TODO: Make it static constexpr in the future.
-		const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE; // TODO: Make it static constexpr in the future.
+		const math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE; // TODO: Make it static constexpr in the future.
+		const math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE; // TODO: Make it static constexpr in the future.
 
 		Rendering::Attenuation m_attenuation;
-		Math::Angle m_viewAngle;
-		Math::Real m_shadowInfoProjectionNearPlane;
+		math::Angle m_viewAngle;
+		math::Real m_shadowInfoProjectionNearPlane;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SpotLightBuilder */
 } /* end namespace Rendering */

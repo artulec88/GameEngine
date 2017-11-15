@@ -22,7 +22,7 @@ namespace Physics
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PHYSICS_API PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& linearVelocity);
+		PHYSICS_API PhysicsObject(math::Transform& transform, math::Real mass, const math::Vector3D& linearVelocity);
 		PHYSICS_API ~PhysicsObject(void);
 	private:
 		PhysicsObject(const PhysicsObject& physicsObject);
@@ -35,35 +35,35 @@ namespace Physics
 		/// Based on the velocity of the physics object the function updates its physical state.
 		/// </summary>
 		/// <param name="passedTime">The representation of time for the physics object. It represent the amount of time the object should simulate forward in time.</param>
-		PHYSICS_API void Simulate(Math::Real passedTime);
+		PHYSICS_API void Simulate(math::Real passedTime);
 
-		PHYSICS_API void ApplyLinearAcceleration(const Math::Vector3D& acceleration);
-		PHYSICS_API void ApplyLinearForce(const Math::Vector3D& force);
-		PHYSICS_API void ApplyTorque(Math::Real torque);
-		PHYSICS_API void ApplyForce(const Math::Vector3D& force, const Math::Vector3D& contactPoint);
-		PHYSICS_API void ApplyFriction(Math::Real gravity);
+		PHYSICS_API void ApplyLinearAcceleration(const math::Vector3D& acceleration);
+		PHYSICS_API void ApplyLinearForce(const math::Vector3D& force);
+		PHYSICS_API void ApplyTorque(math::Real torque);
+		PHYSICS_API void ApplyForce(const math::Vector3D& force, const math::Vector3D& contactPoint);
+		PHYSICS_API void ApplyFriction(math::Real gravity);
 
-		PHYSICS_API inline const Math::Transform& GetTransform() const { return m_transform; }
-		PHYSICS_API inline const Math::Vector3D& GetLinearVelocity() const { return m_linearVelocity; }
-		PHYSICS_API inline Math::Vector3D& GetLinearVelocity() { return m_linearVelocity; }
-		PHYSICS_API inline Math::Real GetAngularVelocity() const { return m_angularVelocity; }
-		PHYSICS_API inline Math::Real GetMass() const { return m_mass; }
-		PHYSICS_API inline const Math::Vector3D& GetMassCenter() const { return m_massCenter; }
-		PHYSICS_API inline Math::Real GetIntertia() const { return m_intertia; }
-		PHYSICS_API inline Math::Real GetFrictionCoefficientStatic() const { return m_frictionCoefficientStatic; }
-		PHYSICS_API inline Math::Real GetFrictionCoefficientKinetic() const { return m_frictionCoefficientKinetic; }
-		PHYSICS_API inline Math::Real GetRestitutionCoefficient() const { return m_restitutionCoefficient; }
+		PHYSICS_API inline const math::Transform& GetTransform() const { return m_transform; }
+		PHYSICS_API inline const math::Vector3D& GetLinearVelocity() const { return m_linearVelocity; }
+		PHYSICS_API inline math::Vector3D& GetLinearVelocity() { return m_linearVelocity; }
+		PHYSICS_API inline math::Real GetAngularVelocity() const { return m_angularVelocity; }
+		PHYSICS_API inline math::Real GetMass() const { return m_mass; }
+		PHYSICS_API inline const math::Vector3D& GetMassCenter() const { return m_massCenter; }
+		PHYSICS_API inline math::Real GetIntertia() const { return m_intertia; }
+		PHYSICS_API inline math::Real GetFrictionCoefficientStatic() const { return m_frictionCoefficientStatic; }
+		PHYSICS_API inline math::Real GetFrictionCoefficientKinetic() const { return m_frictionCoefficientKinetic; }
+		PHYSICS_API inline math::Real GetRestitutionCoefficient() const { return m_restitutionCoefficient; }
 
 		PHYSICS_API void Stop()
 		{
 			m_linearVelocity.Zero();
 		}
-		PHYSICS_API void SetLinearVelocity(const Math::Vector3D& linearVelocity) { m_linearVelocity = linearVelocity; }
+		PHYSICS_API void SetLinearVelocity(const math::Vector3D& linearVelocity) { m_linearVelocity = linearVelocity; }
 
 		const Collider* GetAABBCollider() const { return m_aabbCollider; }
 		PHYSICS_API void AddCollider(Collider* aabbCollider);
-		Math::IntersectInfo Intersect(const PhysicsObject& otherPhysicsObject) const;
-		void HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal);
+		math::IntersectInfo Intersect(const PhysicsObject& otherPhysicsObject) const;
+		void HandleCollision(const PhysicsObject& otherPhysicsObject, const math::Vector3D& collisionNormal);
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -78,37 +78,37 @@ namespace Physics
 		/// CenterOfMass = sum_{i} (Position_{i} * mass_{i}) / sum_{i} (mass_{i}).
 		/// </code>
 		/// </remarks>
-		Math::Vector3D m_massCenter;
+		math::Vector3D m_massCenter;
 		/// <summary>
 		/// The mass of an entity. The measurement of how much matter an object has.
 		/// Its value does not correlate with the gravitational field.
 		/// The mass is always the same regardless if an object is on Earth (greater gravity) or Moon (less gravity).
 		/// </summary>
-		Math::Real m_mass;
-		Math::Real m_intertia;
-		Math::Real m_frictionCoefficientStatic;
-		Math::Real m_frictionCoefficientKinetic;
-		Math::Real m_restitutionCoefficient;
+		math::Real m_mass;
+		math::Real m_intertia;
+		math::Real m_frictionCoefficientStatic;
+		math::Real m_frictionCoefficientKinetic;
+		math::Real m_restitutionCoefficient;
 
 		// Physics variables
 		/// <summary>
 		/// The transformation of the physical object. It gives information about object's position, rotation and scale.
 		/// </summary>
-		Math::Transform& m_transform;
+		math::Transform& m_transform;
 		/// <summary>
 		/// The change of position of an object during period of time.
 		/// Its values tells how much the object is supposed to change its position per unit of time.
 		/// </summary>
-		Math::Vector3D m_linearVelocity;
+		math::Vector3D m_linearVelocity;
 		/// <summary>
 		/// The change of orientation of an object in a given period of time.
 		/// Its values tells how much the object is supposed to change its orientation per unit of time.
 		/// </summary>
-		Math::Real m_angularVelocity; // TODO: Maybe use quaternion?
-		Math::Vector3D m_totalForce;
-		Math::Real m_totalTorque;
-		Math::Vector3D m_frictionForce;
-		Math::Real m_totalImpulse;
+		math::Real m_angularVelocity; // TODO: Maybe use quaternion?
+		math::Vector3D m_totalForce;
+		math::Real m_totalTorque;
+		math::Vector3D m_frictionForce;
+		math::Real m_totalImpulse;
 
 		/// <summary>
 		/// The collider that the physics object may use to check if it collides with other objects.

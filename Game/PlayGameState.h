@@ -32,7 +32,7 @@ namespace Game
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr Math::Real TROPIC_OF_CANCER_SINUS = static_cast<Math::Real>(0.39794863131);
+		static constexpr math::Real TROPIC_OF_CANCER_SINUS = static_cast<math::Real>(0.39794863131);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -49,13 +49,13 @@ namespace Game
 		virtual void Revealed();
 		virtual void Handle(engine::Actions::Action action);
 		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, Math::Real value);
+		virtual void Handle(engine::Ranges::Range range, math::Real value);
 
 		virtual void MouseButtonEvent(int button, int action, int mods);
 		virtual void MousePosEvent(double xPos, double yPos);
 		virtual void ScrollEvent(double xOffset, double yOffset);
 		virtual void Render(Rendering::Renderer* renderer) const;
-		virtual void Update(Math::Real elapsedTime);
+		virtual void Update(math::Real elapsedTime);
 	private:
 		void AddShaders();
 		void AddTerrainNode();
@@ -136,13 +136,13 @@ namespace Game
 		bool m_isMouseLocked;
 		engine::GameManager* m_gameManager;
 		engine::MousePicker m_mousePicker;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_clockSpeed;
+		CONST_IF_TWEAK_BAR_DISABLED math::Real m_clockSpeed;
 		utility::timing::DateTime m_inGameDateTime;
 #ifdef DRAW_GAME_TIME
 		mutable Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
 #endif
 
-		Math::Real m_dayNightMixFactor;
+		math::Real m_dayNightMixFactor;
 
 		Rendering::Color m_ambientDaytimeColor;
 		Rendering::Color m_ambientSunNearHorizonColor;
@@ -163,11 +163,11 @@ namespace Game
 		std::vector<Rendering::Lighting::PointLight> m_pointLights;
 		//std::vector<Lighting::SpotLight*> m_spotLights;
 
-		Math::Vector2D m_previousMousePos, m_mousePos;
+		math::Vector2D m_previousMousePos, m_mousePos;
 		bool m_mousePosChanged;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
-		Math::Statistics::ClassStats& m_classStats;
+		math::statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayGameState */

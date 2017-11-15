@@ -21,17 +21,17 @@ Rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const st
 	CreateMesh(MeshIDs::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::PARTICLE,
-		std::make_unique<InstanceMesh>(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(),
+		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 21)));
 #else
 	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::PARTICLE,
-		std::make_unique<InstanceMesh>(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(),
+		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 17))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::DEBUG,
-		std::make_unique<Mesh>(std::vector<Math::Vector2D>{ Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) }.data(),
+		std::make_unique<Mesh>(std::vector<math::Vector2D>{ math::Vector2D(-REAL_ONE, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ONE), math::Vector2D(-REAL_ONE, -REAL_ONE), math::Vector2D(REAL_ONE, -REAL_ONE) }.data(),
 			nullptr, 4, GL_TRIANGLE_STRIP)));
 #endif
 }
@@ -65,15 +65,15 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 		"\". One of the possible solutions is to check whether the model has any additional lines at the end.");
 
 	const aiMesh* model = scene->mMeshes[0];
-	std::vector<Math::Vector3D> positions;
+	std::vector<math::Vector3D> positions;
 	positions.reserve(model->mNumVertices);
-	std::vector<Math::Vector2D> textureCoordinates;
+	std::vector<math::Vector2D> textureCoordinates;
 	textureCoordinates.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> normals;
+	std::vector<math::Vector3D> normals;
 	normals.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> tangents;
+	std::vector<math::Vector3D> tangents;
 	tangents.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> bitangents;
+	std::vector<math::Vector3D> bitangents;
 	bitangents.reserve(model->mNumVertices);
 
 	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -95,7 +95,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 		//	pBitangent = &aiZeroVector;
 		//}
 
-		//Math::Vector3D vertexBitangent(pBitangent->x, pBitangent->y, pBitangent->z);
+		//math::Vector3D vertexBitangent(pBitangent->x, pBitangent->y, pBitangent->z);
 
 		positions.emplace_back(pPos->x, pPos->y, pPos->z);
 		textureCoordinates.emplace_back(pTexCoord->x, pTexCoord->y);
@@ -126,22 +126,22 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	return meshPair.first->second.get();
 }
 
-const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID, const Math::Surface& surface)
+const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID, const math::Surface& surface)
 {
-	std::vector<Math::Vector3D> positions;
+	std::vector<math::Vector3D> positions;
 	positions.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
-	std::vector<Math::Vector2D> textureCoordinates;
+	std::vector<math::Vector2D> textureCoordinates;
 	textureCoordinates.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
-	std::vector<Math::Vector3D> normals;
+	std::vector<math::Vector3D> normals;
 	normals.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
-	std::vector<Math::Vector3D> tangents;
+	std::vector<math::Vector3D> tangents;
 	tangents.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
 	for (int z = 0; z < surface.GetVerticalVerticesCount(); ++z)
 	{
-		const Math::Real zReal = static_cast<Math::Real>(z);
+		const math::Real zReal = static_cast<math::Real>(z);
 		for (int x = 0; x < surface.GetHorizontalVerticesCount(); ++x)
 		{
-			const Math::Real xReal = static_cast<Math::Real>(x);
+			const math::Real xReal = static_cast<math::Real>(x);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			positions.emplace_back(surface.GetPositionAt(x, z));
 			//CRITICAL_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", positions.back());
@@ -196,17 +196,17 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID,
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
-Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const
+math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, const Image& heightMapImage, math::Real heightMapMaxHeight) const
 {
-	constexpr Math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
+	constexpr math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
 
-	Math::Real height = static_cast<Math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
+	math::Real height = static_cast<math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
 	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
 	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
 	return height;
 }
 
-Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMapWidth, const Math::HeightsGenerator& heightsGenerator) const
+math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMapWidth, const math::HeightsGenerator& heightsGenerator) const
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
@@ -215,17 +215,17 @@ Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMap
 	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
 		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = heightsGenerator.GenerateHeight(static_cast<Math::Real>(x), static_cast<Math::Real>(z));
+	math::Real height = heightsGenerator.GenerateHeight(static_cast<math::Real>(x), static_cast<math::Real>(z));
 	return height;
 }
 
-Math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const Math::Surface& surface) const
+math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const math::Surface& surface) const
 {
-	Math::Real heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
-	Math::Real heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
-	Math::Real heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
-	Math::Real heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
-	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+	math::Real heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
+	math::Real heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
+	math::Real heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
+	math::Real heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
+	math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;
 }

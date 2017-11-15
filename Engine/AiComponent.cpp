@@ -10,6 +10,6 @@ engine::AiComponent::~AiComponent()
 {
 }
 
-void engine::AiComponent::Update(Math::Real deltaTime)
+void engine::AiComponent::Update(math::Real deltaTime)
 {
 }

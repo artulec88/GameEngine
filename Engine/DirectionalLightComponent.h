@@ -24,14 +24,14 @@ namespace engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr Math::Real TROPIC_OF_CANCER_SINUS = 0.39794863131f;
+		static constexpr math::Real TROPIC_OF_CANCER_SINUS = 0.39794863131f;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
-			const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
-			const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel);
+		DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
+			const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
+			const math::Angle& firstElevationLevel, const math::Angle& secondElevationLevel, const math::Angle& thirdElevationLevel);
 		virtual ~DirectionalLightComponent();
 		DirectionalLightComponent(const DirectionalLightComponent& directionalLightComponent) = delete;
 		DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent);
@@ -41,11 +41,11 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
-		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
+		//virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		//virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
-		virtual void Update(Math::Real delta);
+		virtual void Update(math::Real delta);
 #endif
 	private:
 		/// <summary>
@@ -62,7 +62,7 @@ namespace engine
 		Rendering::Lighting::DirectionalLight* m_directionalLight;
 
 		///<summary>The maximum intensity of the directional light.</summary>
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_maxIntensity;
+		CONST_IF_TWEAK_BAR_DISABLED math::Real m_maxIntensity;
 
 		///<summary>The daytime color of the directional light.</summary>
 		CONST_IF_TWEAK_BAR_DISABLED Rendering::Color m_sunDaytimeColor;
@@ -73,15 +73,15 @@ namespace engine
 		///<summary>The nighttime color of the directional light.</summary>
 		CONST_IF_TWEAK_BAR_DISABLED Rendering::Color m_sunNighttimeColor;
 
-		CONST_IF_TWEAK_BAR_DISABLED Math::Angle m_latitude;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Angle m_longitude;
+		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_latitude;
+		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_longitude;
 
-		Math::Angle m_sunElevation;
-		Math::Angle m_sunAzimuth;
+		math::Angle m_sunElevation;
+		math::Angle m_sunAzimuth;
 
-		CONST_IF_TWEAK_BAR_DISABLED Math::Angle m_firstElevationLevel;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Angle m_secondElevationLevel;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Angle m_thirdElevationLevel;
+		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_firstElevationLevel;
+		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_secondElevationLevel;
+		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_thirdElevationLevel;
 		/* ==================== Non-static member variables end ==================== */
 	}; // end class DirectionalLightComponent
 } // end namespace Engine

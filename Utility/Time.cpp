@@ -70,9 +70,9 @@ utility::timing::DateTime::DateTime(const unsigned int year, const unsigned int 
 	CHECK_CONDITION_UTILITY(second >= 0 && second < SECONDS_PER_MINUTE, Utility::Logging::ERR, "Incorrect second number specified: ", second, ". The second number must lie in range [0; 60).");
 	std::stringstream ss("");// Jan 9 2014 12:35 : 34");
 	ss << year << "-" << month << "-" << day << " " << hour << ":" << minute << ":" << second;
-	std::tm tm = {};
-	ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-	m_timePoint = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(std::mktime(&tm)));
+	tm timePoint = {};
+	ss >> std::get_time(&timePoint, "%Y-%m-%d %H:%M:%S");
+	m_timePoint = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::from_time_t(mktime(&timePoint)));
 }
 
 utility::timing::DateTime::DateTime(const std::chrono::system_clock::time_point& timePoint) :
@@ -90,7 +90,7 @@ utility::timing::DateTime::DateTime(const DateTime& dateTime) :
 }
 
 utility::timing::DateTime::DateTime(DateTime&& dateTime) noexcept :
-	m_timePoint(std::move(dateTime.m_timePoint))
+	m_timePoint(move(dateTime.m_timePoint))
 {
 }
 
@@ -102,7 +102,7 @@ utility::timing::DateTime& utility::timing::DateTime::operator=(const DateTime& 
 
 utility::timing::DateTime& utility::timing::DateTime::operator=(DateTime&& dateTime) noexcept
 {
-	m_timePoint = std::move(dateTime.m_timePoint);
+	m_timePoint = move(dateTime.m_timePoint);
 	return *this;
 }
 
@@ -113,7 +113,7 @@ bool utility::timing::DateTime::operator==(const DateTime& dateTime) const
 
 bool utility::timing::DateTime::operator!=(const DateTime& dateTime) const
 {
-	return !(operator==(dateTime));
+	return !operator==(dateTime);
 }
 
 bool utility::timing::DateTime::operator<(const DateTime& dateTime) const
@@ -140,9 +140,9 @@ bool utility::timing::DateTime::operator>(const DateTime& dateTime) const
 std::string utility::timing::DateTime::ToString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
 	// TODO: Format parameter not used.
-	std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::seconds>(m_timePoint));
+	auto time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::seconds>(m_timePoint));
 	std::stringstream ss("");
-	ss << std::put_time(std::localtime(&time), "%F %T");
+	ss << std::put_time(localtime(&time), "%F %T");
 	return ss.str();
 }
 /* ==================== DateTime class end ==================== */

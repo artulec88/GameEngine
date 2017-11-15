@@ -197,7 +197,7 @@ void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 			GLfloat maxAnisotropy; // the maximum number of samples per pixel used for mipmapping filtering
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
 			//DEBUG_LOG_RENDERING("Maximum anisotropy supported = ", maxAnisotropy);
-			glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math::Clamp(0.0f, 8.0f, maxAnisotropy));
+			glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, math::Clamp(0.0f, 8.0f, maxAnisotropy));
 			//glTexParameterf(m_textureTarget, GL_TEXTURE_LOD_BIAS, -0.4f /* the lower the value the higher the resolution->lower performance */); //TODO: The value we give here is crucial for the performance. Reasearch that!
 		}
 		else

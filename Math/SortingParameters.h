@@ -3,11 +3,11 @@
 
 #include "Math.h"
 
-namespace Math
+namespace math
 {
-	namespace Sorting
+	namespace sorting
 	{
-		namespace Keys
+		namespace keys
 		{
 			/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
 			enum Key
@@ -20,9 +20,9 @@ namespace Math
 				SUM_OF_ABSOLUTE_COMPONENTS,
 				SUM_OF_SQUARED_COMPONENTS
 			}; /* end enum SortingKey */
-		} /* end namespace SortingKeys */
+		} /* end namespace keys */
 
-		namespace Orders
+		namespace orders
 		{
 			/// <summary> The direction represents the order in which the sorting is performed. </summary>
 			enum Order
@@ -30,7 +30,7 @@ namespace Math
 				ASCENDING = 0,
 				DESCENDING
 			}; /* end enum Order */
-		} /* end namespace Orders */
+		} /* end namespace orders */
 
 		class SortingParametersChain
 		{
@@ -39,7 +39,7 @@ namespace Math
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			MATH_API SortingParametersChain(Keys::Key sortingKey, Orders::Order sortingOrder);
+			MATH_API SortingParametersChain(keys::Key sortingKey, orders::Order sortingOrder);
 			MATH_API ~SortingParametersChain();
 			SortingParametersChain(const SortingParametersChain& sortingParametersChain) = delete;
 			SortingParametersChain(SortingParametersChain&& sortingParametersChain) = delete;
@@ -51,23 +51,23 @@ namespace Math
 		public:
 			MATH_API void ResetChainLink();
 			MATH_API void AddChainLink(SortingParametersChain* sortingChainParameters);
-			MATH_API Keys::Key GetKey() const { return m_sortingKey; }
-			MATH_API Orders::Order GetOrder() const { return m_order; }
-			MATH_API void SetKey(Keys::Key sortingKey);
-			MATH_API void SetOrder(Orders::Order sortingOrder) { m_order = sortingOrder; }
+			MATH_API keys::Key GetKey() const { return m_sortingKey; }
+			MATH_API orders::Order GetOrder() const { return m_order; }
+			MATH_API void SetKey(keys::Key sortingKey);
+			MATH_API void SetOrder(orders::Order sortingOrder) { m_order = sortingOrder; }
 			MATH_API const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			SortingParametersChain* m_sortingParametersChain;
-			Keys::Key m_sortingKey;
-			Orders::Order m_order;
+			keys::Key m_sortingKey;
+			orders::Order m_order;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SortingParametersChain */
 
-	} /* end namespace Sorting */
+	} /* end namespace sorting */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_SORTING_PARAMETERS_H__ */

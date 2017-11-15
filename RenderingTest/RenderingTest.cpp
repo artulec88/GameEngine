@@ -32,7 +32,7 @@
 //#include <fstream>
 
 using namespace Rendering;
-using namespace Math;
+using namespace math;
 using namespace utility;
 using namespace std;
 
@@ -44,7 +44,7 @@ const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\
 const string FONTS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\";
 constexpr int WINDOW_WIDTH = 1600;
 constexpr int WINDOW_HEIGHT = 900;
-const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
+const math::random::RandomGenerator& g_randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
@@ -79,9 +79,9 @@ namespace TestTextureIDs
 }
 
 constexpr int TERRAIN_VERTEX_COUNT = 128;
-constexpr Math::Real TERRAIN_HEIGHT_GENERATOR_AMPLITUDE = 70.0f;
+constexpr math::Real TERRAIN_HEIGHT_GENERATOR_AMPLITUDE = 70.0f;
 constexpr int TERRAIN_HEIGHT_GENERATOR_OCTAVES_COUNT = 3;
-constexpr Math::Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
+constexpr math::Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
 Transform terrainTransform;
 std::unique_ptr<Material> terrainMaterial = nullptr;
 const Mesh* terrainMesh = nullptr;
@@ -179,7 +179,7 @@ void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 		cameraRotationEnabled = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		if (cameraRotationEnabled)
 		{
-			Math::Vector2D centerPosition(static_cast<Math::Real>(WINDOW_WIDTH) / 2, static_cast<Math::Real>(WINDOW_HEIGHT) / 2);
+			math::Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
 			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
 		}
 	}
@@ -203,22 +203,22 @@ void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	if (cameraRotationEnabled)
 	{
-		Math::Vector2D centerPosition(static_cast<Math::Real>(WINDOW_WIDTH) / 2, static_cast<Math::Real>(WINDOW_HEIGHT) / 2);
-		Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
+		math::Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
+		math::Vector2D deltaPosition(static_cast<math::Real>(xPos), static_cast<math::Real>(yPos));
 		deltaPosition -= centerPosition;
 
-		bool rotX = !Math::AlmostEqual(deltaPosition.x, REAL_ZERO);
-		bool rotY = !Math::AlmostEqual(deltaPosition.y, REAL_ZERO);
+		bool rotX = !math::AlmostEqual(deltaPosition.x, REAL_ZERO);
+		bool rotY = !math::AlmostEqual(deltaPosition.y, REAL_ZERO);
 
 		if (rotX || rotY)
 		{
 			if (rotX)
 			{
-				camera.GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.x * camera.GetSensitivity()));
+				camera.GetTransform().Rotate(math::Vector3D(0, 1, 0), math::Angle(deltaPosition.x * camera.GetSensitivity()));
 			}
 			if (rotY)
 			{
-				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.y * camera.GetSensitivity()));
+				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), math::Angle(deltaPosition.y * camera.GetSensitivity()));
 			}
 			//NOTICE_LOG_RENDERING_TEST("Camera's rotation: ", camera.GetTransform().GetRot());
 			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
@@ -460,7 +460,7 @@ void CameraBuilderTest()
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
-	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(Math::Angle(110.0f)).
+	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(math::Angle(110.0f)).
 		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f);
 	cameraBuilderDirector.SetBuilder(&perspectiveCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
@@ -498,9 +498,9 @@ void ParticlesSystemBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
 
-Math::Real GetTime()
+math::Real GetTime()
 {
-	return static_cast<Math::Real>(glfwGetTime());
+	return static_cast<math::Real>(glfwGetTime());
 	//return Time(glfwGetTime());
 
 	//return Time::Now();
@@ -538,11 +538,11 @@ void InitializeTestTweakBars()
 }
 #endif
 
-Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight)
+Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Real heightMapMaxHeight)
 {
-	constexpr Math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
+	constexpr Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
 
-	Math::Real height = static_cast<Math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
+	Real height = static_cast<Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
 	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
 	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
 	return height;
@@ -560,15 +560,15 @@ void CreateTerrain()
 
 	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
 	const Real heightMapMaxHeight = (heightMapImage.GetWidth() + heightMapImage.GetHeight()) / 40.0f;
-	std::vector<Math::Real> heights;
+	std::vector<Real> heights;
 	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
 	{
-		const Math::Real zReal = static_cast<Math::Real>(z);
+		const Real zReal = static_cast<Real>(z);
 		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
 		{
-			const Math::Real xReal = static_cast<Math::Real>(x);
-			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
+			const math::Real xReal = static_cast<math::Real>(x);
+			math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			heights.push_back(terrainHeight);
 		}
@@ -597,10 +597,10 @@ void CreateCamera()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
 	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
-		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+		SetRot(math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
-	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(math::Angle(70.0f)).
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
@@ -618,9 +618,9 @@ void CreateCubes()
 	{
 		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<Math::Real>(j), 0.0f, 0.1f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<math::Real>(j), 0.0f, 0.1f * static_cast<math::Real>(i));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPosY(terrain->GetHeightAt(cubeTransforms[i * CUBE_MESHES_ROWS + j].GetPos().GetXZ()));
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
 				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
@@ -638,7 +638,7 @@ void CreateScene()
 	//int bufferEntriesCount;
 	//void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
 	//CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
-	//Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
+	//math::Vector2D* dataValues = static_cast<math::Vector2D*>(data);
 	//for (int i = 0; i < bufferEntriesCount; ++i)
 	//{
 	//	ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
@@ -651,11 +651,11 @@ void CreateScene()
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 }
 
-//Math::Angle angleStep(1.0f);
+//math::Angle angleStep(1.0f);
 
-void UpdateScene(Math::Real frameTime)
+void UpdateScene(math::Real frameTime)
 {
-	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
+	//camera.GetTransform().Rotate(math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
 	particlesSystem.Update(frameTime);
@@ -702,28 +702,28 @@ void RenderScene()
 void Run()
 {
 	constexpr int THREAD_SLEEP_TIME = 10;
-	constexpr Math::Real MAX_FPS = 500.0f;
-	constexpr Math::Real FRAME_TIME = 1.0f / MAX_FPS;
+	constexpr math::Real MAX_FPS = 500.0f;
+	constexpr math::Real FRAME_TIME = 1.0f / MAX_FPS;
 
 	CreateScene();
 
 	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontIDs::CANDARA), 1.25f, NULL,
-		ZERO_VECTOR_2D, Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorIDs::RED),
-		Color(ColorIDs::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+		ZERO_VECTOR_2D, math::Angle(45.0f), math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorIDs::RED),
+		Color(ColorIDs::GREEN), math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
 	InitializeTestTweakBars();
 #endif
 
-	Math::Real fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
+	math::Real fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
-	Math::Real frameTimeCounter = REAL_ZERO;
+	math::Real frameTimeCounter = REAL_ZERO;
 	int fps = 0;
-	Math::Real spf = REAL_ZERO;
+	math::Real spf = REAL_ZERO;
 
-	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
-	Math::Real previousTime = GetTime();
+	math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	math::Real previousTime = GetTime();
 
 	while (true)
 	{
@@ -731,8 +731,8 @@ void Run()
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		Math::Real currentTime = GetTime();
-		Math::Real passedTime = currentTime - previousTime;
+		math::Real currentTime = GetTime();
+		math::Real passedTime = currentTime - previousTime;
 		DELOCUST_LOG_RENDERING_TEST("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;
