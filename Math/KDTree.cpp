@@ -295,11 +295,11 @@ std::string math::KDTree::ToString(int depth) const
 		//s << "\t2. " << m_rightTree->GetPosition().ToString() << " with value " << m_rightTree->GetValue() << std::endl;
 	}
 
-	//if (m_leftTree != NULL)
+	//if (m_leftTree != nullptr)
 	//{
 	//	s << m_leftTree->ToString();
 	//}
-	//if (m_rightTree != NULL)
+	//if (m_rightTree != nullptr)
 	//{
 	//	s << m_rightTree->ToString();
 	//}

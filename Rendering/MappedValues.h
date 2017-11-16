@@ -145,7 +145,7 @@ namespace Rendering
 
 		void SetTexture(const std::string& textureName, const Texture* texture)
 		{
-			//if (texture == NULL)
+			//if (texture == nullptr)
 			//{
 			//	WARNING_LOG_RENDERING("Adding NULL texture with name \"", textureName, "\" to the map of textures");
 			//	//return;

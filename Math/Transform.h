@@ -73,7 +73,7 @@ namespace math
 		//Real GetTransformedScale() const
 		//{
 		//	WARNING_LOG_MATH("Function not tested. Use with caution.");
-		//	if (m_parentTransform == NULL)
+		//	if (m_parentTransform == nullptr)
 		//	{
 		//		return m_scale;
 		//	}
@@ -153,7 +153,7 @@ namespace math
 
 		void CalculateParentTransformation() const
 		{
-			CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != NULL, Utility::Logging::ERR, "Parent transform is NULL.");
+			CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != nullptr, Utility::Logging::ERR, "Parent transform is NULL.");
 			m_parentTransformation = m_parentTransform->GetTransformation();
 		}
 

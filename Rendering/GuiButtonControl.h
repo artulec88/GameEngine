@@ -31,9 +31,13 @@ namespace Rendering
 			/// Creates a new GUI button control, loads the text's quads into a VBO and adds the text to the screen.
 			/// </summary>
 			/// <param name="text"> The text. </param>
-			/// <param name="font"> The font that this text should use. If <code>NULL</code> then no text will be rendered. </param>
+			/// <param name="font">
+			/// The font that this text should use. If <code>nullptr</code> is specified then no text will be rendered.
+			/// </param>
 			/// <param name="fontSize"> The font size of the text. </param>
-			/// <param name="iconTexture"> The texture for the GUI button icon. If <code>NULL</code> then no icon will be rendered. </param>
+			/// <param name="iconTexture">
+			/// The texture for the GUI button icon. If <code>nullptr</code> is specified then no icon will be rendered.
+			/// </param>
 			/// <param name="screenPosition">
 			/// The position on the screen where the top left corner of the text should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).

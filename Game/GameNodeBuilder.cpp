@@ -31,7 +31,7 @@ Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, Ren
 	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)),
 	m_camera(camera),
 	m_cameraBehaviorType(M_DEFAULT_CAMERA_BEHAVIOR_TYPE),
-	m_gameNodeToFollow(NULL)
+	m_gameNodeToFollow(nullptr)
 {
 }
 
@@ -105,7 +105,7 @@ void Game::CameraNodeBuilder::BuildComponents()
 	//{
 	//	camerasComponent->AddCamera(Rendering::Camera(m_positions[i], m_rotations[i], m_fovs[i], m_aspectRatios[i], m_nearPlanes[i], m_farPlanes[i], m_sensitivities[i]), m_cameraBehaviors[i]);
 	//}
-	//if (m_gameNodeToFollow != NULL)
+	//if (m_gameNodeToFollow != nullptr)
 	//{
 	//	cameraComponent = new Engine::CameraFollowComponent(m_camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 	//}
@@ -140,9 +140,9 @@ void Game::SkyboxBuilder::BuildComponents()
 	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
 	const Rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_DAY, cubeMapDayDirectory);
-	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != NULL, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
 	const Rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_NIGHT, cubeMapNightDirectory);
-	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != NULL, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != nullptr, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
 
 	//SetTexture("cubeMapDay", m_skyboxTextureDay);
 	//SetTexture("cubeMapNight", m_skyboxTextureNight);

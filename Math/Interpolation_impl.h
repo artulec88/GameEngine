@@ -158,7 +158,7 @@ math::interpolation::HermiteInterpolator<T>::HermiteInterpolator() :
 template <class T>
 math::interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
-	m_derivatives(NULL)
+	m_derivatives(nullptr)
 {
 	CalculateDerivatives(interpolationObjects, interpolationObjectsCount, T(REAL_ZERO), T(REAL_ZERO));
 }

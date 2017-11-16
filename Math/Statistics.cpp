@@ -134,7 +134,7 @@ T math::statistics::Stats<T>::CalculateMean(StatsID statsID) const
 template <typename T>
 T math::statistics::Stats<T>::CalculateMedian(StatsID statsID)
 {
-	if (m_child != NULL)
+	if (m_child != nullptr)
 	{
 		EMERGENCY_LOG_MATH("Median shouldn't be used for the hierarchical stats storage as it is now used. The result will not be correct.");
 	}

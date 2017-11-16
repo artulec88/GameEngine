@@ -39,7 +39,7 @@ math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //	m_parentTransformation(std::move(transform.m_parentTransformation)),
 //	m_isChanged(true)
 //{
-//	//transform.m_parentTransform = NULL;
+//	//transform.m_parentTransform = nullptr;
 //}
 
 //math::Transform& math::Transform::operator=(const Transform& transform)
@@ -65,7 +65,7 @@ math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 //	m_parentTransformation = std::move(transform.m_parentTransformation);
 //	m_isChanged = true;
 //
-//	transform.m_parentTransform = NULL;
+//	transform.m_parentTransform = nullptr;
 //
 //	return *this;
 //}
@@ -102,12 +102,12 @@ math::Transform::~Transform()
 //bool math::Transform::IsHierarchyChanged() const
 //{
 //	// TODO: Check this function
-//	if ((parentTransform == NULL) || isChanged)
+//	if ((parentTransform == nullptr) || isChanged)
 //	{
 //		return isChanged;
 //	}
 //
-//	// parentTransform != NULL && isChanged == false
+//	// parentTransform != nullptr && isChanged == false
 //	return parentTransform->IsHierarchyChanged();
 //}
 

@@ -27,7 +27,7 @@ Rendering::Image::~Image()
 	}
 }
 
-Rendering::Image::Image(Image&& image) :
+Rendering::Image::Image(Image&& image) noexcept:
 	m_data(image.m_data),
 	m_width(image.m_width),
 	m_height(image.m_height),

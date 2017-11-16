@@ -20,7 +20,7 @@ math::random::RandomGeneratorFactory::~RandomGeneratorFactory()
 	DELOCUST_LOG_MATH("Random generator factory destroyed");
 }
 
-const math::random::RandomGenerator& math::random::RandomGeneratorFactory::GetRandomGenerator(generator_ids::GeneratorID randomGenerator, unsigned seed /* = ((unsigned int)time(NULL)) */)
+const math::random::RandomGenerator& math::random::RandomGeneratorFactory::GetRandomGenerator(generator_ids::GeneratorID randomGenerator, unsigned seed /* = ((unsigned int)time(nullptr)) */)
 {
 	/// See: http://en.cppreference.com/w/cpp/container/map/emplace
 	RandomGeneratorsMap::const_iterator randomGeneratorItr = m_randomGenerators.find(randomGenerator);

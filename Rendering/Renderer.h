@@ -43,7 +43,6 @@
 
 #include <string>
 #include <vector>
-#include <list>
 #include <map>
 
 namespace Rendering
@@ -78,8 +77,8 @@ namespace Rendering
 			const std::string& fontsDirectory, Aliasing::AntiAliasingMethod antiAliasingMethod);
 
 		/// <summary> Rendering engine destructor. </summary>
-		RENDERING_API virtual ~Renderer(void);
-		
+		RENDERING_API virtual ~Renderer();
+
 		/// <summary> Rendering engine copy constructor. </summary>
 		/// <param name="renderer"> The rendering engine to copy construct from. </param>
 		Renderer(const Renderer& renderer) = delete;
@@ -98,7 +97,6 @@ namespace Rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		RENDERING_API void InitRenderScene(const Color& ambientLightColor, math::Real dayNightMixFactor);
 		RENDERING_API void BindDisplayTexture() const;
 		RENDERING_API void BindWaterReflectionTexture() const;
@@ -127,39 +125,39 @@ namespace Rendering
 #endif
 		RENDERING_API int GetWindowWidth() const { return m_windowWidth; }
 		RENDERING_API int GetWindowHeight() const { return m_windowHeight; }
-		RENDERING_API Rendering::Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
-		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
-		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
+		RENDERING_API Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
+		RENDERING_API void SetWindowWidth(const int windowWidth) { m_windowWidth = windowWidth; }
+		RENDERING_API void SetWindowHeight(const int windowHeight) { m_windowHeight = windowHeight; }
 
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
 		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const math::Surface& surface);
-		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
+		RENDERING_API const Mesh* GetMesh(const int meshID) const { return m_meshFactory.GetMesh(meshID); }
 
-		RENDERING_API const Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName)
+		RENDERING_API const Texture* CreateTexture(int textureID, const std::string& textureFileName)
 		{
 			return m_textureFactory.CreateTexture(textureID, textureFileName);
 		}
-		RENDERING_API const Rendering::Texture* CreateCubeTexture(int textureID, const std::string& cubeMapTextureDirectory)
+		RENDERING_API const Texture* CreateCubeTexture(int textureID, const std::string& cubeMapTextureDirectory)
 		{
 			return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory);
 		}
-		RENDERING_API const Rendering::Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
+		RENDERING_API const Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
 		{
 			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
 		RENDERING_API const std::string& GetTexturesDirectory() const { return m_textureFactory.GetTexturesDirectory(); }
-		RENDERING_API const Texture* GetTexture(int textureID) const { return m_textureFactory.GetTexture(textureID); }
+		RENDERING_API const Texture* GetTexture(const int textureID) const { return m_textureFactory.GetTexture(textureID); }
 
 		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
-		RENDERING_API const Shader* GetShader(int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
+		RENDERING_API const Shader* GetShader(const int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
 
-		RENDERING_API const Rendering::Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-		RENDERING_API const Rendering::Text::Font* GetFont(int fontID) const;
+		RENDERING_API const Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		RENDERING_API const Text::Font* GetFont(int fontID) const;
 
-		RENDERING_API inline void BindShader(int shaderID) { m_shaderFactory.GetShader(shaderID)->Bind(); }
-		RENDERING_API inline void UpdateRendererUniforms(int shaderID) { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }
+		RENDERING_API void BindShader(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->Bind(); }
+		RENDERING_API void UpdateRendererUniforms(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }
 
-		RENDERING_API inline void ClearScreen() const
+		RENDERING_API void ClearScreen() const
 		{
 			if (m_fogInfo.IsEnabled())
 			{
@@ -172,12 +170,12 @@ namespace Rendering
 			}
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
-		RENDERING_API inline void ClearScreen(const Color& clearColor) const
+		RENDERING_API void ClearScreen(const Color& clearColor) const
 		{
 			glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
-		RENDERING_API inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) const
+		RENDERING_API void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) const
 		{
 			glClearColor(red, green, blue, alpha);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -186,32 +184,32 @@ namespace Rendering
 		/// <summary>
 		/// Enables or disables the depth test in the rendering engine.
 		/// </summary>
-		RENDERING_API inline void SetDepthTest(bool enabled)
+		RENDERING_API  void SetDepthTest(bool enabled)
 		{
 			enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 		}
-		RENDERING_API inline void SetBlendingEnabled(bool enabled) const { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
-		RENDERING_API inline void SetBlendFunc(GLenum sFactor, GLenum dFactor) const { glBlendFunc(sFactor, dFactor); }
-		RENDERING_API inline void SetCullFaceFront() const { glCullFace(GL_FRONT); }
-		RENDERING_API inline void SetCullFaceBack() const { glCullFace(GL_BACK); }
-		RENDERING_API inline void SetCullFaceFrontAndBack() const { glCullFace(GL_FRONT_AND_BACK); }
-		RENDERING_API inline void SetCullFaceDefault() const { glCullFace(Rendering::glCullFaceMode); }
-		RENDERING_API inline void SetDepthFuncNever() const { glDepthFunc(GL_NEVER); }
-		RENDERING_API inline void SetDepthFuncLess() const { glDepthFunc(GL_LESS); }
-		RENDERING_API inline void SetDepthFuncEqual() const { glDepthFunc(GL_EQUAL); }
-		RENDERING_API inline void SetDepthFuncLessOrEqual() const { glDepthFunc(GL_LEQUAL); }
-		RENDERING_API inline void SetDepthFuncGreater() const { glDepthFunc(GL_GREATER); }
-		RENDERING_API inline void SetDepthFuncNotEqual() const { glDepthFunc(GL_NOTEQUAL); }
-		RENDERING_API inline void SetDepthFuncGreaterOrEqual() const { glDepthFunc(GL_GEQUAL); }
-		RENDERING_API inline void SetDepthFuncAlways() const { glDepthFunc(GL_ALWAYS); }
-		RENDERING_API inline void SetDepthFuncDefault() const { glDepthFunc(Rendering::glDepthTestFunc); }
+		RENDERING_API void SetBlendingEnabled(bool enabled) const { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
+		RENDERING_API void SetBlendFunc(GLenum sFactor, GLenum dFactor) const { glBlendFunc(sFactor, dFactor); }
+		RENDERING_API void SetCullFaceFront() const { glCullFace(GL_FRONT); }
+		RENDERING_API void SetCullFaceBack() const { glCullFace(GL_BACK); }
+		RENDERING_API void SetCullFaceFrontAndBack() const { glCullFace(GL_FRONT_AND_BACK); }
+		RENDERING_API void SetCullFaceDefault() const { glCullFace(Rendering::glCullFaceMode); }
+		RENDERING_API void SetDepthFuncNever() const { glDepthFunc(GL_NEVER); }
+		RENDERING_API void SetDepthFuncLess() const { glDepthFunc(GL_LESS); }
+		RENDERING_API void SetDepthFuncEqual() const { glDepthFunc(GL_EQUAL); }
+		RENDERING_API void SetDepthFuncLessOrEqual() const { glDepthFunc(GL_LEQUAL); }
+		RENDERING_API void SetDepthFuncGreater() const { glDepthFunc(GL_GREATER); }
+		RENDERING_API void SetDepthFuncNotEqual() const { glDepthFunc(GL_NOTEQUAL); }
+		RENDERING_API void SetDepthFuncGreaterOrEqual() const { glDepthFunc(GL_GEQUAL); }
+		RENDERING_API void SetDepthFuncAlways() const { glDepthFunc(GL_ALWAYS); }
+		RENDERING_API void SetDepthFuncDefault() const { glDepthFunc(Rendering::glDepthTestFunc); }
 
-		inline const Lighting::BaseLight* GetCurrentLight() const
+		const Lighting::BaseLight* GetCurrentLight() const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != NULL, Utility::Logging::ERR, "Current light is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != nullptr, Utility::Logging::ERR, "Current light is NULL.");
 			return m_currentLight;
 		}
-		inline const Lighting::BaseLight* SetCurrentLight(const Lighting::BaseLight* light)
+		const Lighting::BaseLight* SetCurrentLight(const Lighting::BaseLight* light)
 		{
 			// TODO: Null check?
 			m_currentLight = light;
@@ -222,23 +220,23 @@ namespace Rendering
 
 			return m_currentLight;
 		}
-		inline const Lighting::PointLight* GetCurrentPointLight() const
+		const Lighting::PointLight* GetCurrentPointLight() const
 		{
 			return m_currentPointLight;
 		}
-		inline const Lighting::PointLight* SetCurrentPointLight(const Lighting::PointLight* pointLight)
+		const Lighting::PointLight* SetCurrentPointLight(const Lighting::PointLight* pointLight)
 		{
 			// TODO: Index range checking
 			m_currentPointLight = pointLight;
 			return m_currentPointLight;
 		}
-		//inline const Lighting::SpotLight* GetCurrentSpotLight() const { return m_currentSpotLight; }
+		//const Lighting::SpotLight* GetCurrentSpotLight() const { return m_currentSpotLight; }
 
-		inline const FogEffect::FogInfo& GetFogInfo() const { return m_fogInfo; }
+		const FogEffect::FogInfo& GetFogInfo() const { return m_fogInfo; }
 
-		inline const BaseCamera& GetCurrentCamera() const
+		const BaseCamera& GetCurrentCamera() const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::CRITICAL, "Current camera is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != nullptr, Utility::Logging::CRITICAL, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
 
@@ -249,14 +247,14 @@ namespace Rendering
 		RENDERING_API void InitLightRendering() const;
 		RENDERING_API void FinalizeLightRendering() const;
 
-		inline unsigned int GetSamplerSlot(const std::string& samplerName) const
+		unsigned int GetSamplerSlot(const std::string& samplerName) const
 		{
 			std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), utility::logging::ERR, "Sampler name \"", samplerName, "\" has not been found in the sampler map.");
 			return samplerItr->second;
 		}
 
-		inline const math::Matrix4D& GetLightMatrix() const
+		const math::Matrix4D& GetLightMatrix() const
 		{
 			return m_lightMatrix;
 		}
@@ -348,7 +346,7 @@ namespace Rendering
 		//void RenderSceneWithPointLights(const GameNode& gameNode);
 		//void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
 
-		inline void SetSamplerSlot(const std::string& name, unsigned int value)
+		void SetSamplerSlot(const std::string& name, const unsigned int value)
 		{
 			m_samplerMap[name] = value;
 		}

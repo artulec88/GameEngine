@@ -105,7 +105,7 @@ int main(const int argc, char* argv[])
 	//}
 	//LPWSTR pBuff;
 	//DWORD len;
-	//int bytes = GetModuleFileName(NULL, pBuff, len);
+	//int bytes = GetModuleFileName(nullptr, pBuff, len);
 	//printf("Current working directory = %s\n", argv[0]);
 
 	std::string configDirectory, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
