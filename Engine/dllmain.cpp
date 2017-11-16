@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Engine.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 // Including SDKDDKVer.h defines the highest available Windows platform.
 // If you wish to build your application for a previous Windows platform, include WinSDKVer.h and
@@ -33,6 +33,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	case DLL_PROCESS_DETACH:
 		DEBUG_LOG_ENGINE("The Engine DLL is being detached from the current process. ", ((lpReserved == NULL) ? "" : "The process is terminating."));
 		break;
+	default:
+		CRITICAL_LOG_UTILITY("Critical error occured during Engine DLL processing.");
 	}
 	return TRUE;
 }

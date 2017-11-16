@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Vector.h"
 #include "FloatingPoint.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 #include "SortingParameters.h"
 
 namespace math {
@@ -80,7 +80,6 @@ namespace math {
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
-		public:
 			/// <summary> The constructor of the sorting object. </summary>
 			MATH_API ISort()
 			{
@@ -111,7 +110,6 @@ namespace math {
 		/* ==================== Constructors and destructors end ==================== */
 			
 		/* ==================== Non-static member functions begin ==================== */
-		public:
 			MATH_API virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
 			MATH_API virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
 			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
@@ -144,16 +142,16 @@ namespace math {
 			bool NeedSwapping(const Vector2D& vec1, const Vector2D& vec2, const SortingParametersChain& sortingParameters)
 			{
 				/* Checking parameters */
-				orders::Order sortingOrder = sortingParameters.GetOrder();
-				keys::Key sortingKey = sortingParameters.GetKey();
+				auto sortingOrder = sortingParameters.GetOrder();
+				auto sortingKey = sortingParameters.GetKey();
 				if (sortingKey == keys::COMPONENT_Z)
 				{
 					ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 					return false;
 				}
 
-				Real v1 = CollectValueByKey(vec1, sortingKey);
-				Real v2 = CollectValueByKey(vec2, sortingKey);
+				auto v1 = CollectValueByKey(vec1, sortingKey);
+				auto v2 = CollectValueByKey(vec2, sortingKey);
 
 				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{
@@ -165,11 +163,11 @@ namespace math {
 			template <>
 			bool NeedSwapping(const Vector3D& vec1, const Vector3D& vec2, const SortingParametersChain& sortingParameters)
 			{
-				orders::Order sortingOrder = sortingParameters.GetOrder();
-				keys::Key sortingKey = sortingParameters.GetKey();
+				auto sortingOrder = sortingParameters.GetOrder();
+				auto sortingKey = sortingParameters.GetKey();
 
-				Real v1 = CollectValueByKey(vec1, sortingKey);
-				Real v2 = CollectValueByKey(vec2, sortingKey);
+				auto v1 = CollectValueByKey(vec1, sortingKey);
+				auto v2 = CollectValueByKey(vec2, sortingKey);
 
 				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{

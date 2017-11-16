@@ -5,12 +5,12 @@
 #include "ActionConstants.h"
 #include "IRenderable.h"
 
-#include "Rendering\Renderer.h"
-#include "Rendering\Font.h"
-#include "Rendering\GuiControl.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Font.h"
+#include "Rendering/GuiControl.h"
 
-#include "Math\Vector.h"
-#include "Math\Effect.h"
+#include "Math/Vector.h"
+#include "Math/Effect.h"
 
 #include <string>
 #include <vector>
@@ -38,12 +38,11 @@ namespace engine
 		ENGINE_API MenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture, const math::Vector2D& screenPosition,
 			const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset, bool isCentered = false,
 			math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
-		ENGINE_API virtual ~MenuEntry(void);
+		ENGINE_API virtual ~MenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
+		ENGINE_API void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual void Dispatch() = 0;
 		ENGINE_API virtual MenuEntry* GoTo() { return this; }
@@ -56,15 +55,14 @@ namespace engine
 		ENGINE_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect);
 
 		ENGINE_API bool DoesMouseHoverOver(math::Real xPos, math::Real yPos) const;
-		ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
-		ENGINE_API CompositeMenuEntry* GetParent() { return m_parentMenuEntry; }
+		ENGINE_API bool HasParent() const { return m_parentMenuEntry != nullptr; }
+		ENGINE_API CompositeMenuEntry* GetParent() const { return m_parentMenuEntry; }
 		void SetParent(CompositeMenuEntry* parentMenuEntry);
 	private:
-		inline const Rendering::Controls::GuiControl& GetGuiControl() const { return *m_guiControl; }
+		const Rendering::Controls::GuiControl& GetGuiControl() const { return *m_guiControl; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		CompositeMenuEntry* m_parentMenuEntry;
 		std::unique_ptr<Rendering::Controls::GuiControl> m_guiControl;
 		/* ==================== Non-static member variables end ==================== */
@@ -83,15 +81,14 @@ namespace engine
 		ENGINE_API CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
 			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
-		ENGINE_API virtual ~CompositeMenuEntry(void);
+		ENGINE_API virtual ~CompositeMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		//ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
-		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
-		ENGINE_API virtual void Dispatch();
-		ENGINE_API virtual MenuEntry* GoTo() { return m_childrenMenuEntries[m_selectedMenuEntryIndex]; }
+		//ENGINE_API void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
+		ENGINE_API void AddChild(MenuEntry* menuEntry) override;
+		ENGINE_API void Dispatch() override;
+		ENGINE_API MenuEntry* GoTo() override { return m_childrenMenuEntries[m_selectedMenuEntryIndex]; }
 		ENGINE_API void ApplyColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOutlineColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOffsetEffectToAll(const math::effects::Effect<math::Vector2D>& effect);
@@ -125,19 +122,17 @@ namespace engine
 		ENGINE_API ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
 			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
-		ENGINE_API virtual ~ActionMenuEntry(void);
+		ENGINE_API virtual ~ActionMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
-		ENGINE_API virtual void Dispatch();
-	private:
+		ENGINE_API void Dispatch() override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		engine::Actions::Action m_actionID;
+		Actions::Action m_actionID;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ActionMenuEntry */
 
@@ -155,13 +150,12 @@ namespace engine
 		ENGINE_API ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
 			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
-		ENGINE_API virtual ~ValueMenuEntry(void);
+		ENGINE_API virtual ~ValueMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
-		ENGINE_API virtual void Dispatch();
+		ENGINE_API void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
+		ENGINE_API void Dispatch() override;
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)
 		//{	// make a unique_ptr
@@ -172,7 +166,6 @@ namespace engine
 		//ENGINE_API void AddGuiControl()
 		//{
 		//}
-	private:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -182,6 +175,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ValueMenuEntry */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_MENU_ENTRY_H__ */

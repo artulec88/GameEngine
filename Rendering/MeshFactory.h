@@ -5,9 +5,9 @@
 #include "Mesh.h"
 #include "Image.h"
 
-#include "Math\Surface.h"
+#include "Math/Surface.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 #include <map>
 

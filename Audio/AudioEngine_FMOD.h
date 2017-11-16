@@ -3,9 +3,7 @@
 
 #include "Audio.h"
 #include "IAudioEngine.h"
-#include "Sound.h"
 #include "fmod.hpp"
-#include <vector>
 #include <map>
 
 namespace audio
@@ -15,7 +13,6 @@ namespace audio
 		/* TODO: Better key for more efficient map search ? */
 		using Filenames2Sounds = std::map<std::string, FMOD::Sound*>;
 	/* ==================== Static variables begin ==================== */
-	private:
 		static constexpr math::Real OCTAVE_RATIO = 2.0f;
 		static constexpr math::Real SEMITONE_RATIO = 1.0594630943592952645618252949463f; // = 2^(1/12)
 	/* ==================== Static variables end ==================== */
@@ -25,52 +22,69 @@ namespace audio
 		/// <summary>
 		/// FMOD Audio engine constructor. It intializes the main FMOD system object.
 		/// </summary>
-		AUDIO_API explicit AudioEngine_FMOD(const std::string& audioDirectory, int maxChannelsCount);
+		/// <param name="audioDirectory"> The system location where audio files are located. </param>
+		/// <param name="maxChannelsCount"> The maximum number of channels to be used by the audio engine. </param>
+		AUDIO_API explicit AudioEngine_FMOD(const std::string& audioDirectory, const int maxChannelsCount);
+
 		/// <summary>
 		/// FMOD Audio engine destructor. It takes care of releasing the main FMOD system object,
 		/// as well as all the sound objects that were created.
 		/// </summary>
-		AUDIO_API ~AudioEngine_FMOD(void);
-	private:
-		AudioEngine_FMOD(const AudioEngine_FMOD& audioEngine);
-		void operator=(const AudioEngine_FMOD& audioEngine);
+		AUDIO_API ~AudioEngine_FMOD();
+
+		/// <summary> FMOD audio engine copy constructor. </summary>
+		/// <param name="audioEngine"> The FMOD audio engine to copy construct from. </param>
+		AudioEngine_FMOD(const AudioEngine_FMOD& audioEngine) = delete;
+
+		/// <summary> FMOD audio engine move constructor. </summary>
+		/// <param name="audioEngine"> The FMOD audio engine to move construct from. </param>
+		AudioEngine_FMOD(AudioEngine_FMOD&& audioEngine) = delete;
+
+		/// <summary> FMOD audio engine copy assignment operator. </summary>
+		/// <param name="audioEngine"> The FMOD audio engine to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned FMOD audio engine. </returns>
+		AudioEngine_FMOD& operator=(const AudioEngine_FMOD& audioEngine) = delete;
+
+		/// <summary> FMOD audio engine move assignment operator. </summary>
+		/// <param name="audioEngine"> The FMOD audio engine to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned FMOD audio engine. </returns>
+		AudioEngine_FMOD& operator=(AudioEngine_FMOD&& audioEngine) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
-		AUDIO_API virtual void Update(math::Real deltaTime);
-		AUDIO_API virtual void LoadSoundEffect(const std::string& path);
-		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path);
-		AUDIO_API virtual void LoadSong(const std::string& path);
+		AUDIO_API void Update(math::Real deltaTime) override;
+		AUDIO_API void LoadSoundEffect(const std::string& path) override;
+		AUDIO_API void LoadSoundEffect3D(const std::string& path) override;
+		AUDIO_API void LoadSong(const std::string& path) override;
 	
 		/// <summary>
 		/// Plays the sound effect specified in the <paramref name="path/>. It starts by first checking if the sound has already been loaded,
 		/// and does nothing if this is the case. The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */);
+		AUDIO_API void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */) override;
 		/// <summary>
 		/// Plays the sound effect specified in the <paramref name="path/>. It starts by first checking if the sound has already been loaded,
 		/// and does nothing if this is the case. The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch);
+		AUDIO_API void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch) override;
 		/// <summary>
 		/// Plays the 3D sound effect specified in the <paramref name="path/>. It starts by first checking if the sound has already been loaded,
 		/// and does nothing if this is the case. The method searches for the sound in the correct map and plays it back setting the volume, pitch, position and velocity of the source beforehand.
 		/// </summary>
-		AUDIO_API virtual void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity);
-		AUDIO_API virtual void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */);
-		AUDIO_API virtual void StopSoundEffects() { m_groups[Categories::SOUND_EFFECT]->stop(); }
-		AUDIO_API virtual void StopSong()
+		AUDIO_API void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity) override;
+		AUDIO_API void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */) override;
+		AUDIO_API void StopSoundEffects() override { m_groups[Categories::SOUND_EFFECT]->stop(); }
+		AUDIO_API void StopSong() override
 		{
-			if (m_currentSong != NULL)
+			if (m_currentSong != nullptr)
 			{
 				m_fade = FadeStates::FADE_OUT;
 			}
 			m_nextSongPath.clear();
 		}
-		AUDIO_API virtual void SetMasterVolume(math::Real volume);
-		AUDIO_API virtual void SetSoundEffectsVolume(math::Real volume);
-		AUDIO_API virtual void SetSongsVolume(math::Real volume);
+		AUDIO_API void SetMasterVolume(math::Real volume) override;
+		AUDIO_API void SetSoundEffectsVolume(math::Real volume) override;
+		AUDIO_API void SetSongsVolume(math::Real volume) override;
 	private:
 		/// <summary>
 		/// Loads the audio file from the specified <paramref name="path"/>.
@@ -96,7 +110,7 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual math::Real ChangeOctave(math::Real frequency, math::Real variation) const;
+		math::Real ChangeOctave(math::Real frequency, math::Real variation) const override;
 
 		/// <summary>
 		/// A helper method for calculating the semitones. By using this method it becomes simple to modify the pitch of a sound.
@@ -112,11 +126,10 @@ namespace audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		virtual math::Real ChangeSemitone(math::Real frequency, math::Real variation) const;
+		math::Real ChangeSemitone(math::Real frequency, math::Real variation) const override;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
-	private:
 		const float M_SONG_FADE_IN_TIME;
 		int m_maxChannelsCount;
 		FMOD::System* m_system;

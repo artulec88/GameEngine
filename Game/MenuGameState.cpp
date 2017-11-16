@@ -4,25 +4,25 @@
 #include "LoadGameState.h"
 #include "StartGameCommand.h"
 
-#include "Engine\CoreEngine.h"
-#include "Engine\GameManager.h"
-#include "Engine\GameCommand.h"
-#include "Engine\ParticlesSystemComponent.h"
+#include "Engine/CoreEngine.h"
+#include "Engine/GameManager.h"
+#include "Engine/GameCommand.h"
+#include "Engine/ParticlesSystemComponent.h"
 
-#include "Rendering\ParticlesSystemBuilder.h"
-#include "Rendering\Shader.h"
+#include "Rendering/ParticlesSystemBuilder.h"
+#include "Rendering/Shader.h"
 
-#include "Math\Effect_impl.h"
+#include "Math/Effect_impl.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
-#include "Utility\BuilderDirector.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/BuilderDirector.h"
 
 Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, math::Real mainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
-	//m_particlesSystem(NULL),
-	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorIDs::BLACK),
+	//m_particlesSystem(nullptr),
+	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorIDs::BLACK),
 		Rendering::Color(Rendering::ColorIDs::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(std::make_unique<math::effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorBlue", 1.0f),
@@ -111,7 +111,7 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 			m_mousePosX(REAL_ZERO),
 			m_mousePosY(REAL_ZERO),
 			m_mousePicker(),
-			m_currentMenuEntry(NULL)
+			m_currentMenuEntry(nullptr)
 #ifdef PROFILING_GAME_MODULE_ENABLED
 			, m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
@@ -119,28 +119,28 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	engine::MenuEntry* mainMenuLoadMenuEntry = new engine::CompositeMenuEntry("Load", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.34f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+	engine::MenuEntry* mainMenuLoadMenuEntry = new engine::CompositeMenuEntry("Load", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.34f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
 	// TODO: Populate "Load" menu entry with children.
-	engine::MenuEntry* mainMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.51f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+	engine::MenuEntry* mainMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.51f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.2f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.2f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.4f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.4f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.6f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.6f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::ActionMenuEntry(engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
-		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::START_GAME, "New game", mainMenuFont,
-		mainMenuFontSize, NULL /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, math::Vector2D(0.25f, 0.17f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
+		mainMenuFontSize, nullptr /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, math::Vector2D(0.25f, 0.17f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuLoadMenuEntry);
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
-		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
-		mainMenuFontSize, NULL, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
 
 	m_gameManager->LoadSoundEffect("bounce.wav");
 
@@ -193,10 +193,10 @@ void Game::MenuGameState::Handle(engine::Actions::Action action)
 	switch (action)
 	{
 	case engine::Actions::SELECT_PREVIOUS_MENU_ENTRY:
-		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectPrevChild(); // TODO: Is it possible that GetParent() == NULL?
+		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectPrevChild(); // TODO: Is it possible that GetParent() == nullptr?
 		break;
 	case engine::Actions::SELECT_NEXT_MENU_ENTRY:
-		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == NULL?
+		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == nullptr?
 		break;
 	case engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
 		m_currentMenuEntry->Dispatch();
@@ -353,72 +353,72 @@ void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
 void Game::MenuGameState::Update(math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
-	if (m_notSelectedMenuEntryColorEffect != NULL)
+	if (m_notSelectedMenuEntryColorEffect != nullptr)
 	{
 		m_notSelectedMenuEntryColorEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyColorEffectToAll(*m_notSelectedMenuEntryColorEffect);
 	}
-	if (m_selectedMenuEntryColorEffect != NULL)
+	if (m_selectedMenuEntryColorEffect != nullptr)
 	{
 		m_selectedMenuEntryColorEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyColorEffect(*m_selectedMenuEntryColorEffect);
 	}
-	if (m_notSelectedMenuEntryOutlineColorEffect != NULL)
+	if (m_notSelectedMenuEntryOutlineColorEffect != nullptr)
 	{
 		m_notSelectedMenuEntryOutlineColorEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyOutlineColorEffectToAll(*m_notSelectedMenuEntryOutlineColorEffect);
 	}
-	if (m_selectedMenuEntryOutlineColorEffect != NULL)
+	if (m_selectedMenuEntryOutlineColorEffect != nullptr)
 	{
 		m_selectedMenuEntryOutlineColorEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyOutlineColorEffect(*m_selectedMenuEntryOutlineColorEffect);
 	}
-	if (m_notSelectedMenuEntryOffsetEffect != NULL)
+	if (m_notSelectedMenuEntryOffsetEffect != nullptr)
 	{
 		m_notSelectedMenuEntryOffsetEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyOffsetEffectToAll(*m_notSelectedMenuEntryOffsetEffect);
 	}
-	if (m_selectedMenuEntryOffsetEffect != NULL)
+	if (m_selectedMenuEntryOffsetEffect != nullptr)
 	{
 		m_selectedMenuEntryOffsetEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyOffsetEffect(*m_selectedMenuEntryOffsetEffect);
 	}
-	if (m_notSelectedMenuEntryCharacterWidthEffect != NULL)
+	if (m_notSelectedMenuEntryCharacterWidthEffect != nullptr)
 	{
 		m_notSelectedMenuEntryCharacterWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyCharacterWidthEffectToAll(*m_notSelectedMenuEntryCharacterWidthEffect);
 	}
-	if (m_selectedMenuEntryCharacterWidthEffect != NULL)
+	if (m_selectedMenuEntryCharacterWidthEffect != nullptr)
 	{
 		m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyCharacterWidthEffect(*m_selectedMenuEntryCharacterWidthEffect);
 	}
-	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL)
+	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != nullptr)
 	{
 		m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyCharacterEdgeTransitionWidthEffectToAll(*m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	}
-	if (m_selectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL)
+	if (m_selectedMenuEntryCharacterEdgeTransitionWidthEffect != nullptr)
 	{
 		m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyCharacterEdgeTransitionWidthEffect(*m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	}
-	if (m_notSelectedMenuEntryBorderWidthEffect != NULL)
+	if (m_notSelectedMenuEntryBorderWidthEffect != nullptr)
 	{
 		m_notSelectedMenuEntryBorderWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyBorderWidthEffectToAll(*m_notSelectedMenuEntryBorderWidthEffect);
 	}
-	if (m_selectedMenuEntryBorderWidthEffect != NULL)
+	if (m_selectedMenuEntryBorderWidthEffect != nullptr)
 	{
 		m_selectedMenuEntryBorderWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyBorderWidthEffect(*m_selectedMenuEntryBorderWidthEffect);
 	}
-	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != NULL)
+	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != nullptr)
 	{
 		m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->GetParent()->ApplyBorderEdgeTransitionWidthEffectToAll(*m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect);
 	}
-	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != NULL)
+	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != nullptr)
 	{
 		m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyBorderEdgeTransitionWidthEffect(*m_selectedMenuEntryBorderEdgeTransitionWidthEffect);

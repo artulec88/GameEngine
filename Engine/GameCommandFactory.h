@@ -5,9 +5,9 @@
 //#include "GameCommand.h"
 //#include "InputConstants.h"
 //
-//#include "Math\StatisticsStorage.h"
+//#include "Math/StatisticsStorage.h"
 //
-//#include "Utility\ILogger.h"
+//#include "Utility/ILogger.h"
 //
 //#include <map>
 //

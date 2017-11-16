@@ -5,7 +5,7 @@
 #include "Interpolation.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 /* ==================== class Interpolator begin ==================== */
 template <class T>
@@ -18,7 +18,7 @@ math::interpolation::Interpolator<T>::Interpolator()
 template <class T>
 math::interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount)
 {
-	for (int i = 0; i < interpolationObjectsCount; ++i)
+	for (auto i = 0; i < interpolationObjectsCount; ++i)
 	{
 		m_interpolationObjects.push_back(interpolationObjects[i]);
 		m_times.push_back(times[i]);
@@ -34,7 +34,7 @@ template <typename T>
 void math::interpolation::Interpolator<T>::PushInterpolationObject(const T& interpolationObject, Real time)
 {
 	std::vector<T>::iterator interpolationObjectItr = m_interpolationObjects.begin();
-	for (std::vector<Real>::iterator timeItr = m_times.begin(); timeItr != m_times.end(); ++timeItr, ++interpolationObjectItr)
+	for (auto timeItr = m_times.begin(); timeItr != m_times.end(); ++timeItr, ++interpolationObjectItr)
 	{
 		if (time < *timeItr)
 		{
@@ -42,7 +42,7 @@ void math::interpolation::Interpolator<T>::PushInterpolationObject(const T& inte
 			m_times.insert(timeItr, time);
 			return;
 		}
-		else if (AlmostEqual(time, *timeItr))
+		if (AlmostEqual(time, *timeItr))
 		{
 			*interpolationObjectItr = interpolationObject;
 			return;
@@ -77,7 +77,7 @@ T math::interpolation::LinearInterpolator<T>::Interpolate(Real time) const
 	{
 		return m_interpolationObjects.front();
 	}
-	else if (time > GetEndTime())
+	if (time > GetEndTime())
 	{
 		return m_interpolationObjects.back();
 	}
@@ -91,9 +91,9 @@ T math::interpolation::LinearInterpolator<T>::Interpolate(Real time) const
 			break;
 		}
 	}
-	Real time0 = m_times[index - 1];
-	Real time1 = m_times[index];
-	Real interpolationFactor = (time - time0) / (time1 - time0);
+	auto time0 = m_times[index - 1];
+	auto time1 = m_times[index];
+	auto interpolationFactor = (time - time0) / (time1 - time0);
 
 	return InterpolateLinear(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }

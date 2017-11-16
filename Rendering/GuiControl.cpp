@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GuiControl.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::Controls::GuiControl::GuiControl(const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale) :
 	m_screenPosition(screenPosition),

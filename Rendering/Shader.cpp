@@ -2,10 +2,9 @@
 #include "Shader.h"
 #include "Renderer.h"
 
-//#include "CoreEngine.h"
-#include "Utility\Utility.h"
-#include "Utility\ILogger.h"
-#include "Utility\StringUtility.h"
+#include "Utility/Utility.h"
+#include "Utility/ILogger.h"
+#include "Utility/StringUtility.h"
 
 #include <fstream>
 

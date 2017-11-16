@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Font.h"
-#include "Utility\StringUtility.h"
-#include "Utility\ILogger.h"
+#include "Utility/StringUtility.h"
+#include "Utility/ILogger.h"
 #include <fstream>
 #include <algorithm> // std::find
 

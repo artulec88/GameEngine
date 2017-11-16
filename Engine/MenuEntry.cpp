@@ -2,20 +2,18 @@
 #include "MenuEntry.h"
 #include "GameManager.h"
 
-#include "Rendering\GuiButtonControl.h"
+#include "Rendering/GuiButtonControl.h"
 
-#include "Math\IntersectInfo.h"
+#include "Math/IntersectInfo.h"
 
-#include "Utility\IConfig.h"
-#include "Utility\ILogger.h"
-
-#include <sstream>
+#include "Utility/IConfig.h"
+#include "Utility/ILogger.h"
 
 /* ==================== MenuEntry class begin ==================== */
 engine::MenuEntry::MenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture, const math::Vector2D& screenPosition,
 	const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset, bool isCentered /* = false */,
 	math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */, math::Real borderEdgeTransitionWidth /* = 0.1f */) :
-	m_parentMenuEntry(NULL),
+	m_parentMenuEntry(nullptr),
 	// TODO: Create a GuiControlFactory which will create GUI controls based on the special enum value (e.g.GuiControlType).
 	m_guiControl(std::make_unique<Rendering::Controls::GuiButtonControl>(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth))
 {
@@ -93,7 +91,7 @@ engine::CompositeMenuEntry::CompositeMenuEntry(const std::string& text, const Re
 }
 
 
-engine::CompositeMenuEntry::~CompositeMenuEntry(void)
+engine::CompositeMenuEntry::~CompositeMenuEntry()
 {
 }
 
@@ -113,6 +111,7 @@ void engine::CompositeMenuEntry::RenderAll(int guiControlShaderID, Rendering::Re
 	}
 }
 
+// TODO: I guess it would be better for the getSelectedChildIndex to simply return the m_selectedMenuEntryIndex instead of calculating the current menu entry.
 size_t engine::CompositeMenuEntry::GetSelectedChildIndex(math::Real xPos, math::Real yPos) const
 {
 	if (!m_childrenMenuEntries[m_selectedMenuEntryIndex]->DoesMouseHoverOver(xPos, yPos))
@@ -123,7 +122,6 @@ size_t engine::CompositeMenuEntry::GetSelectedChildIndex(math::Real xPos, math::
 			if ((index != m_selectedMenuEntryIndex) && ((*menuEntryItr)->DoesMouseHoverOver(xPos, yPos)))
 			{
 				return index;
-				break;
 			}
 		}
 	}
@@ -212,7 +210,7 @@ engine::MenuEntry* engine::CompositeMenuEntry::SelectChild(size_t index)
 	// TODO: Range check
 	if (index != m_selectedMenuEntryIndex)
 	{
-		m_selectedMenuEntryIndex = math::Clamp(index, (size_t)0, m_childrenMenuEntries.size());
+		m_selectedMenuEntryIndex = math::Clamp(index, static_cast<size_t>(0), m_childrenMenuEntries.size());
 	}
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 }
@@ -229,7 +227,7 @@ engine::ActionMenuEntry::ActionMenuEntry(engine::Actions::Action actionID, const
 }
 
 
-engine::ActionMenuEntry::~ActionMenuEntry(void)
+engine::ActionMenuEntry::~ActionMenuEntry()
 {
 }
 
@@ -253,7 +251,7 @@ engine::ValueMenuEntry::ValueMenuEntry(const std::string& text, const Rendering:
 }
 
 
-engine::ValueMenuEntry::~ValueMenuEntry(void)
+engine::ValueMenuEntry::~ValueMenuEntry()
 {
 }
 

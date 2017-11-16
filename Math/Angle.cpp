@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Angle.h"
 #include "FloatingPoint.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 #include <algorithm>
 
 math::Angle::Angle(const Angle& angle) :
@@ -29,7 +29,7 @@ math::Angle& math::Angle::operator=(const Angle& angle)
 	START_PROFILING_MATH(false, "");
 	m_angle = angle.m_angle;
 	STOP_PROFILING_MATH("");
-	return (*this);
+	return *this;
 }
 
 math::Angle& math::Angle::operator=(Angle&& angle) noexcept
@@ -37,7 +37,7 @@ math::Angle& math::Angle::operator=(Angle&& angle) noexcept
 	START_PROFILING_MATH(false, "");
 	m_angle = std::move(angle.m_angle);
 	STOP_PROFILING_MATH("");
-	return (*this);
+	return *this;
 }
 
 math::Angle math::Angle::operator-() const
@@ -61,14 +61,14 @@ math::Angle math::Angle::operator-(const Angle& angle) const
 	return Angle(m_angle - angle.m_angle, units::RADIAN);
 }
 
-math::Angle math::Angle::operator*(Real s) const
+math::Angle math::Angle::operator*(const Real s) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
 	return Angle(m_angle * s, units::RADIAN);
 }
 
-math::Angle math::Angle::operator/(Real s) const
+math::Angle math::Angle::operator/(const Real s) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
@@ -91,7 +91,7 @@ math::Angle& math::Angle::operator-=(const Angle& angle)
 	return *this;
 }
 
-math::Angle& math::Angle::operator*=(Real s)
+math::Angle& math::Angle::operator*=(const Real s)
 {
 	START_PROFILING_MATH(false, "");
 	m_angle *= s;
@@ -99,7 +99,7 @@ math::Angle& math::Angle::operator*=(Real s)
 	return *this;
 }
 
-math::Angle& math::Angle::operator/=(Real s)
+math::Angle& math::Angle::operator/=(const Real s)
 {
 	START_PROFILING_MATH(false, "");
 	CHECK_CONDITION_MATH(!AlmostEqual(s, REAL_ZERO), Utility::Logging::ERR, "Cannot divide the angle by 0. Returning the unmodified angle.");
@@ -125,33 +125,33 @@ bool math::Angle::operator!=(const Angle& angle) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
-	return (!((*this) == angle));
+	return !(*this == angle);
 }
 
 bool math::Angle::operator>(const Angle& angle) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
-	return (m_angle > angle.m_angle);
+	return m_angle > angle.m_angle;
 }
 
 bool math::Angle::operator>=(const Angle& angle) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
-	return (! (m_angle < angle.m_angle));
+	return !(m_angle < angle.m_angle);
 }
 
 bool math::Angle::operator<(const Angle& angle) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
-	return (m_angle < angle.m_angle);
+	return m_angle < angle.m_angle;
 }
 
 bool math::Angle::operator<=(const Angle& angle) const
 {
 	START_PROFILING_MATH(false, "");
 	STOP_PROFILING_MATH("");
-	return (! (m_angle > angle.m_angle));
+	return !(m_angle > angle.m_angle);
 }

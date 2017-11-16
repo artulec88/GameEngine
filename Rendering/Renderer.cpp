@@ -9,17 +9,14 @@
 #include "MeshIDs.h"
 #include "GuiImageControl.h"
 
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 
-#include "Utility\IConfig.h"
-#include "Utility\ILogger.h"
-#include "Utility\FileManager.h"
-//#include "Utility\FileNotFoundException.h"
+#include "Utility/IConfig.h"
+#include "Utility/ILogger.h"
+#include "Utility/FileManager.h"
+//#include "Utility/FileNotFoundException.h"
 
-#include <stddef.h>
 #include <iomanip>
-#include <sstream>
-#include <algorithm>
 
 // TODO: BIAS_MATRIX could and should be a constexpr!
 /* static */ const math::Matrix4D Rendering::Renderer::BIAS_MATRIX(math::Matrix4D(0.5f /* scale matrix */) * math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
@@ -42,16 +39,16 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 		GET_CONFIG_VALUE_RENDERING("fogGradient", 0.005f), static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE_RENDERING("fogFallOffType", 0)),
 		static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE_RENDERING("fogCalculationType", 0)), GET_CONFIG_VALUE_RENDERING("fogEnabled", true)),
 	m_ambientLightEnabled(GET_CONFIG_VALUE_RENDERING("ambientLightEnabled", true)),
-	m_currentLight(NULL),
-	m_currentPointLight(NULL),
-	//m_currentSpotLight(NULL),
-	m_currentCamera(NULL),
-	m_tempCamera(NULL),
+	m_currentLight(nullptr),
+	m_currentPointLight(nullptr),
+	//m_currentSpotLight(nullptr),
+	m_currentCamera(nullptr),
+	m_tempCamera(nullptr),
 	m_shaderFactory(shadersDirectory),
 	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), texturesDirectory, fontsDirectory),
 	m_meshFactory(modelsDirectory, texturesDirectory),
 	m_textureFactory(texturesDirectory),
-	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
+	m_displayTexture(windowWidth, windowHeight, nullptr, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_filterCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(180.0f)), math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), math::Matrix4D(), 0.005f),
 	m_filterTransform(math::Vector3D(), math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
@@ -61,28 +58,28 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE_RENDERING("defaultShadowMinVariance", 0.00002f)),
 	m_cubeShadowMap(),
-	m_shadowMaps({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
-		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
-	m_shadowMapTempTargets({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
-		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
-		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
+	m_shadowMaps({ Texture(2, 2, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
+	m_shadowMapTempTargets({ Texture(2, 2, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, nullptr, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
@@ -99,8 +96,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
 	m_waterDUDVTexture(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")), // TODO: This texture will not be available from the textures factory.
 	m_waterNormalMap(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")), // TODO: This texture will not be available from the textures factory.
-	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ NULL, NULL }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), GL_REPEAT, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
-	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
+	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ nullptr, nullptr }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), GL_REPEAT, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
+	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), nullptr, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
@@ -109,9 +106,9 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_particleInstanceVboData(m_maxParticlesCount * m_particleQuad->GetInstanceDataLength()),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
-	, m_propertiesBar(NULL),
-	m_cameraBar(NULL),
-	m_lightsBar(NULL),
+	, m_propertiesBar(nullptr),
+	m_cameraBar(nullptr),
+	m_lightsBar(nullptr),
 	//m_cameraMembers(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	m_cameraType()
 #endif
@@ -184,15 +181,15 @@ Rendering::Renderer::~Renderer(void)
 
 	// TODO: m_fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
-	//SetTexture("fontTexture", NULL);
+	//SetTexture("fontTexture", nullptr);
 
-	m_mappedValues.SetTexture("waterReflectionTexture", NULL);
-	m_mappedValues.SetMultitexture("waterRefractionTexture", NULL, 0);
-	m_mappedValues.SetMultitexture("waterDepthMap", NULL, 1);
-	m_mappedValues.SetTexture("waterDUDVMap", NULL);
-	m_mappedValues.SetTexture("waterNormalMap", NULL);
+	m_mappedValues.SetTexture("waterReflectionTexture", nullptr);
+	m_mappedValues.SetMultitexture("waterRefractionTexture", nullptr, 0);
+	m_mappedValues.SetMultitexture("waterDepthMap", nullptr, 1);
+	m_mappedValues.SetTexture("waterDUDVMap", nullptr);
+	m_mappedValues.SetTexture("waterNormalMap", nullptr);
 
-	m_mappedValues.SetTexture("shadowMap", NULL);
+	m_mappedValues.SetTexture("shadowMap", nullptr);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
@@ -257,7 +254,7 @@ void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, math::
 
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
-	//CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+	//CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != nullptr,
 	//	Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = ", m_currentCameraIndex, ")");
 	
 	m_mappedValues.SetReal("dayNightMixFactor", dayNightMixFactor);
@@ -323,7 +320,7 @@ void Rendering::Renderer::FinalizeRenderScene(int filterShaderID)
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
 		math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
-	ApplyFilter(m_shaderFactory.GetShader(filterShaderID), m_mappedValues.GetTexture("displayTexture"), NULL);
+	ApplyFilter(m_shaderFactory.GetShader(filterShaderID), m_mappedValues.GetTexture("displayTexture"), nullptr);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING_RENDERING("");
 }
@@ -508,13 +505,13 @@ void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles:
 bool Rendering::Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+	int shadowMapIndex = (shadowInfo == nullptr) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
 	m_mappedValues.SetTexture("shadowMap", &m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex].BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
 
-	if ( /* (m_shadowEnabled) && */ (shadowInfo != NULL))
+	if ( /* (m_shadowEnabled) && */ (shadowInfo != nullptr))
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
 		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
@@ -549,7 +546,7 @@ bool Rendering::Renderer::InitShadowMap()
 void Rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-	if (shadowInfo != NULL)
+	if (shadowInfo != nullptr)
 	{
 		int shadowMapIndex = shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 		if (shadowInfo->IsFlipFacesEnabled())
@@ -589,9 +586,9 @@ void Rendering::Renderer::BlurShadowMap(const Shader* filterShader, int shadowMa
 void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING_RENDERING(true, "");
-	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::Logging::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != nullptr, Utility::Logging::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
 	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::Logging::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
-	if (dest == NULL)
+	if (dest == nullptr)
 	{
 		DELOCUST_LOG_RENDERING("Binding window as a render target for filtering");
 		BindAsRenderTarget();
@@ -612,18 +609,18 @@ void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader->Bind();
 	filterShader->UpdateRendererUniforms(this);
-	filterShader->UpdateUniforms(m_filterTransform, NULL, this);
+	filterShader->UpdateUniforms(m_filterTransform, nullptr, this);
 	m_filterMesh->Draw();
 
 	m_currentCamera = m_tempCamera;
-	m_mappedValues.SetTexture("filterTexture", NULL);
+	m_mappedValues.SetTexture("filterTexture", nullptr);
 	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Renderer::SetCurrentCamera(const BaseCamera* camera)
 {
-	CHECK_CONDITION_RENDERING(camera != NULL, Utility::Logging::ERROR, "Cannot set current camera. Given camera is NULL.");
-	//if (camera == NULL)
+	CHECK_CONDITION_RENDERING(camera != nullptr, Utility::Logging::ERROR, "Cannot set current camera. Given camera is nullptr.");
+	//if (camera == nullptr)
 	//{
 	//	ERROR_LOG_RENDERING("Cannot set current camera. Given camera is NULL.");
 	//}
@@ -748,7 +745,7 @@ void Rendering::Renderer::InitializeTweakBars()
 	m_cameraMembers[0].Type = matrix4DType; m_cameraMembers[1].Type = angleType; m_cameraMembers[2].Type = TW_TYPE_FLOAT; m_cameraMembers[3].Type = TW_TYPE_FLOAT; m_cameraMembers[4].Type = TW_TYPE_FLOAT;
 	m_cameraMembers[0].Offset = 8; m_cameraMembers[1].Offset = 80; m_cameraMembers[2].Offset = 92; m_cameraMembers[3].Offset = 100; m_cameraMembers[4].Offset = 108;
 	m_cameraMembers[0].DefString = ""; m_cameraMembers[1].DefString = ""; m_cameraMembers[2].DefString = " step=0.01 "; m_cameraMembers[3].DefString = ""; m_cameraMembers[4].DefString = "";
-	m_cameraType = TwDefineStruct("Camera", m_cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
+	m_cameraType = TwDefineStruct("Camera", m_cameraMembers, 5, sizeof(Rendering::Camera), nullptr, nullptr);
 
 	m_propertiesBar = TwNewBar("PropertiesBar");
 	TwAddVarRW(m_propertiesBar, "bgColor", TW_TYPE_COLOR3F, &m_backgroundColor, " label='Background color' ");
@@ -780,14 +777,14 @@ void Rendering::Renderer::InitializeTweakBars()
 	//TwAddVarRO(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlane.GetNormal(), " label='Normal' group='Reflection' ");
 	//TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlane.GetDistance(), " label='Origin distance' group='Reflection' ");
 
-	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(m_propertiesBar, nullptr, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	DEBUG_LOG_RENDERING("Initializing rendering engine's properties tweak bar finished");
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
 	DEBUG_LOG_RENDERING("Initializing rendering engine's cameras tweak bar");
 	m_cameraBar = TwNewBar("CamerasBar");
-	if (m_currentCamera == NULL)
+	if (m_currentCamera == nullptr)
 	{
 		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras are setup by the game manager.");
 	}
@@ -799,7 +796,7 @@ void Rendering::Renderer::InitializeTweakBars()
 	}
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
-	TwSetParam(m_cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(m_cameraBar, nullptr, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	DEBUG_LOG_RENDERING("Initializing rendering engine's cameras tweak bar finished");
 #endif
 

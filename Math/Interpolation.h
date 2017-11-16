@@ -32,7 +32,7 @@ namespace math
 		public:
 			/// <summary> Interpolator default constructor. </summary>
 			Interpolator();
-			
+
 			/// <summary> Interpolator constructor. </summary>
 			/// <param name="interpolationObjects">
 			/// The pointer to values of the function for the <paramref name="times"/> arguments which the interpolator will use.
@@ -66,7 +66,6 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			virtual T Interpolate(Real time) const = 0;
 			void PushInterpolationObject(const T& interpolationObject, Real time);
 			Real GetStartTime() const { return m_times.front(); }
@@ -125,8 +124,7 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual T Interpolate(Real time) const override;
+			T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 		}; /* end class LinearInterpolator */
 
@@ -175,8 +173,7 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual T Interpolate(Real time) const override;
+			T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 		}; /* end class CosineInterpolator */
 
@@ -254,14 +251,12 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual T Interpolate(Real time) const override;
+			T Interpolate(Real time) const override;
 		private:
 			void CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			std::vector<T> m_derivatives;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class HermiteInterpolator */
@@ -311,8 +306,7 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual T Interpolate(Real time) const override;
+			T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -351,7 +345,7 @@ namespace math
 		/// <returns>
 		/// The output which is the linearly-interpolated value between given <paramref name="value1"/> and <paramref name="value2"/>
 		/// with the given interpolation factor (<paramref name="factor"/>).
-		   /// </returns>
+		/// </returns>
 		template <class T>
 		T InterpolateLinear(const T& value1, const T& value2, Real factor);
 
@@ -360,7 +354,7 @@ namespace math
 		/// <param name="value2"> The second input value we interpolate. </param>
 		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
 		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
-		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// The greater the factor the more output value will be taken from <paramref name="value2"/>. In an extreme, degenerate case when
 		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
 		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
 		/// </param>

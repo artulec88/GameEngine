@@ -2,8 +2,8 @@
 #include "DirectionalLightComponent.h"
 #include "CoreEngine.h"
 
-#include "Utility\IConfig.h"
-#include "Utility\Time.h"
+#include "Utility/IConfig.h"
+#include "Utility/Time.h"
 
 engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
 	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,

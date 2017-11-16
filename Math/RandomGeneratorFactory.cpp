@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RandomGeneratorFactory.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 /* static */ math::random::RandomGeneratorFactory& math::random::RandomGeneratorFactory::GetRandomGeneratorFactory()
 {

@@ -1,11 +1,11 @@
 /* UTILITY includes begin */
-#include "Utility\ILogger.h"
-#include "Utility\ICommandLineMapper.h"
-#include "Utility\IConfig.h"
+#include "Utility/ILogger.h"
+#include "Utility/ICommandLineMapper.h"
+#include "Utility/IConfig.h"
 /* UTILITY includes end */
 
 /* ENGINE includes begin */
-#include "Engine\CoreEngine.h"
+#include "Engine/CoreEngine.h"
 /* ENGINE includes end */
 
 /* GAME includes begin */
@@ -34,10 +34,10 @@ void PrintHelp()
 	std::cout << std::endl;
 }
 
-void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirectory, std::string* shaderDirectory, std::string* modelsDirectory,
+void ReadSettingsAndParameters(const int argc, char* argv[], std::string* configDirectory, std::string* shaderDirectory, std::string* modelsDirectory,
 	std::string* texturesDirectory, std::string* fontsDirectory, std::string* audioDirectory)
 {
-	std::unique_ptr<utility::ICommandLineMapper> commandLineMapper = utility::ICommandLineMapper::CreateCommandLineMapper(argc, argv);
+	const auto commandLineMapper = utility::ICommandLineMapper::CreateCommandLineMapper(argc, argv);
 	if (commandLineMapper->IsPresent("-help"))
 	{
 		PrintHelp();
@@ -91,7 +91,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirect
 // foo("bla") then it will most likely not allocate new memory for the string "bla". However if the string were a little longer, e.g. if we call foo("veryLongString")
 // then most likely it will allocate new memory for the string "veryLongString". This will cause "new" operator to be invoked.
 
-int main(int argc, char* argv[])
+int main(const int argc, char* argv[])
 {
 	//FILE *f = fopen("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\waterDUDV2.png", "rb");
 	//if (!f)

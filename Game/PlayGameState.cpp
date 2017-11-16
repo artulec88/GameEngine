@@ -4,36 +4,34 @@
 #include "TextureIDs.h"
 #include "GameNodeBuilder.h"
 
-#include "Engine\GameManager.h"
-#include "Engine\CoreEngine.h"
-#include "Engine\MeshRendererComponent.h"
-#include "Engine\BillboardRendererComponent.h"
-#include "Engine\PhysicsComponent.h"
-#include "Engine\GravityComponent.h"
-#include "Engine\GameNode.h"
+#include "Engine/GameManager.h"
+#include "Engine/CoreEngine.h"
+#include "Engine/MeshRendererComponent.h"
+#include "Engine/BillboardRendererComponent.h"
+#include "Engine/PhysicsComponent.h"
+#include "Engine/GravityComponent.h"
+#include "Engine/GameNode.h"
 
-#include "Rendering\CameraBuilder.h"
-#include "Rendering\LightBuilder.h"
-#include "Rendering\ParticlesSystemBuilder.h"
-#include "Rendering\Shader.h"
-#include "Rendering\MeshIDs.h"
+#include "Rendering/CameraBuilder.h"
+#include "Rendering/LightBuilder.h"
+#include "Rendering/ParticlesSystemBuilder.h"
+#include "Rendering/MeshIDs.h"
 
-#include "Math\FloatingPoint.h"
-
-#include "Utility\BuilderDirector.h"
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
+#include "Utility/BuilderDirector.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
 
 Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_rootGameNode(),
 	m_terrainNode(),
 	m_terrain(nullptr),
-	m_terrainMaterial(NULL),
+	m_terrainMaterial(nullptr),
 	m_waterNode(),
 	m_skyboxNode(),
 	m_playerNode(),
 	m_nodes(),
+	m_currentCameraIndex(-1),
 	m_camerasNode(),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
@@ -42,7 +40,7 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 	m_inGameDateTime(GET_CONFIG_VALUE_GAME("inGameYear", 2016), GET_CONFIG_VALUE_GAME("inGameMonth", 5),
 		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
 #ifdef DRAW_GAME_TIME
-	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), NULL,
+	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), nullptr,
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), math::Angle(GET_CONFIG_VALUE_GAME("screenRotationInGameTime", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenScaleInGameTimeX", 1.0f), GET_CONFIG_VALUE_GAME("screenScaleInGameTimeY", 1.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
 		Rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
@@ -76,7 +74,7 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 	DEBUG_LOG_GAME("Play game state created");
 }
 
-Game::PlayGameState::~PlayGameState(void)
+Game::PlayGameState::~PlayGameState()
 {
 	for (auto cameraItr = m_cameras.begin(); cameraItr != m_cameras.end(); ++cameraItr)
 	{
@@ -262,7 +260,7 @@ void Game::PlayGameState::AddWaterNodes()
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
 	m_waterNode.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
-		NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
+		nullptr /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
 	m_waterNode.GetTransform().SetScale(0.2f);
@@ -302,7 +300,7 @@ void Game::PlayGameState::AddPlayerNode()
 void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
 {
 	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
-	math::Real angle = 0.0f;
+	const auto angle = REAL_ZERO;
 	std::vector<math::Real> billboardsModelMatrices;
 	billboardsModelMatrices.reserve(billboardsCount * math::Matrix4D::SIZE * math::Matrix4D::SIZE);
 	for (int i = 0; i < billboardsCount; ++i)
@@ -660,7 +658,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::Logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_GAME(renderer != nullptr, Utility::Logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
@@ -704,7 +702,7 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* rende
 	renderer->BindShader(ambientShaderID);
 	renderer->UpdateRendererUniforms(ambientShaderID);
 	m_rootGameNode.Render(ambientShaderID, renderer);
-	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
+	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != nullptr, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
 	int ambientTerrainShaderID = GetAmbientTerrainShaderID(renderer->GetFogInfo());
 	renderer->BindShader(ambientTerrainShaderID);
 	renderer->UpdateRendererUniforms(ambientTerrainShaderID);
@@ -821,7 +819,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
 	RenderWaterReflectionTexture(renderer);
@@ -834,7 +832,7 @@ void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) con
 void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	EMERGENCY_LOG_GAME("Rendering water reflection texture doesn't work now. Reflection camera is not properly setup.");
 	return;
 
@@ -872,11 +870,11 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
-	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, nullptr);
 	//}
 	//else
 	//{
-	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, nullptr);
 	//}
 
 	//BindAsRenderTarget();
@@ -890,7 +888,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
 	renderer->EnableWaterRefractionClippingPlane(m_waterNode.GetTransform().GetTransformedPos().y);
 	renderer->BindWaterRefractionTexture();
@@ -917,11 +915,11 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
-	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, nullptr);
 	//}
 	//else
 	//{
-	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, nullptr);
 	//}
 
 	//BindAsRenderTarget();
@@ -933,7 +931,7 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	// TODO: Add some condition here that will prevent any water nodes rendering if there are no water nodes available.
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_waterNode != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_waterNode != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
 	// TODO: In the future there might be more than one water node.
@@ -1086,7 +1084,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 int Game::PlayGameState::GetAmbientShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
-	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
+	if (fogInfo.IsEnabled()) // if (fogInfo != nullptr)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 

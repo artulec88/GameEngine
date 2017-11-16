@@ -87,17 +87,33 @@ namespace audio
 		/// Audio engine constructor.
 		/// </summary>
 		/// <param name="audioDirectory"> The system directory where all sounds are located. </param>
-		AUDIO_API IAudioEngine(const std::string& audioDirectory);
+		AUDIO_API explicit IAudioEngine(const std::string& audioDirectory);
+
 		/// <summary>
 		/// Audio engine destructor.
 		/// </summary>
-		AUDIO_API virtual ~IAudioEngine(void);
+		AUDIO_API virtual ~IAudioEngine();
+
+		/// <summary> Audio engine copy constructor. </summary>
+		/// <param name="audioEngine"> The audio engine to copy construct from. </param>
 		IAudioEngine(const IAudioEngine& audioEngine) = delete;
-		void operator=(const IAudioEngine& audioEngine) = delete;
+
+		/// <summary> Audio engine move constructor. </summary>
+		/// <param name="audioEngine"> The audio engine to move construct from. </param>
+		IAudioEngine(IAudioEngine&& audioEngine) = delete;
+
+		/// <summary> Audio engine copy assignment operator. </summary>
+		/// <param name="audioEngine"> The audio engine to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned audio engine. </returns>
+		IAudioEngine& operator=(const IAudioEngine& audioEngine) = delete;
+
+		/// <summary> Audio engine move assignment operator. </summary>
+		/// <param name="audioEngine"> The audio engine to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned audio engine. </returns>
+		IAudioEngine& operator=(IAudioEngine&& audioEngine) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Updates the state of the audio engine. For irrKlang audio engine running in multithreaded mode this function may be an empty operation.
 		/// </summary>
@@ -163,11 +179,10 @@ namespace audio
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		const std::string& m_audioDirectory;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioEngine */
 
-} /* end namespace Audio */
+} /* end namespace audio */
 
 #endif /* __AUDIO_IAUDIO_ENGINE_H__ */

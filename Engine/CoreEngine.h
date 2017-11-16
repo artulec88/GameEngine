@@ -6,27 +6,25 @@
 #include "GameStateManager.h"
 #include "InputMapping.h"
 
-#include "Audio\IAudioEngine.h"
+#include "Audio/IAudioEngine.h"
 
-#include "Physics\PhysicsEngine.h"
+#include "Physics/PhysicsEngine.h"
 
-#include "Rendering\GuiButtonControl.h"
-#include "Rendering\Renderer.h"
+#include "Rendering/GuiButtonControl.h"
+#include "Rendering/Renderer.h"
 
-#include "Math\Math.h"
-#include "Math\Angle.h"
+#include "Math/Math.h"
 
-#include "Utility\Time.h"
+#include "Utility/Time.h"
 
 #include <string>
-#include "GLFW\glfw3.h"
+#include "GLFW/glfw3.h"
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
-#include "Math\Statistics.h"
-#include "Math\StatisticsStorage.h"
-#include "Math\UtmostSamples.h"
-#include "Math\UtmostSamples_impl.h"
-#include <vector>
+#include "Math/Statistics.h"
+#include "Math/StatisticsStorage.h"
+#include "Math/UtmostSamples.h"
+#include "Math/UtmostSamples_impl.h"
 #endif
 
 #undef STOP_TIMER
@@ -66,21 +64,51 @@ namespace engine
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
+		/// <summary> Core engine constructor. </summary>
+		/// <param name="fullscreensEnabled">
+		/// Fullscreen mode flag. If <code>true</code> is specified then the engine will run in fullscreen mode.
+		/// Otherwise, the window's size will be set to <paramref name="width"/> x <paramref name="height"/>.
+		/// </param>
+		/// <param name="width"> The width of the screen. </param>
+		/// <param name="height"> The height of the screen. </param>
+		/// <param name="title"> The title. </param>
+		/// <param name="configDirectory"> The configuration directory. </param>
+		/// <param name="shadersDirectory"> The shaders directory. </param>
+		/// <param name="modelsDirectory"> The models directory. </param>
+		/// <param name="texturesDirectory"> The textures directory. </param>
+		/// <param name="fontsDirectory"> The fonts directory. </param>
+		/// <param name="audioDirectory"> The audio directory. </param>
 		ENGINE_API CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
 			const std::string& configDirectory = "..\\Config\\", const std::string& shadersDirectory = "..\\Shaders\\",
 			const std::string& modelsDirectory = "..\\Models\\", const std::string& texturesDirectory = "..\\Textures\\",
 			const std::string& fontsDirectory = "..\\Fonts\\", const std::string& audioDirectory = "..\\Sounds\\");
-		ENGINE_API ~CoreEngine(void);
+		
+		/// <summary> Core engine destructor. </summary>
+		ENGINE_API ~CoreEngine();
+
+		/// <summary> Core engine copy constructor. </summary>
+		/// <param name="coreEngine"> The core engine to copy construct from. </param>
 		CoreEngine(const CoreEngine& coreEngine) = delete;
-		void operator=(const CoreEngine& coreEngine) = delete;
+
+		/// <summary> Core engine move constructor. </summary>
+		/// <param name="coreEngine"> The core engine to move construct from. </param>
+		CoreEngine(CoreEngine&& coreEngine) = delete;
+
+		/// <summary> Core engine copy assignment operator. </summary>
+		/// <param name="coreEngine"> The core engine to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned core engine. </returns>
+		CoreEngine& operator=(const CoreEngine& coreEngine) = delete;
+
+		/// <summary> Core engine move assignment operator. </summary>
+		/// <param name="coreEngine"> The core engine to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned core engine. </returns>
+		CoreEngine& operator=(CoreEngine&& coreEngine) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		ENGINE_API void Start(GameManager* gameManager);
 		ENGINE_API void Stop();
-		inline void RequestWindowClose() const
+		void RequestWindowClose() const
 		{
 			glfwSetWindowShouldClose(m_window, GL_TRUE);
 		}
@@ -121,7 +149,7 @@ namespace engine
 		//void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 		//void ConvertTimeOfDay(math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
-		audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
+		audio::IAudioEngine& GetAudioEngine() const { return *m_audioEngine; }
 
 		const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 		const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
@@ -147,7 +175,7 @@ namespace engine
 		{
 			return m_renderer->CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
-		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
+		ENGINE_API const Rendering::Texture* GetTexture(int textureID) const
 		{
 			return m_renderer->GetTexture(textureID);
 		}
@@ -270,6 +298,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CoreEngine */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_CORE_ENGINE_H__ */

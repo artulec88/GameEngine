@@ -1,11 +1,10 @@
 #include "StdAfx.h"
 #include "Texture.h"
-//#include "CoreEngine.h"
 #include "stb_image.h"
 #include "Image.h"
-#include "Utility\Utility.h"
-#include "Utility\ILogger.h"
-#include "Math\Math.h"
+#include "Utility/Utility.h"
+#include "Utility/ILogger.h"
+#include "Math/Math.h"
 
 /* ==================== TextureData class implementation begin ==================== */
 Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping,

@@ -5,27 +5,20 @@
 #include "GameStateManager.h"
 //#include "ParticleSystem.h"
 #include "IUpdateable.h"
-#include "IRenderable.h"
 #include "GameNode.h"
 #include "GameCommand.h"
 #include "InputMapping.h"
 #include "IActionHandler.h"
 //#include "Observer.h"
 
-#include "Rendering\Material.h"
-#include "Rendering\BaseLight.h"
-#include "Rendering\Camera.h"
-#include "Rendering\FogInfo.h"
-#include "Rendering\GuiButtonControl.h"
-#include "Rendering\Texture.h"
-#include "Rendering\ParticlesSystem.h"
+#include "Rendering/GuiButtonControl.h"
+#include "Rendering/Texture.h"
+#include "Rendering/ParticlesSystem.h"
 
-#include "Math\EffectFactory.h"
-#include "Math\Transform.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 #ifdef CALCULATE_ENGINE_STATS
-#include "Math\Statistics.h"
-#include "Math\StatisticsStorage.h"
+#include "Math/Statistics.h"
+#include "Math/StatisticsStorage.h"
 #endif
 
 //#include <amp.h>
@@ -50,7 +43,6 @@ namespace engine
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		/// <summary>
 		/// Creates a game manager.
 		/// </summary>
@@ -129,19 +121,15 @@ namespace engine
 
 		/// <summary> Sets the game state transition object. The transition itself is not performed.
 		/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>
-		/// <see cref="PerformStateTransition">
+		/// <see cref="PerformStateTransition"/>
 		ENGINE_API void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
 		void PerformStateTransition();
 		ENGINE_API void PopState();
 		ENGINE_API void RequestGameQuit() const;
 		ENGINE_API const GameCommand& GetCommand(Actions::Action action) const
 		{
-			ActionsToGameCommandsMap::const_iterator actionToGameCommandItr = m_actionsToGameCommandsMap.find(action);
-			if (actionToGameCommandItr == m_actionsToGameCommandsMap.end())
-			{
-				WARNING_LOG_ENGINE("No game command registered for the action ID: ", action);
-				return m_emptyGameCommand;
-			}
+			const auto actionToGameCommandItr = m_actionsToGameCommandsMap.find(action);
+			CHECK_CONDITION_RETURN_ALWAYS_ENGINE(actionToGameCommandItr != m_actionsToGameCommandsMap.end(), m_emptyGameCommand, utility::logging::WARNING, "No game command registered for the action ID : ", action);
 			return *actionToGameCommandItr->second;
 		}
 		//ENGINE_API Rendering::effects::Effect<math::Real>* GetSingleValueEffect(Rendering::effects::EffectType effectType, unsigned int variant)
@@ -161,7 +149,6 @@ namespace engine
 
 		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
 		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, math::Real volume, math::Real pitch) const;
-	public:
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
 		/* ==================== Non-static member functions end ==================== */

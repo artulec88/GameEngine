@@ -1,8 +1,8 @@
 #include "IntroGameState.h"
 #include "Def.h"
-#include "Engine\GameManager.h"
-#include "Engine\CoreEngine.h"
-#include "Utility\ILogger.h"
+#include "Engine/GameManager.h"
+#include "Engine/CoreEngine.h"
+#include "Utility/ILogger.h"
 #include "MenuGameState.h"
 
 Game::IntroGameState::IntroGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
@@ -14,7 +14,7 @@ Game::IntroGameState::IntroGameState(engine::GameManager* gameManager, const std
 {
 }
 
-Game::IntroGameState::~IntroGameState(void)
+Game::IntroGameState::~IntroGameState()
 {
 }
 

@@ -1,21 +1,21 @@
 #include "stdafx.h"
 #include "AudioEngine_IRR_KLANG.h"
-#include "Utility\IConfig.h"
-#include "Utility\ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/ILogger.h"
 
 
 audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount) :
 	IAudioEngine(audioDirectory),
 	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
-	m_engine(NULL),
-	m_currentSong(NULL),
+	m_engine(nullptr),
+	m_currentSong(nullptr),
 	m_currentSongPath(""),
 	m_nextSongPath(""),
 	m_fade(FadeStates::FADE_NONE)
 {
 	m_engine = irrklang::createIrrKlangDevice(irrklang::ESOD_AUTO_DETECT,
 		irrklang::ESEO_MULTI_THREADED | irrklang::ESEO_LOAD_PLUGINS | irrklang::ESEO_USE_3D_BUFFERS,
-		NULL);
+		nullptr);
 }
 
 
@@ -26,7 +26,7 @@ audio::AudioEngine_IRR_KLANG::~AudioEngine_IRR_KLANG()
 
 void audio::AudioEngine_IRR_KLANG::Update(math::Real deltaTime)
 {
-	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
+	if ((m_currentSong != nullptr) && (m_fade == FadeStates::FADE_IN))
 	{
 		float volume = m_currentSong->getVolume();
 		float nextVolume = volume + deltaTime / M_SONG_FADE_IN_TIME;
@@ -38,14 +38,14 @@ void audio::AudioEngine_IRR_KLANG::Update(math::Real deltaTime)
 		DEBUG_LOG_AUDIO("Increasing volume by ", nextVolume - volume, ". Current volume = ", nextVolume);
 		m_currentSong->setVolume(nextVolume);
 	}
-	else if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_OUT))
+	else if ((m_currentSong != nullptr) && (m_fade == FadeStates::FADE_OUT))
 	{
-		float volume = m_currentSong->getVolume();
-		float nextVolume = volume - deltaTime / M_SONG_FADE_IN_TIME;
+		const auto volume = m_currentSong->getVolume();
+		const auto nextVolume = volume - deltaTime / M_SONG_FADE_IN_TIME;
 		if (nextVolume <= 0.0f)
 		{
 			m_currentSong->stop();
-			m_currentSong = NULL;
+			m_currentSong = nullptr;
 			m_currentSongPath.clear();
 			m_fade = FadeStates::FADE_NONE;
 		}
@@ -54,7 +54,7 @@ void audio::AudioEngine_IRR_KLANG::Update(math::Real deltaTime)
 			m_currentSong->setVolume(nextVolume);
 		}
 	}
-	else if ((m_currentSong == NULL) && (!m_nextSongPath.empty()))
+	else if ((m_currentSong == nullptr) && (!m_nextSongPath.empty()))
 	{
 		PlaySong(m_nextSongPath);
 		m_nextSongPath.clear();
@@ -94,12 +94,9 @@ void audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::st
 
 void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */)
 {
-	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
-	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
-	{
-		WARNING_LOG_AUDIO("The requested sound effect \"", path, "\" has not been found");
-		return;
-	}
+	const auto soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_soundSources[Categories::SOUND_EFFECT].end(), utility::logging::WARNING,
+		"The requested sound effect \"", path, "\" has not been found and thus couldn't be played.");
 
 	m_engine->play2D(soundItr->second, false, false, false, false);
 }
@@ -107,15 +104,12 @@ void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
-	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
-	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
-	{
-		WARNING_LOG_AUDIO("The requested sound effect \"", path, "\" has not been found");
-		return;
-	}
+	const auto soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_soundSources[Categories::SOUND_EFFECT].end(), utility::logging::WARNING,
+		"The requested sound effect \"", path, "\" has not been found and thus couldn't be played.");
 
 	irrklang::ISound* sound = m_engine->play2D(soundItr->second, false, true, true, true);
-	if (sound != NULL)
+	if (sound != nullptr)
 	{
 		sound->setVolume(volume);
 		sound->setPlaybackSpeed(pitch);
@@ -123,7 +117,7 @@ void audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 		sound->setIsPaused(false);
 
 		sound->drop();
-		sound = NULL;
+		sound = nullptr; // TODO: Assigned value is never used
 	}
 }
 
@@ -134,31 +128,24 @@ void audio::AudioEngine_IRR_KLANG::PlaySoundEffect3D(const std::string& path /* 
 void audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
 {
 	// Ignoring if this song is already playing
-	if (m_currentSongPath == path)
-	{
-		DEBUG_LOG_AUDIO("The song \"", m_currentSongPath, "\" is already playing");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(m_currentSongPath != path, utility::logging::DEBUG, "The song \"", m_currentSongPath, "\" is already playing");
 
 	// If a song is playing stop them and set this as the next song
-	if (m_currentSong != NULL)
+	if (m_currentSong != nullptr)
 	{
 		StopSong();
 		m_nextSongPath = path;
 		return;
 	}
 
-	// Find the snog in the corresponding sound map
-	Filenames2SoundSources::iterator soundSourcesItr = m_soundSources[Categories::SONG].find(path);
-	if (soundSourcesItr == m_soundSources[Categories::SONG].end())
-	{
-		WARNING_LOG_AUDIO("Cannot play the requested song \"", path, "\". It has not been loaded yet");
-		return;
-	}
+	// Find the song in the corresponding sound map
+	const auto soundItr = m_soundSources[Categories::SONG].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_soundSources[Categories::SONG].end(), utility::logging::WARNING,
+		"Cannot play the requested song \"", path, "\". It has not been loaded yet.");
 
 	// Start playing song with volume set to 0 and fade in
 	m_currentSongPath = path;
-	m_currentSong = m_engine->play2D(soundSourcesItr->second, true, true, true);
+	m_currentSong = m_engine->play2D(soundItr->second, true, true, true);
 	m_currentSong->setVolume(0.0f);
 	m_currentSong->setIsPaused(false);
 	m_fade = FadeStates::FADE_IN;
@@ -171,11 +158,11 @@ void audio::AudioEngine_IRR_KLANG::StopSoundEffects()
 
 void audio::AudioEngine_IRR_KLANG::StopSong()
 {
-	if (m_currentSong != NULL)
+	if (m_currentSong != nullptr)
 	{
 		m_fade = FadeStates::FADE_OUT;
 		m_currentSong->drop();
-		m_currentSong = NULL;
+		m_currentSong = nullptr;
 	}
 	m_nextSongPath.clear();
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MousePicker.h"
 #include "CoreEngine.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 engine::MousePicker::MousePicker() :
 	m_currentRay(REAL_ZERO, REAL_ZERO, REAL_ZERO)
@@ -20,9 +20,9 @@ void engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const ma
 	//math::Real yPosReal = 450.0f;
 
 	// Transforming into 3D normalised device space
-	math::Real normalisedDeviceSpaceX = (2.0f * xPos / CoreEngine::GetCoreEngine()->GetWindowWidth()) - 1.0f;
-	math::Real normalisedDeviceSpaceY = 1.0f - (2.0f * yPos / CoreEngine::GetCoreEngine()->GetWindowHeight());
-	math::Real normalisedDeviceSpaceZ = 1.0f; // we don't actually need Z component yet, but whatever...
+	const auto normalisedDeviceSpaceX = (2.0f * xPos / CoreEngine::GetCoreEngine()->GetWindowWidth()) - 1.0f;
+	const auto normalisedDeviceSpaceY = 1.0f - (2.0f * yPos / CoreEngine::GetCoreEngine()->GetWindowHeight());
+	const auto normalisedDeviceSpaceZ = 1.0f; // we don't actually need Z component yet, but whatever...
 	math::Vector3D normalisedDeviceSpaceRay(normalisedDeviceSpaceX, normalisedDeviceSpaceY, normalisedDeviceSpaceZ);
 	DEBUG_LOG_ENGINE("Normalised device space mouse position for viewport coordinates (", xPos, ", ", yPos, ") = ", normalisedDeviceSpaceRay);
 

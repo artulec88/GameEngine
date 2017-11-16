@@ -3,7 +3,7 @@
 #include "Interpolation_impl.h"
 #include "FloatingPoint.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 
 math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, Real heightAmplitude, int octaves, Real roughness) :
@@ -21,16 +21,16 @@ math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 {
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
 	// TODO: In the future this test should be moved to MathTest project.
-	int x = 5;
-	int z = 14;
-	Real noise1 = GetNoise(x, z);
-	Real noise2 = GetNoise(x, z);
+	auto x = 5;
+	auto z = 14;
+	auto noise1 = GetNoise(x, z);
+	auto noise2 = GetNoise(x, z);
 	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise1, noise2), utility::logging::ERR,
 		"The noise function does not return the same output for a given input (", noise1, " and ", noise2, ")");
 	x += 1;
 	z += -4;
-	Real noise3 = GetNoise(x, z);
-	Real noise4 = GetNoise(x, z);
+	auto noise3 = GetNoise(x, z);
+	auto noise4 = GetNoise(x, z);
 	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), utility::logging::ERR,
 		"The noise function does not return the same output for a given input (", noise3, " and ", noise4, ")");
 	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), utility::logging::ERR,
@@ -44,12 +44,12 @@ math::HeightsGenerator::~HeightsGenerator()
 
 math::Real math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 {
-	Real totalHeight = REAL_ZERO;
-	Real d = pow(m_freqFactor, m_octaves - 1);
+	auto totalHeight = REAL_ZERO;
+	auto d = pow(m_freqFactor, m_octaves - 1);
 	for (int i = 0; i < m_octaves; ++i)
 	{
-		const Real freq = pow(m_freqFactor, i) / d;
-		const Real amplitude = pow(m_roughness, i) * m_heightAmplitude;
+		const auto freq = pow(m_freqFactor, i) / d;
+		const auto amplitude = pow(m_roughness, i) * m_heightAmplitude;
 		totalHeight += GetInterpolatedNoise((x + m_offsetX) * freq, (z + m_offsetZ) * freq) * amplitude;
 	}
 	return totalHeight;
@@ -59,28 +59,28 @@ math::Real math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 {
 	// Watch: https://www.youtube.com/watch?v=qChQrNWU9Xw
 	Real intPartX, intPartZ;
-	const Real fractX = modf(x, &intPartX);
-	const Real fractZ = modf(z, &intPartZ);
+	const auto fractX = modf(x, &intPartX);
+	const auto fractZ = modf(z, &intPartZ);
 
-	const int intX = static_cast<int>(intPartX);
-	const int intZ = static_cast<int>(intPartZ);
+	const auto intX = static_cast<int>(intPartX);
+	const auto intZ = static_cast<int>(intPartZ);
 	
-	const Real height1 = GetSmoothNoise(intX, intZ);
-	const Real height2 = GetSmoothNoise(intX + 1, intZ);
-	const Real height3 = GetSmoothNoise(intX, intZ + 1);
-	const Real height4 = GetSmoothNoise(intX + 1, intZ + 1);
+	const auto height1 = GetSmoothNoise(intX, intZ);
+	const auto height2 = GetSmoothNoise(intX + 1, intZ);
+	const auto height3 = GetSmoothNoise(intX, intZ + 1);
+	const auto height4 = GetSmoothNoise(intX + 1, intZ + 1);
 
-	const Real i1 = interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
-	const Real i2 = interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
+	const auto i1 = interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
+	const auto i2 = interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
 	return interpolation::Interpolate<Real>(m_interpolationType, i1, i2, fractZ);
 }
 
 math::Real math::HeightsGenerator::GetSmoothNoise(int x, int z) const
 {
 	// TODO: Place for an improvement. Create a GaussianBlur class which would be able to smooth noise values a little bit more efficiently.
-	const Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
-	const Real sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / m_smoothSidesFactor;
-	const Real center = GetNoise(x, z) / m_smoothCenterFactor;
+	const auto corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
+	const auto sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / m_smoothSidesFactor;
+	const auto center = GetNoise(x, z) / m_smoothCenterFactor;
 	return corners + sides + center;
 }
 

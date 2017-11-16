@@ -30,7 +30,7 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		TestGameManager();
-		virtual ~TestGameManager(void);
+		virtual ~TestGameManager();
 		TestGameManager(const TestGameManager& gameManager) = delete;
 		TestGameManager(TestGameManager&& testGameManager) = delete;
 		TestGameManager& operator=(const TestGameManager& testGameManager) = delete;
@@ -38,25 +38,23 @@ namespace Game
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Load();
-		virtual void Update(math::Real delta);
+		void Load() override;
+		void Update(math::Real delta) override;
 
-		virtual math::Real GetLoadingProgress() const;
+		math::Real GetLoadingProgress() const override;
 
-		virtual engine::GameState* GetIntroGameState();
-		virtual engine::GameState* GetMainMenuGameState();
-		virtual engine::GameState* GetLoadGameState();
-		virtual engine::GameState* GetPlayGameState();
-		virtual engine::GameState* GetPlayMainMenuGameState();
+		engine::GameState* GetIntroGameState() override;
+		engine::GameState* GetMainMenuGameState() override;
+		engine::GameState* GetLoadGameState() override;
+		engine::GameState* GetPlayGameState() override;
+		engine::GameState* GetPlayMainMenuGameState() override;
 
-		virtual void WindowResizeEvent(int width, int height);
-		virtual void ScrollEvent(double xOffset, double yOffset);
-		virtual void MousePosEvent(double xPos, double yPos);
+		void WindowResizeEvent(int width, int height) override;
+		void ScrollEvent(double xOffset, double yOffset) override;
+		void MousePosEvent(double xPos, double yPos) override;
 #ifdef ANT_TWEAK_BAR_ENABLED
-		virtual void InitializeTweakBars();
+		void InitializeTweakBars() override;
 #endif
-	private:
 		//Rendering::Particles::ParticlesSystem CreateParticlesSystem(Particleeffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
 		//void AddCameras(Engine::GameNode* entityToFollow);
 		//void AddStaticEffects();

@@ -2,13 +2,11 @@
 #define __ENGINE_LIGHT_FACTORY_H__
 
 #include "Engine.h"
-#include "Rendering\DirectionalLight.h"
-#include "Rendering\PointLight.h"
-#include "Rendering\SpotLight.h"
+#include "Rendering/DirectionalLight.h"
+#include "Rendering/PointLight.h"
+#include "Rendering/SpotLight.h"
 
-#include "Utility\ILogger.h"
-
-#include <map>
+#include "Utility/ILogger.h"
 
 namespace engine
 {
@@ -31,34 +29,34 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary>The shader factory constructor.</summary>
+		/// <summary>The light factory constructor.</summary>
 		LightFactory();
 
-		/// <summary>The destructor.</summary>
-		~LightFactory(void);
+		/// <summary>The light factory destructor.</summary>
+		~LightFactory();
 
-		/// <summary>
-		/// Light factory copy constructor.
-		/// </summary>
+		/// <summary> Light factory copy constructor. </summary>
+		/// <param name="lightFactory"> The light factory to copy construct from. </param>
 		LightFactory(const LightFactory& lightFactory) = delete;
-		/// <summary>
-		/// Light factory move constructor.
-		/// </summary>
+
+		/// <summary> Light factory move constructor. </summary>
+		/// <param name="lightFactory"> The light factory to move construct from. </param>
 		LightFactory(LightFactory&& lightFactory) = delete;
-		/// <summary>
-		/// Light factory copy assignment operator.
-		/// </summary>
-		void operator=(LightFactory& lightFactory) = delete;
-		/// <summary>
-		/// Light factory move assignment operator.
-		/// </summary>
-		void operator=(LightFactory&& lightFactory) = delete;
+
+		/// <summary> Light factory copy assignment operator. </summary>
+		/// <param name="lightFactory"> The light factory to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned light factory. </returns>
+		LightFactory& operator=(LightFactory& lightFactory) = delete;
+
+		/// <summary> Light factory move assignment operator. </summary>
+		/// <param name="lightFactory"> The light factory to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned light factory. </returns>
+		LightFactory& operator=(LightFactory&& lightFactory) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		const Rendering::Lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		ENGINE_API inline const Rendering::Lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
+		ENGINE_API const Rendering::Lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
 		{
 			// TODO: Check if lightId is a correct value.
 			switch (lightType)
@@ -81,7 +79,6 @@ namespace engine
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		/// <summary>
 		/// The vector storing all directional lights at their unique IDs.
 		/// </summary>
@@ -99,6 +96,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightFactory */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_LIGHT_FACTORY_H__ */

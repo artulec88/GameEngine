@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AABR.h"
 #include "IntersectInfo.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
 	m_bottomLeftPos(bottomLeftPos),
@@ -21,17 +21,17 @@ math::AABR::~AABR()
 
 math::IntersectInfo math::AABR::DoesContainPoint(const Real x, const Real y) const noexcept
 {
-	const Real distanceX = CalcDistanceToNearestFaceX(x);
-	const Real distanceY = CalcDistanceToNearestFaceY(y);
+	const auto distanceX = CalcDistanceToNearestFaceX(x);
+	const auto distanceY = CalcDistanceToNearestFaceY(y);
 	//DELOCUST_LOG_MATH("DistanceX = ", distanceX, ", distanceY = ", distanceY);
-	return IntersectInfo((distanceX < distanceY) ? distanceX : distanceY);
+	return IntersectInfo(distanceX < distanceY ? distanceX : distanceY);
 }
 
-math::IntersectInfo math::AABR::DoesIntersectAABR(const AABR& aabr) const noexcept
+math::IntersectInfo math::AABR::DoesIntersectAabr(const AABR& aabr) const noexcept
 {
 	// TODO: Remove intermediate local variables.
-	const Vector2D distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
-	const Vector2D distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
+	const auto distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
+	const auto distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
 	return IntersectInfo(distances1.Max(distances2).Max());
 }
 
@@ -51,7 +51,7 @@ math::Real math::AABR::CalcDistanceToNearestFaceX(const Real x) const noexcept
 	else
 	{
 		distanceX = x - m_bottomLeftPos.x;
-		if ((m_topRightPos.x - x) < distanceX)
+		if (m_topRightPos.x - x < distanceX)
 		{
 			distanceX = m_topRightPos.x - x;
 		}
@@ -77,7 +77,7 @@ math::Real math::AABR::CalcDistanceToNearestFaceY(const Real y) const noexcept
 	else
 	{
 		distanceY = y - m_topRightPos.y;
-		if ((m_bottomLeftPos.y - y) < distanceY)
+		if (m_bottomLeftPos.y - y < distanceY)
 		{
 			distanceY = m_bottomLeftPos.y - y;
 		}

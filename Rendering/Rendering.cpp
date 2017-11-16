@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Rendering.h"
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
 
 int Rendering::supportedOpenGLLevel;
 std::string Rendering::glslVersion;

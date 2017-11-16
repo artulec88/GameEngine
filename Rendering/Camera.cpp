@@ -1,15 +1,13 @@
 #include "StdAfx.h"
 #include "Camera.h"
 
-#include "Math\Quaternion.h"
+#include "Math/Quaternion.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 #endif
 
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
-
-#include <sstream>
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
 
 Rendering::Camera::Camera() :
 	BaseCamera(math::Matrix4D::IDENTITY_MATRIX, 0.05f /* TODO: Don't ever use hard-coded values */),

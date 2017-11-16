@@ -23,20 +23,19 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		IntroGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
-		virtual ~IntroGameState(void);
+		virtual ~IntroGameState();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Entered();
-		virtual void Leaving();
-		virtual void Obscuring();
-		virtual void Revealed();
-		virtual void Handle(engine::Actions::Action action);
-		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, math::Real value);
+		void Entered() override;
+		void Leaving() override;
+		void Obscuring() override;
+		void Revealed() override;
+		void Handle(engine::Actions::Action action) override;
+		void Handle(engine::States::State state) override;
+		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		virtual void Render(Rendering::Renderer* renderer) const;
+		void Render(Rendering::Renderer* renderer) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

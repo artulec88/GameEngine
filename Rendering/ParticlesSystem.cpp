@@ -5,7 +5,7 @@
 #include "ShaderIDs.h"
 #include "TextureIDs.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::Particles::ParticlesSystem::ParticlesSystem() :
 	ParticlesSystem(0, Attributes::AttributesMask(0), TextureIDs::INVALID, ShaderIDs::INVALID)

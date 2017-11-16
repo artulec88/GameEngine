@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 #include "Sort.h"
 
 /* ==================== BubbleSort class implementation begin ==================== */
@@ -333,38 +333,88 @@ math::sorting::CountingSort::~CountingSort(void)
 
 void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
+	//for (size_t i = 0; i < valuesCount; ++i)
+	//{
+	//	ERROR_LOG_MATH("values[", i, "] = ", values[i]);
+	//}
 	/* ==================== Calculating range of data begin ==================== */
-	int min = INT_MAX;
-	int max = INT_MIN;
+	auto max = INT_MIN;
 	for (int i = 0; i < valuesCount; ++i)
 	{
-		if (values[i] < min)
+		if (values[i] < 0)
 		{
-			min = values[i];
+			ERROR_LOG_MATH("Values[", i, "] = ", values[i],
+				". Counting sort does not support negative values yet.");
 		}
-		else if (values[i] > max)
+		if (values[i] > max)
 		{
 			max = values[i];
 		}
 	}
-	int range = max - min;
 	/* ==================== Calculating range of data end ==================== */
 
 	std::vector<int> helpTab1(valuesCount);
-	std::vector<int> helpTab2(range + 1);
-	for (int i = 0; i <= range; ++i)
-		helpTab2[i] = 0;
+	std::vector<int> helpTab2(max + 1, 0); // filled with zeros initially
 	for (int i = 0; i < valuesCount; ++i)
+	{
 		++helpTab2[values[i]];
-	for (int i = 1; i <= range; ++i)
-		helpTab2[i] += helpTab2[i - 1];
+	}
+
+	//CRITICAL_LOG_MATH("After counting");
+	//for (size_t i = 0; i < helpTab1.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab1[", i, "] = ", helpTab1[i]);
+	//}
+	//for (size_t i = 0; i < helpTab2.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab2[", i, "] = ", helpTab2[i]);
+	//}
+
+	if (orders::ASCENDING == sortingOrder)
+	{
+		for (int i = 1; i <= max; ++i)
+		{
+			helpTab2[i] += helpTab2[i - 1];
+		}
+	}
+	else
+	{
+		for (int i = max - 1; i >= 0; --i)
+		{
+			helpTab2[i] += helpTab2[i + 1];
+		}
+	}
+
+	//CRITICAL_LOG_MATH("After accumulating");
+	//for (size_t i = 0; i < helpTab1.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab1[", i, "] = ", helpTab1[i]);
+	//}
+	//for (size_t i = 0; i < helpTab2.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab2[", i, "] = ", helpTab2[i]);
+	//}
+
 	for (int i = 0; i < valuesCount; ++i)
 	{
 		helpTab1[helpTab2[values[i]] - 1] = values[i];
 		--helpTab2[values[i]];
 	}
+
+	//CRITICAL_LOG_MATH("After sorting");
+	//for (size_t i = 0; i < helpTab1.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab1[", i, "] = ", helpTab1[i]);
+	//}
+	//for (size_t i = 0; i < helpTab2.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("helpTab2[", i, "] = ", helpTab2[i]);
+	//}
+
 	for (int i = 0; i < valuesCount; ++i)
+	{
 		values[i] = helpTab1[i];
+	}
 }
 
 void math::sorting::CountingSort::Sort(Real* values, size_t valuesCount, orders::Order sortingOrder /* = orders::ASCENDING */)

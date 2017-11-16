@@ -2,7 +2,7 @@
 #include "Matrix.h"
 #include "FloatingPoint.h"
 
-#include "Utility\Utility.h"
+#include "Utility/Utility.h"
 
 #include <utility>
 

@@ -9,7 +9,7 @@
 #include "StatisticsStorage.h"
 #endif
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 //#include <type_traits> // for static_assert
 
@@ -166,7 +166,7 @@ namespace math
 		/// <summary>A simple matrix destructor.</summary>
 		MATH_API ~Matrix4D();
 	private:
-		Matrix4D(const Real* values);
+		explicit Matrix4D(const Real* values);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

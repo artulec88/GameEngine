@@ -1,22 +1,22 @@
 #include "LoadGameState.h"
-#include "Engine\GameManager.h"
-#include "Engine\CoreEngine.h"
-#include "Rendering\Shader.h"
-#include "Utility\ILogger.h"
+#include "Engine/GameManager.h"
+#include "Engine/CoreEngine.h"
+#include "Rendering/Shader.h"
+#include "Utility/ILogger.h"
 #include "PlayGameState.h"
 
 Game::LoadGameState::LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
-	engine::GameState(inputMappingContextName),
+	GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_loadingProgress(REAL_ZERO),
-	m_loadingThread(NULL)
+	m_loadingThread(nullptr)
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("LoadGameState"))
 #endif
 {
 }
 
-Game::LoadGameState::~LoadGameState(void)
+Game::LoadGameState::~LoadGameState()
 {
 	SAFE_DELETE(m_loadingThread);
 }

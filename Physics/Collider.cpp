@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Collider.h"
-#include "Math\Sphere.h"
-#include "Utility\ILogger.h"
+#include "Math/Sphere.h"
+#include "Utility/ILogger.h"
 
 Physics::Collider::Collider(ColliderType type) :
 	m_type(type)
@@ -22,7 +22,7 @@ math::IntersectInfo Physics::Collider::Intersect(const Collider& collider) const
 			CRITICAL_LOG_PHYSICS("Casting collider to BoundingSphere pointer failed.");
 			exit(EXIT_FAILURE);
 		}
-		return self->DoesIntersectSphere((math::Sphere&)collider);
+		//return self->DoesIntersectSphere(static_cast<math::Sphere>(collider));
 	}
 
 	CRITICAL_LOG_PHYSICS("Only bounding spheres collision is currently handled by the physics engine. Other colliders are not yet supported.");

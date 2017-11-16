@@ -2,15 +2,15 @@
 #define __LOAD_GAME_STATE_H__
 
 #include "Def.h"
-#include "Rendering\Renderer.h"
-#include "Engine\GameState.h"
-#include "Engine\IRenderable.h"
-#include "Engine\IUpdateable.h"
-#include "Engine\GameNode.h"
-#include "Math\Math.h"
+#include "Rendering/Renderer.h"
+#include "Engine/GameState.h"
+#include "Engine/IRenderable.h"
+#include "Engine/IUpdateable.h"
+#include "Engine/GameNode.h"
+#include "Math/Math.h"
 #ifdef PROFILING_GAME_MODULE_ENABLED
-#include "Math\StatisticsStorage.h"
-#include "Math\Statistics.h"
+#include "Math/StatisticsStorage.h"
+#include "Math/Statistics.h"
 #endif
 
 #include <thread>
@@ -30,22 +30,21 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
-		virtual ~LoadGameState(void);
+		virtual ~LoadGameState();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Entered();
-		virtual void Leaving();
-		virtual void Obscuring();
-		virtual void Revealed();
-		virtual void Handle(engine::Actions::Action action);
-		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, math::Real value);
+		void Entered() override;
+		void Leaving() override;
+		void Obscuring() override;
+		void Revealed() override;
+		void Handle(engine::Actions::Action action) override;
+		void Handle(engine::States::State state) override;
+		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		virtual void Render(Rendering::Renderer* renderer) const;
+		void Render(Rendering::Renderer* renderer) const override;
 
-		virtual void Update(math::Real elapsedTime);
+		void Update(math::Real elapsedTime) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

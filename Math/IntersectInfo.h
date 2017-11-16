@@ -19,7 +19,7 @@ namespace math
 		/// from each other to stop intersecting. The positive value means no intersection and negative values mean that
 		/// two objects intersect with one another.
 		/// </param>
-		MATH_API IntersectInfo(Real distance);
+		MATH_API explicit IntersectInfo(Real distance);
 
 		/// <summary> Intersection information object destructor. </summary>
 		MATH_API ~IntersectInfo();

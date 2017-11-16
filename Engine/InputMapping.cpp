@@ -3,9 +3,9 @@
 #include "InputContext.h"
 #include "GameManager.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\FileManager.h"
-//#include "Utility\IConfig.h"
+#include "Utility/ILogger.h"
+#include "Utility/FileManager.h"
+//#include "Utility/IConfig.h"
 
 #include <fstream>
 

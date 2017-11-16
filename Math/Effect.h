@@ -47,7 +47,6 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary> Applies the current value of the effect to the specified <paramref name="attribute"/>. </summary>
 			/// <param name="attribute"> The attribute for which the effect will be applied. </param>
 			void Apply(T* attribute) const
@@ -84,7 +83,7 @@ namespace math
 			/// Creates a new no-effect.
 			/// </summary>
 			/// <param name="initialValue"> The values that effect will use. </param>
-			NoEffect(const T& initialValue);
+			explicit NoEffect(const T& initialValue);
 
 			/// <summary> No-effect destructor. </summary>
 			virtual ~NoEffect();
@@ -109,12 +108,11 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Performs no operation since the no-effect does not change with time.
 			/// </summary>
 			/// <param name="deltaTime"> The time passed since the last update. </param>
-			virtual void Update(Real deltaTime) override;
+			void Update(Real deltaTime) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -163,12 +161,11 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
 			/// <param name="deltaTime"> The time passed since the last update. </param>
-			virtual void Update(Real deltaTime) override;
+			void Update(Real deltaTime) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -188,7 +185,6 @@ namespace math
 		class BlinkEffect : public Effect<T>
 		{
 			/* ==================== Static variables begin ==================== */
-		private:
 			static constexpr Real DEFAULT_DURATION = 0.5f;
 			/* ==================== Static variables end ==================== */
 
@@ -225,12 +221,11 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
 			/// <param name="deltaTime"> The time passed since the last update. </param>
-			virtual void Update(Real deltaTime) override;
+			void Update(Real deltaTime) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

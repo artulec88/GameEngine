@@ -1,20 +1,18 @@
 #include "StdAfx.h"
 #include "CoreEngine.h"
 
-#include "Audio\AudioEngineFactory.h"
+#include "Audio/AudioEngineFactory.h"
 
-#include "Math\Math.h"
-#include "Math\FloatingPoint.h"
+#include "Math/Math.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\Config.h"
+#include "Utility/ILogger.h"
+#include "Utility/Config.h"
 
-#include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <iostream>
 #include <thread>
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 
 /**
  * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
@@ -161,16 +159,16 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	const std::string& configDirectory /* = "..\\Config\\" */, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
-	m_window(NULL),
-	m_threadWindow(NULL),
+	m_window(nullptr),
+	m_threadWindow(nullptr),
 	m_isRunning(false),
 	m_windowWidth(width),
 	m_windowHeight(height),
 	m_windowTitle(title),
 	m_frameTime(1.0f / GET_CONFIG_VALUE_ENGINE("maxFPS", 500.0f)),
-	m_game(NULL),
+	m_game(nullptr),
 	m_audioEngine(nullptr),
-	m_physicsEngine(NULL),
+	m_physicsEngine(nullptr),
 	m_renderer(nullptr),
 	m_configDirectory(configDirectory),
 	m_shadersDirectory(shadersDirectory),
@@ -227,7 +225,7 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 }
 
 
-engine::CoreEngine::~CoreEngine(void)
+engine::CoreEngine::~CoreEngine()
 {
 	DEBUG_LOG_ENGINE("Core engine destruction started");
 
@@ -347,21 +345,21 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-	GLFWmonitor* monitor = NULL;
+	GLFWmonitor* monitor = nullptr;
 	if (fullscreenEnabled)
 	{
 		monitor = glfwGetPrimaryMonitor();
 	}
-	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
-	if (m_window == NULL)
+	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, nullptr); // Open a window and create its OpenGL context
+	if (m_window == nullptr)
 	{
 		CRITICAL_LOG_ENGINE("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, m_window);
-	if (m_threadWindow == NULL)
+	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", nullptr, m_window);
+	if (m_threadWindow == nullptr)
 	{
 		CRITICAL_LOG_ENGINE("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
@@ -474,7 +472,7 @@ void engine::CoreEngine::Run()
 	m_isRunning = true;
 
 #ifdef COUNT_FPS
-	math::Real fpsSample = static_cast<math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
+	const auto fpsSample = static_cast<math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	math::Real frameTimeCounter = REAL_ZERO;
 	int fps = 0;
@@ -499,8 +497,8 @@ void engine::CoreEngine::Run()
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		math::Real currentTime = GetTime();
-		math::Real passedTime = currentTime - previousTime;
+		const auto currentTime = GetTime();
+		auto passedTime = currentTime - previousTime;
 		DELOCUST_LOG_ENGINE("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;

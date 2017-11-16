@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "InputRangeConverter.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
-#include "Utility\FileManager.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/FileManager.h"
 
 #include <fstream>
 
 engine::Input::InputRangeConverter::InputRangeConverter(const std::string& inputContextName)
 {
-	unsigned convertersCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "ConvertersCount", 0);
-	for (unsigned i = 0; i < convertersCount; ++i)
+	const auto convertersCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "ConvertersCount", 0);
+	for (auto i = 0; i < convertersCount; ++i)
 	{
 		std::stringstream ss("");
 		ss << (convertersCount + 1);
@@ -33,8 +33,8 @@ engine::Input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStr
 		EMERGENCY_LOG_ENGINE("Invalid file provided to RangeConverter constructor");
 	}
 
-	unsigned convertersCount = utility::FileManager::AttemptRead<unsigned>(inFileStream);
-	for (unsigned i = 0; i < convertersCount; ++i)
+	const auto convertersCount = utility::FileManager::AttemptRead<unsigned>(inFileStream);
+	for (auto i = 0; i < convertersCount; ++i)
 	{
 		Ranges::Range range;
 		Converter converter;

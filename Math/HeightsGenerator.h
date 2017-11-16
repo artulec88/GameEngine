@@ -10,10 +10,10 @@ namespace math
 	/// <summary> The random floating-point values generator for a given input positions. </summary>
 	class HeightsGenerator
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
 		/// Creates a heights generator.
@@ -50,10 +50,9 @@ namespace math
 		/// <param name="heightsGenerator"> The heights generator to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned heights generator. </returns>
 		MATH_API HeightsGenerator& operator=(HeightsGenerator&& heightsGenerator) = delete;
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
+		/* ==================== Non-static member functions begin ==================== */
 		/// <summary> Generates a random (but constant for the given input parameters) value (height) for the specified input position. </summary>
 		/// <param name="x"> The X component of the position we want to generate height for. </param>
 		/// <param name="z"> The Z component of the position we want to generate height for. </param>
@@ -85,10 +84,9 @@ namespace math
 		/// <param name="y"> The Y component of the position we want to calculate noise for. </param>
 		/// <returns> The random number between <code>-1</code> and <code>1</code>.</returns>
 		Real GetNoise(int x, int z) const;
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
-	private:
+		/* ==================== Non-static member variables begin ==================== */
 		const int m_offsetX;
 		const int m_offsetZ;
 
@@ -96,7 +94,7 @@ namespace math
 		/// Defines the amplitude of the generated heights. The final heights cannot exceed the specified amplitude.
 		/// </summary>
 		Real m_heightAmplitude;
-		
+
 		/// <summary>
 		/// The number of noise functions that we are going to use during heights generation process.
 		/// </summary>
@@ -123,7 +121,7 @@ namespace math
 		interpolation::interpolation_types::InterpolationType m_interpolationType;
 
 		const random::RandomGenerator& m_randomGenerator;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class HeightsGenerator */
 
 } /* end namespace math */

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "ParticlesEmitter.h"
 
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::Particles::ParticlesEmitter::ParticlesEmitter(math::Real numberOfParticlesToGeneratePerSecond) :
 	m_currentTimer(REAL_ZERO),

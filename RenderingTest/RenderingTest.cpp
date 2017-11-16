@@ -1,29 +1,29 @@
 #include "Def.h"
 
-#include "Rendering\CameraBuilder.h"
-#include "Rendering\LightBuilder.h"
-#include "Rendering\ShaderFactory.h"
-#include "Rendering\ParticlesSystemBuilder.h"
-#include "Rendering\Renderer.h"
-#include "Rendering\GuiButtonControl.h"
-#include "Rendering\FontFactory.h"
-#include "Rendering\Mesh.h"
-#include "Rendering\MeshIDs.h"
-#include "Rendering\Material.h"
-#include "Rendering\Terrain.h"
-#include "Rendering\stb_image.h"
+#include "Rendering/CameraBuilder.h"
+#include "Rendering/LightBuilder.h"
+#include "Rendering/ShaderFactory.h"
+#include "Rendering/ParticlesSystemBuilder.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/GuiButtonControl.h"
+#include "Rendering/FontFactory.h"
+#include "Rendering/Mesh.h"
+#include "Rendering/MeshIDs.h"
+#include "Rendering/Material.h"
+#include "Rendering/Terrain.h"
+#include "Rendering/stb_image.h"
 
-#include "Math\Transform.h"
-#include "Math\HeightsGenerator.h"
-#include "Math\StatisticsStorage.h"
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/Transform.h"
+#include "Math/HeightsGenerator.h"
+#include "Math/StatisticsStorage.h"
+#include "Math/RandomGeneratorFactory.h"
 
-#include "Utility\ICommandLineMapper.h"
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
-#include "Utility\Time.h"
+#include "Utility/ICommandLineMapper.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/Time.h"
 
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 #include <ctime>
 #include <string>
 #include <thread>

@@ -4,19 +4,17 @@
 #include "Engine.h"
 #include "GameState.h"
 #include "ActionConstants.h"
-#include "InputConstants.h"
 #include "IInputableMouse.h"
 #include "IUpdateable.h"
 
-#include "Rendering\Shader.h"
-#include "Rendering\Renderer.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Renderer.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 
-#include "Utility\Utility.h"
+#include "Utility/Utility.h"
 
 #include <vector>
-#include <stack>
 
 namespace engine
 {
@@ -31,11 +29,28 @@ namespace engine
 		/// <summary>
 		/// Destroys the game state manager, leaving and dropping any active game state.
 		/// </summary>
-		virtual ~GameStateManager(void);
+		virtual ~GameStateManager();
+
+		/// <summary> Game state manager copy constructor. </summary>
+		/// <param name="gameStateManager"> Game state manager to copy construct from. </param>
+		GameStateManager(const GameStateManager& gameStateManager) = delete;
+
+		/// <summary> Game state manager move constructor. </summary>
+		/// <param name="gameStateManager"> Game state manager to move construct from. </param>
+		GameStateManager(GameStateManager&& gameStateManager) = delete;
+
+		/// <summary> Game state manager copy assignment operator. </summary>
+		/// <param name="gameStateManager"> Game state manager to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned game state manager. </returns>
+		GameStateManager& operator=(const GameStateManager& gameStateManager) = delete;
+
+		/// <summary> Game state manager move assignment operator. </summary>
+		/// <param name="gameStateManager"> The r-value reference to the game state manager to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned game state manager. </returns>
+		GameStateManager& operator=(GameStateManager&& gameStateManager) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Replaces the lastmost game state on the stack. </summary>
 		/// <param name="state"> State the lastmost state on the stack will be replaced with. </param>
 		/// <param name="modality"> Whether the state completely obscures the state below it. </param>
@@ -124,7 +139,6 @@ namespace engine
 	/// </remarks>
 	class DefaultGameStateManager : public GameStateManager
 	{
-	private:
 		typedef std::pair<GameState*, GameStateModality::ModalityType> GameStateModalityTypePair;
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
@@ -132,57 +146,56 @@ namespace engine
 		DefaultGameStateManager();
 
 		/// <summary> Destroys the game state manager, leaving and dropping any active game state. </summary>
-		virtual ~DefaultGameStateManager(void);
+		virtual ~DefaultGameStateManager();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Removes the lastmost game state from the stack </summary>
 		/// <returns> The state that has been removed from the stack </returns>
-		virtual GameState* Pop();
+		GameState* Pop() override;
 
 		/// <summary> Appends a new game state to the stack </summary>
 		/// <param name="gameState"> Game state that will be pushed onto the stack </param>
 		/// <param name="modality"> Indicates whether the state completely obscures the state below it </param>
-		virtual void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE);
+		void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE) override;
 
 		/// <summary>
 		/// Returns the currently active game state
 		/// </summary>
 		/// <returns> The lastmost game state on the stack </returns>
-		virtual GameState* Peek() const;
+		GameState* Peek() const override;
 
-		virtual void ScrollEvent(double xOffset, double yOffset);
+		void ScrollEvent(double xOffset, double yOffset) override;
 
-		virtual void MouseButtonEvent(int button, int action, int mods);
-		virtual void MousePosEvent(double xPos, double yPos);
+		void MouseButtonEvent(int button, int action, int mods) override;
+		void MousePosEvent(double xPos, double yPos) override;
 
 		/// <summary> Advances the time of the active game states </summary>
 		/// <param name="deltaTime"> Elapsed simulation time </param>
-		void Update(math::Real deltaTime);
+		void Update(math::Real deltaTime) override;
 
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
-		void Render(Rendering::Renderer* renderer) const;
+		void Render(Rendering::Renderer* renderer) const override;
 
 		/// <summary>
 		/// Handles the incoming action appropriately.
 		/// </summary>
 		/// <param name="action"> The action that must be handled by active game state. </param>
-		virtual void Handle(engine::Actions::Action action);
+		void Handle(engine::Actions::Action action) override;
 
 		/// <summary>
 		/// Handles the incoming state appropriately.
 		/// </summary>
 		/// <param name="state"> The state that must be handled by active game states. </param>
-		virtual void Handle(engine::States::State state);
+		void Handle(engine::States::State state) override;
 
 		/// <summary>
 		/// Handles the incoming range appropriately.
 		/// </summary>
 		/// <param name="range"> The range that must be handled by active game states. </param>
 		/// <param name="value"> The value associated with the specified range. </param>
-		virtual void Handle(engine::Ranges::Range range, math::Real value);
+		void Handle(engine::Ranges::Range range, math::Real value) override;
 	private:
 		/// <summary>
 		///   Adds the specified game state to the exposed Drawables or Updateables if it
@@ -219,13 +232,12 @@ namespace engine
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		std::vector<GameStateModalityTypePair> m_activeStates;
 		std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 		std::vector<IUpdateable*> m_exposedUpdateables;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class DefaultGameStateManager */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_GAME_STATE_MANAGER_H__ */

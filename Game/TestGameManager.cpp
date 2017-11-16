@@ -8,29 +8,29 @@
 #include "LoadGameState.h"
 #include "GameNodeBuilder.h"
 
-#include "Engine\CoreEngine.h"
-#include "Engine\BillboardRendererComponent.h"
-#include "Engine\MeshRendererComponent.h"
-#include "Engine\PhysicsComponent.h"
-#include "Engine\LookAtComponent.h"
-#include "Engine\GravityComponent.h"
-#include "Engine\ParticlesSystemComponent.h"
+#include "Engine/CoreEngine.h"
+#include "Engine/BillboardRendererComponent.h"
+#include "Engine/MeshRendererComponent.h"
+#include "Engine/PhysicsComponent.h"
+#include "Engine/LookAtComponent.h"
+#include "Engine/GravityComponent.h"
+#include "Engine/ParticlesSystemComponent.h"
 
-#include "Rendering\Color.h"
-#include "Rendering\Camera.h"
+#include "Rendering/Color.h"
+#include "Rendering/Camera.h"
 
-#include "Math\FloatingPoint.h"
-#include "Math\Quaternion.h"
-#include "Math\HeightsGenerator.h"
-#include "Math\RandomGeneratorFactory.h"
-//#include "Math\Vector.h"
+#include "Math/FloatingPoint.h"
+#include "Math/Quaternion.h"
+#include "Math/HeightsGenerator.h"
+#include "Math/RandomGeneratorFactory.h"
+//#include "Math/Vector.h"
 
-#include "Physics\PhysicsObject.h"
+#include "Physics/PhysicsObject.h"
 
-//#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
-#include "Utility\BuilderDirector.h"
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
+//#include "Utility/FileNotFoundException.h" // TODO: Remove in the future when not needed
+#include "Utility/BuilderDirector.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
 
 #include <sstream>
 
@@ -50,9 +50,9 @@ Game::TestGameManager::TestGameManager() :
 	m_saveGameCommand(),
 	m_loadGameCommand(),
 	m_timeToUpdateCameraHeight(REAL_ZERO),
-	m_boxNode(NULL),
+	m_boxNode(nullptr),
 	HUMAN_NODES_COUNT(2),
-	humanNodes(NULL),
+	humanNodes(nullptr),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
@@ -80,7 +80,7 @@ Game::TestGameManager::TestGameManager() :
 }
 
 
-Game::TestGameManager::~TestGameManager(void)
+Game::TestGameManager::~TestGameManager()
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 }
@@ -401,7 +401,7 @@ void Game::TestGameManager::Load()
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
 	//particlesSystemBuilderDirector.Construct();
 	//Rendering::Particles::ParticlesSystem* particlesSystem = particlesSystemBuilder.Get();
-	//if (particlesSystem != NULL)
+	//if (particlesSystem != nullptr)
 	//{
 	//	INFO_LOG_RENDERING("Particles system for effect ", particleEffect, " has been created.");
 	//}
@@ -479,7 +479,7 @@ void Game::TestGameManager::InitializeTweakBars()
 	//TwRemoveVar(testGamePropertiesBar, "temp1");
 	//TwRemoveVar(testGamePropertiesBar, "temp2");
 
-	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(testGamePropertiesBar, nullptr, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	INFO_LOG_GAME("Initializing game's tweak bars finished");
 #endif
 }

@@ -2,15 +2,15 @@
 #include "Mesh.h"
 //#include "CoreEngine.h"
 //#include "OBJModel.h"
-#include "Math\Vector.h"
-#include "Math\Interpolation.h"
-#include "Math\FloatingPoint.h"
+#include "Math/Vector.h"
+#include "Math/Interpolation.h"
+#include "Math/FloatingPoint.h"
 #include "stb_image.h"
 
-#include "Utility\IConfig.h"
-#include "Utility\ILogger.h"
-#include "Utility\Time.h"
-#include "Math\ISort.h"
+#include "Utility/IConfig.h"
+#include "Utility/ILogger.h"
+#include "Utility/Time.h"
+#include "Math/ISort.h"
 
 #include <unordered_set>
 #include <fstream>

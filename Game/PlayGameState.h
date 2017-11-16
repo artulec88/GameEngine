@@ -5,7 +5,7 @@
 
 #include "Engine\GameManager.h"
 #include "Engine\GameState.h"
-#include "Engine\IInputableKeyboard.h"
+//#include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
 #include "Engine\IUpdateable.h"
 #include "Engine\MousePicker.h"
@@ -31,31 +31,29 @@ namespace Game
 	class PlayGameState : public engine::GameState, public engine::Input::IInputableMouse, public engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		static constexpr math::Real TROPIC_OF_CANCER_SINUS = static_cast<math::Real>(0.39794863131);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
-		virtual ~PlayGameState(void);
+		virtual ~PlayGameState();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Entered();
-		virtual void Leaving();
-		virtual void Obscuring();
-		virtual void Revealed();
-		virtual void Handle(engine::Actions::Action action);
-		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, math::Real value);
+		void Entered() override;
+		void Leaving() override;
+		void Obscuring() override;
+		void Revealed() override;
+		void Handle(engine::Actions::Action action) override;
+		void Handle(engine::States::State state) override;
+		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		virtual void MouseButtonEvent(int button, int action, int mods);
-		virtual void MousePosEvent(double xPos, double yPos);
-		virtual void ScrollEvent(double xOffset, double yOffset);
-		virtual void Render(Rendering::Renderer* renderer) const;
-		virtual void Update(math::Real elapsedTime);
+		void MouseButtonEvent(int button, int action, int mods) override;
+		void MousePosEvent(double xPos, double yPos) override;
+		void ScrollEvent(double xOffset, double yOffset) override;
+		void Render(Rendering::Renderer* renderer) const override;
+		void Update(math::Real elapsedTime) override;
 	private:
 		void AddShaders();
 		void AddTerrainNode();
@@ -101,7 +99,7 @@ namespace Game
 
 		//void AdjustAmbientLightAccordingToCurrentTime();
 
-		inline int GetSpotLightsCount() const
+		int GetSpotLightsCount() const
 		{
 			return static_cast<int>(m_spotLights.size());
 		}

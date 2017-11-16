@@ -3,10 +3,10 @@
 
 #include "Rendering.h"
 
-#include "Math\Matrix.h"
-#include "Math\Vector.h"
-#include "Math\HeightsGenerator.h"
-#include "Utility\ILogger.h"
+#include "Math/Matrix.h"
+#include "Math/Vector.h"
+#include "Math/HeightsGenerator.h"
+#include "Utility/ILogger.h"
 
 #include <string>
 #include <map>
@@ -16,7 +16,7 @@
 #define HEIGHTS_HEIGHTMAP
 
 #ifdef HEIGHTS_KD_TREE
-#include "Math\KDTree.h"
+#include "Math/KDTree.h"
 #endif
 
 //#define TEXTURE_ATLAS_OFFSET_CALCULATION

@@ -2,10 +2,10 @@
 #include "GameComponent.h"
 #include "GameNode.h"
 
-#include "Rendering\Renderer.h"
-#include "Rendering\Shader.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Shader.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 engine::GameComponent::GameComponent(void) :
 	m_parentGameNode(NULL)

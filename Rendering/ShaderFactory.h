@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "ShaderIDs.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 #include <map>
 

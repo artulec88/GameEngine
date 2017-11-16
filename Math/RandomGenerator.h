@@ -21,7 +21,7 @@ namespace math
 			/// <summary>
 			/// The constructor of the random number generator.
 			/// </summary>
-			MATH_API RandomGenerator(unsigned seed);
+			MATH_API explicit RandomGenerator(unsigned seed);
 
 			/// <summary>
 			/// The destructor of the random number generator.
@@ -90,7 +90,7 @@ namespace math
 			/// <summary>
 			/// The constructor of the simple random number generator.
 			/// </summary>
-			MATH_API SimpleRandomGenerator(unsigned seed);
+			MATH_API explicit SimpleRandomGenerator(unsigned seed);
 
 			/// <summary>
 			/// The destructor of the simple random number generator.
@@ -143,7 +143,7 @@ namespace math
 			/// <summary>
 			/// The constructor of the default random number generator.
 			/// </summary>
-			MATH_API DefaultRandomGenerator(unsigned seed);
+			MATH_API explicit DefaultRandomGenerator(unsigned seed);
 
 			/// <summary>
 			/// The destructor of the deault random number generator.

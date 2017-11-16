@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "LookAtComponent.h"
-#include "Utility\ILogger.h"
-#include "Math\Quaternion.h"
+#include "Utility/ILogger.h"
+#include "Math/Quaternion.h"
 
 engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 	GameComponent(),

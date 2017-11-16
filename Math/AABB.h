@@ -67,25 +67,24 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Gives information about the potential intersection between the current axis-aligned bounding box and given <paramref name="aabb"/>.
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box we want to check the potential intersection against. </param>
 		/// <returns> The intersection info. </returns>
-		IntersectInfo DoesIntersectAABB(const AABB& aabb) const noexcept;
+		IntersectInfo DoesIntersectAabb(const AABB& aabb) const noexcept;
 
 		/// <summary>
 		/// Gives the bottom left position of the axis-aligned bounding box.
 		/// </summary>
 		/// <returns> The bottom left position of the AABB. </returns>
-		inline const Vector3D& GetBottomLeftPos() const noexcept { return m_bottomLeftPos; }
+		const Vector3D& GetBottomLeftPos() const noexcept { return m_bottomLeftPos; }
 
 		/// <summary>
 		/// Gives the top right position of the axis-aligned bounding box.
 		/// </summary>
 		/// <returns> The top right position of the AABB. </returns>
-		inline const Vector3D& GetTopRightPos() const noexcept { return m_topRightPos; }
+		const Vector3D& GetTopRightPos() const noexcept { return m_topRightPos; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

@@ -2,8 +2,8 @@
 #include "AudioEngineFactory.h"
 #include "AudioEngine_FMOD.h"
 #include "AudioEngine_IRR_KLANG.h"
-#include "Utility\IConfig.h"
-#include "Utility\ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/ILogger.h"
 
 audio::AudioEngineFactory::AudioEngineFactory(const std::string& audioDirectory) :
 	m_audioDirectory(audioDirectory)

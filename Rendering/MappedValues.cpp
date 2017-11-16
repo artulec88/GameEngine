@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MappedValues.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::MappedValues::MappedValues()
 {

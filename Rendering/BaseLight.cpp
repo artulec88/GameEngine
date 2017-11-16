@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::Lighting::BaseLight::BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled /* = false */) :

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FontFactory.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 Rendering::Text::FontFactory::FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory) :
 	m_textShader(textShader),

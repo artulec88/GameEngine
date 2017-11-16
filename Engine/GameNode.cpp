@@ -6,7 +6,7 @@
 #include "IRenderable.h"
 #include "IUpdateable.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 /* static */ int engine::GameNode::gameNodeCount = 0;
 
@@ -19,7 +19,7 @@ engine::GameNode::GameNode() :
 }
 
 
-engine::GameNode::~GameNode(void)
+engine::GameNode::~GameNode()
 {
 	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction started");
 	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=", m_ID);
@@ -133,17 +133,17 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 	m_components.push_back(child);
 	child->SetParent(this);
 	IRenderable* renderableComponent = dynamic_cast<IRenderable*>(child);
-	if (renderableComponent != NULL)
+	if (renderableComponent != nullptr)
 	{
 		m_renderableComponents.push_back(renderableComponent);
 	}
 	Input::IInputableMouse* inputableMouseComponent = dynamic_cast<Input::IInputableMouse*>(child);
-	if (inputableMouseComponent != NULL)
+	if (inputableMouseComponent != nullptr)
 	{
 		m_inputableMouseComponents.push_back(inputableMouseComponent);
 	}
 	IUpdateable* updateableComponent = dynamic_cast<IUpdateable*>(child);
-	if (updateableComponent != NULL)
+	if (updateableComponent != nullptr)
 	{
 		m_updateableComponents.push_back(updateableComponent);
 	}

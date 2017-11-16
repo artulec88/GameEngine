@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RandomGenerator.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 /* ==================== RandomGenerator class begin ==================== */
 math::random::RandomGenerator::RandomGenerator(unsigned seed) :

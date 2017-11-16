@@ -2,25 +2,24 @@
 #define __MENU_GAME_STATE_H__
 
 #include "Def.h"
-#include "Engine\GameState.h"
-#include "Engine\IUpdateable.h"
-#include "Engine\GameNode.h"
-#include "Engine\MenuEntry.h"
-#include "Engine\MousePicker.h"
+#include "Engine/GameState.h"
+#include "Engine/IUpdateable.h"
+#include "Engine/GameNode.h"
+#include "Engine/MenuEntry.h"
+#include "Engine/MousePicker.h"
 
-#include "Rendering\Renderer.h"
-#include "Rendering\ParticlesSystem.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/ParticlesSystem.h"
 
-#include "Math\EffectFactory.h"
-#include "Math\Effect.h"
-//#include "Math\Effect_impl.h"
+#include "Math/EffectFactory.h"
+#include "Math/Effect.h"
+//#include "Math/Effect_impl.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
-#include "Math\StatisticsStorage.h"
-#include "Math\Statistics.h"
+#include "Math/StatisticsStorage.h"
+#include "Math/Statistics.h"
 #endif
 
-#include <vector>
 #include <string>
 
 namespace Game
@@ -33,22 +32,21 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, math::Real mainMenuFontSize);
-		virtual ~MenuGameState(void);
+		virtual ~MenuGameState();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Entered();
-		virtual void Leaving();
-		virtual void Obscuring();
-		virtual void Revealed();
-		virtual void Handle(engine::Actions::Action action);
-		virtual void Handle(engine::States::State state);
-		virtual void Handle(engine::Ranges::Range range, math::Real value);
+		void Entered() override;
+		void Leaving() override;
+		void Obscuring() override;
+		void Revealed() override;
+		void Handle(engine::Actions::Action action) override;
+		void Handle(engine::States::State state) override;
+		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		virtual void Render(Rendering::Renderer* renderer) const;
+		void Render(Rendering::Renderer* renderer) const override;
 
-		virtual void Update(math::Real deltaTime);
+		void Update(math::Real deltaTime) override;
 	private:
 		void DeselectAll();
 		void SelectChild(size_t childIndex);
@@ -56,7 +54,6 @@ namespace Game
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		engine::GameManager* m_gameManager;
 		//Rendering::Particles::ParticlesSystem* m_particlesSystem;
 		engine::CompositeMenuEntry m_mainMenuRootEntry;

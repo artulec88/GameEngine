@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "CubeShadowMap.h"
-#include "Utility\ILogger.h"
-#include "Math\Math.h"
+#include "Utility/ILogger.h"
+#include "Math/Math.h"
 
 Rendering::CubeShadowMap::CubeShadowMap(void) :
 	m_fbo(0),

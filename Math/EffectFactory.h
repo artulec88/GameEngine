@@ -48,7 +48,6 @@ namespace math
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			//template <typename T>
 			//MATH_API std::unique_ptr<Effect<T>> CreateEffect(const std::string& effectConfigurationFileName)
 			//{

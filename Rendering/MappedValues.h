@@ -7,13 +7,13 @@
 #include "Rendering.h"
 #include "Color.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 #include "Texture.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #include "AntTweakBarTypes.h"
 #endif
 
@@ -36,7 +36,6 @@ namespace Rendering
 		typedef std::map<std::string, const Texture*> StrToTextureMap;
 
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		static constexpr math::Real DEFAULT_VALUE = REAL_ZERO;
 		static constexpr math::Vector2D DEFAULT_VECTOR2D{ REAL_ZERO, REAL_ZERO };
 		static constexpr math::Vector3D DEFAULT_VECTOR3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
@@ -45,26 +44,27 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary>
-		/// Mapped values container constructor.
-		/// </summary>
+		/// <summary> Mapped values container constructor. </summary>
 		MappedValues();
-		/// <summary>
-		/// Mapped values container destructor.
-		/// </summary>
+
+		/// <summary> Mapped values container destructor. </summary>
 		~MappedValues();
+
 		/// <summary>
 		/// Mapped values container copy constructor.
 		/// </summary>
 		MappedValues(const MappedValues& mappedValues) = delete;
+
 		/// <summary>
 		/// Mapped values container move constructor.
 		/// </summary>
 		MappedValues(MappedValues&& mappedValues) = delete;
+
 		/// <summary>
 		/// Mapped values container copy assignment operator.
 		/// </summary>
 		MappedValues& operator=(const MappedValues& mappedValues) = delete;
+
 		/// <summary>
 		/// Mapped values container move assignment operator.
 		/// </summary>
@@ -73,8 +73,7 @@ namespace Rendering
 
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		inline void SetReal(const std::string& name, math::Real value)
+		void SetReal(const std::string& name, math::Real value)
 		{
 			if (realMap.find(name) == realMap.end())
 			{
@@ -88,7 +87,7 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector2D(const std::string& name, const math::Vector2D& vec)
+		void SetVector2D(const std::string& name, const math::Vector2D& vec)
 		{
 			if (vec2DMap.find(name) == vec2DMap.end())
 			{
@@ -102,7 +101,7 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector3D(const std::string& name, const math::Vector3D& vec)
+		void SetVector3D(const std::string& name, const math::Vector3D& vec)
 		{
 			if (vec3DMap.find(name) == vec3DMap.end())
 			{
@@ -116,7 +115,7 @@ namespace Rendering
 			}
 		}
 
-		inline void SetVector4D(const std::string& name, const math::Vector4D& vec)
+		void SetVector4D(const std::string& name, const math::Vector4D& vec)
 		{
 			if (m_vec4DMap.find(name) == m_vec4DMap.end())
 			{
@@ -130,7 +129,7 @@ namespace Rendering
 			}
 		}
 
-		//inline void SetColor(const std::string& name, const Color& color)
+		//void SetColor(const std::string& name, const Color& color)
 		//{
 		//	if (m_vec4DMap.find(name) == m_vec4DMap.end())
 		//	{
@@ -144,7 +143,7 @@ namespace Rendering
 		//	}
 		//}
 
-		inline void SetTexture(const std::string& textureName, const Texture* texture)
+		void SetTexture(const std::string& textureName, const Texture* texture)
 		{
 			//if (texture == NULL)
 			//{
@@ -165,7 +164,7 @@ namespace Rendering
 			//textureMap[textureName] = texture;
 		}
 
-		inline void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
+		void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
 		{
 			const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
 			std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(multitextureName);
@@ -181,7 +180,7 @@ namespace Rendering
 			}
 		}
 
-		inline const math::Real& GetReal(const std::string& name) const
+		const math::Real& GetReal(const std::string& name) const
 		{
 			std::map<std::string, math::Real>::const_iterator itr = realMap.find(name);
 			if (itr == realMap.end()) // number not found
@@ -192,7 +191,7 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const math::Vector2D& GetVec2D(const std::string& name) const
+		const math::Vector2D& GetVec2D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
 			std::map<std::string, math::Vector2D>::const_iterator itr = vec2DMap.find(name);
@@ -204,7 +203,7 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const math::Vector3D& GetVec3D(const std::string& name) const
+		const math::Vector3D& GetVec3D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
 			std::map<std::string, math::Vector3D>::const_iterator itr = vec3DMap.find(name);
@@ -216,7 +215,7 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const math::Vector4D& GetVec4D(const std::string& name) const
+		const math::Vector4D& GetVec4D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
 			std::map<std::string, math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
@@ -228,7 +227,7 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const Texture* GetTexture(const std::string& textureName) const
+		const Texture* GetTexture(const std::string& textureName) const
 		{
 			std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
 			if (itr == textureMap.end()) // texture not found
@@ -239,7 +238,7 @@ namespace Rendering
 			return itr->second;
 		}
 
-		inline const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
+		const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
 		{
 			std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
 			if (itr == textureMap.end()) // texture not found
@@ -267,7 +266,7 @@ namespace Rendering
 		}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-		virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
+		void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif
 
 		//bool Compare(const MappedValues& mappedValues)

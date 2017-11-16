@@ -2,8 +2,7 @@
 #define __MATH_ANGLE_H__
 
 #include "Math.h"
-#include "Utility\ILogger.h"
-#include <string>
+#include "Utility/ILogger.h"
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "StatisticsStorage.h"
@@ -56,8 +55,8 @@ namespace math
 		/// <remarks>
 		/// Explicit constructor is used, so that <code>Real</code> cannot be easily cast to Angle without the developer knowing about that.
 		/// </remarks>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH explicit Angle(Real angle, units::UnitType unit = units::DEGREE) :
-			m_angle((unit == units::RADIAN) ? angle : ToRad(angle))
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH explicit Angle(const Real angle, const units::UnitType unit = units::DEGREE) :
+			m_angle(unit == units::RADIAN ? angle : ToRad(angle))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
@@ -96,25 +95,24 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Returns the value of the angle in <code>units::RADIAN</code>. </summary>
 		/// <returns> The value of the angle in <code>units::RADIAN</code>. </returns>
-		MATH_API inline Real Get() const { return m_angle; }
+		MATH_API Real Get() const { return m_angle; }
 
 		/// <summary>
 		/// Returns the value of the angle converted accordingly to the specified <paramref name="unitType"/>.
 		/// For efficiency purposes, it is recommended to use the unparameterized <code>Get()</code> function if one wants to get the angle in <code>units::RADIAN</code>.
 		/// </summary>
 		/// <returns> The value of the angle in the specified <paramref name="unitType"/>. </returns>
-		MATH_API inline Real Get(units::UnitType unitType) const
+		MATH_API Real Get(const units::UnitType unitType) const
 		{
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
-			return (unitType == units::DEGREE) ? ToDeg(m_angle) : m_angle;
+			return unitType == units::DEGREE ? ToDeg(m_angle) : m_angle;
 		}
 
 		/// <summary> Sets the value of the angle to the given <paramref name="angle"/> specified in the passed <paramref name="unitType"/>. </summary>
-		MATH_API void Set(Real angle, units::UnitType unitType)
+		MATH_API void Set(const Real angle, units::UnitType unitType)
 		{
 			START_PROFILING_MATH(false, "");
 			switch (unitType)
@@ -138,7 +136,7 @@ namespace math
 		/// <remarks>
 		/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Sin() const
+		MATH_API Real Sin() const
 		{
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
@@ -174,7 +172,7 @@ namespace math
 		/// <remarks>
 		/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Cos() const
+		MATH_API Real Cos() const
 		{
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
@@ -210,7 +208,7 @@ namespace math
 		/// <remarks>
 		/// This function is more precise than FastTan1() or FastTan2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Tan() const
+		MATH_API Real Tan() const
 		{
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
@@ -242,13 +240,13 @@ namespace math
 		MATH_API Angle operator-() const;
 		MATH_API Angle operator+(const Angle& angle) const;
 		MATH_API Angle operator-(const Angle& angle) const;
-		MATH_API Angle operator*(Real s) const;
-		MATH_API Angle operator/(Real s) const;
+		MATH_API Angle operator*(const Real s) const;
+		MATH_API Angle operator/(const Real s) const;
 
 		MATH_API Angle& operator+=(const Angle& angle);
 		MATH_API Angle& operator-=(const Angle& angle);
-		MATH_API Angle& operator*=(Real s);
-		MATH_API Angle& operator/=(Real s);
+		MATH_API Angle& operator*=(const Real s);
+		MATH_API Angle& operator/=(const Real s);
 
 		MATH_API bool operator==(const Angle& angle) const;
 		MATH_API bool operator!=(const Angle& angle) const;
@@ -288,8 +286,8 @@ namespace math
 		START_PROFILING_MATH(false, "");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
 		// In case the angle is outside specified range use: https://pl.wikipedia.org/wiki/Trygonometryczne_wzory_redukcyjne.
-		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.16605);
-		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.00761);
+		constexpr auto ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.16605);
+		constexpr auto ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.00761);
 		STOP_PROFILING_MATH("");
 		return m_angle - (ANGLE_SECOND_POWER_FACTOR * m_angle * m_angle * m_angle) +
 			(ANGLE_FOURTH_POWER_FACTOR * m_angle * m_angle * m_angle * m_angle * m_angle);
@@ -299,11 +297,11 @@ namespace math
 	{
 		START_PROFILING_MATH(false, "");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
-		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.1666666664);
-		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0083333315);
-		constexpr Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0001984090);
-		constexpr Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000027526);
-		constexpr Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000000239);
+		constexpr auto ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.1666666664);
+		constexpr auto ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0083333315);
+		constexpr auto ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0001984090);
+		constexpr auto ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000027526);
+		constexpr auto ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000000239);
 		STOP_PROFILING_MATH("");
 		return m_angle - (ANGLE_SECOND_POWER_FACTOR * pow(m_angle, 3)) + (ANGLE_FOURTH_POWER_FACTOR * pow(m_angle, 5)) - (ANGLE_SIXTH_POWER_FACTOR * pow(m_angle, 7)) +
 			(ANGLE_EIGHTH_POWER_FACTOR * pow(m_angle, 9)) - (ANGLE_TENTH_POWER_FACTOR * pow(m_angle, 11));

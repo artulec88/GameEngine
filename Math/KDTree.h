@@ -114,6 +114,8 @@ namespace math
 			SearchNearestValue(position.x, position.y, depth, minDistanceValues, minDistances);
 		}
 		void SearchNearestValue(Real x, Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
+		void SearchNearestValueInLeftTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
+		void SearchNearestValueInRightTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
 		
 		/// <summary>
 		/// See: http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml,

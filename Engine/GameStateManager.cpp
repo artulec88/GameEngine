@@ -1,26 +1,26 @@
 #include "StdAfx.h"
 #include "GameStateManager.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 
 engine::GameStateManager::GameStateManager() :
-	m_gameStateTransition(NULL)
+	m_gameStateTransition(nullptr)
 {
 }
 
 
-engine::GameStateManager::~GameStateManager(void)
+engine::GameStateManager::~GameStateManager()
 {
 	SAFE_DELETE(m_gameStateTransition);
 }
 
 void engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
-	if (gameStateTransition == NULL)
+	if (gameStateTransition == nullptr)
 	{
 		WARNING_LOG_ENGINE("There is no need to set game state transition to NULL manually.");
 	}
-	if (m_gameStateTransition != NULL)
+	if (m_gameStateTransition != nullptr)
 	{
 		EMERGENCY_LOG_ENGINE("Cannot set the game state transition object. Previous transition has not been performed yet.");
 	}
@@ -29,7 +29,7 @@ void engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTr
 
 void engine::GameStateManager::PerformStateTransition()
 {
-	if (m_gameStateTransition == NULL) // No pending state transition
+	if (m_gameStateTransition == nullptr) // No pending state transition
 	{
 		return;
 	}
@@ -48,13 +48,13 @@ void engine::GameStateManager::PerformStateTransition()
 		ERROR_LOG_ENGINE("Unknown game state transition type (", m_gameStateTransition->GetTransitionType(), ")");
 	}
 	//SAFE_DELETE(m_gameStateTransition);
-	m_gameStateTransition = NULL;
+	m_gameStateTransition = nullptr;
 }
 
 engine::GameState* engine::GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
 {
 	GameState* currentState = Peek();
-	if (currentState != NULL)
+	if (currentState != nullptr)
 	{
 		Pop();
 	}
@@ -108,11 +108,8 @@ void engine::DefaultGameStateManager::Push(GameState* gameState, GameStateModali
 
 engine::GameState* engine::DefaultGameStateManager::Pop()
 {
-	if (m_activeStates.empty())
-	{
-		ERROR_LOG_ENGINE("Attempted to pop from an empty game state stack");
-		return NULL;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS_ENGINE(!m_activeStates.empty(), nullptr, utility::logging::ERR,
+		"Attempted to pop from an empty game state stack");
 	GameStateModalityTypePair poppedPair = m_activeStates.back();
 	poppedPair.first->Leaving();
 	m_activeStates.pop_back();
@@ -133,28 +130,25 @@ engine::GameState* engine::DefaultGameStateManager::Pop()
 
 void engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
 {
-	if (m_exposedInputablesMouse.empty())
+	if (!m_exposedInputablesMouse.empty())
 	{
-		return;
-	}
-	DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements(xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
-	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
-	{
-		(*gameStateItr)->ScrollEvent(xOffset, yOffset);
+		DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements(xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
+		for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+		{
+			(*gameStateItr)->ScrollEvent(xOffset, yOffset);
+		}
 	}
 }
 
 void engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 {
-	if (m_exposedInputablesMouse.empty())
+	if (!m_exposedInputablesMouse.empty())
 	{
-		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (button=", button, ", action=", action, ", mods=", mods, ")");
-		return;
-	}
-	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements (button=", button, ", action=", action, ", mods=", mods, ")");
-	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
-	{
-		(*gameStateItr)->MouseButtonEvent(button, action, mods);
+		//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements (button=", button, ", action=", action, ", mods=", mods, ")");
+		for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+		{
+			(*gameStateItr)->MouseButtonEvent(button, action, mods);
+		}
 	}
 }
 
@@ -188,14 +182,14 @@ void engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG_ENGINE("Adding to interfaces started");
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
-	if (inputableMouse != NULL)
+	if (inputableMouse != nullptr)
 	{
 		DEBUG_LOG_ENGINE("Adding to MOUSE INPUT interface");
 		m_exposedInputablesMouse.push_back(inputableMouse);
 	}
 	
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
-	if(updateable != NULL)
+	if(updateable != nullptr)
 	{
 		DEBUG_LOG_ENGINE("Adding to UPDATE interface");
 		m_exposedUpdateables.push_back(updateable);
@@ -206,13 +200,13 @@ void engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 void engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
-	if (inputableMouse != NULL)
+	if (inputableMouse != nullptr)
 	{
 		m_exposedInputablesMouse.push_back(inputableMouse);
 	}
 
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
-	if (updateable != NULL)
+	if (updateable != nullptr)
 	{
 		m_exposedUpdateables.pop_back();
 	}

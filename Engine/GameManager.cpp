@@ -3,18 +3,15 @@
 #include "GameStateManager.h"
 #include "CoreEngine.h"
 
-#include "Rendering\Renderer.h"
-#include "Rendering\Attenuation.h"
-#include "Rendering\PointLight.h"
-#include "Rendering\Texture.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Texture.h"
 
-#include "Math\Math.h"
-#include "Math\Vector.h"
+#include "Math/Math.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
-#include "Utility\ILogger.h"
-#include "Utility\IConfig.h"
-#include "Utility\Time.h"
+#include "Utility/ILogger.h"
+#include "Utility/IConfig.h"
+#include "Utility/Time.h"
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar\include\AntTweakBar.h"
@@ -22,7 +19,7 @@
 
 #include <fstream>
 
-engine::GameManager* engine::GameManager::s_gameManager = NULL;
+engine::GameManager* engine::GameManager::s_gameManager = nullptr;
 
 /* static */ engine::GameManager* engine::GameManager::GetGameManager()
 {

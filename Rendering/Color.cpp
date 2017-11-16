@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "Color.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\StringUtility.h"
+#include "Utility/ILogger.h"
+#include "Utility/StringUtility.h"
 
 Rendering::Color::Color(const std::string& colorName) noexcept :
 	Color(Value(utility::string_utility::MakeLowercase(colorName).c_str(), COLOR_NAMES))

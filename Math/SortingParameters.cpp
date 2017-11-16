@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SortingParameters.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 math::sorting::SortingParametersChain::SortingParametersChain(keys::Key sortingKey, orders::Order sortingOrder) :
 	m_sortingParametersChain(nullptr),

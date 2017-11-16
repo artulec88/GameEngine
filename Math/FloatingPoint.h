@@ -4,7 +4,7 @@
 #include <limits>
 #include "Math.h"
 //#include "Utility\IConfig.h"
-//#include "Utility\ILogger.h" // only used if AlmostEqual logs anything
+//#include "Utility/ILogger.h" // only used if AlmostEqual logs anything
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "StatisticsStorage.h"
@@ -53,7 +53,7 @@ namespace math
 		// Defines the unsigned integer type that has the same size as the floating point number
 		typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
 
-	public: /* Constants */
+		/* Constants */
 		static constexpr size_t s_kBitCount = 8 * sizeof(RawType); // number of bits in a number
 		static constexpr size_t s_kFractionBitCount = std::numeric_limits<RawType>::digits - 1; // number of fraction bits in a number
 		static constexpr size_t s_kExponentBitCount = s_kBitCount - 1 - s_kFractionBitCount; // number of exponent bits in a number
@@ -68,11 +68,11 @@ namespace math
 		 */
 		static constexpr size_t s_kMaxUlps = 4;
 
-	public: /* non-static methods */
-		/**
-		 * Constructs a FloatingPoint from a raw floating-point number. On an Intel CPU, passing a non-normalized NAN around may change its bits,
-		 * although the new value is guaranteed to be also a NAN. Therefore, don't expect this constructor to preserve the bits in x when x is a NAN.
-		 */
+		/* non-static methods */
+			/**
+			 * Constructs a FloatingPoint from a raw floating-point number. On an Intel CPU, passing a non-normalized NAN around may change its bits,
+			 * although the new value is guaranteed to be also a NAN. Therefore, don't expect this constructor to preserve the bits in x when x is a NAN.
+			 */
 		explicit FloatingPoint(const RawType& x)
 #ifdef PROFILING_MATH_MODULE_ENABLED
 			: m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
@@ -108,10 +108,10 @@ namespace math
 			return distance <= s_kMaxUlps;
 		}
 
-	public: /* static methods */
-		/**
-		 * Reinterprets a bit pattern as a floating-point number. This function is needed to test the AlmostEqual() method
-		 */
+		/* static methods */
+			/**
+			 * Reinterprets a bit pattern as a floating-point number. This function is needed to test the AlmostEqual() method
+			 */
 		static RawType ReinterpretBits(const Bits bits)
 		{
 			FloatingPoint fp(0);
@@ -150,15 +150,7 @@ namespace math
 		 */
 		static Bits SignAndMagnitudeToBiased(const Bits& sam)
 		{
-			if (s_kSignBitMask & sam)
-			{
-				// sam represents a negative number
-				return ~sam + 1;
-			}
-			else
-			{
-				return s_kSignBitMask | sam;
-			}
+			return (s_kSignBitMask & sam) ? ~sam + 1 : s_kSignBitMask | sam;
 		}
 
 		/**

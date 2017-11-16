@@ -39,10 +39,10 @@ math::AABB::~AABB()
 {
 }
 
-math::IntersectInfo math::AABB::DoesIntersectAABB(const AABB& aabb) const noexcept
+math::IntersectInfo math::AABB::DoesIntersectAabb(const AABB& aabb) const noexcept
 {
 	// TODO: Remove intermediate local variables.
-	const Vector3D distances1 = aabb.GetBottomLeftPos() - m_topRightPos;
-	const Vector3D distances2 = m_bottomLeftPos - aabb.GetTopRightPos();
+	const auto distances1 = aabb.GetBottomLeftPos() - m_topRightPos;
+	const auto distances2 = m_bottomLeftPos - aabb.GetTopRightPos();
 	return IntersectInfo(distances1.Max(distances2).Max());
 }

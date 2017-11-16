@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "Statistics.h"
 #include "ISort.h"
-#include "Utility\ILogger.h"
-#include "Utility\Time.h"
+#include "Utility/ILogger.h"
+#include "Utility/Time.h"
 #include <algorithm>
 #include <iterator>
 #include <iomanip>

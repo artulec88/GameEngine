@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "Utility\ILogger.h"
-#include "Utility\Time.h"
+#include "Utility/ILogger.h"
+#include "Utility/Time.h"
 
 //#define PROFILING_ENABLED
 
@@ -47,7 +47,7 @@ namespace math {
 		public:
 			/// <summary> Stats constructor. </summary>
 			/// <param name="level"> The stats hierarchy level. </param>
-			MATH_API Stats(int level = 0);
+			MATH_API explicit Stats(int level = 0);
 
 			/// <summary> Stats destructor. </summary>
 			MATH_API ~Stats();
@@ -139,7 +139,7 @@ namespace math {
 		{
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			MATH_API ClassStats(const std::string& className);
+			MATH_API explicit ClassStats(const std::string& className);
 			MATH_API ~ClassStats();
 			/* ==================== Constructors and destructors end ==================== */
 

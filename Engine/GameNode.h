@@ -29,7 +29,6 @@ namespace engine
 		typedef std::map<Actions::Action, GameNodeCommand*> ActionsToGameNodeCommands;
 		typedef std::map<States::State, GameNodeCommand*> StatesToGameNodeCommands;
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		/// <summary>
 		/// The number of entities currently being maintained in the application.
 		/// </summary>
@@ -42,28 +41,28 @@ namespace engine
 		ENGINE_API GameNode();
 
 		/// <summary> Game node destructor. </summary>
-		ENGINE_API ~GameNode(void);
+		ENGINE_API ~GameNode();
 
-		/// <summary>
-		/// Game node copy constructor.
-		/// </summary>
+		/// <summary> Game node copy constructor. </summary>
+		/// <param name="gameNode"> The game node to copy construct from. </param>
 		GameNode(const GameNode& gameNode) = delete;
-		/// <summary>
-		/// Game node move constructor.
-		/// </summary>
+		
+		/// <summary> Game node move constructor. </summary>
+		/// <param name="gameNode"> The game node to move construct from. </param>
 		ENGINE_API GameNode(GameNode&& gameNode);
-		/// <summary>
-		/// Game node copy assignment operator.
-		/// </summary>
+
+		/// <summary> Game node copy assignment operator. </summary>
+		/// <param name="gameNode"> The game node to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned game node. </returns>
 		GameNode& operator=(const GameNode& gameNode) = delete;
-		/// <summary>
-		/// Game node move assignment operator.
-		/// </summary>
+
+		/// <summary> Game node move assignment operator. </summary>
+		/// <param name="gameNode"> The game node to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned game node. </returns>
 		ENGINE_API GameNode& operator=(GameNode&& gameNode);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		ENGINE_API GameNode Clone() const;
 		ENGINE_API int GetID() const { return m_ID; }; // just for easier debugging purposes
 		ENGINE_API GameNode* AddChild(GameNode* child);
@@ -126,6 +125,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNode */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_GAME_NODE_H__

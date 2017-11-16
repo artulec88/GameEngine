@@ -3,17 +3,15 @@
 
 #include "Engine.h"
 #include "ActionConstants.h"
-#include "InputConstants.h"
 
 #include "Math\Math.h"
 #include "Math\Interpolation.h"
 //#include "Math\Interpolation_impl.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 #include <string>
 #include <map>
-#include <memory>
 
 namespace engine
 {
@@ -24,7 +22,6 @@ namespace engine
 		/// </summary>
 		class InputRangeConverter
 		{
-		private:
 			struct Converter
 			{
 				Converter() :
@@ -78,12 +75,9 @@ namespace engine
 			template <typename RangeType>
 			RangeType Convert(Ranges::Range rangeId, RangeType inputValue) const
 			{
-				std::map<Ranges::Range, Converter>::const_iterator itr = m_convertersMap.find(rangeId);
-				if (itr == m_convertersMap.end())
-				{
-					WARNING_LOG_ENGINE("There exists no input converter for the range ", rangeId, ".");
-					return inputValue;
-				}
+				const auto itr = m_convertersMap.find(rangeId);
+				CHECK_CONDITION_RETURN_ALWAYS_ENGINE(itr != m_convertersMap.end(), inputValue, utility::logging::WARNING,
+					"There exists no input converter for the range ", rangeId, ".");
 				return itr->second.Convert<RangeType>(inputValue);
 			}
 			/* ==================== Non-static member functions end ==================== */
@@ -96,6 +90,6 @@ namespace engine
 
 	} /* end namespace Input */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_INPUT_RANGE_CONVERTER_H__

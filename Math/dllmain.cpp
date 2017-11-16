@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 #include "Math.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 // Including SDKDDKVer.h defines the highest available Windows platform.
 // If you wish to build your application for a previous Windows platform, include WinSDKVer.h and

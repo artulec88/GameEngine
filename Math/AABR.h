@@ -67,7 +67,6 @@ namespace math
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Gives information about the mutual location between the current axis-aligned bounding rectangle and
 		/// the 2D position given by the parameters <paramref name="x"/> and <paramref name="y"/>.
@@ -95,7 +94,7 @@ namespace math
 		/// </summary>
 		/// <param name="aabr"> The axis-aligned bounding rectangle we want to check the potential intersection against. </param>
 		/// <returns> The intersection info. </returns>
-		MATH_API IntersectInfo DoesIntersectAABR(const AABR& aabr) const noexcept;
+		MATH_API IntersectInfo DoesIntersectAabr(const AABR& aabr) const noexcept;
 
 		/// <summary>
 		/// Gives the bottom left position of the axis-aligned bounding rectangle.
@@ -126,7 +125,6 @@ namespace math
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
-	private:
 		/// <summary>
 		/// Represents the 2D position of the bottom-left vertex of the AABR.
 		/// </summary>

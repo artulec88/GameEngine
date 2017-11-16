@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AudioObject.h"
-#include "Math\Math.h"
-#include "Utility\ILogger.h"
+#include "Math/Math.h"
+#include "Utility/ILogger.h"
 
 audio::AudioObject::AudioObject(const SampleInfo& sampleInfo, IAudioData* audioData) :
 	m_audioPos(0),
@@ -32,8 +32,7 @@ void audio::AudioObject::SetPos(double pos)
 {
 	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), Utility::Logging::ERR,
 		"Cannot easily set the audio data position. The normalized position's value (", pos, ") lies outside of range [0; 1]");
-	double clampedPos = math::Clamp(pos, 0.0, 1.0);
-	m_audioPos = ConvertPosToAbsolutePos(clampedPos);
+	m_audioPos = ConvertPosToAbsolutePos(math::Clamp(pos, 0.0, 1.0));
 }
 
 size_t audio::AudioObject::ConvertPosToAbsolutePos(double pos)

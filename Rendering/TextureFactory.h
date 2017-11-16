@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "Texture.h"
 
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 #include <map>
 

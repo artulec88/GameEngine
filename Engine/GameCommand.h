@@ -2,7 +2,7 @@
 #define __ENGINE_GAME_COMMAND_H__
 
 #include "Engine.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 namespace engine
 {
@@ -16,12 +16,34 @@ namespace engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Base game command constructor. </summary>
 		ENGINE_API GameCommand();
+
+		/// <summary> Base game command destructor. </summary>
 		ENGINE_API virtual ~GameCommand();
+
+		/// <summary> Base game command copy constructor. </summary>
+		/// <param name="gameCommand"> Game command to copy construct from. </param>
+		GameCommand(const GameCommand& gameCommand) = delete;
+
+		/// <summary> Base game command move constructor. </summary>
+		/// <param name="gameCommand"> Game command to move construct from. </param>
+		GameCommand(GameCommand&& gameCommand) = delete;
+
+		/// <summary> Base game command copy assignment operator. </summary>
+		/// <param name="gameCommand"> Game command to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned base game command. </returns>
+		GameCommand& operator=(const GameCommand& gameCommand) = delete;
+
+		/// <summary> Base game command move assignment operator. </summary>
+		/// <param name="gameCommand"> Game command to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned base game command. </returns>
+		GameCommand& operator=(GameCommand&& gameCommand) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
+		/// <summary> Executes the game command. </summary>
+		/// <param name="gameManager"> The game manager the game command will performed in. </param>
 		ENGINE_API virtual void Execute(GameManager* gameManager) const = 0;
 		/* ==================== Non-static member functions end ==================== */
 
@@ -48,8 +70,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Execute(GameManager* gameManager) const
+		ENGINE_API void Execute(GameManager* gameManager) const override
 		{
 			DEBUG_LOG_ENGINE("Do-nothing command started. Remember that executing a DO-NOTHING command wastes precious CPU time.");
 			// Do nothing

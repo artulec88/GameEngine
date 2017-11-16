@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Sound.h"
-#include "Utility\ILogger.h"
+#include "Utility/ILogger.h"
 
 audio::SoundData::SoundData(const std::string& audioFileName) :
-	m_soundData(NULL)
+	m_soundData(nullptr)
 {
 
 }
@@ -15,13 +15,13 @@ audio::SoundData::~SoundData()
 
 audio::Sound::Sound(const std::string& audioFileName, FMOD_MODE mode) :
 	m_audioFileName(audioFileName),
-	m_soundData(NULL)
+	m_soundData(nullptr)
 {
 }
 
-audio::Sound::~Sound(void)
+audio::Sound::~Sound()
 {
-	CHECK_CONDITION_AUDIO(m_soundData != NULL, Utility::Logging::WARNING, "Destructing the sound \"", m_audioFileName, "\" aborted. Sound data is already NULL.");
+	CHECK_CONDITION_AUDIO(m_soundData != nullptr, Utility::Logging::WARNING, "Destructing the sound \"", m_audioFileName, "\" aborted. Sound data is already NULL.");
 	//m_soundData->RemoveReference();
 	//if (!m_soundData->IsReferenced())
 	{
