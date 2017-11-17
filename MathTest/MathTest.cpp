@@ -1079,8 +1079,8 @@ void SortTest()
 
 	const random::RandomGenerator& randomGenerator = random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(random::generator_ids::SIMPLE);
 	constexpr auto countingSortArraySize = 1000000;
-	constexpr auto countingSortIntLowerBound = 0;
-	constexpr auto countingSortIntUpperBound = 2000000;
+	constexpr auto countingSortIntLowerBound = -1000000;
+	constexpr auto countingSortIntUpperBound = 1000000;
 	std::unique_ptr<sorting::ISort> csSorter = sorting::ISort::GetSortingObject(sorting::sorting_algorithms::COUNTING_SORT);
 	int* initialIntArray = new int[countingSortArraySize];
 	int* intArray = new int[countingSortArraySize];

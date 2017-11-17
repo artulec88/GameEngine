@@ -338,26 +338,27 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 	//	ERROR_LOG_MATH("values[", i, "] = ", values[i]);
 	//}
 	/* ==================== Calculating range of data begin ==================== */
+	auto min = INT_MAX;
 	auto max = INT_MIN;
 	for (int i = 0; i < valuesCount; ++i)
 	{
-		if (values[i] < 0)
+		if (values[i] < min)
 		{
-			ERROR_LOG_MATH("Values[", i, "] = ", values[i],
-				". Counting sort does not support negative values yet.");
+			min = values[i];
 		}
 		if (values[i] > max)
 		{
 			max = values[i];
 		}
 	}
+	const auto range = max - min + 1;
 	/* ==================== Calculating range of data end ==================== */
 
 	std::vector<int> helpTab1(valuesCount);
-	std::vector<int> helpTab2(max + 1, 0); // filled with zeros initially
+	std::vector<int> helpTab2(range, 0); // filled with zeros initially
 	for (int i = 0; i < valuesCount; ++i)
 	{
-		++helpTab2[values[i]];
+		++helpTab2[values[i] - min];
 	}
 
 	//CRITICAL_LOG_MATH("After counting");
@@ -372,14 +373,14 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 
 	if (orders::ASCENDING == sortingOrder)
 	{
-		for (int i = 1; i <= max; ++i)
+		for (int i = 1; i < range; ++i)
 		{
 			helpTab2[i] += helpTab2[i - 1];
 		}
 	}
 	else
 	{
-		for (int i = max - 1; i >= 0; --i)
+		for (int i = range - 2; i >= 0; --i)
 		{
 			helpTab2[i] += helpTab2[i + 1];
 		}
@@ -397,8 +398,8 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 
 	for (int i = 0; i < valuesCount; ++i)
 	{
-		helpTab1[helpTab2[values[i]] - 1] = values[i];
-		--helpTab2[values[i]];
+		helpTab1[helpTab2[values[i] - min] - 1] = values[i];
+		--helpTab2[values[i] - min];
 	}
 
 	//CRITICAL_LOG_MATH("After sorting");
