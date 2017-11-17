@@ -5,13 +5,13 @@
 #include "PhysicsObject.h"
 
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
-#include "Math\Statistics.h"
-#include "Math\StatisticsStorage.h"
+#include "Math/Statistics.h"
+#include "Math/StatisticsStorage.h"
 #endif
 
 #include <vector>
 
-namespace Physics
+namespace physics
 {
 
 	/// <summary>
@@ -19,23 +19,40 @@ namespace Physics
 	/// </summary>
 	class PhysicsEngine
 	{
-	/* ==================== Static variables begin ==================== */
-	/* ==================== Static variables end ==================== */
+		using PhysicObjectsContainer = std::vector<PhysicsObject*>;
+		/* ==================== Static variables begin ==================== */
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Physics engine constructor. </summary>
 		PHYSICS_API PhysicsEngine();
-		PHYSICS_API ~PhysicsEngine(void);
-	private:
-		PhysicsEngine(const PhysicsEngine& physicsEngine);
-		void operator=(const PhysicsEngine& physicsEngine);
-	/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
-		/// <summary>
-		/// Adds physics object for the physics simulation process.
-		/// </summary>
+		/// <summary> Physics engine destructor. </summary>
+		PHYSICS_API ~PhysicsEngine();
+
+		/// <summary> The copy constructor of the physics engine. </summary>
+		/// <param name="physicsEngine"> The physics engine to copy construct from. </param>
+		PhysicsEngine(const PhysicsEngine& physicsEngine) = delete;
+
+		/// <summary> The move constructor of the physics engine. </summary>
+		/// <param name="physicsEngine"> The r-value reference of the physics engine to move construct from. </param>
+		PhysicsEngine(PhysicsEngine&& physicsEngine) = delete;
+
+		/// <summary> The copy assignment operator of the physics engine. </summary>
+		/// <param name="physicsEngine"> The physics engine to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned physics engine. </returns>
+		PhysicsEngine& operator=(const PhysicsEngine& physicsEngine) = delete;
+
+		/// <summary> The move assignment operator of the physics engine. </summary>
+		/// <param name="physicsEngine"> The r-value reference of the physics engine to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned physics engine. </returns>
+		PhysicsEngine& operator=(PhysicsEngine&& physicsEngine) = delete;
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static, non-virtual member functions begin ==================== */
+			/// <summary> Adds physics object for the physics simulation process. </summary>
+			/// <param name="physicsObject"> The physics object to be added to the physics engine. </param>
 		PHYSICS_API void AddPhysicsObject(PhysicsObject* physicsObject);
 
 		/// <summary>
@@ -53,18 +70,17 @@ namespace Physics
 		/// </summary>
 		/// <returns> Number of physics object that we simulate. </returns>
 		PHYSICS_API unsigned int GetPhysicsObjectsCount() const { return static_cast<unsigned int>(m_physicsObjects.size()); }
-	/* ==================== Non-static, non-virtual member functions end ==================== */
+		/* ==================== Non-static, non-virtual member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
-		typedef std::vector<PhysicsObject*> PhysicObjectsContainer;
 		PhysicObjectsContainer m_physicsObjects;
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
 		math::statistics::ClassStats& m_classStats;
 #endif
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PhysicsEngine */
 
-} /* end namespace Physics */
+} /* end namespace physics */
 
 #endif // __PHYSICS_PHYSICS_ENGINE_H__

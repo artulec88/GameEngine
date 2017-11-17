@@ -273,7 +273,7 @@ void engine::CoreEngine::CreateAudioEngine()
 
 void engine::CoreEngine::CreatePhysicsEngine()
 {
-	m_physicsEngine = new Physics::PhysicsEngine();
+	m_physicsEngine = new physics::PhysicsEngine();
 
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
@@ -755,7 +755,7 @@ void engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
 	//m_renderer->AddBillboardNode(billboardNode);
 }
 
-void engine::CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
+void engine::CoreEngine::AddPhysicsObject(physics::PhysicsObject* physicsObject)
 {
 	m_physicsEngine->AddPhysicsObject(physicsObject);
 }

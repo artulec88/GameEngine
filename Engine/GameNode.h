@@ -13,7 +13,7 @@
 #include "Rendering\Renderer.h"
 #include "Rendering\Shader.h"
 
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 
 #include "Physics\PhysicsObject.h"
 
@@ -101,7 +101,7 @@ namespace engine
 		ENGINE_API math::Transform& GetTransform() { return m_transform; };
 		ENGINE_API const math::Transform& GetTransform() const { return m_transform; }
 
-		ENGINE_API Physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject.get(); }
+		ENGINE_API physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject.get(); }
 		ENGINE_API void CreatePhysicsObject(math::Real mass, const math::Vector3D& linearVelocity);
 
 		ENGINE_API std::vector<GameNode*> GetAllDescendants() const;
@@ -119,7 +119,7 @@ namespace engine
 		std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 		std::vector<IUpdateable*> m_updateableComponents;
 		math::Transform m_transform;
-		std::unique_ptr<Physics::PhysicsObject> m_physicsObject;
+		std::unique_ptr<physics::PhysicsObject> m_physicsObject;
 		ActionsToGameNodeCommands m_actionsToCommands;
 		StatesToGameNodeCommands m_statesToCommands;
 		/* ==================== Non-static member variables end ==================== */

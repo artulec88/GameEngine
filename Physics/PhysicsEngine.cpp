@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "PhysicsEngine.h"
-#include "Math\IntersectInfo.h"
+#include "Math/IntersectInfo.h"
 #include "Utility/IConfig.h"
 
-Physics::PhysicsEngine::PhysicsEngine() :
+physics::PhysicsEngine::PhysicsEngine() :
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
 	m_classStats(STATS_STORAGE.GetClassStats("PhysicsEngine"))
 #endif
@@ -13,34 +13,34 @@ Physics::PhysicsEngine::PhysicsEngine() :
 	STOP_PROFILING_PHYSICS("");
 }
 
-Physics::PhysicsEngine::~PhysicsEngine()
+physics::PhysicsEngine::~PhysicsEngine()
 {
 }
 
-void Physics::PhysicsEngine::AddPhysicsObject(PhysicsObject* physicsObject)
+void physics::PhysicsEngine::AddPhysicsObject(PhysicsObject* physicsObject)
 {
 	m_physicsObjects.push_back(physicsObject);
 }
 
-void Physics::PhysicsEngine::Simulate(math::Real passedTime)
+void physics::PhysicsEngine::Simulate(math::Real passedTime)
 {
-	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
+	for (auto physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
 	{
 		(*physicsObjectItr)->Simulate(passedTime);
 	}
 }
 
-void Physics::PhysicsEngine::HandleCollisions()
+void physics::PhysicsEngine::HandleCollisions()
 {
 	// TODO: Sounds like a template design pattern (?)
 	// 1. Check which objects collide with each other
 	// 2. For objects that collide perform the collision response.
 
-	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
+	for (auto physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
 	{
-		for (PhysicObjectsContainer::iterator otherPhysicsObjectItr = physicsObjectItr + 1; otherPhysicsObjectItr != m_physicsObjects.end(); ++otherPhysicsObjectItr)
+		for (auto otherPhysicsObjectItr = physicsObjectItr + 1; otherPhysicsObjectItr != m_physicsObjects.end(); ++otherPhysicsObjectItr)
 		{
-			math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(*(*otherPhysicsObjectItr));
+			math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(**otherPhysicsObjectItr);
 			if (intersectInfo.IsIntersecting())
 			{
 				DEBUG_LOG_PHYSICS("The objects collided"); // TODO: Better log message

@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "BaseLight.h"
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 #include "Math\Angle.h"
 
 namespace Rendering {

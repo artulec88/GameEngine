@@ -35,7 +35,7 @@ namespace engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Physics::AABBCollider m_aabbCollider;
+		physics::AabbCollider m_aabbCollider;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABBColliderComponent */
 

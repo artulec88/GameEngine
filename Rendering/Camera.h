@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "BaseCamera.h"
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 #include <string>
 
 namespace Rendering

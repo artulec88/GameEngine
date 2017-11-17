@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "Mesh.h"
 
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 
 //#define HEIGHTS_KD_TREE
 #define HEIGHTS_SURFACE

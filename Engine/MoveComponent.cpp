@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "MoveComponent.h"
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 #include "Math\Quaternion.h"
 
-engine::MoveComponent::MoveComponent(Physics::PhysicsObject* physicsObject, math::Real movementSpeed, math::Real runSpeedFactor, math::Angle& rotationSpeed, math::Real strafeSpeed, math::Real jumpSpeed) :
+engine::MoveComponent::MoveComponent(physics::PhysicsObject* physicsObject, math::Real movementSpeed, math::Real runSpeedFactor, math::Angle& rotationSpeed, math::Real strafeSpeed, math::Real jumpSpeed) :
 	GameComponent(),
 	m_physicsObject(physicsObject),
 	m_movementSpeed(movementSpeed),

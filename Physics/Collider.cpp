@@ -3,18 +3,18 @@
 #include "Math/Sphere.h"
 #include "Utility/ILogger.h"
 
-Physics::Collider::Collider(ColliderType type) :
+physics::Collider::Collider(collider_types::ColliderType type) :
 	m_type(type)
 {
 }
 
-Physics::Collider::~Collider()
+physics::Collider::~Collider()
 {
 }
 
-math::IntersectInfo Physics::Collider::Intersect(const Collider& collider) const
+math::IntersectInfo physics::Collider::Intersect(const Collider& collider) const
 {
-	if ( (m_type == TYPE_SPHERE) && (collider.GetType() == TYPE_SPHERE) )
+	if (collider_types::TYPE_SPHERE == m_type && collider_types::TYPE_SPHERE == collider.GetType() )
 	{
 		const math::Sphere* self = dynamic_cast<const math::Sphere*>(this);
 		if (self == nullptr)

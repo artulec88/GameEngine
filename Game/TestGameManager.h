@@ -16,8 +16,8 @@
 #include "Rendering\SpotLight.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
-#include "Math\StatisticsStorage.h"
-#include "Math\Statistics.h"
+#include "Math/StatisticsStorage.h"
+#include "Math/Statistics.h"
 #endif
 
 #include <vector>

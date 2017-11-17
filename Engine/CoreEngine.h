@@ -158,7 +158,7 @@ namespace engine
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
 		ENGINE_API void AddBillboardNode(GameNode* billboardNode);
-		ENGINE_API void AddPhysicsObject(Physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
+		ENGINE_API void AddPhysicsObject(physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
 		
 		ENGINE_API const Rendering::Mesh* GetMesh(int meshID) const { return m_renderer->GetMesh(meshID); }
 		ENGINE_API const Rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) { return m_renderer->CreateMesh(meshID, meshFileName); }
@@ -245,7 +245,7 @@ namespace engine
 		const math::Real m_frameTime;
 		GameManager* m_game;
 		std::unique_ptr<audio::IAudioEngine> m_audioEngine;
-		Physics::PhysicsEngine* m_physicsEngine;
+		physics::PhysicsEngine* m_physicsEngine;
 		std::unique_ptr<Rendering::Renderer> m_renderer; // TODO: Replace unique_ptr with a simple instance of Rendering::Renderer.
 
 		/// <summary> Specifies where to look for the configuration files. </summary>

@@ -22,7 +22,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		DEBUG_LOG_PHYSICS("The Physics DLL is being ", ((lpReserved == NULL) ? "dynamically" : "statically"), " loaded into the virtual address space of the current process");
+		DEBUG_LOG_PHYSICS("The Physics DLL is being ", lpReserved == nullptr ? "dynamically" : "statically", " loaded into the virtual address space of the current process");
 		break;
 	case DLL_THREAD_ATTACH:
 		DEBUG_LOG_PHYSICS("The Physics DLL is being attached to the new thread of the current process.");
@@ -31,7 +31,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		DEBUG_LOG_PHYSICS("The Physics DLL is being detached from the exiting thread of the current process.");
 		break;
 	case DLL_PROCESS_DETACH:
-		DEBUG_LOG_PHYSICS("The Physics DLL is being detached from the current process. ", ((lpReserved == NULL) ? "" : "The process is terminating."));
+		DEBUG_LOG_PHYSICS("The Physics DLL is being detached from the current process. ", lpReserved == nullptr ? "" : "The process is terminating.");
 		break;
 	default:
 		CRITICAL_LOG_UTILITY("Critical error occured during Physics DLL processing.");

@@ -7,7 +7,7 @@
 
 #include "Math\AABR.h"
 #include "Math/Vector.h"
-#include "Math\IntersectInfo.h"
+#include "Math/IntersectInfo.h"
 #include "Math\Effect.h"
 
 namespace Rendering

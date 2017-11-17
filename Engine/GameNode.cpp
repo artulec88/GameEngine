@@ -117,7 +117,7 @@ engine::GameNode engine::GameNode::Clone() const
 
 void engine::GameNode::CreatePhysicsObject(math::Real mass, const math::Vector3D& linearVelocity)
 {
-	m_physicsObject = std::make_unique<Physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
+	m_physicsObject = std::make_unique<physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
 	engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
 }
 

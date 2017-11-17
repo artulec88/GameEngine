@@ -6,7 +6,7 @@
 //#include "InputConstants.h"
 //#include "GameNodeCommand.h"
 
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 
 //#include <map>
 
@@ -76,7 +76,7 @@ namespace engine
 		/// <returns> The unmodifiable transform of the parent game node. </returns>
 		const math::Transform& GetTransform() const;
 
-		Physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
+		physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

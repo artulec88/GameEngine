@@ -42,7 +42,7 @@
 #define CHECK_CONDITION_RETURN_PHYSICS(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN(expr, returnValue, "Physics", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_RETURN_ALWAYS_PHYSICS(expr, returnValue, logLevel, ...) CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, "Physics", logLevel, ##__VA_ARGS__)
 
-namespace Physics
+namespace physics
 {
 } /* end namespace Physics */
 

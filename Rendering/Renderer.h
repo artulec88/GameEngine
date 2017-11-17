@@ -26,15 +26,15 @@
 #include "Math\Angle.h"
 #include "Math/Vector.h"
 #include "Math\Plane.h"
-#include "Math\Transform.h"
+#include "Math/Transform.h"
 #ifdef DEBUG_RENDERING_ENABLED
 #include "Math\Sphere.h"
-#include "Math\AABB.h"
+#include "Math/AABB.h"
 #include "Math\OBB.h"
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
-#include "Math\Statistics.h"
-#include "Math\StatisticsStorage.h"
+#include "Math/Statistics.h"
+#include "Math/StatisticsStorage.h"
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED

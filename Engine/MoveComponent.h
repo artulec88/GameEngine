@@ -23,7 +23,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MoveComponent(Physics::PhysicsObject* physicsObject, math::Real movementSpeed, math::Real runSpeedFactor, math::Angle& rotationSpeed, math::Real strafeSpeed, math::Real jumpSpeed);
+		ENGINE_API MoveComponent(physics::PhysicsObject* physicsObject, math::Real movementSpeed, math::Real runSpeedFactor, math::Angle& rotationSpeed, math::Real strafeSpeed, math::Real jumpSpeed);
 		ENGINE_API virtual ~MoveComponent(void);
 		MoveComponent(const MoveComponent& moveComponent) = delete;
 		MoveComponent(MoveComponent&& moveComponent) = default;
@@ -41,7 +41,7 @@ namespace engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Physics::PhysicsObject* m_physicsObject;
+		physics::PhysicsObject* m_physicsObject;
 		const math::Real m_movementSpeed;
 		/// <summary>
 		/// Specifies the ratio between running speed and the standard walking speed.
