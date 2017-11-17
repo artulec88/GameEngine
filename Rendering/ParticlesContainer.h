@@ -5,7 +5,7 @@
 #include "ParticleAttributes.h"
 #include "Color.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Angle.h"
 
 #include <memory>

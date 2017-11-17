@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Angle.h"
 
 #include <memory>

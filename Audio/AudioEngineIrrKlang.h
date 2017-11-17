@@ -7,7 +7,7 @@
 
 namespace audio
 {
-	class AudioEngine_IRR_KLANG : public IAudioEngine
+	class AudioEngineIrrKlang : public IAudioEngine
 	{
 		/* TODO: Better key for more efficient map search ? */
 		using Filenames2SoundSources = std::map<std::string, irrklang::ISoundSource*>;
@@ -17,26 +17,26 @@ namespace audio
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AUDIO_API explicit AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount);
-		AUDIO_API ~AudioEngine_IRR_KLANG();
+		AUDIO_API explicit AudioEngineIrrKlang(const std::string& audioDirectory, int maxChannelsCount);
+		AUDIO_API ~AudioEngineIrrKlang();
 
 		/// <summary> irrKlang audio engine copy constructor. </summary>
 		/// <param name="audioEngine"> The irrKlang audio engine to copy construct from. </param>
-		AudioEngine_IRR_KLANG(const AudioEngine_IRR_KLANG& audioEngine) = delete;
+		AudioEngineIrrKlang(const AudioEngineIrrKlang& audioEngine) = delete;
 
 		/// <summary> irrKlang audio engine move constructor. </summary>
 		/// <param name="audioEngine"> The irrKlang audio engine to move construct from. </param>
-		AudioEngine_IRR_KLANG(AudioEngine_IRR_KLANG&& audioEngine) = delete;
+		AudioEngineIrrKlang(AudioEngineIrrKlang&& audioEngine) = delete;
 
 		/// <summary> irrKlang audio engine copy assignment operator. </summary>
 		/// <param name="audioEngine"> The irrKlang audio engine to copy assign from. </param>
 		/// <returns> The reference to the newly copy-assigned irrKlang audio engine. </returns>
-		AudioEngine_IRR_KLANG& operator=(const AudioEngine_IRR_KLANG& audioEngine) = delete;
+		AudioEngineIrrKlang& operator=(const AudioEngineIrrKlang& audioEngine) = delete;
 
 		/// <summary> irrKlang audio engine move assignment operator. </summary>
 		/// <param name="audioEngine"> The irrKlang audio engine to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned irrKlang audio engine. </returns>
-		AudioEngine_IRR_KLANG& operator=(AudioEngine_IRR_KLANG&& audioEngine) = delete;
+		AudioEngineIrrKlang& operator=(AudioEngineIrrKlang&& audioEngine) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -67,7 +67,7 @@ namespace audio
 		AUDIO_API void SetSoundEffectsVolume(math::Real volume) override;
 		AUDIO_API void SetSongsVolume(math::Real volume) override;
 	private:
-		void Load(Categories::Category type, const std::string& path);
+		void Load(categories::Category type, const std::string& path);
 
 		/// <summary>
 		/// A helper method for calculating the octaves. By using this method it becomes simple to modify the pitch of a sound.
@@ -101,19 +101,18 @@ namespace audio
 		/// </returns>
 		math::Real ChangeSemitone(math::Real frequency, math::Real variation) const override;
 
-		void SetVolume(Categories::Category type, math::Real volume);
+		void SetVolume(categories::Category type, math::Real volume);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-		const float M_SONG_FADE_IN_TIME;
 		irrklang::ISoundEngine* m_engine;
-		Filenames2SoundSources m_soundSources[Categories::COUNT];
+		Filenames2SoundSources m_soundSources[categories::COUNT];
 
 		irrklang::ISound* m_currentSong;
 		std::string m_currentSongPath;
 		std::string m_nextSongPath;
 		
-		FadeStates::FadeState m_fade;
+		fade_states::FadeState m_fade;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AudioEngine_IRR_KLANG */
 

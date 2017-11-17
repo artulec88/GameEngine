@@ -2,7 +2,7 @@
 #define __RENDERING_SHADOW_INFO_H__
 
 #include "Rendering.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Quaternion.h"
 #include "Math\Matrix.h"
 

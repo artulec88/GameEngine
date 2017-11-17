@@ -7,8 +7,8 @@
 #include "Rendering\Particle.h"
 //#include "Rendering\ParticleContainer.h"
 
-#include "Math\Vector.h"
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/Vector.h"
+#include "Math/RandomGeneratorFactory.h"
 
 #include <list>
 #include <array>

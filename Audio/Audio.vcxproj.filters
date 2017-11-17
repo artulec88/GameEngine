@@ -42,19 +42,19 @@
     <ClInclude Include="IAudioDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FMOD_AudioContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IAudioEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioEngine_FMOD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AudioEngineFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AudioEngine_IRR_KLANG.h">
+    <ClInclude Include="AudioEngineFmod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioEngineIrrKlang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioContextFmod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,19 +86,19 @@
     <ClCompile Include="IAudioDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FMOD_AudioContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IAudioEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioEngine_FMOD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AudioEngineFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AudioEngine_IRR_KLANG.cpp">
+    <ClCompile Include="AudioEngineFmod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioEngineIrrKlang.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioContextFmod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

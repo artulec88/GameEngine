@@ -2,7 +2,7 @@
 #include "SpotLight.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 #include "Math\Matrix.h"
 
 Rendering::Lighting::SpotLight::SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,

@@ -3,7 +3,7 @@
 #include "MeshIDs.h"
 #include "stb_image.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 #include "Utility\FileManager.h"
 
 #include <assimp\Importer.hpp>

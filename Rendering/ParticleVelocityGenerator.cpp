@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleVelocityGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantVelocityGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantVelocityGenerator::ConstantVelocityGenerator(const math::Vector3D& velocity) :

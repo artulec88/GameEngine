@@ -5,7 +5,7 @@
 
 #include "Physics\PhysicsObject.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 engine::GravityComponent::GravityComponent(const Rendering::Terrain* terrain) :
 	GameComponent(),

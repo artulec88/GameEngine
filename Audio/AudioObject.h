@@ -18,11 +18,10 @@ namespace audio
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API AudioObject(const SampleInfo& sampleInfo, IAudioData* audioData);
-		AUDIO_API virtual ~AudioObject(void);
+		AUDIO_API virtual ~AudioObject();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Generates the samples for the audio object.
 		/// </summary>
@@ -44,11 +43,10 @@ namespace audio
 		/// <summary>
 		/// Converts the normalized position in range [0; 1] and returns the absolute position in the data.
 		/// </summary>
-		size_t ConvertPosToAbsolutePos(double pos);
+		size_t ConvertPosToAbsolutePos(const double pos) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		size_t m_audioPos;
 		size_t m_audioLength;
 		SampleInfo m_sampleInfo;
@@ -56,6 +54,6 @@ namespace audio
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AudioObject */
 
-} /* end namespace Audio */
+} /* end namespace audio */
 
 #endif /* __AUDIO_AUDIO_OBJECT_H__ */

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "PointLight.h"
 #include "Shader.h"
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 Rendering::Lighting::PointLight::PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation) :

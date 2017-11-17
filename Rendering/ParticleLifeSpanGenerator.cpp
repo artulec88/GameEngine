@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleLifeSpanGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantLifeSpanLimitGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantLifeSpanLimitGenerator::ConstantLifeSpanLimitGenerator(math::Real lifeSpanLimit) :

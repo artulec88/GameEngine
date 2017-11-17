@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleScaleGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantScaleGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantScaleGenerator::ConstantScaleGenerator(math::Real scale) :

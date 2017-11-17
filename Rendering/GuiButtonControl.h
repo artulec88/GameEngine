@@ -9,7 +9,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\AABR.h"
 #include "Math\Effect.h"
 

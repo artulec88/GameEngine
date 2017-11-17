@@ -4,7 +4,7 @@
 #include "PointLight.h"
 #include "Attenuation.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Angle.h"
 #include "Math\Transform.h"
 

@@ -9,7 +9,7 @@
 #include "ParticleLifeSpanGenerator.h"
 #include "ParticlesUpdater.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 Rendering::Particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	utility::Builder<ParticlesSystem>(),

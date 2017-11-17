@@ -2,12 +2,12 @@
 #define __AUDIO_IAUDIO_ENGINE_H__
 
 #include "Audio.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include <string>
 
 namespace audio
 {
-	namespace Categories
+	namespace categories
 	{
 		enum Category
 		{
@@ -16,9 +16,9 @@ namespace audio
 			SONG,
 			COUNT // The number of categories
 		}; /* end enum Category */
-	} /* end namespace Categories */
+	} /* end namespace categories */
 
-	namespace FadeStates
+	namespace fade_states
 	{
 		enum FadeState
 		{
@@ -26,7 +26,7 @@ namespace audio
 			FADE_IN,
 			FADE_OUT
 		}; /* end enum FadeState */
-	} /* end namespace FadeStates */
+	} /* end namespace fade_states */
 
 
 	// TODO: Instead of identifying the sounds using their "path" strings it would be more appropriate to identify them using an enum or integer value.
@@ -180,6 +180,7 @@ namespace audio
 
 		/* ==================== Non-static member variables begin ==================== */
 		const std::string& m_audioDirectory;
+		const float M_SONG_FADE_IN_TIME;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioEngine */
 

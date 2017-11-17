@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include "MappedValues.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 
 #include <string>
 #include <map>

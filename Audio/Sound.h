@@ -24,7 +24,7 @@ namespace audio
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		FMOD::Sound* GetSoundData() { return m_soundData; }
+		FMOD::Sound* GetSoundData() const { return m_soundData; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -41,10 +41,25 @@ namespace audio
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API explicit Sound(const std::string& audioFileName, FMOD_MODE mode);
-		AUDIO_API ~Sound(void);
-	private:
-		Sound(const Sound& sound);
-		void operator=(const Sound& sound);
+		AUDIO_API ~Sound();
+
+		/// <summary> Sound copy constructor. </summary>
+		/// <param name="sound"> The sound to copy construct from. </param>
+		Sound(const Sound& sound) = delete;
+
+		/// <summary> Sound move constructor. </summary>
+		/// <param name="sound"> The sound to move construct from. </param>
+		Sound(Sound&& sound) = delete;
+
+		/// <summary> Sound copy assignment operator. </summary>
+		/// <param name="sound"> The sound to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned sound. </returns>
+		Sound& operator=(const Sound& sound) = delete;
+
+		/// <summary> Sound move assignment operator. </summary>
+		/// <param name="sound"> The sound to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned sound. </returns>
+		Sound& operator=(Sound&& sound) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

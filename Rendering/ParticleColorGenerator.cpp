@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleColorGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 #include "ParticleAccelerationGenerator.h"
 
 /* ==================== class ConstantColorGenerator begin ==================== */

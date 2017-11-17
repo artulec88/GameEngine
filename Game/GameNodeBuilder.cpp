@@ -5,7 +5,7 @@
 #include "Engine\CameraComponent.h"
 #include "Engine\CameraBehavior.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 /* ==================== GameNodeBuilder implementation begin ==================== */
 Game::GameNodeBuilder::GameNodeBuilder(engine::GameManager* gameManager) :

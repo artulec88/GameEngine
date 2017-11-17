@@ -6,7 +6,7 @@
 #include "Shader.h"
 
 #include "Math\AABR.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\IntersectInfo.h"
 #include "Math\Effect.h"
 

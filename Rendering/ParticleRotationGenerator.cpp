@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleRotationGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantRotationGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantRotationGenerator::ConstantRotationGenerator(const math::Angle& angle) :

@@ -3,7 +3,7 @@
 
 #include <limits>
 #include "Math.h"
-//#include "Utility\IConfig.h"
+//#include "Utility/IConfig.h"
 //#include "Utility/ILogger.h" // only used if AlmostEqual logs anything
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"

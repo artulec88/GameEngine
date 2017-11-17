@@ -4,7 +4,7 @@
 #include "Rendering.h"
 
 #include "Math\Transform.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
 

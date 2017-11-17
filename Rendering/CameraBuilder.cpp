@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CameraBuilder.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 /* ==================== CameraBuilder implementation begin ==================== */
 Rendering::CameraBuilder::CameraBuilder() :

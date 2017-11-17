@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PhysicsEngine.h"
 #include "Math\IntersectInfo.h"
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 Physics::PhysicsEngine::PhysicsEngine() :
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED

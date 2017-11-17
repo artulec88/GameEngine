@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticlePositionGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantPositionGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantPositionGenerator::ConstantPositionGenerator(math::Real xPos, math::Real yPos, math::Real zPos) :

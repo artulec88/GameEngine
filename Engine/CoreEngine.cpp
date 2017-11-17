@@ -267,7 +267,7 @@ engine::CoreEngine::~CoreEngine()
 void engine::CoreEngine::CreateAudioEngine()
 {
 	audio::AudioEngineFactory audioEngineFactory(m_audioDirectory);
-	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(audio::AudioEngineTypes::FMOD))));
+	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<audio::audio_engine_types::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(audio::audio_engine_types::FMOD))));
 	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Logging::CRITICAL, "Failed to create an audio engine.");
 }
 

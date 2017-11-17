@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "ParticlesContainer.h"
 
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Effect.h"
 
 namespace Rendering

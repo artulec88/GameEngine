@@ -1,28 +1,27 @@
 #include "stdafx.h"
-#include "AudioEngine_FMOD.h"
+#include "AudioEngineFmod.h"
 #include "Utility/IConfig.h"
 #include "Utility/ILogger.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 #include "fmod_errors.h" // for error-checking
 
-audio::AudioEngine_FMOD::AudioEngine_FMOD(const std::string& audioDirectory, const int maxChannelsCount) :
+audio::AudioEngineFmod::AudioEngineFmod(const std::string& audioDirectory, const int maxChannelsCount) :
 	IAudioEngine(audioDirectory),
-	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
 	m_maxChannelsCount(maxChannelsCount),
 	m_system(nullptr),
 	m_master(nullptr),
 	m_currentSong(nullptr),
 	m_currentSongPath(""),
 	m_nextSongPath(""),
-	m_fade(FadeStates::FADE_NONE)
+	m_fade(fade_states::FADE_NONE)
 {
 	// Based on tutorial: https://cuboidzone.wordpress.com/category/tutorials/
-	FMOD_RESULT fmodResult = FMOD::System_Create(&m_system); // Create the main system object
+	FMOD_RESULT fmodResult = System_Create(&m_system); // Create the main system object
 	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, utility::logging::CRITICAL, "Failed to create an audio system with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 
-	int driversCount = 0;
+	auto driversCount = 0;
 	fmodResult = m_system->getNumDrivers(&driversCount);
 	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && driversCount != 0, utility::logging::CRITICAL, "Failed to create an audio system. Drivers count = ", driversCount);
 
@@ -36,26 +35,26 @@ audio::AudioEngine_FMOD::AudioEngine_FMOD(const std::string& audioDirectory, con
 
 	// Creating channels groups for each category
 	m_system->getMasterChannelGroup(&m_master);
-	for (int i = 0; i < Categories::COUNT; ++i)
+	for (auto i = 0; i < categories::COUNT; ++i)
 	{
 		m_system->createChannelGroup(nullptr /* name of the channel group */, &m_groups[i]);
 		m_master->addGroup(m_groups[i]);
 	}
 
 	// Set up modes for each category
-	m_modes[Categories::SOUND_EFFECT] = FMOD_DEFAULT;
-	m_modes[Categories::SOUND_EFFECT_3D] = FMOD_3D;
-	m_modes[Categories::SONG] = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL;
+	m_modes[categories::SOUND_EFFECT] = FMOD_DEFAULT;
+	m_modes[categories::SOUND_EFFECT_3D] = FMOD_3D;
+	m_modes[categories::SONG] = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL;
 
 	NOTICE_LOG_AUDIO("Audio engine created.");
 }
 
 
-audio::AudioEngine_FMOD::~AudioEngine_FMOD()
+audio::AudioEngineFmod::~AudioEngineFmod()
 {
 	FMOD_RESULT fmodResult = FMOD_OK;
 	// Releasing sounds in each category
-	for (int i = 0; i < Categories::COUNT; ++i)
+	for (auto i = 0; i < categories::COUNT; ++i)
 	{
 		for (auto soundItr = m_sounds[i].begin(); soundItr != m_sounds[i].end(); ++soundItr)
 		{
@@ -73,39 +72,42 @@ audio::AudioEngine_FMOD::~AudioEngine_FMOD()
 	NOTICE_LOG_AUDIO("Audio engine destroyed.");
 }
 
-void audio::AudioEngine_FMOD::Update(math::Real deltaTime)
+void audio::AudioEngineFmod::Update(math::Real deltaTime)
 {
-	if ((m_currentSong != nullptr) && (m_fade == FadeStates::FADE_IN))
+	if (m_currentSong != nullptr)
 	{
-		float volume;
-		m_currentSong->getVolume(&volume);
-		float nextVolume = volume + deltaTime / M_SONG_FADE_IN_TIME;
-		if (nextVolume >= 1.0f)
+		if (fade_states::FADE_IN == m_fade)
 		{
-			nextVolume = 1.0f;
-			m_fade = FadeStates::FADE_NONE;
-		}
-		DEBUG_LOG_AUDIO("Increasing volume by ", nextVolume - volume, ". Current volume = ", nextVolume);
-		m_currentSong->setVolume(nextVolume);
-	}
-	else if ((m_currentSong != nullptr) && (m_fade == FadeStates::FADE_OUT))
-	{
-		float volume;
-		m_currentSong->getVolume(&volume);
-		const auto nextVolume = volume - deltaTime / M_SONG_FADE_IN_TIME;
-		if (nextVolume <= 0.0f)
-		{
-			m_currentSong->stop();
-			m_currentSong = nullptr;
-			m_currentSongPath.clear();
-			m_fade = FadeStates::FADE_NONE;
-		}
-		else
-		{
+			float volume;
+			m_currentSong->getVolume(&volume);
+			auto nextVolume = volume + deltaTime / M_SONG_FADE_IN_TIME;
+			if (nextVolume >= 1.0f)
+			{
+				nextVolume = 1.0f;
+				m_fade = fade_states::FADE_NONE;
+			}
+			DEBUG_LOG_AUDIO("Increasing volume by ", nextVolume - volume, ". Current volume = ", nextVolume);
 			m_currentSong->setVolume(nextVolume);
 		}
+		else if (fade_states::FADE_OUT == m_fade)
+		{
+			float volume;
+			m_currentSong->getVolume(&volume);
+			const auto nextVolume = volume - deltaTime / M_SONG_FADE_IN_TIME;
+			if (nextVolume <= 0.0f)
+			{
+				m_currentSong->stop();
+				m_currentSong = nullptr;
+				m_currentSongPath.clear();
+				m_fade = fade_states::FADE_NONE;
+			}
+			else
+			{
+				m_currentSong->setVolume(nextVolume);
+			}
+		}
 	}
-	else if ((m_currentSong == nullptr) && (!m_nextSongPath.empty()))
+	else if (!m_nextSongPath.empty())
 	{
 		PlaySong(m_nextSongPath);
 		m_nextSongPath.clear();
@@ -115,22 +117,22 @@ void audio::AudioEngine_FMOD::Update(math::Real deltaTime)
 	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, utility::logging::ERR, "Updating audio system has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 }
 
-void audio::AudioEngine_FMOD::LoadSoundEffect(const std::string& path)
+void audio::AudioEngineFmod::LoadSoundEffect(const std::string& path)
 {
-	Load(Categories::SOUND_EFFECT, path);
+	Load(categories::SOUND_EFFECT, path);
 }
 
-void audio::AudioEngine_FMOD::LoadSoundEffect3D(const std::string& path)
+void audio::AudioEngineFmod::LoadSoundEffect3D(const std::string& path)
 {
-	Load(Categories::SOUND_EFFECT_3D, path);
+	Load(categories::SOUND_EFFECT_3D, path);
 }
 
-void audio::AudioEngine_FMOD::LoadSong(const std::string& path)
+void audio::AudioEngineFmod::LoadSong(const std::string& path)
 {
-	Load(Categories::SONG, path);
+	Load(categories::SONG, path);
 }
 
-void audio::AudioEngine_FMOD::Load(Categories::Category type, const std::string& path)
+void audio::AudioEngineFmod::Load(categories::Category type, const std::string& path)
 {
 	if (m_sounds[type].find(path) != m_sounds[type].end())
 	{
@@ -139,32 +141,32 @@ void audio::AudioEngine_FMOD::Load(Categories::Category type, const std::string&
 	}
 	FMOD::Sound* sound;
 	m_system->createSound(path.c_str(), m_modes[type], nullptr, &sound);
-	m_sounds[type].insert(std::make_pair(path, sound));
+	m_sounds[type].insert(make_pair(path, sound));
 }
 
-math::Real audio::AudioEngine_FMOD::ChangeOctave(math::Real frequency, math::Real variation) const
+math::Real audio::AudioEngineFmod::ChangeOctave(math::Real frequency, math::Real variation) const
 {
-	return frequency * pow(OCTAVE_RATIO, variation);
+	return frequency * pow(s_octaveRatio, variation);
 }
 
-math::Real audio::AudioEngine_FMOD::ChangeSemitone(math::Real frequency, math::Real variation) const
+math::Real audio::AudioEngineFmod::ChangeSemitone(math::Real frequency, math::Real variation) const
 {
-	return frequency * pow(SEMITONE_RATIO, variation);
+	return frequency * pow(s_semitoneRatio, variation);
 }
 
-void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path)
+void audio::AudioEngineFmod::PlaySoundEffect(const std::string& path)
 {
 	float volume, pitch;
-	m_groups[Categories::SOUND_EFFECT]->getVolume(&volume);
-	m_groups[Categories::SOUND_EFFECT]->getPitch(&pitch);
+	m_groups[categories::SOUND_EFFECT]->getVolume(&volume);
+	m_groups[categories::SOUND_EFFECT]->getPitch(&pitch);
 	PlaySoundEffect(path, volume, pitch);
 }
 
-void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, math::Real volume, math::Real pitch)
+void audio::AudioEngineFmod::PlaySoundEffect(const std::string& path, math::Real volume, math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
-	const auto soundItr = m_sounds[Categories::SOUND_EFFECT].find(path);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[Categories::SOUND_EFFECT].end(), utility::logging::WARNING,
+	const auto soundItr = m_sounds[categories::SOUND_EFFECT].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[categories::SOUND_EFFECT].end(), utility::logging::WARNING,
 		"The requested sound effect \"", path, "\" has not been found");
 
 	// Calculating random volume and pitch in selected range
@@ -174,7 +176,7 @@ void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, math::Rea
 
 	// Playing the sound effect with these initial values
 	FMOD::Channel* channel;
-	m_system->playSound(soundItr->second, m_groups[Categories::SOUND_EFFECT], true, &channel);
+	m_system->playSound(soundItr->second, m_groups[categories::SOUND_EFFECT], true, &channel);
 	channel->setVolume(volume);
 	math::Real frequency;
 	channel->getFrequency(&frequency);
@@ -182,16 +184,16 @@ void audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, math::Rea
 	channel->setPaused(false);
 }
 
-void audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity)
+void audio::AudioEngineFmod::PlaySoundEffect3D(const std::string& path, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity)
 {
 	// Trying to find sound effect and return if not found
-	auto soundItr = m_sounds[Categories::SOUND_EFFECT_3D].find(path);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[Categories::SOUND_EFFECT].end(), utility::logging::WARNING,
+	auto soundItr = m_sounds[categories::SOUND_EFFECT_3D].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[categories::SOUND_EFFECT].end(), utility::logging::WARNING,
 		"The requested 3D sound effect \"", path, "\" has not been found");
 
 	// Playing the sound effect with these initial values
 	FMOD::Channel* channel;
-	m_system->playSound(soundItr->second, m_groups[Categories::SOUND_EFFECT_3D], true, &channel);
+	m_system->playSound(soundItr->second, m_groups[categories::SOUND_EFFECT_3D], true, &channel);
 	channel->setVolume(volume);
 	math::Real frequency;
 	channel->getFrequency(&frequency);
@@ -202,7 +204,7 @@ void audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, math::R
 	channel->setPaused(false);
 }
 
-void audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
+void audio::AudioEngineFmod::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
 {
 	// Ignoring if this song is already playing
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(m_currentSongPath != path, utility::logging::DEBUG, "The song \"", m_currentSongPath, "\" is already playing");
@@ -216,30 +218,30 @@ void audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better p
 	}
 
 	// Find the song in the corresponding sound map
-	const auto soundItr = m_sounds[Categories::SONG].find(path);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[Categories::SONG].end(), utility::logging::WARNING,
+	const auto soundItr = m_sounds[categories::SONG].find(path);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(soundItr != m_sounds[categories::SONG].end(), utility::logging::WARNING,
 		"Cannot play the requested song \"", path, "\". It has not been loaded yet.");
 
 	// Start playing song with volume set to 0 and fade in
 	m_currentSongPath = path;
-	m_system->playSound(soundItr->second, m_groups[Categories::SONG], true, &m_currentSong);
+	m_system->playSound(soundItr->second, m_groups[categories::SONG], true, &m_currentSong);
 	//m_currentSong->setChannelGroup
 	m_currentSong->setVolume(0.0f);
 	m_currentSong->setPaused(false);
-	m_fade = FadeStates::FADE_IN;
+	m_fade = fade_states::FADE_IN;
 }
 
-void audio::AudioEngine_FMOD::SetMasterVolume(math::Real volume)
+void audio::AudioEngineFmod::SetMasterVolume(math::Real volume)
 {
 	m_master->setVolume(volume);
 }
 
-void audio::AudioEngine_FMOD::SetSoundEffectsVolume(math::Real volume)
+void audio::AudioEngineFmod::SetSoundEffectsVolume(math::Real volume)
 {
-	m_groups[Categories::SOUND_EFFECT]->setVolume(volume);
+	m_groups[categories::SOUND_EFFECT]->setVolume(volume);
 }
 
-void audio::AudioEngine_FMOD::SetSongsVolume(math::Real volume)
+void audio::AudioEngineFmod::SetSongsVolume(math::Real volume)
 {
-	m_groups[Categories::SONG]->setVolume(volume);
+	m_groups[categories::SONG]->setVolume(volume);
 }

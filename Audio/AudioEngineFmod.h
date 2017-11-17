@@ -8,13 +8,13 @@
 
 namespace audio
 {
-	class AudioEngine_FMOD : public IAudioEngine
+	class AudioEngineFmod : public IAudioEngine
 	{
 		/* TODO: Better key for more efficient map search ? */
 		using Filenames2Sounds = std::map<std::string, FMOD::Sound*>;
 	/* ==================== Static variables begin ==================== */
-		static constexpr math::Real OCTAVE_RATIO = 2.0f;
-		static constexpr math::Real SEMITONE_RATIO = 1.0594630943592952645618252949463f; // = 2^(1/12)
+		static constexpr math::Real s_octaveRatio = 2.0f;
+		static constexpr math::Real s_semitoneRatio = 1.0594630943592952645618252949463f; // = 2^(1/12)
 	/* ==================== Static variables end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
@@ -24,31 +24,31 @@ namespace audio
 		/// </summary>
 		/// <param name="audioDirectory"> The system location where audio files are located. </param>
 		/// <param name="maxChannelsCount"> The maximum number of channels to be used by the audio engine. </param>
-		AUDIO_API explicit AudioEngine_FMOD(const std::string& audioDirectory, const int maxChannelsCount);
+		AUDIO_API explicit AudioEngineFmod(const std::string& audioDirectory, const int maxChannelsCount);
 
 		/// <summary>
 		/// FMOD Audio engine destructor. It takes care of releasing the main FMOD system object,
 		/// as well as all the sound objects that were created.
 		/// </summary>
-		AUDIO_API ~AudioEngine_FMOD();
+		AUDIO_API ~AudioEngineFmod();
 
 		/// <summary> FMOD audio engine copy constructor. </summary>
 		/// <param name="audioEngine"> The FMOD audio engine to copy construct from. </param>
-		AudioEngine_FMOD(const AudioEngine_FMOD& audioEngine) = delete;
+		AudioEngineFmod(const AudioEngineFmod& audioEngine) = delete;
 
 		/// <summary> FMOD audio engine move constructor. </summary>
 		/// <param name="audioEngine"> The FMOD audio engine to move construct from. </param>
-		AudioEngine_FMOD(AudioEngine_FMOD&& audioEngine) = delete;
+		AudioEngineFmod(AudioEngineFmod&& audioEngine) = delete;
 
 		/// <summary> FMOD audio engine copy assignment operator. </summary>
 		/// <param name="audioEngine"> The FMOD audio engine to copy assign from. </param>
 		/// <returns> The reference to the newly copy-assigned FMOD audio engine. </returns>
-		AudioEngine_FMOD& operator=(const AudioEngine_FMOD& audioEngine) = delete;
+		AudioEngineFmod& operator=(const AudioEngineFmod& audioEngine) = delete;
 
 		/// <summary> FMOD audio engine move assignment operator. </summary>
 		/// <param name="audioEngine"> The FMOD audio engine to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned FMOD audio engine. </returns>
-		AudioEngine_FMOD& operator=(AudioEngine_FMOD&& audioEngine) = delete;
+		AudioEngineFmod& operator=(AudioEngineFmod&& audioEngine) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -73,12 +73,12 @@ namespace audio
 		/// </summary>
 		AUDIO_API void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, math::Real volume, math::Real pitch, const math::Vector3D& position, const math::Vector3D& velocity) override;
 		AUDIO_API void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */) override;
-		AUDIO_API void StopSoundEffects() override { m_groups[Categories::SOUND_EFFECT]->stop(); }
+		AUDIO_API void StopSoundEffects() override { m_groups[categories::SOUND_EFFECT]->stop(); }
 		AUDIO_API void StopSong() override
 		{
 			if (m_currentSong != nullptr)
 			{
-				m_fade = FadeStates::FADE_OUT;
+				m_fade = fade_states::FADE_OUT;
 			}
 			m_nextSongPath.clear();
 		}
@@ -94,7 +94,7 @@ namespace audio
 		/// </summary>
 		/// <param name="type">The type of the sound, e.g. song, sound effect, 3D sound effect.</param>
 		/// <param name="path">The path of the audio file.</param>
-		void Load(Categories::Category type, const std::string& path);
+		void Load(categories::Category type, const std::string& path);
 
 		/// <summary>
 		/// A helper method for calculating the octaves. By using this method it becomes simple to modify the pitch of a sound.
@@ -130,18 +130,17 @@ namespace audio
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
-		const float M_SONG_FADE_IN_TIME;
 		int m_maxChannelsCount;
 		FMOD::System* m_system;
 		FMOD::ChannelGroup* m_master;
-		FMOD::ChannelGroup* m_groups[Categories::COUNT];
-		Filenames2Sounds m_sounds[Categories::COUNT];
-		FMOD_MODE m_modes[Categories::COUNT];
+		FMOD::ChannelGroup* m_groups[categories::COUNT];
+		Filenames2Sounds m_sounds[categories::COUNT];
+		FMOD_MODE m_modes[categories::COUNT];
 		FMOD::Channel* m_currentSong;
 		std::string m_currentSongPath;
 		std::string m_nextSongPath;
 
-		FadeStates::FadeState m_fade;
+		fade_states::FadeState m_fade;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AudioEngine_FMOD */
 

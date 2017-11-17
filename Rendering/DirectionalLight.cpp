@@ -3,7 +3,7 @@
 //#include "CoreEngine.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 Rendering::Lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,

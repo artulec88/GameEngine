@@ -9,7 +9,7 @@
 #include "SpotLight.h"
 
 #include "Utility\Builder.h"
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 
 #include <string>
 

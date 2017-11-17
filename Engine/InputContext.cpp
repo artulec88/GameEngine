@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "InputContext.h"
 
-#include "Utility\IConfig.h"
+#include "Utility/IConfig.h"
 #include "Utility\FileManager.h"
 
 #include <sstream>

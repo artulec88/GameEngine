@@ -2,7 +2,7 @@
 #define __RENDERING_CHARACTER_H__
 
 #include "Rendering.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 
 namespace Rendering
 {

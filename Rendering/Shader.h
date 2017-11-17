@@ -11,7 +11,7 @@
 #include "Camera.h"
 
 #include "Math\Transform.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Matrix.h"
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 #include "Math\StatisticsStorage.h"

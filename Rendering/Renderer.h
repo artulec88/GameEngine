@@ -24,7 +24,7 @@
 #include "GuiControl.h"
 
 #include "Math\Angle.h"
-#include "Math\Vector.h"
+#include "Math/Vector.h"
 #include "Math\Plane.h"
 #include "Math\Transform.h"
 #ifdef DEBUG_RENDERING_ENABLED

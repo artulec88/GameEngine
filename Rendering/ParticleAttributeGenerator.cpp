@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleAttributeGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class BasicIdGenerator begin ==================== */
 Rendering::Particles::Generators::BasicIdGenerator::BasicIdGenerator() :

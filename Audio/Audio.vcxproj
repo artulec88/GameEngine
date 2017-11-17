@@ -152,10 +152,10 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AudioEngineFactory.h" />
-    <ClInclude Include="AudioEngine_FMOD.h" />
-    <ClInclude Include="AudioEngine_IRR_KLANG.h" />
+    <ClInclude Include="AudioEngineFmod.h" />
+    <ClInclude Include="AudioEngineIrrKlang.h" />
     <ClInclude Include="AudioObject.h" />
-    <ClInclude Include="FMOD_AudioContext.h" />
+    <ClInclude Include="AudioContextFmod.h" />
     <ClInclude Include="IAudioContext.h" />
     <ClInclude Include="IAudioData.h" />
     <ClInclude Include="IAudioDevice.h" />
@@ -167,8 +167,8 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AudioEngineFactory.cpp" />
-    <ClCompile Include="AudioEngine_FMOD.cpp" />
-    <ClCompile Include="AudioEngine_IRR_KLANG.cpp" />
+    <ClCompile Include="AudioEngineFmod.cpp" />
+    <ClCompile Include="AudioEngineIrrKlang.cpp" />
     <ClCompile Include="AudioObject.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -184,7 +184,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="FMOD_AudioContext.cpp" />
+    <ClCompile Include="AudioContextFmod.cpp" />
     <ClCompile Include="IAudioContext.cpp" />
     <ClCompile Include="IAudioData.cpp" />
     <ClCompile Include="IAudioDevice.cpp" />

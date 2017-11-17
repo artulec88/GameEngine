@@ -17,11 +17,10 @@ namespace audio
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API IAudioData();
-		AUDIO_API virtual ~IAudioData(void);
+		AUDIO_API virtual ~IAudioData();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Low-level generation of samples for an audio.
 		/// </summary>
@@ -34,10 +33,9 @@ namespace audio
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioData */
 
-} /* end namespace Audio */
+} /* end namespace audio */
 
 #endif /* __AUDIO_I_AUDIO_DATA_H__ */

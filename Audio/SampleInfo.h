@@ -16,11 +16,10 @@ namespace audio
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API explicit SampleInfo(double volume, double pitch);
-		AUDIO_API ~SampleInfo(void);
+		AUDIO_API ~SampleInfo();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -31,6 +30,6 @@ namespace audio
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SampleInfo */
 
-} /* end namespace Audio */
+} /* end namespace audio */
 
 #endif /* __AUDIO_SAMPLE_INFO_H__ */

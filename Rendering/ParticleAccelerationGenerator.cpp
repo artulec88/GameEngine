@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ParticleAccelerationGenerator.h"
 
-#include "Math\RandomGeneratorFactory.h"
+#include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantAccelerationGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantAccelerationGenerator::ConstantAccelerationGenerator(math::Real accelerationX, math::Real accelerationY, math::Real accelerationZ) :
