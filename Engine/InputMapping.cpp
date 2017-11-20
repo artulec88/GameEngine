@@ -12,7 +12,7 @@
 engine::Input::InputMapping::InputMapping() //:
 	//m_inputContexts({ {"mainMenuInputContext", } })
 {
-	m_inputContexts.insert(std::make_pair("mainMenuInputContext", std::make_unique<InputContext>("mainMenuInputContext")));
+	m_inputContexts.insert(make_pair("mainMenuInputContext", std::make_unique<InputContext>("mainMenuInputContext")));
 }
 
 engine::Input::InputMapping::InputMapping(const std::string& configDirectory, const std::string& contextListFileName)

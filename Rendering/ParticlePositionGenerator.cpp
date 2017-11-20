@@ -62,7 +62,7 @@ void Rendering::Particles::Generators::PlanePositionGenerator::Generate(math::Re
 /* ==================== class PlanePositionGenerator end ==================== */
 
 /* ==================== class BoxPositionGenerator begin ==================== */
-Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const math::AABB& aabb) :
+Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const math::Aabb& aabb) :
 	BoxPositionGenerator(aabb.GetBottomLeftPos().x, aabb.GetTopRightPos().x,
 		aabb.GetBottomLeftPos().y, aabb.GetTopRightPos().y,
 		aabb.GetBottomLeftPos().z, aabb.GetTopRightPos().z)

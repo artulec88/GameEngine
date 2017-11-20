@@ -11,7 +11,7 @@ Rendering::TextureFactory::TextureFactory(const std::string& texturesDirectory) 
 	//m_textureType2TextureMap({ { TextureTypes::DEFAULT, std::move(Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultTexture", "defaultTexture"))) } })
 {
 	// This way we make sure that Texture's move ctrs are used instead of copy ctrs.
-	//m_textureType2TextureMap.insert(std::make_pair(TextureTypes::DEFAULT, Rendering::Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultNormalMap", "defaultNormalMap.jpg"))));
+	//m_textureType2TextureMap.insert(make_pair(TextureTypes::DEFAULT, Rendering::Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultNormalMap", "defaultNormalMap.jpg"))));
 	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_TEXTURE, Rendering::Texture(m_texturesDirectory +
 		GET_CONFIG_VALUE_STR_RENDERING("defaultTexture", "defaultTexture.png"))));
 	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_NORMAL_MAP, Rendering::Texture(m_texturesDirectory +

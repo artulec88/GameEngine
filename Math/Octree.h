@@ -15,12 +15,14 @@ namespace math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Octree constructor. </summary>
 			MATH_API Octree();
+
+			/// <summary> Octree destructor. </summary>
 			MATH_API ~Octree();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			// TODO: Create a "RayIntersect" method. Read "3D Math Primer for Graphics and Game Development" 16.4 section ("Quadtrees and Octrees").
 			MATH_API bool HasChildren() const;
 			MATH_API bool IsLeaf() const;
@@ -28,14 +30,14 @@ namespace math {
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Octree* topNorthWestNode;
-			Octree* topNorthEastNode;
-			Octree* topSouthWestNode;
-			Octree* topSouthEastNode;
-			Octree* bottomNorthWestNode;
-			Octree* bottomNorthEastNode;
-			Octree* bottomSouthWestNode;
-			Octree* bottomSouthEastNode;
+			Octree* m_topNorthWestNode;
+			Octree* m_topNorthEastNode;
+			Octree* m_topSouthWestNode;
+			Octree* m_topSouthEastNode;
+			Octree* m_bottomNorthWestNode;
+			Octree* m_bottomNorthEastNode;
+			Octree* m_bottomSouthWestNode;
+			Octree* m_bottomSouthEastNode;
 
 			// TODO: There should be a list of objects stored in the current node
 		/* ==================== Non-static member variables end ==================== */

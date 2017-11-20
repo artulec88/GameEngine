@@ -45,8 +45,8 @@ math::HeightsGenerator::~HeightsGenerator()
 math::Real math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 {
 	auto totalHeight = REAL_ZERO;
-	auto d = pow(m_freqFactor, m_octaves - 1);
-	for (int i = 0; i < m_octaves; ++i)
+	const auto d = pow(m_freqFactor, m_octaves - 1);
+	for (auto i = 0; i < m_octaves; ++i)
 	{
 		const auto freq = pow(m_freqFactor, i) / d;
 		const auto amplitude = pow(m_roughness, i) * m_heightAmplitude;

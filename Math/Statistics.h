@@ -38,7 +38,6 @@ namespace math {
 		class Stats
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		private:
 			static constexpr int MAX_STATS_LEVEL = 3;
 			static constexpr int MAX_SAMPLES_COUNT = 1000;
 			/* ==================== Static variables and functions end ==================== */
@@ -47,7 +46,7 @@ namespace math {
 		public:
 			/// <summary> Stats constructor. </summary>
 			/// <param name="level"> The stats hierarchy level. </param>
-			MATH_API explicit Stats(int level = 0);
+			MATH_API explicit Stats(const int level = 0);
 
 			/// <summary> Stats destructor. </summary>
 			MATH_API ~Stats();
@@ -62,22 +61,23 @@ namespace math {
 
 			/// <summary> Stats copy assignment operator. </summary>
 			/// <param name="stats"> The stats to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned stats. </returns>
 			MATH_API Stats& operator=(const Stats& stats) = delete;
 
 			/// <summary> Stats move assignment operator. </summary>
 			/// <param name="stats"> The stats to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned stats. </returns>
 			MATH_API Stats& operator=(Stats&& stats) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			MATH_API void Push(StatsID statsID, T sample);
+			MATH_API void Push(StatsID statsId, T sample);
 			MATH_API int Size() const;
-			MATH_API int Size(StatsID statsID) const;
-			MATH_API T CalculateSum(StatsID statsID) const;
-			MATH_API int CalculateSamplesCount(StatsID statsID) const;
-			MATH_API T CalculateMean(StatsID statsID) const;
-			MATH_API T CalculateMedian(StatsID statsID);
+			MATH_API int Size(StatsID statsId) const;
+			MATH_API T CalculateSum(StatsID statsId) const;
+			MATH_API int CalculateSamplesCount(StatsID statsId) const;
+			MATH_API T CalculateMean(StatsID statsId) const;
+			MATH_API T CalculateMedian(StatsID statsId);
 			MATH_API int GetHierachyDepth() const;
 			/* ==================== Non-static member functions end ==================== */
 
@@ -98,7 +98,6 @@ namespace math {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			void Push(const utility::timing::TimeSpan& elapsedTimeSpan);
 
 			utility::timing::TimeSpan CalculateMean() const;
@@ -144,7 +143,6 @@ namespace math {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			//MATH_API void Push(const std::string& statsID, Real sample);
 			//MATH_API int Size() const;
 			//MATH_API int Size(const std::string& statsID) const;
@@ -160,7 +158,7 @@ namespace math {
 			MATH_API bool IsProfiling(const std::string& methodName) const
 			{
 				const auto methodStatsIterator = m_methodsStats.find(methodName);
-				return (methodStatsIterator == m_methodsStats.end()) ? false : methodStatsIterator->second.IsProfiling();
+				return methodStatsIterator == m_methodsStats.end() ? false : methodStatsIterator->second.IsProfiling();
 			}
 
 			MATH_API bool IsEmpty() const
@@ -174,7 +172,6 @@ namespace math {
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			const std::string m_className;
 
 			/// <summary> The number of methods which are currently being profiled within the class </summary>

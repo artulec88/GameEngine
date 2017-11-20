@@ -16,7 +16,7 @@ namespace math
 	/// A k-d tree is a special case of a binary space partitioning tree (BST).
 	/// See https://en.wikipedia.org/wiki/K-d_tree for details.
 	/// </summary>
-	class KDTree
+	class KdTree
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -38,30 +38,30 @@ namespace math
 		/// Specifies the level of hierarchy this particular k-d tree resides on.
 		/// The k-d tree is a hierarchical structure. The root of this structure is at depth level 0.
 		/// </param>
-		MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1, int depth = 0);
+		MATH_API KdTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1, int depth = 0);
 
 		/// <summary>
 		/// k-d tree destructor.
 		/// </summary>
-		MATH_API ~KDTree();
+		MATH_API ~KdTree();
 
 		/// <summary> K-d tree copy constructor. </summary>
 		/// <param name="kdTree"> The k-d tree to copy construct from. </param>
-		MATH_API KDTree(const KDTree& kdTree) = delete;
+		MATH_API KdTree(const KdTree& kdTree) = delete;
 
 		/// <summary> K-d tree move constructor. </summary>
 		/// <param name="kdTree"> The k-d tree to move construct from. </param>
-		MATH_API KDTree(KDTree&& kdTree) = delete;
+		MATH_API KdTree(KdTree&& kdTree) = delete;
 
 		/// <summary> K-d tree copy assignment operator. </summary>
 		/// <param name="kdTree"> The k-d tree to copy assign from. </param>
 		/// <returns> The reference to the newly copy-assigned k-d tree. </returns>
-		MATH_API KDTree& operator=(const KDTree& kdTree) = delete;
+		MATH_API KdTree& operator=(const KdTree& kdTree) = delete;
 
 		/// <summary> K-d tree move assignment operator. </summary>
 		/// <param name="kdTree"> The k-d tree to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned k-d tree. </returns>
-		MATH_API KDTree& operator=(KDTree&& kdTree) = delete;
+		MATH_API KdTree& operator=(KdTree&& kdTree) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -91,13 +91,13 @@ namespace math
 		/// Returns <code>true</code> if current node is a leaf in a tree hierarchy. If current node has left or right child <code>false</code> is returned.
 		/// </summary>
 		/// <returns><code>true</code> if current node is a leaf and <code>false</code> otherwise.</returns>
-		MATH_API inline bool IsLeaf() const { return ((m_leftTree == nullptr) && (m_rightTree == nullptr)); }
+		MATH_API bool IsLeaf() const { return m_leftTree == nullptr && m_rightTree == nullptr; }
 
 		/// <summary>
 		/// Returns <code>true</code> if current node is not a leaf in a tree hierarchy. In all other cases <code>false</code> is returned.
 		/// </summary>
 		/// <returns><code>true</code> if current node is not a leaf and <code>false</code> otherwise.</returns>
-		MATH_API inline bool HasChildren() const { return !IsLeaf(); }
+		MATH_API bool HasChildren() const { return !IsLeaf(); }
 
 		MATH_API const Vector2D& GetPosition() const { return m_position; }
 		MATH_API Real GetValue() const { return m_value; }
@@ -126,8 +126,8 @@ namespace math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-		std::unique_ptr<KDTree> m_leftTree;
-		std::unique_ptr<KDTree> m_rightTree;
+		std::unique_ptr<KdTree> m_leftTree;
+		std::unique_ptr<KdTree> m_rightTree;
 		int m_numberOfSamples;
 		Vector2D m_position;
 		Real m_value;

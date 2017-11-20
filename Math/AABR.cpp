@@ -3,7 +3,7 @@
 #include "IntersectInfo.h"
 #include "Utility/ILogger.h"
 
-math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
+math::Aabr::Aabr(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
 	m_bottomLeftPos(bottomLeftPos),
 	m_topRightPos(topRightPos)
 {
@@ -15,11 +15,11 @@ math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noe
 		") cannot be less than Y component of the top right vertex (", m_topRightPos.GetY(), ")");
 }
 
-math::AABR::~AABR()
+math::Aabr::~Aabr()
 {
 }
 
-math::IntersectInfo math::AABR::DoesContainPoint(const Real x, const Real y) const noexcept
+math::IntersectInfo math::Aabr::DoesContainPoint(const Real x, const Real y) const noexcept
 {
 	const auto distanceX = CalcDistanceToNearestFaceX(x);
 	const auto distanceY = CalcDistanceToNearestFaceY(y);
@@ -27,7 +27,7 @@ math::IntersectInfo math::AABR::DoesContainPoint(const Real x, const Real y) con
 	return IntersectInfo(distanceX < distanceY ? distanceX : distanceY);
 }
 
-math::IntersectInfo math::AABR::DoesIntersectAabr(const AABR& aabr) const noexcept
+math::IntersectInfo math::Aabr::DoesIntersectAabr(const Aabr& aabr) const noexcept
 {
 	// TODO: Remove intermediate local variables.
 	const auto distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
@@ -35,7 +35,7 @@ math::IntersectInfo math::AABR::DoesIntersectAabr(const AABR& aabr) const noexce
 	return IntersectInfo(distances1.Max(distances2).Max());
 }
 
-math::Real math::AABR::CalcDistanceToNearestFaceX(const Real x) const noexcept
+math::Real math::Aabr::CalcDistanceToNearestFaceX(const Real x) const noexcept
 {
 	Real distanceX;
 	if (x < m_bottomLeftPos.x)
@@ -61,7 +61,7 @@ math::Real math::AABR::CalcDistanceToNearestFaceX(const Real x) const noexcept
 	return distanceX;
 }
 
-math::Real math::AABR::CalcDistanceToNearestFaceY(const Real y) const noexcept
+math::Real math::Aabr::CalcDistanceToNearestFaceY(const Real y) const noexcept
 {
 	Real distanceY;
 	if (y < m_topRightPos.y)

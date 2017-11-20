@@ -21,14 +21,14 @@ namespace math
 		}; /* end enum MatrixOrdering */
 	} /* end matrix_orderings */
 
-	template <int...> struct seq {};
-	template <int N, int... S> struct gens : gens<N-1, N-1, S...> {};
-	template <int... S> struct gens<0, S...> { typedef seq<S...> type; };
+	template <int...> struct Seq {};
+	template <int N, int... S> struct Gens : Gens<N-1, N-1, S...> {};
+	template <int... S> struct Gens<0, S...> { typedef Seq<S...> type; };
 
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, matrix_orderings::MatrixOrdering ORDERING = matrix_orderings::ROW_MAJOR>
+	template <typename T, size_t Rows = 4, size_t Cols = Rows, matrix_orderings::MatrixOrdering Ordering = matrix_orderings::ROW_MAJOR>
 	class Matrix;
 
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, matrix_orderings::MatrixOrdering ORDERING = matrix_orderings::ROW_MAJOR>
+	template <typename T, size_t Rows = 4, size_t Cols = Rows, matrix_orderings::MatrixOrdering Ordering = matrix_orderings::ROW_MAJOR>
 	struct IdentityMatrix
 	{
 		constexpr IdentityMatrix()
@@ -37,31 +37,31 @@ namespace math
 		
 		struct Row
 		{
-			constexpr explicit Row(std::size_t r) :
+			constexpr explicit Row(size_t r) :
 				m_i(r)
 			{
 			}
 
-			constexpr T operator[] (std::size_t j) const
+			constexpr T operator[] (size_t j) const
 			{
 				// TODO: unreachable code
-				return m_i < ROWS && j < COLS ? j == m_i : (throw "out of range", -1);
+				return m_i < Rows && j < Cols ? j == m_i : (throw "out of range", -1);
 				//return m_i == j;
 			}
 
-			const std::size_t m_i;
+			const size_t m_i;
 		};
 
-		constexpr Row operator[] (std::size_t i) const { return Row(i); }
+		constexpr Row operator[] (size_t i) const { return Row(i); }
 		
-		template <std::size_t COLS_RIGHT>
-		constexpr IdentityMatrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT, ORDERING>& identityMatrix) const
+		template <size_t ColsRight>
+		constexpr IdentityMatrix<T, Rows, ColsRight, Ordering> operator*(const IdentityMatrix<T, Cols, ColsRight, Ordering>& identityMatrix) const
 		{
-			return IdentityMatrix<T, ROWS, COLS_RIGHT, ORDERING>();
+			return IdentityMatrix<T, Rows, ColsRight, Ordering>();
 		}
 		
-		template <std::size_t COLS_RIGHT>
-		constexpr Matrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const Matrix<T, COLS, COLS_RIGHT, ORDERING>& matrix) const
+		template <size_t ColsRight>
+		constexpr Matrix<T, Rows, ColsRight, Ordering> operator*(const Matrix<T, Cols, ColsRight, Ordering>& matrix) const
 		{
 			return matrix;
 		}
@@ -73,16 +73,15 @@ namespace math
 	/// See http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf for details.
 	/// http://stackoverflow.com/questions/10718061/should-arrays-be-used-in-c.
 	/// </remarks>
-	template <typename T, std::size_t ROWS, std::size_t COLS, matrix_orderings::MatrixOrdering ORDERING>
+	template <typename T, size_t Rows, size_t Cols, matrix_orderings::MatrixOrdering Ordering>
 	class Matrix
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	public:
-		static constexpr IdentityMatrix<T, ROWS, COLS, ORDERING> IDENTITY{};
+		static constexpr IdentityMatrix<T, Rows, Cols, Ordering> IDENTITY{};
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		constexpr Matrix()
 		{
 		}
@@ -92,9 +91,8 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		template <std::size_t COLS_RIGHT>
-		constexpr Matrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT, ORDERING>& identityMatrix) const
+		template <size_t ColsRight>
+		constexpr Matrix<T, Rows, ColsRight, Ordering> operator*(const IdentityMatrix<T, Cols, ColsRight, Ordering>& identityMatrix) const
 		{
 			return *this;
 		}
@@ -106,10 +104,10 @@ namespace math
 		/// For example, if you multiply a NxM matrix with a MxK matrix you'll get a new matrix of NxK size.
 		/// See http://matrix.reshish.com/multiplication.php.
 		/// </summary>
-		//template <std::size_t COLS_RIGHT>
-		//Matrix<T, ROWS, COLS_RIGHT> operator*(const Matrix<T, COLS, COLS_RIGHT>& matrix) const
+		//template <size_t ColsRight>
+		//Matrix<T, Rows, ColsRight> operator*(const Matrix<T, Cols, ColsRight>& matrix) const
 		//{
-		//	Matrix<T, ROWS, COLS_RIGHT> matrix;
+		//	Matrix<T, Rows, ColsRight> matrix;
 		//	for ()
 		//	return matrix;
 		//}
@@ -117,10 +115,10 @@ namespace math
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		std::array<T, ROWS * COLS> m_values;
+		std::array<T, Rows * Cols> m_values;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Matrix */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_NEW_MATRIX_H__ */

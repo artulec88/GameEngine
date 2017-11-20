@@ -185,7 +185,7 @@ namespace math
 		class BlinkEffect : public Effect<T>
 		{
 			/* ==================== Static variables begin ==================== */
-			static constexpr Real DEFAULT_DURATION = 0.5f;
+			static constexpr Real s_defaultDuration = 0.5f;
 			/* ==================== Static variables end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */

@@ -50,10 +50,13 @@ namespace physics
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-			/// <summary>
-			/// Based on the velocity of the physics object the function updates its physical state.
-			/// </summary>
-			/// <param name="passedTime">The representation of time for the physics object. It represent the amount of time the object should simulate forward in time.</param>
+		/// <summary>
+		/// Based on the velocity of the physics object the function updates its physical state.
+		/// </summary>
+		/// <param name="passedTime">
+		/// The representation of time for the physics object.
+		/// It represent the amount of time the object should simulate forward in time.
+		/// </param>
 		PHYSICS_API void Simulate(math::Real passedTime);
 
 		PHYSICS_API void ApplyLinearAcceleration(const math::Vector3D& acceleration);

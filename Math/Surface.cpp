@@ -36,11 +36,11 @@ math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	// 3. Save surfaceWidth to be equal to (maxX - minX) and surfaceDepth to be equal to (maxZ - minZ).
 	// 4. Interpolate between given positions to create a grid of final positions being laid out uniformly on the XZ surface.
 
-	Real minX = positions[0].x;
-	Real minZ = positions[0].z;
-	Real maxX = positions[0].x;
-	Real maxZ = positions[0].z;
-	for (unsigned int i = 1; i < positionsCount; ++i)
+	auto minX = positions[0].x;
+	auto minZ = positions[0].z;
+	auto maxX = positions[0].x;
+	auto maxZ = positions[0].z;
+	for (auto i = 1; i < positionsCount; ++i)
 	{
 		if (positions[i].x < minX)
 		{
@@ -60,11 +60,11 @@ math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 		}
 	}
 	m_position.Set(minX, minZ);
-	const Real surfaceWidth = maxX - minX;
-	const Real surfaceDepth = maxZ - minZ;
+	const auto surfaceWidth = maxX - minX;
+	const auto surfaceDepth = maxZ - minZ;
 
 	// Find minimum distance between any two positions that have different Y values.
-	Real minDistance = FindMinimumDistanceBetweenPairOfPositions(positions, positionsCount);
+	const auto minDistance = FindMinimumDistanceBetweenPairOfPositions(positions, positionsCount);
 
 	DEBUG_LOG_MATH("Min distance between pair of positions that have different Y values = ", minDistance);
 
@@ -77,12 +77,12 @@ math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	DEBUG_LOG_MATH("Square width = ", m_squareWidth, ". Square depth = ", m_squareDepth);
 
 	// Interpolate between points to create a collection of heights.
-	KDTree kdTree(positions, positionsCount, 3);
-	for (int i = 0; i < m_verticalVerticesCount; ++i)
+	KdTree kdTree(positions, positionsCount, 3);
+	for (auto i = 0; i < m_verticalVerticesCount; ++i)
 	{
-		for (int j = 0; j < m_horizontalVerticesCount; ++j)
+		for (auto j = 0; j < m_horizontalVerticesCount; ++j)
 		{
-			Vector2D position = m_position + Vector2D(j * m_squareWidth, i * m_squareDepth);
+			const auto position = m_position + Vector2D(j * m_squareWidth, i * m_squareDepth);
 			m_heights.push_back(kdTree.SearchNearestValue(position));
 			DELOCUST_LOG_MATH("Height for position [", i, "][", j, "] = ", position, " equals ", m_heights.back());
 		}
@@ -91,36 +91,36 @@ math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 
 math::Real math::Surface::GetHeightAt(int x, int z) const
 {
-	return (x < 0 || x >= m_horizontalVerticesCount || z < 0 || z >= m_verticalVerticesCount) ?
+	return x < 0 || x >= m_horizontalVerticesCount || z < 0 || z >= m_verticalVerticesCount ?
 		REAL_ZERO : m_heights[GetHeightsIndex(x, z)];
 }
 
 math::Real math::Surface::GetHeightAt(Real x, Real z) const
 {
-	const Real surfaceX = x - m_position.x;
-	const Real surfaceZ = z - m_position.y;
-	int gridX = math::Floor(surfaceX / m_squareWidth);
-	int gridZ = math::Floor(surfaceZ / m_squareDepth);
+	const auto surfaceX = x - m_position.x;
+	const auto surfaceZ = z - m_position.y;
+	auto gridX = Floor(surfaceX / m_squareWidth);
+	auto gridZ = Floor(surfaceZ / m_squareDepth);
 	if (gridX < 0 || gridX >= m_horizontalVerticesCount || gridZ < 0 || gridZ >= m_verticalVerticesCount)
 	{
 		return REAL_ZERO;
 	}
-	Real xCoord = fmod(surfaceX, m_squareWidth) / m_squareWidth;
+	auto xCoord = fmod(surfaceX, m_squareWidth) / m_squareWidth;
 	if (AlmostEqual(xCoord, REAL_ONE)) // xCoord should never be >= REAL_ONE, but due to floating-point errors this may happen.
 	{
 		xCoord = REAL_ZERO;
 	}
-	Real zCoord = fmod(surfaceZ, m_squareDepth) / m_squareDepth;
+	auto zCoord = fmod(surfaceZ, m_squareDepth) / m_squareDepth;
 	if (AlmostEqual(zCoord, REAL_ONE)) // zCoord should never be >= REAL_ONE, but due to floating-point errors this may happen.
 	{
 		zCoord = REAL_ZERO;
 	}
 	Real y;
-	if (xCoord <= (REAL_ONE - zCoord))
+	if (xCoord <= REAL_ONE - zCoord)
 	{
 		DEBUG_LOG_MATH("Left triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = math::interpolation::BarycentricInterpolation(0.0f, GetHeightAt(gridX, gridZ), 0.0f,
+		y = interpolation::BarycentricInterpolation(0.0f, GetHeightAt(gridX, gridZ), 0.0f,
 			1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
 			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
@@ -129,7 +129,7 @@ math::Real math::Surface::GetHeightAt(Real x, Real z) const
 	{
 		DEBUG_LOG_MATH("Right triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX + 1, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ + 1),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = math::interpolation::BarycentricInterpolation(1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
+		y = interpolation::BarycentricInterpolation(1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
 			1.0f, GetHeightAt(gridX + 1, gridZ + 1), 1.0f,
 			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
@@ -178,7 +178,7 @@ math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<
 
 	// Find the middle point
 	unsigned int midIndex = vectorsSortedByX.size() / 2;
-	Vector2D midPoint = vectorsSortedByX[midIndex];
+	const auto midPoint = vectorsSortedByX[midIndex];
 
 
 	// Divide points in y sorted array around the vertical line.
@@ -202,15 +202,15 @@ math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<
 	// Consider the vertical line passing through the middle point
 	// calculate the smallest distance dl on left of middle point and
 	// dr on right side
-	Real dl = 3.0f; //FindMinimumDistanceBetweenPairOfPositions(vectorsSortedByX, positionsZLeft, midIndex);
-	Real dr = 3.0f; //FindMinimumDistanceBetweenPairOfPositions(vectorsSortedByX + midIndex, positionsZRight, n - mid);
-	Real minDistance = (dl < dr) ? dl : dr; // Find the smaller of two distances
+	const auto dl = 3.0f; //FindMinimumDistanceBetweenPairOfPositions(vectorsSortedByX, positionsZLeft, midIndex);
+	const auto dr = 3.0f; //FindMinimumDistanceBetweenPairOfPositions(vectorsSortedByX + midIndex, positionsZRight, n - mid);
+	const auto minDistance = (dl < dr) ? dl : dr; // Find the smaller of two distances
 
 	// Build an array strip[] that contains points close (closer than d)
 	// to the line passing through the middle point
 	std::vector<Vector2D> strip;
-	int j = 0;
-	for (int i = 0; i < vectorsSortedByX.size(); i++)
+	auto j = 0;
+	for (auto i = 0; i < vectorsSortedByX.size(); i++)
 	{
 		if (abs(vectorsSortedByZ[i].x - midPoint.x) < minDistance)
 		{
@@ -226,12 +226,12 @@ math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<
 
 math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositionsBruteForce(std::vector<Vector2D>& vectors) const
 {
-	Real minDistance = REAL_MAX;
+	auto minDistance = REAL_MAX;
 	for (auto vectorItr = vectors.begin(); vectorItr != vectors.end(); ++vectorItr)
 	{
 		for (auto vectorItr2 = vectorItr + 1; vectorItr2 != vectors.end(); ++vectorItr2)
 		{
-			Real distance = ((*vectorItr2) - (*vectorItr)).LengthSquared();
+			const auto distance = (*vectorItr2 - *vectorItr).LengthSquared();
 			if (distance < minDistance)
 			{
 				minDistance = distance;

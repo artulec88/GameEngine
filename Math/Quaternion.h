@@ -46,38 +46,58 @@ namespace math
 		/// <param name="axis">An axis around which we want to rotate.</param>
 		/// <param name="angle">An angle by which we want to rotate.</param>
 		MATH_API Quaternion(const Vector3D& axis, const Angle& angle);
+
+		/// <summary>
+		/// Quaternion constructor that converts given rotation matrix <paramref name="rotMatrix"/> into a quaternion representing the same rotation.
+		/// </summary>
+		/// <param name="rotMatrix">
+		/// The rotation matrix whose values will be used to initialize a quaternion in a way to represent the same rotation as the matrix itself.
+		/// </param>
 		MATH_API explicit Quaternion(const Matrix4D& rotMatrix);
+
+		/// <summary> Quaternion copy constructor. </summary>
+		/// <param name="q"> The quaternion to copy construct from. </param>
 		MATH_API Quaternion(const Quaternion& q) = default;
+
+		/// <summary> Quaternion move constructor. </summary>
+		/// <param name="q"> The quaternion to move construct from. </param>
 		MATH_API Quaternion(Quaternion&& q) = default;
+
+		/// <summary> Quaternion copy assignment operator. </summary>
+		/// <param name="q"> The quaternion to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned quaternion. </returns>
 		MATH_API Quaternion& operator=(const Quaternion& q) = default;
+
+		/// <summary> Quaternion move assignment operator. </summary>
+		/// <param name="q"> The quaternion to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned quaternion. </returns>
 		MATH_API Quaternion& operator=(Quaternion&& q) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Returns the imaginary X component of the quaternion.
 		/// </summary>
 		/// <returns> The value of the imaginary X component of the quaternion. </returns>
-		inline constexpr Real GetX() const noexcept { return m_x; };
+		constexpr Real GetX() const noexcept { return m_x; }
 
 		/// <summary>
 		/// Returns the imaginary Y component of the quaternion.
 		/// </summary>
 		/// <returns> The value of the imaginary Y component of the quaternion. </returns>
-		inline constexpr Real GetY() const noexcept { return m_y; };
+		constexpr Real GetY() const noexcept { return m_y; }
 
 		/// <summary>
 		/// Returns the imaginary Z component of the quaternion.
 		/// </summary>
 		/// <returns> The value of the imaginary Z component of the quaternion. </returns>
-		inline constexpr Real GetZ() const noexcept { return m_z; };
+		constexpr Real GetZ() const noexcept { return m_z; }
 
 		/// <summary>
 		/// Returns the real W component of the quaternion.
 		/// </summary>
 		/// <returns> The value of the real W component of the quaternion. </returns>
-		inline constexpr Real GetW() const noexcept { return m_w; };
+		constexpr Real GetW() const noexcept { return m_w; }
 
 		/// <summary>
 		/// A simple setter for the quaternion's components.
@@ -86,7 +106,7 @@ namespace math
 		/// <param name="y">New value for the Y component of the quaternion. </param>
 		/// <param name="z">New value for the Z component of the quaternion. </param>
 		/// <param name="w">New value for the W component of the quaternion. </param>
-		inline void Set(Real x, Real y, Real z, Real w)
+		void Set(Real x, Real y, Real z, Real w)
 		{
 			m_x = x;
 			m_y = y;
@@ -121,7 +141,7 @@ namespace math
 		/// Calculates the conjugate of the quaternion and returns it.
 		/// </summary>
 		/// <returns> The conjugate of the quaternion. </returns>
-		MATH_API inline constexpr Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
+		MATH_API constexpr Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); }
 
 		// See http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/arithmetic/index.htm for quaternion arithmetics.
 #ifdef PASS_QUATERNION_BY_VALUE
@@ -153,7 +173,7 @@ namespace math
 
 		MATH_API Real Dot(const Quaternion& q) const;
 
-		inline Vector3D GetForward() const
+		Vector3D GetForward() const
 		{
 			// TODO: Maybe instead of creating new vectors and rotating them each time we call this function,
 			// we should store the results in the member variables of the quaternion.

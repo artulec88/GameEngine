@@ -96,8 +96,8 @@ math::effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* duration
 		m_values.push_back(values[i]);
 		if (!(durations[i] > REAL_ZERO))
 		{
-			WARNING_LOG_MATH("Blinking effect's duration[", i, "] equals ", durations[i], " which is less than 0.0. Using default duration ", DEFAULT_DURATION);
-			m_durations.push_back(DEFAULT_DURATION);
+			WARNING_LOG_MATH("Blinking effect's duration[", i, "] equals ", durations[i], " which is less than 0.0. Using default duration ", s_defaultDuration);
+			m_durations.push_back(s_defaultDuration);
 		}
 		else
 		{

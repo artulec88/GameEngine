@@ -20,50 +20,50 @@ math::random::RandomGeneratorFactory::~RandomGeneratorFactory()
 	DELOCUST_LOG_MATH("Random generator factory destroyed");
 }
 
-const math::random::RandomGenerator& math::random::RandomGeneratorFactory::GetRandomGenerator(generator_ids::GeneratorID randomGenerator, unsigned seed /* = ((unsigned int)time(nullptr)) */)
+const math::random::RandomGenerator& math::random::RandomGeneratorFactory::GetRandomGenerator(generator_ids::GeneratorId randomGeneratorId, unsigned seed /* = ((unsigned int)time(nullptr)) */)
 {
 	/// See: http://en.cppreference.com/w/cpp/container/map/emplace
-	RandomGeneratorsMap::const_iterator randomGeneratorItr = m_randomGenerators.find(randomGenerator);
+	RandomGeneratorsMap::const_iterator randomGeneratorItr = m_randomGenerators.find(randomGeneratorId);
 	if (randomGeneratorItr == m_randomGenerators.end()) // random generator not found in the map
 	{
-		switch (randomGenerator)
+		switch (randomGeneratorId)
 		{
 		case generator_ids::SIMPLE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::DEFAULT_RANDOM_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::DISCARD_BLOCK_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::INDEPENDENT_BITS_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::KNUTH_B:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::LINEAR_CONGRUENTIAL_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::MERSENNE_TWISTER_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::MINSTD_RAND:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::MINSTD_RAND0:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::MT19937:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::MT19937_64:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::RANDOM_DEVICE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::RANLUX24:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::RANLUX24_BASE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::RANLUX48:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::RANLUX48_BASE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::SHUFFLE_ORDER_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		case generator_ids::SUBTRACT_WITH_CARRY_ENGINE:
-			return *(m_randomGenerators.insert(std::make_pair(randomGenerator, std::make_unique<SimpleRandomGenerator>(seed))).first->second);
+			return *m_randomGenerators.insert(make_pair(randomGeneratorId, std::make_unique<SimpleRandomGenerator>(seed))).first->second;
 		}
 	}
 	return *randomGeneratorItr->second;

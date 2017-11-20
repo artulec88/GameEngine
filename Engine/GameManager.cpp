@@ -60,7 +60,7 @@ engine::GameManager::GameManager() :
 	}
 
 	m_actionsToGameCommandsMap.insert(std::make_pair(Actions::EMPTY, &m_emptyGameCommand));
-	//m_actionsToGameCommandsMap.insert(std::make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
+	//m_actionsToGameCommandsMap.insert(make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
 
 	engine::GameManager::s_gameManager = this;
 	DEBUG_LOG_ENGINE("Game manager construction finished");

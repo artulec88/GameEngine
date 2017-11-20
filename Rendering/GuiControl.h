@@ -141,7 +141,7 @@ namespace Rendering
 			math::Angle m_screenRotation;
 			math::Vector2D m_scale;
 			math::Matrix4D m_transformMatrix;
-			math::AABR m_aabr;
+			math::Aabr m_aabr;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiControl */
 	} /* end namespace Controls */

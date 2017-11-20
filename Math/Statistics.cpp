@@ -12,7 +12,7 @@
 
 /* ==================== Stats begin ==================== */
 template <typename T>
-math::statistics::Stats<T>::Stats(int level /* = 0 */) :
+math::statistics::Stats<T>::Stats(const int level /* = 0 */) :
 	m_level(level),
 	m_child(nullptr)
 {
@@ -24,37 +24,37 @@ math::statistics::Stats<T>::~Stats()
 }
 
 template <typename T>
-void math::statistics::Stats<T>::Push(StatsID statsID, T sample)
+void math::statistics::Stats<T>::Push(StatsID statsId, T sample)
 {
-	if (Size(statsID) == MAX_SAMPLES_COUNT)
+	if (Size(statsId) == MAX_SAMPLES_COUNT)
 	{
 		//CRITICAL_LOG_MATH("Pushing ", sample, " to ", statsID, " statsID.");
 		if (m_level == MAX_STATS_LEVEL)
 		{
-			WARNING_LOG_MATH("Maximum number of samples reached for stats ID: ", statsID);
+			WARNING_LOG_MATH("Maximum number of samples reached for stats ID: ", statsId);
 		}
 		else
 		{
-			T mean = CalculateMean(statsID);
+			T mean = CalculateMean(statsId);
 			if (m_child == nullptr)
 			{
 				m_child = std::make_unique<Stats<T>>(m_level + 1);
 			}
-			m_child->Push(statsID, mean);
+			m_child->Push(statsId, mean);
 		}
-		m_samples[statsID].clear();
+		m_samples[statsId].clear();
 	}
 	else
 	{
 		//EMERGENCY_LOG_MATH("Pushing ", sample, " to ", statsID, " statsID.");
-		m_samples[statsID].push_back(sample);
+		m_samples[statsId].push_back(sample);
 	}
 }
 
 template <typename T>
 int math::statistics::Stats<T>::Size() const
 {
-	int totalSize = 0;
+	auto totalSize = 0;
 	for (auto mapItr = m_samples.begin(); mapItr != m_samples.end(); ++mapItr)
 	{
 		totalSize += static_cast<int>(mapItr->second.size());
@@ -63,67 +63,67 @@ int math::statistics::Stats<T>::Size() const
 }
 
 template <typename T>
-int math::statistics::Stats<T>::Size(StatsID statsID) const
+int math::statistics::Stats<T>::Size(StatsID statsId) const
 {
-	auto mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsId);
 	return (mapItr == m_samples.end()) ? 0 : static_cast<int>(mapItr->second.size());
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateSum(StatsID statsID) const
+T math::statistics::Stats<T>::CalculateSum(StatsID statsId) const
 {
-	auto mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
 	{
-		WARNING_LOG_MATH("Sum cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
+		WARNING_LOG_MATH("Sum cannot be calculated for statsID = ", statsId, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 	
 	T childSum = 0;
 	if (m_child != nullptr)
 	{
-		childSum = m_child->CalculateSum(statsID);
+		childSum = m_child->CalculateSum(statsId);
 	}
 	T sum = 0;
 	for (auto samplesItr = mapItr->second.begin(); samplesItr != mapItr->second.end(); ++samplesItr)
 	{
 		sum += (*samplesItr);
 	}
-	const int levelFactor = static_cast<int>(pow(static_cast<math::Real>(MAX_SAMPLES_COUNT), static_cast<math::Real>(m_level)));
+	const auto levelFactor = static_cast<int>(pow(static_cast<Real>(MAX_SAMPLES_COUNT), static_cast<Real>(m_level)));
 	return (sum * levelFactor) + childSum;
 }
 
 template <typename T>
-int math::statistics::Stats<T>::CalculateSamplesCount(StatsID statsID) const
+int math::statistics::Stats<T>::CalculateSamplesCount(StatsID statsId) const
 {
-	auto mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
 	{
-		DEBUG_LOG_MATH("Samples cannot be counted for statsID", statsID, ". The specific entry in statistics map has not been created.");
+		DEBUG_LOG_MATH("Samples cannot be counted for statsID", statsId, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 	
-	int childSamplesCount = 0;
+	auto childSamplesCount = 0;
 	if (m_child != nullptr)
 	{
-		childSamplesCount = m_child->CalculateSamplesCount(statsID);
+		childSamplesCount = m_child->CalculateSamplesCount(statsId);
 	}
-	const int levelFactor = static_cast<int>(pow(static_cast<math::Real>(MAX_SAMPLES_COUNT), static_cast<math::Real>(m_level)));
-	return Size(statsID) * levelFactor + childSamplesCount;
+	const auto levelFactor = static_cast<int>(pow(static_cast<Real>(MAX_SAMPLES_COUNT), static_cast<Real>(m_level)));
+	return Size(statsId) * levelFactor + childSamplesCount;
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateMean(StatsID statsID) const
+T math::statistics::Stats<T>::CalculateMean(StatsID statsId) const
 {
-	auto mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
 	{
-		WARNING_LOG_MATH("Mean cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
+		WARNING_LOG_MATH("Mean cannot be calculated for statsID = ", statsId, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 
-	T sum = CalculateSum(statsID);
-	int samplesCount = CalculateSamplesCount(statsID);
+	T sum = CalculateSum(statsId);
+	auto samplesCount = CalculateSamplesCount(statsId);
 	CHECK_CONDITION_MATH(samplesCount > 0, Utility::Logging::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
 
 	DEBUG_LOG_MATH("Sum = ", sum, ", samplesCount = ", samplesCount);
@@ -132,28 +132,28 @@ T math::statistics::Stats<T>::CalculateMean(StatsID statsID) const
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateMedian(StatsID statsID)
+T math::statistics::Stats<T>::CalculateMedian(StatsID statsId)
 {
 	if (m_child != nullptr)
 	{
 		EMERGENCY_LOG_MATH("Median shouldn't be used for the hierarchical stats storage as it is now used. The result will not be correct.");
 	}
-	if (m_samples[statsID].empty())
+	if (m_samples[statsId].empty())
 	{
-		INFO_LOG_MATH("Median cannot be calculated for statsID = ", statsID, ". There are no samples stored.");
+		INFO_LOG_MATH("Median cannot be calculated for statsID = ", statsId, ". There are no samples stored.");
 		return static_cast<T>(0);
 	}
 
-	math::sorting::ISort::GetSortingObject(math::sorting::sorting_algorithms::MERGE_SORT)->Sort(&m_samples[statsID][0],
-		static_cast<int>(m_samples[statsID].size()), sorting::orders::ASCENDING);
+	sorting::ISort::GetSortingObject(sorting::sorting_algorithms::MERGE_SORT)->Sort(&m_samples[statsId][0],
+		static_cast<int>(m_samples[statsId].size()), sorting::orders::ASCENDING);
 
-	const int index = static_cast<int>(m_samples[statsID].size()) / 2;
-	if ((m_samples[statsID].size() % 2) == 0)
+	const auto index = static_cast<int>(m_samples[statsId].size()) / 2;
+	if ((m_samples[statsId].size() % 2) == 0)
 	{
-		T medianMean = m_samples[statsID][index] + m_samples[statsID][index - 1];
+		T medianMean = m_samples[statsId][index] + m_samples[statsId][index - 1];
 		return static_cast<T>(medianMean / 2.0f);
 	}
-	return m_samples[statsID][index];
+	return m_samples[statsId][index];
 }
 
 template <typename T>
@@ -193,7 +193,7 @@ void math::statistics::MethodStats::Push(const utility::timing::TimeSpan& elapse
 	m_totalTime += elapsedTimeSpan;
 
 #ifdef METHOD_STATS_VARIANT_1
-	m_timeSamples.push_back(std::make_pair<bool, Utility::timing::TimeSpan>(m_isNestedWithinAnotherProfiledMethod, elapsedTimeSpan));
+	m_timeSamples.push_back(make_pair<bool, Utility::timing::TimeSpan>(m_isNestedWithinAnotherProfiledMethod, elapsedTimeSpan));
 #else
 	if (m_isNestedWithinAnotherProfiledMethod)
 	{
@@ -275,9 +275,13 @@ void math::statistics::MethodStats::StopProfiling()
 	{
 		m_timer.Stop();
 	}
-	utility::timing::TimeSpan elapsedTimeSpan = m_timer.GetTimeSpan();
+#ifdef DEBUG_LOGGING_ENABLED
+	const auto elapsedTimeSpan = m_timer.GetTimeSpan();
 	//DEBUG_LOG_MATH("Stopped profiling the method. ", elapsedTime, " [us] has passed.");
 	Push(elapsedTimeSpan);
+#else
+	Push(m_timer.GetTimeSpan());
+#endif
 	m_isProfiling = false;
 }
 
@@ -352,7 +356,7 @@ void math::statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& 
 	INFO_LOG_MATH("Class: \"", m_className, "\"");
 	utility::timing::TimeSpan classTotalTimeExcludingNestedCalls;
 	utility::timing::TimeSpan classTotalTime;
-	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	for (auto methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		//INFO_LOG_MATH("Method \"", methodStatsItr->first, "\": total time without nested stats = ", methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
@@ -364,7 +368,7 @@ void math::statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& 
 	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
 	DEBUG_LOG_MATH("\tApplication usage: ", classTotalTimeExcludingNestedCalls / applicationTimeSpan * 100, "%");
 
-	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	for (auto methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		DEBUG_LOG_MATH("\tMethod: \"", methodStatsItr->first, "\"");
 		DEBUG_LOG_MATH("\t\tInvocations count: ", methodStatsItr->second.GetInvocationsCount());
@@ -381,14 +385,14 @@ void math::statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& 
 		DEBUG_LOG_MATH("\t\tApplication usage: ", totalTimeIncludingNestedCalls / applicationTimeSpan * 100, "%");
 		
 		//INFO_LOG_MATH("\t\tMedian time: ", methodStatsItr->second.CalculateMedian(), " [us]");
-		std::string methodNameStr(methodStatsItr->first);
+		auto methodNameStr(methodStatsItr->first);
 		methodNameStr = methodNameStr.substr(methodNameStr.rfind(":") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
-		std::size_t spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
+		const auto spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
 		if (spacePos != std::string::npos)
 		{
 			methodNameStr = methodNameStr.substr(0, spacePos) + methodNameStr.substr(spacePos + 1);
 		}
-		methodNameStr.erase(std::remove_if(methodNameStr.begin(), methodNameStr.end(), std::bind( std::isspace<char>, -1, std::locale::classic() )), methodNameStr.end());
+		methodNameStr.erase(remove_if(methodNameStr.begin(), methodNameStr.end(), bind( std::isspace<char>, -1, std::locale::classic() )), methodNameStr.end());
 		classStatsFile << methodNameStr << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" << methodStatsItr->second.GetInvocationsCountWithoutNestedCalls() <<
 			"\t" << methodStatsItr->second.GetTotalTime().ToString(utility::timing::NANOSECOND) << "\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats().ToString(utility::timing::NANOSECOND) <<
 			"\t" << meanTime.ToString(utility::timing::NANOSECOND) << "\n";
@@ -401,8 +405,8 @@ void math::statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& 
 
 int math::statistics::ClassStats::GetTotalNumberOfSamples() const
 {
-	int totalNumberOfSamples = 0;
-	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	auto totalNumberOfSamples = 0;
+	for (auto methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		totalNumberOfSamples += methodStatsItr->second.GetInvocationsCount();
 	}

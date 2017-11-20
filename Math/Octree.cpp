@@ -3,14 +3,14 @@
 
 
 math::space_partitioning::Octree::Octree() :
-	topNorthWestNode(nullptr),
-	topNorthEastNode(nullptr),
-	topSouthWestNode(nullptr),
-	topSouthEastNode(nullptr),
-	bottomNorthWestNode(nullptr),
-	bottomNorthEastNode(nullptr),
-	bottomSouthWestNode(nullptr),
-	bottomSouthEastNode(nullptr)
+	m_topNorthWestNode(nullptr),
+	m_topNorthEastNode(nullptr),
+	m_topSouthWestNode(nullptr),
+	m_topSouthEastNode(nullptr),
+	m_bottomNorthWestNode(nullptr),
+	m_bottomNorthEastNode(nullptr),
+	m_bottomSouthWestNode(nullptr),
+	m_bottomSouthEastNode(nullptr)
 {
 }
 
@@ -21,8 +21,8 @@ math::space_partitioning::Octree::~Octree()
 
 bool math::space_partitioning::Octree::HasChildren() const
 {
-	return ((topNorthWestNode != nullptr) || (topNorthEastNode != nullptr) || (topSouthWestNode != nullptr) || (topSouthEastNode != nullptr) ||
-		(bottomNorthWestNode != nullptr) || (bottomNorthEastNode != nullptr) || (bottomSouthWestNode != nullptr) || (bottomSouthEastNode != nullptr));
+	return m_topNorthWestNode != nullptr || m_topNorthEastNode != nullptr || m_topSouthWestNode != nullptr || m_topSouthEastNode != nullptr ||
+		m_bottomNorthWestNode != nullptr || m_bottomNorthEastNode != nullptr || m_bottomSouthWestNode != nullptr || m_bottomSouthEastNode != nullptr;
 }
 
 bool math::space_partitioning::Octree::IsLeaf() const

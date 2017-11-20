@@ -17,7 +17,7 @@ namespace math
 	/// <remarks>
 	/// See section 4.6.5 "Oriented Bounding Boxes (OBB)" in "Game Engine Architecture" by Jason Gregory.
 	/// </remarks>
-	class OBB
+	class Obb
 	{
 		/* ==================== Static variables begin ==================== */
 		/* ==================== Static variables end ==================== */
@@ -27,12 +27,12 @@ namespace math
 		/// <summary>
 		/// The constructor of the oriented bounding box.
 		/// </summary>
-		MATH_API OBB();
+		MATH_API Obb();
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.
 		/// </summary>
-		MATH_API ~OBB();
+		MATH_API ~Obb();
 	//private:
 		//OBB(const OBB& obb) {} // don't implement
 		//void operator=(const OBB& obb) {} // don't implement

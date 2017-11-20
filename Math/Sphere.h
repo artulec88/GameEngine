@@ -26,10 +26,9 @@ namespace math
 	public:
 		MATH_API Sphere(const Vector3D& center, Real radius);
 		MATH_API ~Sphere();
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
+		/* ==================== Non-static, non-virtual member functions begin ==================== */
 		MATH_API IntersectInfo DoesIntersectSphere(const Sphere& sphere) const;
 		MATH_API const Vector3D& GetCenter() const { return m_center; }
 		MATH_API Real GetRadius() const { return m_radius; }

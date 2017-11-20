@@ -125,7 +125,7 @@ T math::interpolation::CosineInterpolator<T>::Interpolate(Real time) const
 	{
 		return m_interpolationObjects.front();
 	}
-	else if (time > GetEndTime())
+	if (time > GetEndTime())
 	{
 		return m_interpolationObjects.back();
 	}
@@ -141,7 +141,7 @@ T math::interpolation::CosineInterpolator<T>::Interpolate(Real time) const
 	}
 	Real time0 = m_times[index - 1];
 	Real time1 = m_times[index];
-	Real interpolationFactor = (time - time0) / (time1 - time0);
+	auto interpolationFactor = (time - time0) / (time1 - time0);
 
 	return InterpolateCosine(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
@@ -193,7 +193,7 @@ void math::interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 	d.reserve(interpolationObjectsCount);
 	c.push_back(REAL_ZERO);
 	d.push_back(derivative0);
-	for (int i = 1; i < interpolationObjectsCount - 1; ++i) // TODO: Try to change into the std::vector<Real>::const_iterator loop
+	for (auto i = 1; i < interpolationObjectsCount - 1; ++i) // TODO: Try to change into the std::vector<Real>::const_iterator loop
 	{
 		c.push_back(REAL_ONE / (4.0f - c[i - 1]));
 		d.push_back((3.0f * (interpolationObjects[i + 1] - interpolationObjects[i - 1]) - d[i - 1]) / (4.0f - c[i - 1]));
@@ -201,7 +201,7 @@ void math::interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 	d.push_back(derivativeN - d[interpolationObjectsCount - 2]);
 
 	m_derivatives[interpolationObjectsCount - 1] = d[interpolationObjectsCount - 1];
-	for (int i = interpolationObjectsCount - 1; i >= 0; --i)
+	for (auto i = interpolationObjectsCount - 1; i >= 0; --i)
 	{
 		m_derivatives[i] = d[i] - c[i] * m_derivatives[i + 1];
 	}
@@ -216,7 +216,7 @@ T math::interpolation::HermiteInterpolator<T>::Interpolate(Real time) const
 	{
 		return m_interpolationObjects[0];
 	}
-	else if (time > GetEndTime())
+	if (time > GetEndTime())
 	{
 		return m_interpolationObjects[m_interpolationObjectsCount - 1];
 	}
@@ -232,7 +232,7 @@ T math::interpolation::HermiteInterpolator<T>::Interpolate(Real time) const
 	}
 	Real time0 = m_times[index];
 	Real time1 = m_times[index + 1];
-	Real interpolationFactor = (time - time0) / (time1 - time0);
+	auto interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
 	return InterpolateHermite(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
@@ -267,7 +267,7 @@ T math::interpolation::BarycentricInterpolator<T>::Interpolate(Real time) const
 	{
 		return m_interpolationObjects[0];
 	}
-	else if (time > GetEndTime())
+	if (time > GetEndTime())
 	{
 		return m_interpolationObjects[m_interpolationObjectsCount - 1];
 	}
@@ -283,7 +283,7 @@ T math::interpolation::BarycentricInterpolator<T>::Interpolate(Real time) const
 	}
 	Real time0 = m_times[index];
 	Real time1 = m_times[index + 1];
-	Real interpolationFactor = (time - time0) / (time1 - time0);
+	auto interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
 	return InterpolateBarycentric(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
@@ -320,7 +320,7 @@ template <class T>
 T math::interpolation::InterpolateCosine(const T& value1, const T& value2, Real factor)
 {
 	const Angle angle(factor * PI, units::RADIAN);
-	const Real cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
+	const auto cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
 	return (value1 * (REAL_ONE - cosineFactor)) + (value2 * cosineFactor);
 }
 

@@ -25,8 +25,7 @@ math::statistics::ClassStats& math::statistics::StatisticsStorage::GetClassStats
 	ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.find(className);
 	if (classStatsItr == m_classStatistics.end())
 	{
-		std::pair<ClassNames2ClassStatsMap::iterator, bool /* false if element already existed */> insertRes =
-			m_classStatistics.insert(std::pair<std::string, std::unique_ptr<ClassStats>>(className, std::make_unique<ClassStats>(className)));
+		const auto insertRes = m_classStatistics.insert(std::pair<std::string, std::unique_ptr<ClassStats>>(className, std::make_unique<ClassStats>(className)));
 		CHECK_CONDITION_MATH(insertRes.second, Utility::Logging::ERR, "Inserted new element in the statistics storage when there has already been the one to use.");
 		return *insertRes.first->second;
 	}
@@ -36,7 +35,7 @@ math::statistics::ClassStats& math::statistics::StatisticsStorage::GetClassStats
 void math::statistics::StatisticsStorage::PrintSimpleReport() const
 {
 	std::stringstream ss("");
-	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
+	for (auto classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		ss << classStatsItr->first << " (" << classStatsItr->second->GetTotalNumberOfSamples() << "); ";
 	}
@@ -51,7 +50,7 @@ void math::statistics::StatisticsStorage::PrintReport() const
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";
-	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
+	for (auto classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		if (!classStatsItr->second->IsEmpty())
 		{

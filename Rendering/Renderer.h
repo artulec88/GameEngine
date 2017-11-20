@@ -321,12 +321,12 @@ namespace Rendering
 		/// <summary>
 		/// Adds an axis-aligned bounding box to the debug drawing queue.
 		/// </summary>
-		void AddAABB(const math::AABB& aabb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+		void AddAABB(const math::Aabb& aabb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 		/// <summary>
 		/// Adds an oriented bounding box to the debug drawing queue.
 		/// </summary>
-		void AddOBB(const math::OBB& obb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+		void AddOBB(const math::Obb& obb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 		/// <summary>
 		/// Adds a text string to the debug drawing queue.

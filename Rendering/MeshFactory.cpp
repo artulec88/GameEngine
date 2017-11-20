@@ -20,17 +20,17 @@ Rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const st
 {
 	CreateMesh(MeshIDs::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::PARTICLE,
+	m_meshType2MeshMap.insert(make_pair(MeshIDs::PARTICLE,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 21)));
 #else
-	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::PARTICLE,
+	m_meshType2MeshMap.insert(make_pair(MeshIDs::PARTICLE,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 17))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::DEBUG,
+	m_meshType2MeshMap.insert(make_pair(MeshIDs::DEBUG,
 		std::make_unique<Mesh>(std::vector<math::Vector2D>{ math::Vector2D(-REAL_ONE, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ONE), math::Vector2D(-REAL_ONE, -REAL_ONE), math::Vector2D(REAL_ONE, -REAL_ONE) }.data(),
 			nullptr, 4, GL_TRIANGLE_STRIP)));
 #endif
@@ -120,7 +120,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished model loading");
 
 	std::pair<std::map<int, std::unique_ptr<Mesh>>::iterator, bool> meshPair =
-		m_meshType2MeshMap.insert(std::make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+		m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
 			positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return meshPair.first->second.get();
@@ -188,7 +188,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID,
 	//#endif
 
 	std::pair<std::map<int, std::unique_ptr<Mesh>>::iterator, bool> meshPair =
-		m_meshType2MeshMap.insert(std::make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+		m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
 			positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return meshPair.first->second.get();

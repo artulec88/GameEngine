@@ -13,7 +13,7 @@ namespace math
 	{
 		namespace generator_ids
 		{
-			enum GeneratorID
+			enum GeneratorId
 			{
 				SIMPLE = 0,
 				DEFAULT_RANDOM_ENGINE,
@@ -33,7 +33,7 @@ namespace math
 				RANLUX48_BASE,
 				SHUFFLE_ORDER_ENGINE,
 				SUBTRACT_WITH_CARRY_ENGINE
-			}; /* end enum GeneratorID */
+			}; /* end enum GeneratorId */
 		} /* end namespace generator_ids */
 
 		/// <summary>
@@ -41,7 +41,7 @@ namespace math
 		/// </summary>
 		class RandomGeneratorFactory
 		{
-			using RandomGeneratorsMap = std::map<generator_ids::GeneratorID, std::unique_ptr<RandomGenerator>>;
+			using RandomGeneratorsMap = std::map<generator_ids::GeneratorId, std::unique_ptr<RandomGenerator>>;
 		/* ==================== Static variables begin ==================== */
 		public:
 			MATH_API static RandomGeneratorFactory& GetRandomGeneratorFactory();
@@ -83,12 +83,12 @@ namespace math
 			/// <summary>
 			/// Returns a unmodifiable reference of the random generator object that client may use for generating random values.
 			/// </summary>
-			/// <param name="randomGeneratorID"> The ID of the random generator the client wants to use for random number generation. </param>
+			/// <param name="randomGeneratorId"> The ID of the random generator the client wants to use for random number generation. </param>
 			/// <param name="seed"> The seed that the returned random generator will use. </param>
 			/// <returns>
-			/// The unmodifiable reference of the random generator stored for the specified <paramref name="randomGeneratorID"/> and initialized with the given <paramref name="seed"/>.
+			/// The unmodifiable reference of the random generator stored for the specified <paramref name="randomGeneratorId"/> and initialized with the given <paramref name="seed"/>.
 			/// </returns>
-			MATH_API const RandomGenerator& GetRandomGenerator(generator_ids::GeneratorID randomGeneratorID, unsigned seed = (static_cast<unsigned int>(time(nullptr))));
+			MATH_API const RandomGenerator& GetRandomGenerator(generator_ids::GeneratorId randomGeneratorId, unsigned seed = static_cast<unsigned int>(time(nullptr)));
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

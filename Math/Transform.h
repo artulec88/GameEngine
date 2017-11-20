@@ -15,30 +15,46 @@ namespace math
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Transform constructor. </summary>
+		/// <param name="pos"> The position to be stored in the transform. </param>
+		/// <param name="rotation"> The rotation to be stored in the transform. </param>
+		/// <param name="scale"> The scale to be stored in the transform. </param>
 		MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 			const Quaternion& rotation = NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform constructor. </summary>
+		/// <param name="posX"> The X component of the position to be stored in the transform. </param>
+		/// <param name="posY"> The Y component of the position to be stored in the transform. </param>
+		/// <param name="posZ"> The Z component of the position to be stored in the transform. </param>
+		/// <param name="rotation"> The rotation to be stored in the transform. </param>
+		/// <param name="scale"> The scale to be stored in the transform. </param>
 		MATH_API Transform(Real posX, Real posY, Real posZ,
 			const Quaternion& rotation = NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
+		/// <summary> Transform destructor. </summary>
+		MATH_API ~Transform();
+
 		/// <summary> Transform copy constructor. </summary>
+		/// <param name="transform"> The transform to copy construct from. </param>
 		MATH_API Transform(const Transform& transform) = default;
+
 		/// <summary> Transform move constructor. </summary>
+		/// <param name="transform"> The transform to move construct from. </param>
 		MATH_API Transform(Transform&& transform) = default;
 
 		/// <summary> Transform copy assignment operator. </summary>
+		/// <param name="transform"> The transform to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned transform. </returns>
 		MATH_API Transform& operator=(const Transform& transform) = default;
-		/// <summary> Transform move assignment operator. </summary>
-		MATH_API Transform& operator=(Transform&& transform) = default;
 
-		MATH_API ~Transform();
+		/// <summary> Transform move assignment operator. </summary>
+		/// <param name="transform"> The transform to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned transform. </returns>
+		MATH_API Transform& operator=(Transform&& transform) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		MATH_API Matrix4D GetTransformation() const;
 
 		const Vector3D& GetPos() const { return m_pos; }
@@ -168,7 +184,7 @@ namespace math
 		friend std::ostream& operator<<(std::ostream& out, const Transform& transform)
 		{
 			out << "Transform: position: " << transform.m_pos << " rotation: " << transform.m_rotation << " scale: " <<
-				transform.m_scale << " hasParent: " << ((transform.m_parentTransform != nullptr) ? "Yes" : "No");
+				transform.m_scale << " hasParent: " << (transform.m_parentTransform != nullptr ? "Yes" : "No");
 			return out;
 		}
 	 /* ==================== Non-static member functions end ==================== */

@@ -147,12 +147,9 @@ math::Matrix4D math::Transform::GetTransformation() const
 	{
 		return m_transformation;
 	}
-	else
-	{
-		CalculateParentTransformation();
-		//parentTransformation = parentTransform->GetTransformation();
-		return m_parentTransformation * m_transformation; // FIXME: Check matrix multiplication
-	}
+	CalculateParentTransformation();
+	//parentTransformation = parentTransform->GetTransformation();
+	return m_parentTransformation * m_transformation; // FIXME: Check matrix multiplication
 }
 
 //math::Matrix4D math::Transform::GetProjectedTransformation(const Camera& camera) const

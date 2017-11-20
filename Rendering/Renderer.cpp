@@ -717,12 +717,12 @@ void Rendering::Renderer::AddTriangle(const math::Vector3D& v0, const math::Vect
 	WARNING_LOG_RENDERING("Debug triangle rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddAABB(const math::AABB& aabb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddAABB(const math::Aabb& aabb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug AABB rendering is not yet supported by the engine");
 }
 
-void Rendering::Renderer::AddOBB(const math::OBB& obb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddOBB(const math::Obb& obb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug OBB rendering is not yet supported by the engine");
 }

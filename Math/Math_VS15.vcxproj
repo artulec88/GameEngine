@@ -141,13 +141,13 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
+    <ClInclude Include="Aabb.h" />
     <ClInclude Include="Angle.h" />
-    <ClInclude Include="AABR.h" />
-    <ClInclude Include="BSPTree.h" />
+    <ClInclude Include="Aabr.h" />
+    <ClInclude Include="BspTree.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectFactory.h" />
-    <ClInclude Include="EffectIDs.h" />
+    <ClInclude Include="EffectIds.h" />
     <ClInclude Include="Effect_impl.h" />
     <ClInclude Include="Ellipsoid.h" />
     <ClInclude Include="FloatingPoint.h" />
@@ -157,10 +157,10 @@
     <ClInclude Include="ISort.h" />
     <ClInclude Include="NewMatrix.h" />
     <ClInclude Include="StatisticsStorage.h" />
-    <ClInclude Include="KDTree.h" />
+    <ClInclude Include="KdTree.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="OBB.h" />
+    <ClInclude Include="Obb.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />
@@ -179,10 +179,10 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="Aabb.cpp" />
     <ClCompile Include="Angle.cpp" />
-    <ClCompile Include="AABR.cpp" />
-    <ClCompile Include="BSPTree.cpp" />
+    <ClCompile Include="Aabr.cpp" />
+    <ClCompile Include="BspTree.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
@@ -206,10 +206,10 @@
     <ClCompile Include="IntersectInfo.cpp" />
     <ClCompile Include="ISort.cpp" />
     <ClCompile Include="StatisticsStorage.cpp" />
-    <ClCompile Include="KDTree.cpp" />
+    <ClCompile Include="KdTree.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="OBB.cpp" />
+    <ClCompile Include="Obb.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Quaternion.cpp" />

@@ -99,7 +99,7 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API BoxPositionGenerator(const math::AABB& aabb);
+				RENDERING_API BoxPositionGenerator(const math::Aabb& aabb);
 				RENDERING_API BoxPositionGenerator(const math::Vector3D& centerPoint, math::Real xOffset, math::Real yOffset, math::Real zOffset);
 				RENDERING_API BoxPositionGenerator(math::Real minX, math::Real maxX, math::Real minY, math::Real maxY, math::Real minZ, math::Real maxZ);
 				RENDERING_API virtual ~BoxPositionGenerator();

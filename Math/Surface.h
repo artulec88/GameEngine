@@ -62,7 +62,6 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		/// <summary> Returns the number of vertices in the surface along the X axis. </summary>
 		/// <returns> The number of vertices in the surface along the X axis. </returns>
 		MATH_API int GetHorizontalVerticesCount() const noexcept { return m_horizontalVerticesCount; }
@@ -122,7 +121,7 @@ namespace math
 		MATH_API Real GetHeightAt(Real x, Real z) const;
 
 	private:
-		inline int GetHeightsIndex(int xIndex, int zIndex) const noexcept
+		int GetHeightsIndex(int xIndex, int zIndex) const noexcept
 		{
 			return zIndex * m_horizontalVerticesCount + xIndex;
 		}
@@ -144,7 +143,6 @@ namespace math
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		/// <summary>
 		/// The position of the bottom left position of the surface.
 		/// This is the position on the surface with least values for both X and Z components.

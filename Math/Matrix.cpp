@@ -14,10 +14,10 @@ math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "7");
-	const Real xSin = angleX.Sin();
-	const Real xCos = angleX.Cos();
-	const Real ySin = angleY.Sin();
-	const Real yCos = angleY.Cos();
+	const auto xSin = angleX.Sin();
+	const auto xCos = angleX.Cos();
+	const auto ySin = angleY.Sin();
+	const auto yCos = angleY.Cos();
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m_values[0][0] = yCos;			m_values[0][1] = REAL_ZERO;	m_values[0][2] = ySin;			m_values[0][3] = REAL_ZERO;
 	m_values[1][0] = -xSin * ySin;	m_values[1][1] = xCos;		m_values[1][2] = xSin * yCos;	m_values[1][3] = REAL_ZERO;
@@ -37,12 +37,12 @@ math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "8"); // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
-	const Real xSin = angleX.Sin();
-	const Real xCos = angleX.Cos();
-	const Real ySin = angleY.Sin();
-	const Real yCos = angleY.Cos();
-	const Real zSin = angleZ.Sin();
-	const Real zCos = angleZ.Cos();
+	const auto xSin = angleX.Sin();
+	const auto xCos = angleX.Cos();
+	const auto ySin = angleY.Sin();
+	const auto yCos = angleY.Cos();
+	const auto zSin = angleZ.Sin();
+	const auto zCos = angleZ.Cos();
 	/* ==================== SOLUTION #1 begin ==================== */
 	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
 
@@ -99,9 +99,9 @@ math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up) :
 	Matrix4D()
 {
 	START_PROFILING_MATH(false, "10");
-	Vector3D n = forward.Normalized();
-	Vector3D u = up.Normalized().Cross(n);
-	Vector3D v = n.Cross(u);
+	const auto n = forward.Normalized();
+	const auto u = up.Normalized().Cross(n);
+	const auto v = n.Cross(u);
 	SetRotationFromVectors(n, v, u);
 	STOP_PROFILING_MATH("10");
 }
@@ -137,9 +137,9 @@ math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 }
 
 math::Matrix4D::Matrix4D(Matrix4D&& mat) noexcept:
-	m_values(std::move(mat.m_values))
+m_values(move(mat.m_values))
 #ifdef PROFILING_MATH_MODULE_ENABLED
-	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
 {
 	START_PROFILING_MATH(false, "14");
@@ -167,29 +167,29 @@ math::Matrix4D& math::Matrix4D::operator=(const Matrix4D& mat)
 math::Matrix4D& math::Matrix4D::operator=(Matrix4D&& mat) noexcept
 {
 	START_PROFILING_MATH(false, "");
-	m_values = std::move(mat.m_values);
+	m_values = move(mat.m_values);
 	//ERROR_LOG_MATH("Matrix move assignment operator");
 	STOP_PROFILING_MATH("");
 	return *this;
 }
 
-math::Matrix4D::Matrix4D(const math::Real* values) :
+math::Matrix4D::Matrix4D(const Real* values) :
 	Matrix4D(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15])
 {
 	START_PROFILING_MATH(false, "15");
 	STOP_PROFILING_MATH("15");
 }
 
-void math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
-	__m128 row1 = _mm_load_ps(&B[0]);
-	__m128 row2 = _mm_load_ps(&B[4]);
-	__m128 row3 = _mm_load_ps(&B[8]);
-	__m128 row4 = _mm_load_ps(&B[12]);
-	for (int i = 0; i<4; i++) {
-		__m128 brod1 = _mm_set1_ps(A[4 * i + 0]);
-		__m128 brod2 = _mm_set1_ps(A[4 * i + 1]);
-		__m128 brod3 = _mm_set1_ps(A[4 * i + 2]);
-		__m128 brod4 = _mm_set1_ps(A[4 * i + 3]);
+void math::Matrix4D::M4x4_SSE(const Real* matA, const Real* matB, Real* matC) const {
+	__m128 row1 = _mm_load_ps(&matB[0]);
+	__m128 row2 = _mm_load_ps(&matB[4]);
+	__m128 row3 = _mm_load_ps(&matB[8]);
+	__m128 row4 = _mm_load_ps(&matB[12]);
+	for (auto i = 0; i < 4; i++) {
+		__m128 brod1 = _mm_set1_ps(matA[4 * i + 0]);
+		__m128 brod2 = _mm_set1_ps(matA[4 * i + 1]);
+		__m128 brod3 = _mm_set1_ps(matA[4 * i + 2]);
+		__m128 brod4 = _mm_set1_ps(matA[4 * i + 3]);
 		__m128 row = _mm_add_ps(
 			_mm_add_ps(
 				_mm_mul_ps(brod1, row1),
@@ -197,7 +197,7 @@ void math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
 			_mm_add_ps(
 				_mm_mul_ps(brod3, row3),
 				_mm_mul_ps(brod4, row4)));
-		_mm_store_ps(&C[4 * i], row);
+		_mm_store_ps(&matC[4 * i], row);
 	}
 }
 
@@ -371,10 +371,10 @@ math::Vector3D math::Matrix4D::operator*(const Vector3D& vec) const
 	Real y = (m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1]) * oneperw;
 	Real z = (m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]) * oneperw;
 #else
-	const Real oneperw = REAL_ONE / (m_values[3] * vec.x + m_values[7] * vec.y + m_values[11] * vec.z + m_values[15]);
-	Real x = (m_values[0] * vec.x + m_values[4] * vec.y + m_values[8] * vec.z + m_values[12]) * oneperw;
-	Real y = (m_values[1] * vec.x + m_values[5] * vec.y + m_values[9] * vec.z + m_values[13]) * oneperw;
-	Real z = (m_values[2] * vec.x + m_values[6] * vec.y + m_values[10] * vec.z + m_values[14]) * oneperw;
+	const auto oneperw = REAL_ONE / (m_values[3] * vec.x + m_values[7] * vec.y + m_values[11] * vec.z + m_values[15]);
+	auto x = (m_values[0] * vec.x + m_values[4] * vec.y + m_values[8] * vec.z + m_values[12]) * oneperw;
+	auto y = (m_values[1] * vec.x + m_values[5] * vec.y + m_values[9] * vec.z + m_values[13]) * oneperw;
+	auto z = (m_values[2] * vec.x + m_values[6] * vec.y + m_values[10] * vec.z + m_values[14]) * oneperw;
 #endif
 	STOP_PROFILING_MATH("");
 	return Vector3D(x, y, z);
@@ -394,10 +394,10 @@ math::Vector4D math::Matrix4D::operator*(const Vector4D& vec) const
 	Real z = m_values[2][0] * vec.GetX() + m_values[2][1] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[2][3];
 	Real w = m_values[3][0] * vec.GetX() + m_values[3][1] * vec.GetY() + m_values[3][2] * vec.GetZ() + m_values[3][3];
 #else
-	Real x = m_values[0] * vec.x + m_values[1] * vec.y + m_values[2] * vec.z + m_values[3];
-	Real y = m_values[4] * vec.x + m_values[5] * vec.y + m_values[6] * vec.z + m_values[7];
-	Real z = m_values[8] * vec.x + m_values[9] * vec.y + m_values[10] * vec.z + m_values[11];
-	Real w = m_values[12] * vec.x + m_values[13] * vec.y + m_values[14] * vec.z + m_values[15];
+	const auto x = m_values[0] * vec.x + m_values[1] * vec.y + m_values[2] * vec.z + m_values[3];
+	const auto y = m_values[4] * vec.x + m_values[5] * vec.y + m_values[6] * vec.z + m_values[7];
+	const auto z = m_values[8] * vec.x + m_values[9] * vec.y + m_values[10] * vec.z + m_values[11];
+	const auto w = m_values[12] * vec.x + m_values[13] * vec.y + m_values[14] * vec.z + m_values[15];
 #endif
 	STOP_PROFILING_MATH("");
 	return Vector4D(x, y, z, w);
@@ -414,9 +414,9 @@ bool math::Matrix4D::operator==(const Matrix4D& matrix) const
 	 * the numbers using simple tools, like epsilon?
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
-	for (int i = 0; i < SIZE; ++i)
+	for (auto i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < SIZE; ++j)
+		for (auto j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			if (!AlmostEqual(matrix.GetElement(i, j), m_values[i][j]))
@@ -428,14 +428,14 @@ bool math::Matrix4D::operator==(const Matrix4D& matrix) const
 				return false;
 			}
 		}
-}
+	}
 	STOP_PROFILING_MATH("");
 	return true;
 }
 
 bool math::Matrix4D::operator!=(const Matrix4D& matrix) const
 {
-	return (!((*this) == matrix));
+	return !(*this == matrix);
 }
 
 math::Matrix4D math::Matrix4D::Transposition() const
@@ -443,9 +443,9 @@ math::Matrix4D math::Matrix4D::Transposition() const
 	START_PROFILING_MATH(true, "");
 	Matrix4D matrix;
 
-	for (int i = 0; i < SIZE; ++i)
+	for (auto i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < SIZE; ++j)
+		for (auto j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			matrix.m_values[i][j] = m_values[j][i];
@@ -453,7 +453,7 @@ math::Matrix4D math::Matrix4D::Transposition() const
 			matrix.m_values[i * SIZE + j] = m_values[j * SIZE + i];
 #endif
 		}
-}
+	}
 
 	// TODO: According to wikipedia (http://en.wikipedia.org/wiki/Transpose) (A^T)^T = A, so
 	// check this condition here. Use SLOW_ASSERT, but use it wisely just once not to cause a runtime stack overflow
@@ -475,19 +475,19 @@ math::Real math::Matrix4D::Det(int p, int q) const
 
 	int i[3] =
 	{
-		((p == 0) ? 1 : 0),
-		((p < 2) ? 2 : 1),
-		((p == 3) ? 2 : 3)
+		(p == 0 ? 1 : 0),
+		(p < 2 ? 2 : 1),
+		(p == 3 ? 2 : 3)
 	};
 	int j[3] =
 	{
-		((q == 0) ? 1 : 0),
-		((q < 2) ? 2 : 1),
-		((q == 3) ? 2 : 3)
+		(q == 0 ? 1 : 0),
+		(q < 2 ? 2 : 1),
+		(q == 3 ? 2 : 3)
 	};
-	Real result = 0;
+	Real result = REAL_ZERO;
 	//#define _det3(M, A00, A10, A20, A01, A11, A21, A02, A12, A22)
-	for (int k = 0; k < 3; ++k)
+	for (auto k = 0; k < 3; ++k)
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		result += m_values[i[k]][j[0]] * m_values[i[(k + 1) % 3]][j[1]] * m_values[i[(k + 2) % 3]][j[2]];
@@ -496,7 +496,7 @@ math::Real math::Matrix4D::Det(int p, int q) const
 		result += m_values[i[k] * SIZE + j[0]] * m_values[i[(k + 1) % 3] * SIZE + j[1]] * m_values[i[(k + 2) % 3] * SIZE + j[2]];
 		result -= m_values[i[k] * SIZE + j[2]] * m_values[i[(k + 1) % 3] * SIZE + j[1]] * m_values[i[(k + 2) % 3] * SIZE + j[0]];
 #endif
-}
+	}
 
 	// TODO: Consider creating some asserts here.
 	STOP_PROFILING_MATH("");
@@ -507,7 +507,7 @@ math::Matrix4D math::Matrix4D::Inversion() const
 {
 	START_PROFILING_MATH(true, "");
 	Real det = 0;
-	for (int j = 0; j < SIZE; ++j)
+	for (auto j = 0; j < SIZE; ++j)
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		det += Signum(3, j) * m_values[3][j] * Det(3, j);
@@ -519,14 +519,14 @@ math::Matrix4D math::Matrix4D::Inversion() const
 	if (det == 0)
 	{
 		STOP_PROFILING_MATH("");
-		return Matrix4D::IDENTITY_MATRIX;
+		return IDENTITY_MATRIX;
 	}
 
 	Matrix4D result;
 
-	for (int i = 0; i < SIZE; ++i)
+	for (auto i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < SIZE; ++j)
+		for (auto j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			result.m_values[j][i] = Signum(i, j) * Det(i, j) / det;
@@ -534,7 +534,7 @@ math::Matrix4D math::Matrix4D::Inversion() const
 			result.m_values[j * SIZE + i] = Signum(i, j) * Det(i, j) / det;
 #endif
 		}
-}
+	}
 
 	// TODO: Use SLOW_ASSERT(IsIdentity()) for the result of the multiplication M*M^(-1)
 	SLOW_ASSERT(((*this) * result).IsIdentity());
@@ -555,9 +555,9 @@ bool math::Matrix4D::IsIdentity() const
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
 
-	for (int i = 0; i < SIZE; ++i)
+	for (auto i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < SIZE; ++j)
+		for (auto j = 0; j < SIZE; ++j)
 		{
 			if (i == j)
 			{
@@ -583,7 +583,7 @@ bool math::Matrix4D::IsIdentity() const
 					return false;
 				}
 			}
-			}
+		}
 	}
 	STOP_PROFILING_MATH("");
 	return true;
@@ -620,18 +620,18 @@ void math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom,
 	SetElement(2, 1, REAL_ZERO);
 	SetElement(2, 2, -2.0f / (farPlane - nearPlane));
 	SetElement(2, 3, REAL_ZERO);
-	SetElement(3, 0, (-(right + left)) / (right - left));
-	SetElement(3, 1, (-(top + bottom)) / (top - bottom));
-	SetElement(3, 2, (-(farPlane + nearPlane)) / (farPlane - nearPlane));
+	SetElement(3, 0, -(right + left) / (right - left));
+	SetElement(3, 1, -(top + bottom) / (top - bottom));
+	SetElement(3, 2, -(farPlane + nearPlane) / (farPlane - nearPlane));
 	SetElement(3, 3, REAL_ONE);
 }
 
 void math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
 {
 	START_PROFILING_MATH(false, "");
-	Angle halfAngle(fov / static_cast<Real>(2.0));
-	const Real f = static_cast<Real>(REAL_ONE / halfAngle.Tan());
-	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
+	const auto halfAngle(fov / static_cast<Real>(2.0));
+	const auto f = static_cast<Real>(REAL_ONE / halfAngle.Tan());
+	const auto div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
 
 	//m_values[0][0] = f / aspect;	m_values[0][1] = 0.0;	m_values[0][2] = 0.0;							m_values[0][3] = 0.0;
 	//m_values[1][0] = 0.0;		m_values[1][1] = f;	m_values[1][2] = 0.0;							m_values[1][3] = 0.0;
@@ -685,7 +685,7 @@ math::Vector3D math::Matrix4D::Transform(const Vector3D& vec) const
 
 math::Vector3D* math::Matrix4D::TransformPositions(Vector3D* vectors, int vectorsCount) const
 {
-	for (int i = 0; i < vectorsCount; ++i)
+	for (auto i = 0; i < vectorsCount; ++i)
 	{
 		vectors[i] = Transform(vectors[i]);
 	}
@@ -694,9 +694,9 @@ math::Vector3D* math::Matrix4D::TransformPositions(Vector3D* vectors, int vector
 
 void math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
-	Vector3D f = forward.Normalized();
-	Vector3D u = up.Normalized();
-	Vector3D r = right.Normalized();
+	const auto f = forward.Normalized();
+	const auto u = up.Normalized();
+	const auto r = right.Normalized();
 
 	//Vector3D right = up;
 	//right.Normalize(); // TODO: Should not be necessary

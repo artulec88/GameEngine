@@ -13,7 +13,7 @@
 namespace math
 {
 
-	template<size_t size>
+	template<size_t Size>
 	class TypeWithSize
 	{
 	public:
@@ -86,7 +86,7 @@ namespace math
 		Bits FractionBits() const { return s_kFractionBitMask & u_.bits_; } // returns the fraction bits of this number
 		Bits SignBits() const { return s_kSignBitMask & u_.bits_; } // returns the sign bit of this number
 
-		bool IsNAN() const { return (ExponentBits() == s_kExponentBitMask) && (FractionBits() != 0); } // Returns true iff this is NAN
+		bool IsNan() const { return (ExponentBits() == s_kExponentBitMask) && (FractionBits() != 0); } // Returns true iff this is NAN
 		/**
 		 * Returns true iff this number is at most s_kMaxUlps ULP's away from rhs. In particular, this function:
 		 * - returns false if either number is (or both are) NAN

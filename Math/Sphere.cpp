@@ -10,13 +10,13 @@ math::Sphere::Sphere(const Vector3D& center, Real radius) :
 }
 
 
-math::Sphere::~Sphere(void)
+math::Sphere::~Sphere()
 {
 }
 
 math::IntersectInfo math::Sphere::DoesIntersectSphere(const Sphere& sphere) const
 {
-	const Real radiusDistance = m_radius + sphere.GetRadius();
-	const Real centerDistance = (sphere.GetCenter() - m_center).Length();
+	const auto radiusDistance = m_radius + sphere.GetRadius();
+	const auto centerDistance = (sphere.GetCenter() - m_center).Length();
 	return IntersectInfo(centerDistance - radiusDistance);
 }

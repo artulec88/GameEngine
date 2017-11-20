@@ -31,12 +31,11 @@ namespace math
 		MATH_API static const Matrix4D IDENTITY_MATRIX; // TODO: Try to make IDENTITY_MATRIX constexpr (see http://www.cplusplus.com/forum/general/121300/).
 		static constexpr int Signum(int i, int j)
 		{
-			return ((i + j) % 2) ? -1 : 1;
+			return (i + j) % 2 ? -1 : 1;
 		}
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
 		/// <returns>Identity matrix.</returns>
 		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D() :
@@ -189,7 +188,7 @@ namespace math
 		/// Returns the pointer to the matrix data.
 		/// </summary>
 		/// <returns> Pointer to constant matrix data. </returns>
-		MATH_API inline const Real* Data() const
+		MATH_API const Real* Data() const
 		{
 			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -227,7 +226,7 @@ namespace math
 		/// Returns the pointer to the matrix data.
 		/// </summary>
 		/// <returns> Pointer to constant matrix data. </returns>
-		MATH_API inline Real* DataPtr()
+		MATH_API Real* DataPtr()
 		{
 			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -236,8 +235,8 @@ namespace math
 			return m_values.data();
 #endif
 		}
-		void M4x4_SSE(const Real* A, const Real* B, Real* C) const;
-		inline const Real* operator[](int index) const
+		void M4x4_SSE(const Real* matA, const Real* matB, Real* matC) const;
+		const Real* operator[](int index) const
 		{
 			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -246,7 +245,7 @@ namespace math
 			return &m_values[index];
 #endif
 		}
-		inline Real* operator[](int index)
+		Real* operator[](int index)
 		{
 			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -259,7 +258,6 @@ namespace math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		// TODO: Consider using a one-dimensional array to store SIZE * SIZE elements.
 		// TODO: Read an article http://stackoverflow.com/questions/17259877/1d-or-2d-array-whats-faster.
 #ifdef MATRIX_MODE_TWO_DIMENSIONS

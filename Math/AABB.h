@@ -19,7 +19,7 @@ namespace math
 	/// <remarks>
 	/// See section 4.6.4 "Axis-Aligned Bounding Boxes (AABB)" in "Game Engine Architecture" by Jason Gregory.
 	/// </remarks>
-	class AABB
+	class Aabb
 	{
 		/* ==================== Static variables begin ==================== */
 		/* ==================== Static variables end ==================== */
@@ -32,38 +32,38 @@ namespace math
 		/// </summary>
 		/// <param name="bottomLeftPos">The bottom-left vertex of the AABB.</param>
 		/// <param name="topRightPos">The top-right vertex of the AABB.</param>
-		MATH_API AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept;
+		MATH_API Aabb(const Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy constructor.
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box to copy construct from. </param>
-		MATH_API AABB(const AABB& aabb) noexcept = default;
+		MATH_API Aabb(const Aabb& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move constructor.
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box to move construct from. </param>
-		MATH_API AABB(AABB&& aabb) noexcept = default;
+		MATH_API Aabb(Aabb&& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy assignment operator.
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box to copy assign from. </param>
 		/// <returns> The reference to the newly copy-assigned axis-aligned bounding box. </returns>
-		MATH_API AABB& operator=(const AABB& aabb) noexcept = default;
+		MATH_API Aabb& operator=(const Aabb& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move assignment operator.
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box to move assign from. </param>
 		/// <returns> The reference to the newly move-assigned axis-aligned bounding box. </returns>
-		MATH_API AABB& operator=(AABB&& aabb) noexcept = default;
+		MATH_API Aabb& operator=(Aabb&& aabb) noexcept = default;
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.
 		/// </summary>
-		MATH_API ~AABB();
+		MATH_API ~Aabb();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
@@ -72,7 +72,7 @@ namespace math
 		/// </summary>
 		/// <param name="aabb"> The axis-aligned bounding box we want to check the potential intersection against. </param>
 		/// <returns> The intersection info. </returns>
-		IntersectInfo DoesIntersectAabb(const AABB& aabb) const noexcept;
+		IntersectInfo DoesIntersectAabb(const Aabb& aabb) const noexcept;
 
 		/// <summary>
 		/// Gives the bottom left position of the axis-aligned bounding box.

@@ -30,7 +30,6 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-		public:
 			MATH_API unsigned GetSeed() const
 			{
 				return m_seed;

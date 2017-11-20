@@ -5,7 +5,7 @@
 
 #include "Utility/ILogger.h"
 
-math::KDTree::KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
+math::KdTree::KdTree(Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
 	m_leftTree(nullptr),
 	m_rightTree(nullptr),
 	m_numberOfSamples(numberOfSamples),
@@ -30,7 +30,7 @@ math::KDTree::KDTree(Vector3D* positions, size_t positionsCount, int numberOfSam
 			// for positions with equal XZ components we want to store only the one with the greatest Y value.
 			auto sameXzVectorFound = false;
 			const auto xz = positions[i].GetXZ();
-			for (std::vector<Vector3D>::iterator vecItr = uniquePositions.begin(); vecItr != uniquePositions.end(); ++vecItr)
+			for (auto vecItr = uniquePositions.begin(); vecItr != uniquePositions.end(); ++vecItr)
 			{
 				if (xz == vecItr->GetXZ())
 				{
@@ -64,11 +64,11 @@ math::KDTree::KDTree(Vector3D* positions, size_t positionsCount, int numberOfSam
 	STOP_PROFILING_MATH("");
 }
 
-math::KDTree::~KDTree()
+math::KdTree::~KdTree()
 {
 }
 
-void math::KDTree::BuildTree(Vector3D* positions, size_t positionsCount, int depth)
+void math::KdTree::BuildTree(Vector3D* positions, size_t positionsCount, int depth)
 {
 	START_PROFILING_MATH(true, "");
 	auto sortingKey = depth % 2 == 0 ? sorting::keys::COMPONENT_X : sorting::keys::COMPONENT_Z;
@@ -91,18 +91,18 @@ void math::KDTree::BuildTree(Vector3D* positions, size_t positionsCount, int dep
 
 	if (medianIndex > 0)
 	{
-		m_leftTree = std::make_unique<KDTree>(positions, medianIndex, m_numberOfSamples, depth + 1);
+		m_leftTree = std::make_unique<KdTree>(positions, medianIndex, m_numberOfSamples, depth + 1);
 	}
 	if (positionsCount - medianIndex - 1 > 0)
 	{
-		m_rightTree = std::make_unique<KDTree>(&positions[medianIndex + 1], positionsCount - medianIndex - 1, m_numberOfSamples, depth + 1);
+		m_rightTree = std::make_unique<KdTree>(&positions[medianIndex + 1], positionsCount - medianIndex - 1, m_numberOfSamples, depth + 1);
 	}
 	STOP_PROFILING_MATH("");
 }
 
 //int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
 
-math::Real math::KDTree::SearchNearestValue(Real posX, Real posZ) const
+math::Real math::KdTree::SearchNearestValue(Real posX, Real posZ) const
 {
 	START_PROFILING_MATH(true, "");
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
@@ -134,7 +134,7 @@ math::Real math::KDTree::SearchNearestValue(Real posX, Real posZ) const
 	return result;
 }
 
-void math::KDTree::SearchNearestValue(Real x, Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void math::KdTree::SearchNearestValue(Real x, Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	START_PROFILING_MATH(true, "");
 	//++numberOfPositionsChecked;
@@ -180,7 +180,7 @@ void math::KDTree::SearchNearestValue(Real x, Real z, int depth, std::vector<Rea
 	STOP_PROFILING_MATH("");
 }
 
-void math::KDTree::SearchNearestValueInLeftTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void math::KdTree::SearchNearestValueInLeftTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	if (m_leftTree != nullptr)
 	{
@@ -195,7 +195,7 @@ void math::KDTree::SearchNearestValueInLeftTree(Real x, Real z, int depth, const
 	}
 }
 
-void math::KDTree::SearchNearestValueInRightTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void math::KdTree::SearchNearestValueInRightTree(Real x, Real z, int depth, const Real positionComponentValue, const Real nodePositionComponentValue, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	if (m_rightTree != nullptr)
 	{
@@ -211,7 +211,7 @@ void math::KDTree::SearchNearestValueInRightTree(Real x, Real z, int depth, cons
 }
 
 
-math::Real math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+math::Real math::KdTree::Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	/* ==================== METHOD #1 (Inverse Distance Weighting- http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml) begin ==================== */
 	//const Real exponent = 4.0f;
@@ -220,14 +220,14 @@ math::Real math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::
 		STOP_PROFILING_MATH("");
 		return minDistanceValues[0];
 	}
-	Real sumOfInversedDistances = REAL_ZERO;
-	for (int i = 0; i < m_numberOfSamples; ++i)
+	auto sumOfInversedDistances = REAL_ZERO;
+	for (auto i = 0; i < m_numberOfSamples; ++i)
 	{
 		sumOfInversedDistances += REAL_ONE / minDistances[i];
 		//sumOfInversedDistances += REAL_ONE / pow(minDistances[i], exponent);
 	}
-	Real result = REAL_ZERO;
-	for (int i = 0; i < m_numberOfSamples; ++i)
+	auto result = REAL_ZERO;
+	for (auto i = 0; i < m_numberOfSamples; ++i)
 	{
 		result += minDistanceValues[i] / minDistances[i];
 		//result += minDistanceValues[i] / pow(minDistances[i], exponent);
@@ -252,23 +252,23 @@ math::Real math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::
 	/* ==================== METHOD #2 end ==================== */
 }
 
-std::string math::KDTree::ToString() const
+std::string math::KdTree::ToString() const
 {
 	return ToString(0);
 }
 
-std::string math::KDTree::ToString(int depth) const
+std::string math::KdTree::ToString(int depth) const
 {
-	constexpr char* INDENTATION_STRING = "  ";
+	constexpr char* indentationString = "  ";
 	std::stringstream s("");
-	for (int i = 0; i < depth; ++i)
+	for (auto i = 0; i < depth; ++i)
 	{
-		s << INDENTATION_STRING;
+		s << indentationString;
 	}
 	s << "Parent: " << m_position << " with value " << m_value << " has following children:" << std::endl;
-	for (int i = 0; i < depth + 1; ++i)
+	for (auto i = 0; i < depth + 1; ++i)
 	{
-		s << INDENTATION_STRING;
+		s << indentationString;
 	}
 	if (m_leftTree == nullptr)
 	{
@@ -280,9 +280,9 @@ std::string math::KDTree::ToString(int depth) const
 		//s << "\t1. " << m_leftTree->GetPosition().ToString() << " with value " << m_leftTree->GetValue() << std::endl;
 		s << "1. " << m_leftTree->ToString(depth + 1) << std::endl;
 	}
-	for (int i = 0; i < depth + 1; ++i)
+	for (auto i = 0; i < depth + 1; ++i)
 	{
-		s << INDENTATION_STRING;
+		s << indentationString;
 	}
 	if (m_rightTree == nullptr)
 	{

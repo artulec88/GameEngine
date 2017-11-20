@@ -1164,7 +1164,7 @@ void KDTreeTest()
 	//	DEBUG_LOG_MATH_TEST("positions[", i, "] = ", positions[i].ToString());
 	//}
 
-	std::unique_ptr<KDTree> kdTree = std::make_unique<KDTree>(positions.data(), NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
+	std::unique_ptr<KdTree> kdTree = std::make_unique<KdTree>(positions.data(), NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
 
 	//DEBUG_LOG_MATH_TEST("K-d tree structure:\n", kdTree->ToString());
 

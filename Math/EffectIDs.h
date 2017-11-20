@@ -8,7 +8,7 @@ namespace math
 		namespace effect_ids
 		{
 			// TODO: Rename the value names with some more self-explanatory ones.
-			enum EffectID
+			enum EffectId
 			{
 				STATIC_REAL_ONE,
 				STATIC_REAL_TWO,
@@ -38,7 +38,7 @@ namespace math
 				BLINK_VEC3D_TWO,
 				BLINK_VEC3D_THREE,
 				COUNT,
-			}; /* end enum EffectID */
+			}; /* end enum EffectId */
 		} /* end namespace effect_ids */
 	} /* end namespace effects */
 } /* end namespace math */

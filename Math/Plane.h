@@ -48,14 +48,13 @@ namespace math
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		MATH_API Plane Normalized() const;
 		MATH_API IntersectInfo DoesIntersectSphere(const Sphere& sphere) const;
 		MATH_API bool IsPerpendicularToAxisX() const { return AlmostEqual(m_normal.x, REAL_ZERO); }
 		MATH_API bool IsPerpendicularToAxisY() const { return AlmostEqual(m_normal.y, REAL_ZERO); }
 		MATH_API bool IsPerpendicularToAxisZ() const { return AlmostEqual(m_normal.z, REAL_ZERO); }
-		MATH_API inline const Vector3D& GetNormal() const { return m_normal; }
-		MATH_API inline Real GetDistance() const { return m_distance; }
+		MATH_API const Vector3D& GetNormal() const { return m_normal; }
+		MATH_API Real GetDistance() const { return m_distance; }
 		/// <summary>
 		/// Calculates the point on the plane that is closest to origin.
 		/// See https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_plane.

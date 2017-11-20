@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "OBB.h"
+#include "Obb.h"
 
 
-math::OBB::OBB()
+math::Obb::Obb()
 {
 }
 
 
-math::OBB::~OBB()
+math::Obb::~Obb()
 {
 }

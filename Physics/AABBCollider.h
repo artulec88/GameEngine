@@ -46,7 +46,7 @@ namespace physics
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		math::AABB m_aabb;
+		math::Aabb m_aabb;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABBCollider */
 
