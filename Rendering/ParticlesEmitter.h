@@ -5,7 +5,7 @@
 #include "ParticlesContainer.h"
 #include "ParticleAttributeGenerator.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 namespace rendering
 {

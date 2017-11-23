@@ -40,7 +40,7 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 	m_inGameDateTime(GET_CONFIG_VALUE_GAME("inGameYear", 2016), GET_CONFIG_VALUE_GAME("inGameMonth", 5),
 		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
 #ifdef DRAW_GAME_TIME
-	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), nullptr,
+	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), nullptr,
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), math::Angle(GET_CONFIG_VALUE_GAME("screenRotationInGameTime", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenScaleInGameTimeX", 1.0f), GET_CONFIG_VALUE_GAME("screenScaleInGameTimeY", 1.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
 		rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
@@ -686,7 +686,7 @@ void Game::PlayGameState::Render(rendering::Renderer* renderer) const
 	renderer->RenderDebugGuiControls(m_gameManager->GetShader(rendering::shader_ids::GUI));
 #endif
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::Aliasing::FXAA) ? rendering::shader_ids::FILTER_FXAA : rendering::shader_ids::FILTER_NULL);
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA) ? rendering::shader_ids::FILTER_FXAA : rendering::shader_ids::FILTER_NULL);
 
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
@@ -868,7 +868,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* rend
 
 	renderer->SetDepthTest(true);
 
-	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//if (Rendering::antiAliasingMethod == Rendering::aliasing::FXAA)
 	//{
 	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, nullptr);
 	//}
@@ -913,7 +913,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* rend
 
 	//glEnable(GL_DEPTH_TEST);
 
-	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//if (Rendering::antiAliasingMethod == Rendering::aliasing::FXAA)
 	//{
 	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, nullptr);
 	//}

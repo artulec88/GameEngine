@@ -4,7 +4,6 @@
 #include "Rendering.h"
 #include "BaseLight.h"
 #include "Math/Transform.h"
-#include "Math/Angle.h"
 
 namespace rendering {
 	namespace lighting
@@ -24,18 +23,18 @@ namespace rendering {
 			/// <param name="transform"> The transform of the directiona light. </param>
 			/// <param name="color"> The color this directional light will emit. </param>
 			/// <param name="intensity"> The intensity of this directional light. </param>
-			/// <param name="shaderID"> The ID of the directional light shader for all standard meshes. </param>
-			/// <param name="terrainShaderID"> The ID of the directional light shader for terrain meshes. </param>
-			/// <param name="noShadowShaderID"> The ID of the directional light shader for all standard meshes without shadow casting calculation. </param>
-			/// <param name="noShadowTerrainShaderID"> The ID of the directional light shader for terrain meshes without shadow casting calculation. </param>
+			/// <param name="shaderId"> The ID of the directional light shader for all standard meshes. </param>
+			/// <param name="terrainShaderId"> The ID of the directional light shader for terrain meshes. </param>
+			/// <param name="noShadowShaderId"> The ID of the directional light shader for all standard meshes without shadow casting calculation. </param>
+			/// <param name="noShadowTerrainShaderId"> The ID of the directional light shader for terrain meshes without shadow casting calculation. </param>
 			/// <param name="shadowInfoFlipFacesEnabled"> The information whether the backface culling should be enabled for rendering the light or not. </param>
 			/// <param name="shadowInfoShadowMapSizeAsPowerOf2"> The value of the exponent in the equation for calculating the shadow map size to be used by the directional light. </param>
 			/// <param name="shadowInfoShadowSoftness"> The softness of the directiona light shadow. </param>
 			/// <param nane="shadowInfoLightBleedingReductionFactor"> The light bleeding reduction factor. </param>
 			/// <param name="shadowInfoMinVariance"> The minimal variance in Variance Shadow Mapping calculation for the directional light. </param>
 			/// <param name="halfShadowArea"> The half shadow area for the directiona light. </param>
-			RENDERING_API DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
+			RENDERING_API DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+				int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId,
 				bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness,
 				math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea);
 

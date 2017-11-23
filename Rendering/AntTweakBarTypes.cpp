@@ -15,14 +15,14 @@ TwType rendering::shadowInfoType;
 /* static */ void rendering::AntTweakBarTypes::InitializeTweakBarTypes()
 {
 	TwEnumVal fogFallOffTypeEV[] = {
-		{ rendering::fog_effect::LINEAR, "Linear" },
-		{ rendering::fog_effect::EXPONENTIAL, "Exponential" }
+		{ fog_effect::LINEAR, "Linear" },
+		{ fog_effect::EXPONENTIAL, "Exponential" }
 	};
 	fogFallOffType = TwDefineEnum("FogFallOffType", fogFallOffTypeEV, 2);
 	
 	TwEnumVal fogCalculationTypeEV[] = {
-		{ rendering::fog_effect::PLANE_BASED, "Plane-based" },
-		{ rendering::fog_effect::RANGE_BASED, "Range-based" }
+		{ fog_effect::PLANE_BASED, "Plane-based" },
+		{ fog_effect::RANGE_BASED, "Range-based" }
 	};
 	fogCalculationType = TwDefineEnum("FogCalculationType", fogCalculationTypeEV, 2);
 
@@ -60,7 +60,7 @@ TwType rendering::shadowInfoType;
 		{ "Bleeding reduction amount", TW_TYPE_REAL, 80, " min=0.0 step=0.01 " },
 		{ "Min variance", TW_TYPE_REAL, 84, " min=0.0 step=0.000002 " }
 	};
-	shadowInfoType = TwDefineStruct("ShadowInfo", shadowInfoMembers, 6, sizeof(rendering::ShadowInfo), nullptr, nullptr);
+	shadowInfoType = TwDefineStruct("ShadowInfo", shadowInfoMembers, 6, sizeof(ShadowInfo), nullptr, nullptr);
 }
 
 #endif

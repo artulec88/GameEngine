@@ -62,10 +62,10 @@ rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	constexpr int NUMBER_OF_CUBE_MAP_FACES = 6;
+	constexpr int cubeMapFacesCount = 6;
 
-	std::array<Image, NUMBER_OF_CUBE_MAP_FACES> cubeMapImages = { Image(posXFileName, STBI_rgb_alpha), Image(negXFileName, STBI_rgb_alpha), Image(posYFileName, STBI_rgb_alpha), Image(negYFileName, STBI_rgb_alpha), Image(posZFileName, STBI_rgb_alpha), Image(negZFileName, STBI_rgb_alpha) };
-	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+	std::array<Image, cubeMapFacesCount> cubeMapImages = { Image(posXFileName, STBI_rgb_alpha), Image(negXFileName, STBI_rgb_alpha), Image(posYFileName, STBI_rgb_alpha), Image(negYFileName, STBI_rgb_alpha), Image(posZFileName, STBI_rgb_alpha), Image(negZFileName, STBI_rgb_alpha) };
+	for (int i = 0; i < cubeMapFacesCount; ++i)
 	{
 		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(cubeMapImages[i].GetData() != nullptr, utility::logging::EMERGENCY,
 			"Unable to load texture #", i, " for the cube map");
@@ -102,7 +102,7 @@ rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
 		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 	};
-	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+	for (int i = 0; i < cubeMapFacesCount; ++i)
 	{
 		glTexImage2D(targets[i], 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapImages[i].GetData());
 	}

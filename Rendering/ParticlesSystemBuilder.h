@@ -2,12 +2,12 @@
 #define __RENDERING_PARTICLE_SYSTEM_BUILDER_H__
 
 #include "Rendering.h"
-#include "ParticleEffects.h"
+//#include "ParticleEffects.h"
 #include "ParticlesSystem.h"
 #include "ParticlesEmitter.h"
-#include "TextureIDs.h"
+//#include "TextureIDs.h"
 
-#include "Utility\Builder.h"
+#include "Utility/Builder.h"
 
 #include <string>
 
@@ -47,7 +47,7 @@ namespace rendering
 			/* ==================== Non-static member functions begin ==================== */
 			ParticlesSystem Get() override
 			{
-				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureID, m_shaderID);
+				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureId, m_shaderId);
 			}
 			void Build() override;
 			
@@ -83,11 +83,11 @@ namespace rendering
 			/// One must remember that texture ID may not be used if it stays in contradiction with the attributes mask given to the particles system.
 			/// For example, the particles system will just use <code>TextureIDs::INVALID</code> as the texture ID if the attributes mask declares that particles do not have texture offsets property.
 			/// </summary>
-			/// <param name="textureID"> The ID of the texture to be used by the final particles system. </param>
+			/// <param name="textureId"> The ID of the texture to be used by the final particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			RENDERING_API ParticlesSystemBuilder& SetTextureID(int textureID)
+			RENDERING_API ParticlesSystemBuilder& SetTextureId(int textureId)
 			{
-				m_textureID = textureID;
+				m_textureId = textureId;
 				return *this;
 			}
 
@@ -95,11 +95,11 @@ namespace rendering
 			/// Sets the ID of the shader that the final particles system will use.
 			/// One must remember that in fact different shader ID may be used if the chosen one stays in contradiction with the attributes mask given to the particles system.
 			/// </summary>
-			/// <param name="textureID"> The ID of the texture to be used by the final particles system. </param>
+			/// <param name="shaderId"> The ID of the shader to be used by the final particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			RENDERING_API ParticlesSystemBuilder& SetShaderID(int shaderID)
+			RENDERING_API ParticlesSystemBuilder& SetShaderId(int shaderId)
 			{
-				m_shaderID = shaderID;
+				m_shaderId = shaderId;
 				return *this;
 			}
 
@@ -133,15 +133,15 @@ namespace rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			const size_t M_DEFAULT_MAX_PARTICLES_COUNT; // TODO: Make it static constexpr in the future.
-			const attributes::AttributesMask M_DEFAULT_ATTRIBUTES_MASK; // TODO: Make it a static constexpr in the future.
+			const size_t m_defaultMaxParticlesCount; // TODO: Make it static constexpr in the future.
+			const attributes::AttributesMask m_defaultAttributesMask; // TODO: Make it a static constexpr in the future.
 
 			//ParticlesSystem m_particlesSystem;
 
 			size_t m_maxCount;
 			attributes::AttributesMask m_attributesMask;
-			int m_textureID;
-			int m_shaderID;
+			int m_textureId;
+			int m_shaderId;
 
 			std::vector<ParticlesEmitter> m_emitters;
 

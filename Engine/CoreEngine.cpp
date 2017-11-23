@@ -5,6 +5,8 @@
 
 #include "Math/Math.h"
 
+#include "Rendering/AntTweakBarTypes.h"
+
 #include "Utility/ILogger.h"
 #include "Utility/Config.h"
 
@@ -218,7 +220,7 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 
 	CreateAudioEngine();
 	CreatePhysicsEngine();
-	CreateRenderer(fullscreenEnabled, width, height, title, rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from Rendering configuration file. */);
+	CreateRenderer(fullscreenEnabled, width, height, title, rendering::aliasing::NONE /* TODO: Get anti-aliasing method from Rendering configuration file. */);
 
 	NOTICE_LOG_ENGINE("Main application construction finished");
 	STOP_PROFILING_ENGINE("");
@@ -278,7 +280,7 @@ void engine::CoreEngine::CreatePhysicsEngine()
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
 
-void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	START_PROFILING_ENGINE(true, "");
 	InitGraphics(fullscreenEnabled, width, height, title, antiAliasingMethod);
@@ -294,14 +296,14 @@ void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int h
 	STOP_PROFILING_ENGINE("");
 }
 
-void engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 }
 
-void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
@@ -309,7 +311,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	const int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
-	case rendering::Aliasing::NONE:
+	case rendering::aliasing::NONE:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -317,7 +319,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_ENGINE("No anti-aliasing algorithm chosen");
 		break;
-	case rendering::Aliasing::FXAA:
+	case rendering::aliasing::FXAA:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -325,7 +327,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_ENGINE("FXAA anti-aliasing algorithm chosen");
 		break;
-	case rendering::Aliasing::MSAA:
+	case rendering::aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG_ENGINE(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
@@ -452,7 +454,7 @@ void engine::CoreEngine::Run()
 	//math::Vector3D inGameTimeColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
 	//math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
-	rendering::controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
+	rendering::controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),

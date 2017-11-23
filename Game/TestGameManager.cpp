@@ -295,7 +295,7 @@ engine::GameState* Game::TestGameManager::GetMainMenuGameState()
 	{
 		//m_mainMenuFont(GET_CONFIG_VALUE_GAME("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR_GAME("mainMenuFontMetaData", "cambria.fnt")),
 		m_menuGameState = std::make_unique<MenuGameState>(this, "MainMenuInputContext",
-			GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f));
+			GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f));
 	}
 	return m_menuGameState.get();
 }
@@ -316,7 +316,7 @@ engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 	if (m_playMainMenuGameState == nullptr)
 	{
 		m_playMainMenuGameState = std::make_unique<PlayMenuGameState>(this, "PlayMainMenuInputContext",
-			GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f));
+			GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f));
 	}
 	return m_playMainMenuGameState.get();
 }

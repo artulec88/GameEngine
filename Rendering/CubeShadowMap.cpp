@@ -3,7 +3,7 @@
 #include "Utility/ILogger.h"
 #include "Math/Math.h"
 
-rendering::CubeShadowMap::CubeShadowMap(void) :
+rendering::CubeShadowMap::CubeShadowMap() :
 	m_fbo(0),
 	m_renderBuffer(0),
 	m_shadowMap(0),
@@ -12,7 +12,7 @@ rendering::CubeShadowMap::CubeShadowMap(void) :
 }
 
 
-rendering::CubeShadowMap::~CubeShadowMap(void)
+rendering::CubeShadowMap::~CubeShadowMap()
 {
 	if (m_fbo != 0)
 	{
@@ -39,12 +39,12 @@ void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 {
 	// See http://stackoverflow.com/questions/12879969/hardware-support-for-non-power-of-two-textures
 
-	unsigned int windowWidthPowerOfTwo = math::RoundUpPow2(windowWidth);
-	unsigned int windowHeightPowerOfTwo = math::RoundUpPow2(windowHeight);
-	unsigned int cubeMapSize = (windowWidthPowerOfTwo > windowHeightPowerOfTwo) ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
+	const auto windowWidthPowerOfTwo = math::RoundUpPow2(windowWidth);
+	const auto windowHeightPowerOfTwo = math::RoundUpPow2(windowHeight);
+	const auto cubeMapSize = windowWidthPowerOfTwo > windowHeightPowerOfTwo ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
 
 	INFO_LOG_RENDERING("Initializing cube shadow map with width=", windowWidth, " and height=", windowHeight, " (cubeMapSize=", cubeMapSize, ")");
-	const int NUMBER_OF_CUBE_MAP_FACES = 6;
+	constexpr auto cubeMapFacesCount = 6;
 
 	// Create the FBO
 	glGenFramebuffers(1, &m_fbo);
@@ -68,7 +68,7 @@ void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+	for (unsigned int i = 0; i < cubeMapFacesCount; ++i)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cubeMapSize, cubeMapSize, 0, GL_RED, GL_FLOAT, NULL);
 	}
@@ -94,11 +94,11 @@ void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 	// Disable reads from the color buffer
 	glReadBuffer(GL_NONE);
 
-	rendering::CheckFramebufferStatus();
+	CheckFramebufferStatus();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	rendering::CheckErrorCode(__FUNCTION__, "Initializing cube shadow map");
+	CheckErrorCode(__FUNCTION__, "Initializing cube shadow map");
 }
 
 void rendering::CubeShadowMap::BindForWriting(GLenum cubeFace) const
@@ -107,7 +107,7 @@ void rendering::CubeShadowMap::BindForWriting(GLenum cubeFace) const
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cubeFace, m_shadowMap, 0);
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-	rendering::CheckFramebufferStatus();
+	CheckFramebufferStatus();
 }
 
 
@@ -115,5 +115,5 @@ void rendering::CubeShadowMap::BindForReading(unsigned int textureUnit) const
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_shadowMap);
-	rendering::CheckErrorCode(__FUNCTION__, "Binding for reading");
+	CheckErrorCode(__FUNCTION__, "Binding for reading");
 }

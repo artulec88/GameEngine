@@ -9,17 +9,17 @@ namespace rendering
 {
 	namespace text
 	{
-		namespace FontIDs
+		namespace font_ids
 		{
-			enum FontID
+			enum FontId
 			{
 				CANDARA = 0,
 				SEGOE,
 				CAMBRIA,
 				
 				COUNT
-			}; /* end enum FontID */
-		} /* end namespace FontIDs */
+			}; /* end enum FontId */
+		} /* end namespace font_ids */
 
 		/// <summary>
 		/// Font factory.
@@ -38,7 +38,7 @@ namespace rendering
 			RENDERING_API FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory);
 
 			/// <summary> Font factory destructor. </summary>
-			RENDERING_API ~FontFactory(void);
+			RENDERING_API ~FontFactory();
 
 			/// <summary> Font factory copy constructor. </summary>
 			/// <param name="fontFactory"> The font factory to copy construct from. </param>
@@ -60,9 +60,8 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API const Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-			RENDERING_API const Font* GetFont(int fontID) const;
+			RENDERING_API const Font* CreateFont(int fontId, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+			RENDERING_API const Font* GetFont(int fontId) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

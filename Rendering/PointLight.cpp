@@ -3,9 +3,9 @@
 #include "Shader.h"
 #include "Utility/IConfig.h"
 
-rendering::lighting::PointLight::PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation) :
-	BaseLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, false),
+rendering::lighting::PointLight::PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+	int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId, const Attenuation& attenuation) :
+	BaseLight(transform, color, intensity, shaderId, terrainShaderId, noShadowShaderId, noShadowTerrainShaderId, false),
 	m_attenuation(attenuation),
 	m_range(CalculateRange())
 {

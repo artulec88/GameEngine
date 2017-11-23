@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Rendering.h"
+#include "AntTweakBarTypes.h"
+
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 
@@ -113,7 +115,7 @@ void rendering::PrintGlReport()
 	//INFO_LOG_RENDERING("OpenGL extensions: ", glGetString(GL_EXTENSIONS));
 }
 
-void rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod)
+void rendering::InitGraphics(int width, int height, aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	NOTICE_LOG_RENDERING("Initializing graphics started");
 
@@ -141,13 +143,13 @@ void rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod
 
 	switch (antiAliasingMethod)
 	{
-	case Aliasing::NONE:
+	case aliasing::NONE:
 		glDisable(GL_MULTISAMPLE); // disable multisampling
 		break;
-	case Aliasing::FXAA:
+	case aliasing::FXAA:
 		glDisable(GL_MULTISAMPLE); // disable multisampling
 		break;
-	case Aliasing::MSAA:
+	case aliasing::MSAA:
 		glEnable(GL_MULTISAMPLE);
 		break;
 	default:

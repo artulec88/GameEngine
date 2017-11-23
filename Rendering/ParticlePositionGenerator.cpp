@@ -130,8 +130,8 @@ void rendering::particles::generators::EllipsoidPositionGenerator::Generate(math
 	{
 		const math::Angle randomAngle{ m_randomGenerator.NextFloat(REAL_ZERO, 2.0f * math::PI), math::units::RADIAN };
 		const math::Real randomValueSquareRoot{ sqrt(m_randomGenerator.NextFloat(REAL_ZERO, REAL_ONE)) };
-		math::Real x = (randomValueSquareRoot * randomAngle.Cos()) * m_a;
-		math::Real y = (randomValueSquareRoot * randomAngle.Sin()) * m_b;
+		//math::Real x = (randomValueSquareRoot * randomAngle.Cos()) * m_a;
+		//math::Real y = (randomValueSquareRoot * randomAngle.Sin()) * m_b;
 		Set(particleContainer, i, m_center + math::Vector3D{ m_randomGenerator.NextFloat(-m_a, m_a), m_randomGenerator.NextFloat(-m_b, m_b), m_randomGenerator.NextFloat(-m_c, m_c) });
 	}
 }

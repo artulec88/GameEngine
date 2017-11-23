@@ -5,7 +5,6 @@
 #include <string>
 
 #include "Rendering.h"
-#include "Color.h"
 
 #include "Math/Vector.h"
 
@@ -14,7 +13,6 @@
 #include "Texture.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar/include/AntTweakBar.h"
-#include "AntTweakBarTypes.h"
 #endif
 
 namespace rendering
@@ -37,9 +35,9 @@ namespace rendering
 
 		/* ==================== Static variables and functions begin ==================== */
 		static constexpr math::Real DEFAULT_VALUE = REAL_ZERO;
-		static constexpr math::Vector2D DEFAULT_VECTOR2D{ REAL_ZERO, REAL_ZERO };
-		static constexpr math::Vector3D DEFAULT_VECTOR3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
-		static constexpr math::Vector4D DEFAULT_VECTOR4D{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO };
+		static constexpr math::Vector2D DEFAULT_VECTOR2{ REAL_ZERO, REAL_ZERO };
+		static constexpr math::Vector3D DEFAULT_VECTOR3{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
+		static constexpr math::Vector4D DEFAULT_VECTOR4{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -81,43 +79,43 @@ namespace rendering
 		/* ==================== Non-static member functions begin ==================== */
 		void SetReal(const std::string& name, math::Real value)
 		{
-			if (realMap.find(name) == realMap.end())
+			if (m_realMap.find(name) == m_realMap.end())
 			{
 				DEBUG_LOG_RENDERING("The real value with name \"", name, "\" is not found in the map. Creating a new real value with this name.");
-				realMap.insert(std::pair<std::string, math::Real>(name, value));
+				m_realMap.insert(std::pair<std::string, math::Real>(name, value));
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the real value with name \"", name, "\" from \"", realMap[name], "\" to \"", value, "\"");
-				realMap[name] = value;
+				DELOCUST_LOG_RENDERING("Modifying the real value with name \"", name, "\" from \"", m_realMap[name], "\" to \"", value, "\"");
+				m_realMap[name] = value;
 			}
 		}
 
 		void SetVector2D(const std::string& name, const math::Vector2D& vec)
 		{
-			if (vec2DMap.find(name) == vec2DMap.end())
+			if (m_vec2Map.find(name) == m_vec2Map.end())
 			{
 				DEBUG_LOG_RENDERING("Vector2D with name \"", name, "\" cannot be found in the map. Creating a new vector with this name.");
-				vec2DMap.insert(std::pair<std::string, math::Vector2D>(name, vec));
+				m_vec2Map.insert(std::pair<std::string, math::Vector2D>(name, vec));
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the Vector2D \"", name, "\" with values \"", vec2DMap[name], "\" to vector \"", vec, "\"");
-				vec2DMap[name] = vec;
+				DELOCUST_LOG_RENDERING("Modifying the Vector2D \"", name, "\" with values \"", m_vec2Map[name], "\" to vector \"", vec, "\"");
+				m_vec2Map[name] = vec;
 			}
 		}
 
 		void SetVector3D(const std::string& name, const math::Vector3D& vec)
 		{
-			if (vec3DMap.find(name) == vec3DMap.end())
+			if (m_vec3Map.find(name) == m_vec3Map.end())
 			{
 				DEBUG_LOG_RENDERING("Vector3D with name \"", name, "\" cannot be found in the map. Creating a new vector with this name.");
-				vec3DMap.insert(std::pair<std::string, math::Vector3D>(name, vec));
+				m_vec3Map.insert(std::pair<std::string, math::Vector3D>(name, vec));
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the Vector3D \"", name, "\" with values \"", vec3DMap[name], "\" to vector \"", vec, "\"");
-				vec3DMap[name] = vec;
+				DELOCUST_LOG_RENDERING("Modifying the Vector3D \"", name, "\" with values \"", m_vec3Map[name], "\" to vector \"", vec, "\"");
+				m_vec3Map[name] = vec;
 			}
 		}
 
@@ -156,16 +154,16 @@ namespace rendering
 			//	WARNING_LOG_RENDERING("Adding NULL texture with name \"", textureName, "\" to the map of textures");
 			//	//return;
 			//}
-			const auto textureItr = textureMap.find(textureName);
-			if (textureItr == textureMap.end())
+			const auto textureItr = m_textureMap.find(textureName);
+			if (textureItr == m_textureMap.end())
 			{
 				DEBUG_LOG_RENDERING("The texture with name \"", textureName, "\" is not found in the map. Creating a new texture with this name.");
-				textureMap.insert(std::pair<std::string, const Texture*>(textureName, texture));
+				m_textureMap.insert(std::pair<std::string, const Texture*>(textureName, texture));
 			}
 			else
 			{
 				DELOCUST_LOG_RENDERING("Modifying the texture with name \"", textureName, "\".");
-				textureMap[textureName] = texture;
+				m_textureMap[textureName] = texture;
 			}
 			//textureMap[textureName] = texture;
 		}
@@ -173,23 +171,23 @@ namespace rendering
 		void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
 		{
 			const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
-			const auto textureItr = textureMap.find(multitextureName);
-			if (textureItr == textureMap.end())
+			const auto textureItr = m_textureMap.find(multitextureName);
+			if (textureItr == m_textureMap.end())
 			{
 				DEBUG_LOG_RENDERING("The multitexture with name \"", multitextureName, "\" is not found in the map. Creating a new texture with this name.");
-				textureMap.insert(std::pair<std::string, const Texture*>(multitextureName, texture));
+				m_textureMap.insert(std::pair<std::string, const Texture*>(multitextureName, texture));
 			}
 			else
 			{
 				DELOCUST_LOG_RENDERING("Modifying the multitexture under index ", textureIndex, " with name \"", textureName, "\".");
-				textureMap[multitextureName] = texture;
+				m_textureMap[multitextureName] = texture;
 			}
 		}
 
 		const math::Real& GetReal(const std::string& name) const
 		{
-			const auto itr = realMap.find(name);
-			if (itr == realMap.end()) // number not found
+			const auto itr = m_realMap.find(name);
+			if (itr == m_realMap.end()) // number not found
 			{
 				WARNING_LOG_RENDERING("Real number with name \"", name, "\" has not been found");
 				return DEFAULT_VALUE;
@@ -200,11 +198,11 @@ namespace rendering
 		const math::Vector2D& GetVec2D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			const auto itr = vec2DMap.find(name);
-			if (itr == vec2DMap.end()) // vector not found
+			const auto itr = m_vec2Map.find(name);
+			if (itr == m_vec2Map.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector2D with name \"", name, "\" has not been found. Returning default vector instead.");
-				return DEFAULT_VECTOR2D;
+				return DEFAULT_VECTOR2;
 			}
 			return itr->second;
 		}
@@ -212,11 +210,11 @@ namespace rendering
 		const math::Vector3D& GetVec3D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			const auto itr = vec3DMap.find(name);
-			if (itr == vec3DMap.end()) // vector not found
+			const auto itr = m_vec3Map.find(name);
+			if (itr == m_vec3Map.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector3D with name \"", name, "\" has not been found. Returning default vector instead.");
-				return DEFAULT_VECTOR3D;
+				return DEFAULT_VECTOR3;
 			}
 			return itr->second;
 		}
@@ -228,29 +226,29 @@ namespace rendering
 			if (itr == m_vec4DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector4D with name \"", name, "\" has not been found. Returning default vector instead.");
-				return DEFAULT_VECTOR4D;
+				return DEFAULT_VECTOR4;
 			}
 			return itr->second;
 		}
 
 		const Texture* GetTexture(const std::string& textureName) const
 		{
-			const auto itr = textureMap.find(textureName);
-			if (itr == textureMap.end()) // texture not found
+			const auto itr = m_textureMap.find(textureName);
+			if (itr == m_textureMap.end()) // texture not found
 			{
 				WARNING_LOG_RENDERING("Texture with name \"", textureName, "\" has not been found. Returning default texture instead.");
-				return textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
+				return m_textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
 			}
 			return itr->second;
 		}
 
 		const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
 		{
-			const auto itr = textureMap.find(textureName);
-			if (itr == textureMap.end()) // texture not found
+			const auto itr = m_textureMap.find(textureName);
+			if (itr == m_textureMap.end()) // texture not found
 			{
 				// The texture with the specified name has not been found. However, there is still hope- we should look for it in the multitextures.
-				for (auto textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
+				for (auto textureItr = m_textureMap.begin(); textureItr != m_textureMap.end(); ++textureItr)
 				{
 					const std::string& textureNameItr = textureItr->first;
 					const auto spacePos = textureNameItr.find(" ");
@@ -266,7 +264,7 @@ namespace rendering
 				}
 
 				WARNING_LOG_RENDERING("Texture with name \"", textureName, "\" has not been found. Returning default texture instead.");
-				return textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
+				return m_textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
 			}
 			return itr->second;
 		}
@@ -313,11 +311,11 @@ namespace rendering
 	/* ==================== Non-static member variables begin ==================== */
 	private:
 		//StrToColorMap colorMap;
-		StrToRealMap realMap;
-		StrToVec2DMap vec2DMap;
-		StrToVec3DMap vec3DMap;
+		StrToRealMap m_realMap;
+		StrToVec2DMap m_vec2Map;
+		StrToVec3DMap m_vec3Map;
 		StrToVec4DMap m_vec4DMap;
-		StrToTextureMap textureMap;
+		StrToTextureMap m_textureMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MappedValues */
 

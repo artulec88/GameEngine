@@ -41,7 +41,7 @@ rendering::MeshFactory::~MeshFactory()
 {
 }
 
-const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshID, const std::string& meshFileName)
+const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std::string& meshFileName)
 {
 	rendering::CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
 	CHECK_CONDITION_RENDERING(!meshFileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
@@ -119,13 +119,13 @@ const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshID, const std:
 #endif
 	rendering::CheckErrorCode(__FUNCTION__, "Finished model loading");
 
-	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshId, std::make_unique<Mesh>(indices.data(), indices.size(),
 		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return meshPair.first->second.get();
 }
 
-const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshID, const math::Surface& surface)
+const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshId, const math::Surface& surface)
 {
 	std::vector<math::Vector3D> positions;
 	positions.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
@@ -186,7 +186,7 @@ const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshID,
 	//}
 	//#endif
 
-	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshId, std::make_unique<Mesh>(indices.data(), indices.size(),
 		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");

@@ -103,7 +103,7 @@ namespace rendering
 
 			//RENDERING_API void acceptColorEffect(const math::effects::Effect<Color>& effect) { effect.Apply(&m_color); }
 			//RENDERING_API void acceptOutlineColorEffect(const math::effects::Effect<Color>& effect) { effect.Apply(&m_outlineColor); }
-			RENDERING_API void acceptOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) { effect.Apply(&m_offset); }
+			RENDERING_API void AcceptOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) { effect.Apply(&m_offset); }
 
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>

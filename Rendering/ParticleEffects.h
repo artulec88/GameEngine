@@ -5,7 +5,7 @@ namespace rendering
 {
 	namespace particles
 	{
-		namespace ParticleEffects
+		namespace effects
 		{
 			enum ParticleEffect
 			{
@@ -14,7 +14,7 @@ namespace rendering
 				FOUNTAIN,
 				SMOKE
 			}; /* end enum ParticleEffect */
-		} /* end namespace ParticleEffects */
+		} /* end namespace effects */
 	} /* end namespace particles */
 } /* end namespace rendering */
 

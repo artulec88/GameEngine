@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ShadowInfo.h"
-#include "Utility/ILogger.h"
+//#include "Utility/ILogger.h"
 
 rendering::ShadowInfo::ShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2, math::Real shadowSoftness /* = 1.0f */, math::Real lightBleedingReductionFactor /* = 0.2f */, math::Real minVariance /* = 0.00002f */) :
 	m_projectionMatrix(projection),

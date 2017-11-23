@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Word.h"
-#include <sstream>
 
 rendering::text::Word::Word(math::Real fontSize) :
 	m_width(REAL_ZERO),

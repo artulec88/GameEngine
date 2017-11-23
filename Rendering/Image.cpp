@@ -2,6 +2,7 @@
 #include "Image.h"
 #include "stb_image.h"
 
+#include "Utility/ILogger.h"
 
 rendering::Image::Image(const std::string& fileName, int desiredComponentsCount /* = 0 */) :
 	m_width(0),

@@ -16,6 +16,6 @@ rendering::fog_effect::FogInfo::FogInfo(Color fogColor /* = Color(ColorIDs::GAIN
 
 bool rendering::fog_effect::FogInfo::operator<(const FogInfo& fogInfo) const
 {
-	return (m_fallOffType != fogInfo.m_fallOffType) ? m_fallOffType < fogInfo.m_fallOffType : m_calculationType < fogInfo.m_calculationType;
+	return m_fallOffType != fogInfo.m_fallOffType ? m_fallOffType < fogInfo.m_fallOffType : m_calculationType < fogInfo.m_calculationType;
 	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
 }

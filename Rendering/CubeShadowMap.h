@@ -11,11 +11,10 @@ namespace rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		CubeShadowMap();
-		~CubeShadowMap(void);
+		~CubeShadowMap();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		void Init(unsigned int windowWidth, unsigned int windowHeight);
 
 		void BindForWriting(GLenum cubeFace) const;

@@ -71,14 +71,14 @@ namespace rendering
 		{
 			//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
 			//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
-			glUseProgram(m_programID);
+			glUseProgram(m_programId);
 			//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
 		}
 		bool IsBound() const
 		{
-			GLint currentProgramID;
-			glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
-			return currentProgramID == m_programID;
+			GLint currentProgramId;
+			glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramId);
+			return currentProgramId == m_programId;
 		}
 		const std::vector<std::unique_ptr<uniforms::UniformBase>>& GetUniforms() const { return m_uniforms; }
 		const std::vector<std::unique_ptr<uniforms::UniformBase>>& GetRendererUniforms() const { return m_rendererUniforms; }
@@ -111,7 +111,7 @@ namespace rendering
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-		GLuint m_programID;
+		GLuint m_programId;
 		std::vector<GLuint> m_shaders;
 		std::vector<std::unique_ptr<uniforms::UniformBase>> m_uniforms;
 		std::vector<std::unique_ptr<uniforms::UniformBase>> m_rendererUniforms;

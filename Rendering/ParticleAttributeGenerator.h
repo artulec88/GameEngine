@@ -5,7 +5,7 @@
 #include "ParticlesContainer.h"
 #include "ParticleAttributes.h"
 
-#include "Math\RandomGenerator.h"
+#include "Math/RandomGenerator.h"
 
 namespace rendering
 {
@@ -79,9 +79,9 @@ namespace rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				void Set(ParticlesContainer* particleContainer, size_t i, int ID)
+				void Set(ParticlesContainer* particleContainer, size_t i, int id)
 				{
-					particleContainer->SetID(i, ID);
+					particleContainer->SetId(i, id);
 				}
 				/* ==================== Non-static member functions end ==================== */
 

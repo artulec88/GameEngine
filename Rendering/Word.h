@@ -22,22 +22,38 @@ namespace rendering
 			/// Creates a new word.
 			/// </summary>
 			/// <param name="fontSize"> The size of font of the text this word belongs to. </param>
-			Word(math::Real fontSize);
-			~Word(void);
-			//private:
-			//	Word(Word& word) {};
-			//	void operator=(Word& word) {};
+			explicit Word(math::Real fontSize);
+
+			/// <summary> Word destructor. </summary>
+			~Word();
+
+			/// <summary> Word copy constructor. </summary>
+			/// <param name="word"> The reference to word to copy construct from. </param>
+			Word(const Word& word) = default;
+
+			/// <summary> Word move constructor. </summary>
+			/// <param name="word"> The r-value reference to word to move construct from. </param>
+			Word(Word&& word) noexcept = default;
+
+			/// <summary> Word copy assignment operator. </summary>
+			/// <param name="word"> The reference to word to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned word. </returns>
+			Word& operator=(const Word& word) = delete;
+
+			/// <summary> Word move assignment operator. </summary>
+			/// <param name="word"> The r-value reference to word to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned word. </returns>
+			Word& operator=(Word&& word) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Appends the given character to the current word.
 			/// </summary>
 			/// <param name="character">The character to be appended to the word.</param>
 			void AddCharacter(const Character& character);
-			inline const std::vector<Character>& GetCharacters() const { return m_characters; }
-			inline math::Real GetWordWidth() const { return m_width; }
+			const std::vector<Character>& GetCharacters() const { return m_characters; }
+			math::Real GetWordWidth() const { return m_width; }
 			void Clear();
 
 			friend std::ostream& operator<<(std::ostream& out, const Word& word)

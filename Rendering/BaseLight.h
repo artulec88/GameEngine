@@ -8,7 +8,6 @@
 #include "Math/Vector.h"
 #include "Math/Transform.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBarTypes.h"
 #include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
@@ -32,8 +31,8 @@ namespace rendering
 			/// <param name="transform"> The light transform. </param>
 			/// <param name="color"> The color of the light. </param>
 			/// <param name="intensity"> The intensity of the light. </param>
-			RENDERING_API BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled = false);
+			RENDERING_API BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+				int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId, bool isShadowingEnabled = false);
 
 			/// <summary>The base light destructor.</summary>
 			RENDERING_API virtual ~BaseLight();
@@ -71,7 +70,7 @@ namespace rendering
 			RENDERING_API math::Real GetIntensity() const { return m_intensity; }
 
 			/// <summary> Sets new intensity for the light. </summary>
-			/// <param name="intensity"> New intensity for the light. </returns>
+			/// <param name="intensity"> New intensity for the light. </param>
 			RENDERING_API void SetIntensity(const math::Real intensity) { m_intensity = intensity; }
 
 			/// <summary> Gives information whether light casts shadows or not. </summary>
@@ -90,10 +89,10 @@ namespace rendering
 			/// <returns> Constant light transform reference. </returns>
 			RENDERING_API const math::Transform& GetTransform() const { return m_transform; }
 
-			RENDERING_API int GetShaderId() const { return m_shaderID; }
-			RENDERING_API int GetTerrainShaderId() const { return m_terrainShaderID; }
-			RENDERING_API int GetNoShadowShaderId() const { return m_noShadowShaderID; }
-			RENDERING_API int GetNoShadowTerrainShaderId() const { return m_noShadowTerrainShaderID; }
+			RENDERING_API int GetShaderId() const { return m_shaderId; }
+			RENDERING_API int GetTerrainShaderId() const { return m_terrainShaderId; }
+			RENDERING_API int GetNoShadowShaderId() const { return m_noShadowShaderId; }
+			RENDERING_API int GetNoShadowTerrainShaderId() const { return m_noShadowTerrainShaderId; }
 
 			RENDERING_API const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
 
@@ -121,16 +120,16 @@ namespace rendering
 			math::Real m_intensity;
 
 			/// <summary>The ID of the default shader for the light.</summary>
-			int m_shaderID;
+			int m_shaderId;
 
 			/// <summary>The ID of the terrain shader for the light.</summary>
-			int m_terrainShaderID;
+			int m_terrainShaderId;
 
 			/// <summary> The ID of the default shader with no shadow calculation for the light. </summary>
-			int m_noShadowShaderID;
+			int m_noShadowShaderId;
 
 			/// <summary> The ID of the terrain shader with no shadow calculation for the light. </summary>
-			int m_noShadowTerrainShaderID;
+			int m_noShadowTerrainShaderId;
 
 			/// <summary>The information about the shadow that the light casts.</summary>
 			std::unique_ptr<ShadowInfo> m_shadowInfo;

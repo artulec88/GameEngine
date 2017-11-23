@@ -78,7 +78,7 @@ namespace rendering
 		/// <param name="antiAliasingMethod"> The anti-aliasing method to be used by the rendering engine. </param>
 		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory,
 			const std::string& texturesDirectory, const std::string& shadersDirectory,
-			const std::string& fontsDirectory, Aliasing::AntiAliasingMethod antiAliasingMethod);
+			const std::string& fontsDirectory, aliasing::AntiAliasingMethod antiAliasingMethod);
 
 		/// <summary> Rendering engine destructor. </summary>
 		RENDERING_API virtual ~Renderer();
@@ -109,16 +109,16 @@ namespace rendering
 		RENDERING_API void BindWaterRefractionTexture() const;
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const math::Transform& transform) const;
-		RENDERING_API void Render(int meshID, const Material* material, const math::Transform& transform, int shaderID) const;
-		RENDERING_API void FinalizeRenderScene(int filterShaderID);
+		RENDERING_API void Render(int meshId, const Material* material, const math::Transform& transform, int shaderId) const;
+		RENDERING_API void FinalizeRenderScene(int filterShaderId);
 		//RENDERING_API void Render(const GameNode& node);
 
 		RENDERING_API bool InitShadowMap();
-		RENDERING_API void FinalizeShadowMapRendering(int filterShaderID);
+		RENDERING_API void FinalizeShadowMapRendering(int filterShaderId);
 
-		RENDERING_API void RenderGuiControl(const controls::GuiControl& guiControl, int guiControlShaderID) const;
+		RENDERING_API void RenderGuiControl(const controls::GuiControl& guiControl, int guiControlShaderId) const;
 
-		RENDERING_API void RenderParticles(int particleShaderID, const particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(int particleShaderId, const particles::ParticlesSystem& particleSystem) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -131,13 +131,13 @@ namespace rendering
 #endif
 		RENDERING_API int GetWindowWidth() const { return m_windowWidth; }
 		RENDERING_API int GetWindowHeight() const { return m_windowHeight; }
-		RENDERING_API Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
+		RENDERING_API aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
 		RENDERING_API void SetWindowWidth(const int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(const int windowHeight) { m_windowHeight = windowHeight; }
 
-		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
-		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const math::Surface& surface);
-		RENDERING_API const Mesh* GetMesh(const int meshID) const { return m_meshFactory.GetMesh(meshID); }
+		RENDERING_API const Mesh* CreateMesh(int meshId, const std::string& meshFileName);
+		RENDERING_API const Mesh* CreateMeshFromSurface(int meshId, const math::Surface& surface);
+		RENDERING_API const Mesh* GetMesh(const int meshId) const { return m_meshFactory.GetMesh(meshId); }
 
 		RENDERING_API const Texture* CreateTexture(int textureID, const std::string& textureFileName)
 		{
@@ -152,16 +152,16 @@ namespace rendering
 			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
 		RENDERING_API const std::string& GetTexturesDirectory() const { return m_textureFactory.GetTexturesDirectory(); }
-		RENDERING_API const Texture* GetTexture(const int textureID) const { return m_textureFactory.GetTexture(textureID); }
+		RENDERING_API const Texture* GetTexture(const int textureId) const { return m_textureFactory.GetTexture(textureId); }
 
-		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
-		RENDERING_API const Shader* GetShader(const int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
+		RENDERING_API const Shader* CreateShader(int shaderId, const std::string& shaderFileName);
+		RENDERING_API const Shader* GetShader(const int shaderId) const { return m_shaderFactory.GetShader(shaderId); }
 
-		RENDERING_API const text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-		RENDERING_API const text::Font* GetFont(int fontID) const;
+		RENDERING_API const text::Font* CreateFont(int fontId, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		RENDERING_API const text::Font* GetFont(int fontId) const;
 
-		RENDERING_API void BindShader(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->Bind(); }
-		RENDERING_API void UpdateRendererUniforms(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }
+		RENDERING_API void BindShader(const int shaderId) const { m_shaderFactory.GetShader(shaderId)->Bind(); }
+		RENDERING_API void UpdateRendererUniforms(const int shaderId) const { m_shaderFactory.GetShader(shaderId)->UpdateRendererUniforms(this); }
 
 		RENDERING_API void ClearScreen() const
 		{
@@ -309,12 +309,12 @@ namespace rendering
 		/// <summary>
 		/// Adds an axis-aligned bounding box to the debug drawing queue.
 		/// </summary>
-		void AddAABB(const math::Aabb& aabb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+		void AddAabb(const math::Aabb& aabb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 		/// <summary>
 		/// Adds an oriented bounding box to the debug drawing queue.
 		/// </summary>
-		void AddOBB(const math::Obb& obb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+		void AddObb(const math::Obb& obb, const Color& color, math::Real lineWidth = REAL_ONE, math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 		/// <summary>
 		/// Adds a text string to the debug drawing queue.
@@ -347,7 +347,7 @@ namespace rendering
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		int m_windowWidth, m_windowHeight;
-		const rendering::Aliasing::AntiAliasingMethod m_antiAliasingMethod;
+		const rendering::aliasing::AntiAliasingMethod m_antiAliasingMethod;
 		// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 		CONST_IF_TWEAK_BAR_DISABLED bool m_applyFilterEnabled;
 		CONST_IF_TWEAK_BAR_DISABLED Color m_backgroundColor;
@@ -411,7 +411,7 @@ namespace rendering
 		/// <summary>
 		/// A map holding the distortion of the water creating a wrippling effect on its surface.
 		/// </summary>
-		Texture m_waterDUDVTexture;
+		Texture m_waterDuDvTexture;
 		Texture m_waterNormalMap;
 		Texture m_waterRefractionTexture;
 		Texture m_waterReflectionTexture;

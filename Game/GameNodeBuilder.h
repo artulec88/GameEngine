@@ -11,7 +11,7 @@
 #include "Rendering\Camera.h"
 #include "Rendering\Texture.h"
 
-#include "Utility\Builder.h"
+#include "Utility/Builder.h"
 #include "Utility\StringUtility.h"
 
 #include <string>

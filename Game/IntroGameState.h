@@ -6,7 +6,7 @@
 #include "Engine\IRenderable.h"
 #include "Engine\GameState.h"
 //#include "Rendering\GameCommand.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 #include "Engine\GameNode.h"
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"

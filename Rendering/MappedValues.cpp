@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "MappedValues.h"
+#include "AntTweakBarTypes.h"
+
 #include "Utility/ILogger.h"
 
 rendering::MappedValues::MappedValues()
@@ -14,7 +16,7 @@ rendering::MappedValues::~MappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 void rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
-	if (realMap.empty() && vec3DMap.empty())
+	if (m_realMap.empty() && m_vec3Map.empty())
 	{
 		WARNING_LOG_RENDERING("The group \"", groupName, "\" does not have any parameters set in the maps");
 		return;
@@ -27,25 +29,25 @@ void rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* gr
 	_snprintf_s(defFloatStr, 256, 255, " step=0.01 precision=2 group='Floats' ");
 	_snprintf_s(defVec3DStr, 256, 255, " group='Vectors' ");
 
-	for (StrToRealMap::iterator realItr = realMap.begin(); realItr != realMap.end(); ++realItr)
+	for (StrToRealMap::iterator realItr = m_realMap.begin(); realItr != m_realMap.end(); ++realItr)
 	{
 		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, (realItr->first).c_str());
 		TwAddVarRW(tweakBar, temp, TW_TYPE_FLOAT, &(realItr->second), defFloatStr);
 	}
-	for (StrToVec3DMap::iterator vec3DItr = vec3DMap.begin(); vec3DItr != vec3DMap.end(); ++vec3DItr)
+	for (StrToVec3DMap::iterator vec3DItr = m_vec3Map.begin(); vec3DItr != m_vec3Map.end(); ++vec3DItr)
 	{
 		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, (vec3DItr->first).c_str());
 		TwAddVarRW(tweakBar, temp, vector3DType, &(vec3DItr->second), defVec3DStr);
 	}
 	const char* tweakBarName = TwGetBarName(tweakBar);
 	char defStr[256];
-	if (!realMap.empty())
+	if (!m_realMap.empty())
 	{
 		_snprintf_s(defStr, 256, 255, " %s/Floats group=%s ", tweakBarName, groupName);
 		DEBUG_LOG_RENDERING("defStr = \"", defStr, "\"");
 		TwDefine(defStr);
 	}
-	if (!vec3DMap.empty())
+	if (!m_vec3Map.empty())
 	{
 		_snprintf_s(defStr, 256, 255, " %s/Vectors group=%s ", tweakBarName, groupName);
 		DEBUG_LOG_RENDERING("defStr = \"", defStr, "\"");

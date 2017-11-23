@@ -2,7 +2,7 @@
 #define __RENDERING_ATTENUATION_H__
 
 #include "Rendering.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 namespace rendering
 {

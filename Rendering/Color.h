@@ -161,7 +161,6 @@ namespace rendering
 	/// <remarks>The color is a simple adapter for the Math library's <code>Vector4D</code> class.</remarks>
 	class Color
 	{
-	private:
 		struct ColorNameEntry
 		{
 			char const* name;
@@ -169,7 +168,6 @@ namespace rendering
 		}; /* end struct ColorNameEntry */
 
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", color_ids::INDIAN_RED},
 		{ "light_coral", color_ids::INDIAN_RED },{ "salmon", color_ids::INDIAN_RED },{ "dark_salmon", color_ids::INDIAN_RED },{ "light_salmon", color_ids::INDIAN_RED },
 		{ "crimson", color_ids::INDIAN_RED },{ "red", color_ids::INDIAN_RED },{ "fire_brick", color_ids::INDIAN_RED },{ "dark_red", color_ids::INDIAN_RED },
@@ -207,7 +205,7 @@ namespace rendering
 		{ "dim_grey", color_ids::INDIAN_RED },{ "light_slate_grey", color_ids::INDIAN_RED },{ "slate_grey", color_ids::INDIAN_RED },{ "black", color_ids::INDIAN_RED } };
 		static constexpr bool Same(const char* x, const char* y)
 		{
-			return (!*x && !*y) ? true : (*x == *y && Same(x + 1, y + 1));
+			return !*x && !*y ? true : *x == *y && Same(x + 1, y + 1);
 		}
 		static constexpr color_ids::ColorId Value(char const *name, ColorNameEntry const *entries) {
 			return Same(entries->name, name) ? entries->colorId : Value(name, entries + 1);

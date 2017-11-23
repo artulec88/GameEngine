@@ -4,10 +4,8 @@
 #include "Rendering.h"
 #include "ParticleAttributeGenerator.h"
 
-#include "Math\RandomGenerator.h"
+#include "Math/RandomGenerator.h"
 #include "Math/AABB.h"
-#include "Math\Ellipsoid.h"
-#include "Math/Plane.h"
 
 namespace rendering
 {

@@ -4,9 +4,6 @@
 #include "Rendering.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar/include/AntTweakBar.h"
-#include "Math/Angle.h"
-#include "Math/Vector.h"
-#include "Math/Matrix.h"
 
 #define TW_TYPE_REAL TW_TYPE_FLOAT // change it to TW_TYPE_DOUBLE if we decide to change math::Real definition to double
 

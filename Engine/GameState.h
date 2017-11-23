@@ -9,7 +9,7 @@
 #include "IStateHandler.h"
 #include "IRangeHandler.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 #include "Rendering\Renderer.h"
 

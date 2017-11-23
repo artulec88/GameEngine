@@ -1,16 +1,18 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
+#include "AntTweakBarTypes.h"
+
 #include "Utility/ILogger.h"
 
-rendering::lighting::BaseLight::BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled /* = false */) :
+rendering::lighting::BaseLight::BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+	int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId, bool isShadowingEnabled /* = false */) :
 	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
-	m_shaderID(shaderID),
-	m_terrainShaderID(terrainShaderID),
-	m_noShadowShaderID(noShadowShaderID),
-	m_noShadowTerrainShaderID(noShadowTerrainShaderID),
+	m_shaderId(shaderId),
+	m_terrainShaderId(terrainShaderId),
+	m_noShadowShaderId(noShadowShaderId),
+	m_noShadowTerrainShaderId(noShadowTerrainShaderId),
 	m_shadowInfo(nullptr),
 	m_isEnabled(true),
 	m_isShadowingEnabled(isShadowingEnabled)

@@ -11,10 +11,10 @@
 ///* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
 rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::string& fileName) :
-	m_programID(glCreateProgram())
+	m_programId(glCreateProgram())
 {
 	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, utility::logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programId != 0, utility::logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
 	std::string shaderText = LoadShaderData(directoryPath, fileName);
 	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
@@ -39,8 +39,8 @@ rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 
 	AddAllAttributes(vertexShaderText);
 
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), utility::logging::CRITICAL, "Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
-	DEBUG_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), utility::logging::CRITICAL, "Error while compiling shader program ", m_programId, " for shader file \"", fileName, "\"");
+	DEBUG_LOG_RENDERING("Shader program ", m_programId, " for shader file \"", fileName, "\" has been successfully compiled.");
 	AddShaderUniforms(shaderText);
 	//ERROR_LOG_RENDERING("Vertex shader text = ", vertexShaderText);
 	//AddShaderUniforms(vertexShaderText);
@@ -70,28 +70,28 @@ rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 
 rendering::ShaderData::~ShaderData()
 {
-	DELOCUST_LOG_RENDERING("Destroying shader data for shader program: ", m_programID, ".");
+	DELOCUST_LOG_RENDERING("Destroying shader data for shader program: ", m_programId, ".");
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
-		glDetachShader(m_programID, *shaderItr);
+		glDetachShader(m_programId, *shaderItr);
 		glDeleteShader(*shaderItr);
 	}
-	if (m_programID != 0)
+	if (m_programId != 0)
 	{
-		glDeleteProgram(m_programID);
+		glDeleteProgram(m_programId);
 	}
 }
 
 rendering::ShaderData::ShaderData(ShaderData&& shaderData) noexcept :
-	m_programID(std::move(shaderData.m_programID)),
+m_programId(std::move(shaderData.m_programId)),
 	m_shaders(std::move(shaderData.m_shaders)),
 	m_uniforms(std::move(shaderData.m_uniforms)),
 	m_rendererUniforms(std::move(shaderData.m_rendererUniforms)),
 	m_uniformNameToLocationMap(std::move(shaderData.m_uniformNameToLocationMap))
 	//m_structUniforms(std::move(shaderData.m_structUniforms))
 {
-	DELOCUST_LOG_RENDERING("ShaderData move constructor called for program: ", m_programID, ". ");
-	shaderData.m_programID = 0;
+	DELOCUST_LOG_RENDERING("ShaderData move constructor called for program: ", m_programId, ". ");
+	shaderData.m_programId = 0;
 	shaderData.m_shaders.clear();
 	shaderData.m_uniforms.clear();
 	shaderData.m_rendererUniforms.clear();
@@ -165,29 +165,29 @@ bool rendering::ShaderData::Compile()
 {
 	bool compileSuccess = true;
 
-	glLinkProgram(m_programID);
+	glLinkProgram(m_programId);
 	int infoLogLength;
-	if (CheckForErrors(m_programID, GL_LINK_STATUS, true, infoLogLength))
+	if (CheckForErrors(m_programId, GL_LINK_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
 		std::vector<char> errorMessage;
 		errorMessage.reserve(infoLogLength + 1);
-		glGetProgramInfoLog(m_programID, infoLogLength, nullptr, &errorMessage[0]);
-		ERROR_LOG_RENDERING("Error linking shader program ", m_programID, ":\n", &errorMessage[0], "\r");
+		glGetProgramInfoLog(m_programId, infoLogLength, nullptr, &errorMessage[0]);
+		ERROR_LOG_RENDERING("Error linking shader program ", m_programId, ":\n", &errorMessage[0], "\r");
 	}
 
-	glValidateProgram(m_programID);
-	if (CheckForErrors(m_programID, GL_VALIDATE_STATUS, true, infoLogLength))
+	glValidateProgram(m_programId);
+	if (CheckForErrors(m_programId, GL_VALIDATE_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
 		std::vector<char> errorMessage;
 		errorMessage.reserve(infoLogLength + 1);
-		glGetProgramInfoLog(m_programID, infoLogLength, nullptr, &errorMessage[0]);
-		ERROR_LOG_RENDERING("Error validating shader program ", m_programID, ":\n", &errorMessage[0], "\r");
+		glGetProgramInfoLog(m_programId, infoLogLength, nullptr, &errorMessage[0]);
+		ERROR_LOG_RENDERING("Error validating shader program ", m_programId, ":\n", &errorMessage[0], "\r");
 	}
 
 	CHECK_CONDITION_RENDERING(compileSuccess, Utility::Logging::EMERGENCY,
-		"Shader program ", m_programID, " compilation error occurred. Investigate the problem.");
+		"Shader program ", m_programId, " compilation error occurred. Investigate the problem.");
 	return compileSuccess;
 }
 
@@ -253,7 +253,7 @@ void rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum typ
 		//return;
 	}
 
-	glAttachShader(m_programID, shader);
+	glAttachShader(m_programId, shader);
 	m_shaders.push_back(shader);
 }
 
@@ -297,7 +297,7 @@ void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 			begin = attributeLine.find(" ");
 			std::string attributeName = attributeLine.substr(begin + 1);
 
-			glBindAttribLocation(m_programID, currentAttribLocation, attributeName.c_str());
+			glBindAttribLocation(m_programId, currentAttribLocation, attributeName.c_str());
 			++currentAttribLocation;
 		}
 		attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD, attributeLocation + std::string(ATTRIBUTE_KEYWORD).length());
@@ -331,13 +331,13 @@ void rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 		const uniforms::UniformType uniformType = uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
 		switch (uniformType)
 		{
-		case uniforms::VEC_2D:
+		case uniforms::VEC_2:
 			AddUniform<uniforms::Vector2DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case uniforms::VEC_3D:
+		case uniforms::VEC_3:
 			AddUniform<uniforms::Vector3DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case uniforms::VEC_4D:
+		case uniforms::VEC_4:
 			AddUniform<uniforms::Vector4DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case uniforms::MATRIX_4x4:
@@ -401,7 +401,7 @@ void rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&...
 
 GLint rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
 {
-	const auto location = glGetUniformLocation(m_programID, uniformName.c_str());
+	const auto location = glGetUniformLocation(m_programId, uniformName.c_str());
 	CHECK_CONDITION_RENDERING(location != uniforms::UniformBase::INVALID_LOCATION, Utility::Logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
 	m_uniformNameToLocationMap[uniformName] = location;
 	return location;
@@ -443,10 +443,10 @@ std::string rendering::ShaderData::FindUniformStructName(const std::string& stru
 
 std::vector<rendering::uniforms::UniformInfo> rendering::ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace, const std::vector<uniforms::UniformStructInfo>& structUniformInfos) const
 {
-	constexpr auto CHARS_TO_IGNORE_COUNT = 4;
-	constexpr std::array<char, CHARS_TO_IGNORE_COUNT> charsToIgnore = { ' ', '\n', '\t', '{' };
+	constexpr auto charsToIgnoreCount = 4;
+	constexpr std::array<char, charsToIgnoreCount> charsToIgnore = { ' ', '\n', '\t', '{' };
 	constexpr char delimChars[] = { '\n', ';' };
-	constexpr auto UNSIGNED_NEG_ONE = static_cast<size_t>(-1);
+	constexpr auto unsignedNegOne = static_cast<size_t>(-1);
 
 	std::vector<uniforms::UniformInfo> result;
 	std::vector<std::string> structLines;
@@ -460,8 +460,8 @@ std::vector<rendering::uniforms::UniformInfo> rendering::ShaderData::FindUniform
 			continue;
 		}
 
-		auto nameBegin = UNSIGNED_NEG_ONE;
-		auto nameEnd = UNSIGNED_NEG_ONE;
+		auto nameBegin = unsignedNegOne;
+		auto nameEnd = unsignedNegOne;
 		for (unsigned int j = 0; j < structLinesItr->length(); ++j)
 		{
 			auto isIgnoreableCharacter = false;
@@ -473,17 +473,17 @@ std::vector<rendering::uniforms::UniformInfo> rendering::ShaderData::FindUniform
 					break;
 				}
 			}
-			if (nameBegin == UNSIGNED_NEG_ONE && isIgnoreableCharacter == false)
+			if (nameBegin == unsignedNegOne && isIgnoreableCharacter == false)
 			{
 				nameBegin = j;
 			}
-			else if (nameBegin != UNSIGNED_NEG_ONE && isIgnoreableCharacter)
+			else if (nameBegin != unsignedNegOne && isIgnoreableCharacter)
 			{
 				nameEnd = j;
 				break;
 			}
 		}
-		if (nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
+		if (nameBegin == unsignedNegOne || nameEnd == unsignedNegOne)
 			continue;
 
 		AddUniformInfos(structUniformInfos, result, structLinesItr->substr(nameEnd + 1), structLinesItr->substr(nameBegin, nameEnd - nameBegin));

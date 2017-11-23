@@ -2,7 +2,6 @@
 #define __RENDERING_TERRAIN_H__
 
 #include "Rendering.h"
-#include "Mesh.h"
 
 #include "Math/Transform.h"
 
@@ -10,9 +9,9 @@
 #define HEIGHTS_SURFACE
 
 #ifdef HEIGHTS_KD_TREE
-#include "Math\KDTree.h"
+//#include "Math\KDTree.h"
 #elif defined HEIGHTS_SURFACE
-#include "Math\Surface.h"
+#include "Math/Surface.h"
 #endif
 
 namespace rendering
@@ -23,7 +22,6 @@ namespace rendering
 	class Terrain
 	{
 		/* ==================== Static variables begin ==================== */
-	private:
 		/// <summary> The size of the single squared-size terrain tile. </summary>
 		static constexpr int SIZE = 400;
 		/// <summary>
@@ -58,20 +56,30 @@ namespace rendering
 		/// <param name="vertexCount"> The number of vertices for the terrain. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		//Terrain(int gridX, int gridZ, const math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
+
 		/// <summary> Terrain mesh destructor. </summary>
-		RENDERING_API ~Terrain(void);
+		RENDERING_API ~Terrain();
+
 		/// <summary> Terrain mesh copy constructor. </summary>
-		Terrain(const Terrain& Terrain) = delete;
+		/// <param name="terrain"> The reference to terrain to copy construct from. </param>
+		Terrain(const Terrain& terrain) = delete;
+
 		/// <summary> Terrain mesh move constructor. </summary>
-		Terrain(Terrain&& Terrain) = delete;
+		/// <param name="terrain"> The r-value reference to terrain to move construct from. </param>
+		Terrain(Terrain&& terrain) = delete;
+
 		/// <summary> Terrain mesh copy assignment operator. </summary>
-		Terrain& operator=(const Terrain& Terrain) = delete;
+		/// <param name="terrain"> The reference to terrain to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned terrain. </returns>
+		Terrain& operator=(const Terrain& terrain) = delete;
+
 		/// <summary> Terrain mesh move assignment operator. </summary>
-		Terrain& operator=(Terrain&& Terrain) = delete;
+		/// <param name="terrain"> The r-value reference to terrain to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned terrain. </returns>
+		Terrain& operator=(Terrain&& terrain) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Finds and returns the height of the terrain at given location <paramref name="xz"/>.
 		/// </summary>
@@ -107,7 +115,6 @@ namespace rendering
 
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		//const Mesh* m_terrainMesh;
 
 		/// <summary> The position of the single terrain tile along the X axis. </summary>

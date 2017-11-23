@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Character.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 #include <map>
 
 namespace rendering

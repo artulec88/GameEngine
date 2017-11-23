@@ -3,7 +3,6 @@
 
 #include "Rendering.h"
 #include "Mesh.h"
-#include "Image.h"
 
 #include "Math/Surface.h"
 

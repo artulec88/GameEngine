@@ -5,9 +5,7 @@
 #include "Camera.h"
 #include "Texture.h"
 
-#include "Utility\Builder.h"
-
-#include <string>
+#include "Utility/Builder.h"
 
 namespace rendering
 {
@@ -25,29 +23,34 @@ namespace rendering
 		RENDERING_API CameraBuilder();
 
 		/// <summary> Camera builder destructor. </summary>
-		RENDERING_API virtual ~CameraBuilder(void);
+		RENDERING_API virtual ~CameraBuilder();
 
 		/// <summary> Camera builder copy constructor. </summary>
+		/// <param name="cameraBuilder"> The reference to camera builder to copy construct from. </param>
 		CameraBuilder(CameraBuilder& cameraBuilder) = delete;
 
 		/// <summary> Camera builder move constructor. </summary>
+		/// <param name="cameraBuilder"> The r-value reference to camera builder to move construct from. </param>
 		CameraBuilder(CameraBuilder&& cameraBuilder) = delete;
 
 		/// <summary> Camera builder copy assignment operator. </summary>
+		/// <param name="cameraBuilder"> The reference to camera builder to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned camera builder. </returns>
 		CameraBuilder& operator=(const CameraBuilder& cameraBuilder) = delete;
 
 		/// <summary> Camera builder move assignment operator. </summary>
+		/// <param name="cameraBuilder"> The r=value reference to camera builder to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned camera builder. </returns>
 		CameraBuilder& operator=(CameraBuilder&& cameraBuilder) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		RENDERING_API virtual Camera Get() override
+		RENDERING_API Camera Get() override
 		{
 			return Camera(m_pos, m_rot, m_projectionMatrix, m_sensitivity);
 		}
 
-		RENDERING_API virtual void Build() override
+		RENDERING_API void Build() override
 		{
 			BuildTransform();
 			BuildProjectionMatrix();
@@ -56,14 +59,14 @@ namespace rendering
 
 		RENDERING_API virtual void SetDefault()
 		{
-			m_pos.x = M_DEFAULT_CAMERA_POS_X;
-			m_pos.y = M_DEFAULT_CAMERA_POS_Y;
-			m_pos.z = M_DEFAULT_CAMERA_POS_Z;
-			m_rot = math::Quaternion(math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z));
-			m_nearPlane = M_DEFAULT_CAMERA_NEAR_PLANE;
-			m_farPlane = M_DEFAULT_CAMERA_FAR_PLANE;
+			m_pos.x = m_defaultCameraPosX;
+			m_pos.y = m_defaultCameraPosY;
+			m_pos.z = m_defaultCameraPosZ;
+			m_rot = math::Quaternion(math::Matrix4D(m_defaultCameraRotationAngleX, m_defaultCameraRotationAngleY, m_defaultCameraRotationAngleZ));
+			m_nearPlane = m_defaultCameraNearPlane;
+			m_farPlane = m_defaultCameraFarPlane;
 			// m_projectionMatrix is built from other member variables so there is no need to set default value to it.
-			m_sensitivity = M_DEFAULT_CAMERA_SENSITIVITY;
+			m_sensitivity = m_defaultCameraSensitivity;
 		}
 
 		RENDERING_API CameraBuilder& SetPos(math::Real posX, math::Real posY, math::Real posZ)
@@ -116,16 +119,15 @@ namespace rendering
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		const math::Real M_DEFAULT_CAMERA_POS_X; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_POS_Y; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_POS_Z; // TODO: Make it a static constexpr in the future.
-		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X; // TODO: Make it a static constexpr in the future.
-		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y; // TODO: Make it a static constexpr in the future.
-		const math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_NEAR_PLANE; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_FAR_PLANE; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_SENSITIVITY; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraPosX; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraPosY; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraPosZ; // TODO: Make it a static constexpr in the future.
+		const math::Angle m_defaultCameraRotationAngleX; // TODO: Make it a static constexpr in the future.
+		const math::Angle m_defaultCameraRotationAngleY; // TODO: Make it a static constexpr in the future.
+		const math::Angle m_defaultCameraRotationAngleZ; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraNearPlane; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraFarPlane; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraSensitivity; // TODO: Make it a static constexpr in the future.
 
 		math::Vector3D m_pos;
 		math::Quaternion m_rot;
@@ -149,7 +151,7 @@ namespace rendering
 		RENDERING_API OrthoCameraBuilder();
 
 		/// <summary> Orthographic projection camera builder destructor. </summary>
-		RENDERING_API virtual ~OrthoCameraBuilder(void);
+		RENDERING_API virtual ~OrthoCameraBuilder();
 
 		/// <summary> Orthographic projection camera builder copy constructor. </summary>
 		/// <param name="orthoCameraBuilder"> The orthographic projection camera builder to copy construct from. </param>
@@ -171,8 +173,7 @@ namespace rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		RENDERING_API virtual void BuildProjectionMatrix() override;
+		RENDERING_API void BuildProjectionMatrix() override;
 
 		RENDERING_API OrthoCameraBuilder& SetLeft(math::Real left) { m_left = left; return *this; }
 		RENDERING_API OrthoCameraBuilder& SetRight(math::Real right) { m_right = right; return *this; }
@@ -182,10 +183,10 @@ namespace rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		math::Real M_DEFAULT_CAMERA_LEFT_PLANE; // TODO: Make it a static constexpr in the future.
-		math::Real M_DEFAULT_CAMERA_RIGHT_PLANE; // TODO: Make it a static constexpr in the future.
-		math::Real M_DEFAULT_CAMERA_BOTTOM_PLANE; // TODO: Make it a static constexpr in the future.
-		math::Real M_DEFAULT_CAMERA_TOP_PLANE; // TODO: Make it a static constexpr in the future.
+		math::Real m_defaultCameraLeftPlane; // TODO: Make it a static constexpr in the future.
+		math::Real m_defaultCameraRightPlane; // TODO: Make it a static constexpr in the future.
+		math::Real m_defaultCameraBottomPlane; // TODO: Make it a static constexpr in the future.
+		math::Real m_defaultCameraTopPlane; // TODO: Make it a static constexpr in the future.
 
 		math::Real m_left, m_right;
 		math::Real m_bottom, m_top;
@@ -200,7 +201,7 @@ namespace rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		RENDERING_API PerspectiveCameraBuilder();
-		RENDERING_API virtual ~PerspectiveCameraBuilder(void);
+		RENDERING_API virtual ~PerspectiveCameraBuilder();
 		PerspectiveCameraBuilder(PerspectiveCameraBuilder& perspectiveCameraBuilder) = delete;
 		PerspectiveCameraBuilder(PerspectiveCameraBuilder&& perspectiveCameraBuilder) = delete;
 		PerspectiveCameraBuilder& operator=(const PerspectiveCameraBuilder& perspectiveCameraBuilder) = delete;
@@ -208,8 +209,7 @@ namespace rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		RENDERING_API virtual void BuildProjectionMatrix() override;
+		RENDERING_API void BuildProjectionMatrix() override;
 
 		RENDERING_API PerspectiveCameraBuilder& SetFieldOfView(const math::Angle& fieldOfView) { m_fov = fieldOfView; return *this; }
 		RENDERING_API PerspectiveCameraBuilder& SetAspectRatio(math::Real aspectRatio) { m_aspectRatio = aspectRatio; return *this; }
@@ -217,8 +217,8 @@ namespace rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const math::Angle M_DEFAULT_CAMERA_FIELD_OF_VIEW; // TODO: Make it a static constexpr in the future.
-		const math::Real M_DEFAULT_CAMERA_ASPECT_RATIO; // TODO: Make it a static constexpr in the future.
+		const math::Angle m_defaultCameraFieldOfView; // TODO: Make it a static constexpr in the future.
+		const math::Real m_defaultCameraAspectRatio; // TODO: Make it a static constexpr in the future.
 
 		math::Angle m_fov;
 		math::Real m_aspectRatio;

@@ -9,9 +9,9 @@
 
 #include "stdafx.h"
 #include <string>
-#include "Math\Math.h"
+#include "Math/Math.h"
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 #define PROFILING_RENDERING_MODULE_ENABLED
 #define ANT_TWEAK_BAR_ENABLED
@@ -68,7 +68,7 @@
 #define GAME_PROPERTIES_TWEAK_BAR
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBarTypes.h"
+//#include "AntTweakBarTypes.h"
 #include "AntTweakBar/include/AntTweakBar.h"
 #else
 #undef OPEN_GL_PROPERTIES_TWEAK_BAR
@@ -108,29 +108,29 @@ namespace rendering
 		};
 	} /* end namespace fog_effect */
 
-	namespace WaterEffect
+	namespace water_effects
 	{
 		enum WaterDistortionType
 		{
 			DISTORTION_X = 0,
 			DISTORTION_Z = 1,
 			DISTORTION_XZ = 2,
-		};
+		}; /* end enum WaterDistortionType */
 
 		enum WaterReflectionEffect
 		{
 			REFLECTION_EFFECT_ENABLED = 0,
 			REFLECTION_EFFECT_DISABLED = 1
-		};
+		}; /* end enum WaterReflectionType */
 
 		enum WaterDepthEffect
 		{
 			DEPTH_EFFECT_ENABLED = 0,
 			DEPTH_EFFECT_DISABLED = 1
-		};
-	} /* end namespace WaterEffect */
+		}; /* end enum WaterDepthEffect */
+	} /* end namespace water_effects */
 
-	namespace Aliasing
+	namespace aliasing
 	{
 		enum AntiAliasingMethod
 		{
@@ -138,12 +138,12 @@ namespace rendering
 			MSAA,
 			FXAA
 		};
-	} /* end namespace Aliasing */
+	} /* end namespace aliasing */
 
 	void DetermineGlVersion();
 	void PrintGlReport();
 
-	RENDERING_API void InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod);
+	RENDERING_API void InitGraphics(int width, int height, aliasing::AntiAliasingMethod antiAliasingMethod);
 	void CheckErrorCode(const char* functionName, const char* comment);
 
 	/// <summary>

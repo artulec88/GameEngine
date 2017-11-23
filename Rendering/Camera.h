@@ -35,12 +35,12 @@ namespace rendering
 		/// </summary>
 		/// <param name="position">The position of the camera in the world.</param>
 		/// <param name="rotation">The rotation of the camera in the world.</param>
-		/// <param name="fov">The field of view of the camera.</param>
+		/// <param name="fieldOfView">The field of view of the camera.</param>
 		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& FoV, math::Real aspectRatio,
+		RENDERING_API Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& fieldOfView, math::Real aspectRatio,
 			math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity);
 
 		/// <summary>

@@ -26,63 +26,62 @@ rendering::TextureFactory::~TextureFactory()
 {
 }
 
-const rendering::Texture* rendering::TextureFactory::CreateTexture(int textureID, const std::string& textureFileName)
+const rendering::Texture* rendering::TextureFactory::CreateTexture(int textureId, const std::string& textureFileName)
 {
-	INFO_LOG_RENDERING("Creating texture \"", textureFileName, "\" for ID ", textureID);
-	std::pair<std::map<int, Texture>::iterator, bool> texturePair =
-		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(m_texturesDirectory + textureFileName)));
+	INFO_LOG_RENDERING("Creating texture \"", textureFileName, "\" for ID ", textureId);
+	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(m_texturesDirectory + textureFileName)));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
-	DEBUG_LOG_RENDERING("Texture \"", textureFileName, "\" has been created for ID ", textureID);
+	DEBUG_LOG_RENDERING("Texture \"", textureFileName, "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
 }
 
-const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory)
+const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textureId, const std::string& cubeTextureDirectory)
 {
-	INFO_LOG_RENDERING("Creating cube texture \"", cubeTextureDirectory, "\" for ID ", textureID);
-	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
-	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
-	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
-	const std::string EXPECTED_POS_Y_FACE_FILENAME = "up";
-	const std::string EXPECTED_NEG_Y_FACE_FILENAME = "down";
-	const std::string EXPECTED_POS_Z_FACE_FILENAME = "front";
-	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
+	INFO_LOG_RENDERING("Creating cube texture \"", cubeTextureDirectory, "\" for ID ", textureId);
+	constexpr char* directoryPathSeparator = "\\"; // for Windows it's "\", but for Unix it's "/"
+	constexpr char* expectedPosXFaceFilename = "right";
+	constexpr char* expectedNegXFaceFilename = "left";
+	constexpr char* expectedPosYFaceFilename = "up";
+	constexpr char* expectedNegYFaceFilename = "down";
+	constexpr char* expectedPosZFaceFilename = "front";
+	constexpr char* expectedNegZFaceFilename = "back";
 
 	utility::FileManager fileManager;
 	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(m_texturesDirectory + cubeTextureDirectory);
-	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegYFaceFileFound = false; std::string cubeMapNegYFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapPosZFaceFileFound = false; std::string cubeMapPosZFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegZFaceFileFound = false; std::string cubeMapNegZFaceFileName = cubeTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	auto cubeMapPosXFaceFileFound = false; auto cubeMapPosXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	auto cubeMapNegXFaceFileFound = false; auto cubeMapNegXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	auto cubeMapPosYFaceFileFound = false; auto cubeMapPosYFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	auto cubeMapNegYFaceFileFound = false; auto cubeMapNegYFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	auto cubeMapPosZFaceFileFound = false; auto cubeMapPosZFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	auto cubeMapNegZFaceFileFound = false; auto cubeMapNegZFaceFileName = cubeTextureDirectory + directoryPathSeparator;
 	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
 	{
-		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_X_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find(expectedPosXFaceFilename) != std::string::npos))
 		{
 			cubeMapPosXFaceFileFound = true;
 			cubeMapPosXFaceFileName += (*filenameItr);
 		}
-		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_X_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find(expectedNegXFaceFilename) != std::string::npos))
 		{
 			cubeMapNegXFaceFileFound = true;
 			cubeMapNegXFaceFileName += (*filenameItr);
 		}
-		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Y_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find(expectedPosYFaceFilename) != std::string::npos))
 		{
 			cubeMapPosYFaceFileFound = true;
 			cubeMapPosYFaceFileName += (*filenameItr);
 		}
-		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Y_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find(expectedNegYFaceFilename) != std::string::npos))
 		{
 			cubeMapNegYFaceFileFound = true;
 			cubeMapNegYFaceFileName += (*filenameItr);
 		}
-		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Z_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find(expectedPosZFaceFilename) != std::string::npos))
 		{
 			cubeMapPosZFaceFileFound = true;
 			cubeMapPosZFaceFileName += (*filenameItr);
 		}
-		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Z_FACE_FILENAME) != std::string::npos))
+		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find(expectedNegZFaceFilename) != std::string::npos))
 		{
 			cubeMapNegZFaceFileFound = true;
 			cubeMapNegZFaceFileName += (*filenameItr);
@@ -95,18 +94,16 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosZFaceFileFound, Utility::Logging::ERR, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegZFaceFileFound, Utility::Logging::ERR, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 
-	std::pair<std::map<int, Texture>::iterator, bool> texturePair =
-		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName)));
+	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName)));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
-	DEBUG_LOG_RENDERING("Cube texture \"", cubeTextureDirectory, "\" has been created for ID ", textureID);
+	DEBUG_LOG_RENDERING("Cube texture \"", cubeTextureDirectory, "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
 }
 
-const rendering::particles::ParticleTexture* rendering::TextureFactory::CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive)
+const rendering::particles::ParticleTexture* rendering::TextureFactory::CreateParticleTexture(int textureId, const std::string& textureFileName, int rowsCount, bool isAdditive)
 {
-	INFO_LOG_RENDERING("Creating particles texture \"", textureFileName, "\" for ID ", textureID);
-	std::pair<std::map<int, particles::ParticleTexture>::iterator, bool> particleTexturePair =
-		m_textureType2ParticleTextureMap.insert(std::make_pair(textureID, particles::ParticleTexture(m_texturesDirectory + textureFileName, rowsCount, isAdditive)));
+	INFO_LOG_RENDERING("Creating particles texture \"", textureFileName, "\" for ID ", textureId);
+	const auto particleTexturePair = m_textureType2ParticleTextureMap.insert(std::make_pair(textureId, particles::ParticleTexture(m_texturesDirectory + textureFileName, rowsCount, isAdditive)));
 	CHECK_CONDITION_RENDERING(particleTexturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
 	return &particleTexturePair.first->second;
 }

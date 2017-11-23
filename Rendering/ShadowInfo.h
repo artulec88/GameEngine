@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "Math/Vector.h"
-#include "Math\Quaternion.h"
+#include "Math/Quaternion.h"
 #include "Math/Matrix.h"
 
 namespace rendering
@@ -14,13 +14,13 @@ namespace rendering
 	struct ShadowCameraTransform
 	{
 		ShadowCameraTransform(const math::Vector3D& position, const math::Quaternion& rotation) :
-			m_pos(position),
-			m_rot(rotation)
+			pos(position),
+			rot(rotation)
 		{
 		}
 
-		math::Vector3D m_pos;
-		math::Quaternion m_rot;
+		math::Vector3D pos;
+		math::Quaternion rot;
 	};
 
 	/// <summary>

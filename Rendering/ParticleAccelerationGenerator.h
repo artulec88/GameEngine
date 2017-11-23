@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "ParticleAttributeGenerator.h"
 
-#include "Math\RandomGenerator.h"
+#include "Math/RandomGenerator.h"
 
 namespace rendering
 {

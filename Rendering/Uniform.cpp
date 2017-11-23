@@ -8,9 +8,9 @@ rendering::uniforms::UniformType rendering::uniforms::ConvertStringToUniformType
 {
 	if (uniformTypeStr == "int") { return uniforms::INT; }
 	if (uniformTypeStr == "float") { return uniforms::REAL; }
-	if (uniformTypeStr == "vec2") { return uniforms::VEC_2D; }
-	if (uniformTypeStr == "vec3") { return uniforms::VEC_3D; }
-	if (uniformTypeStr == "vec4") { return uniforms::VEC_4D; }
+	if (uniformTypeStr == "vec2") { return uniforms::VEC_2; }
+	if (uniformTypeStr == "vec3") { return uniforms::VEC_3; }
+	if (uniformTypeStr == "vec4") { return uniforms::VEC_4; }
 	if (uniformTypeStr == "mat4") { return uniforms::MATRIX_4x4; }
 	if (uniformTypeStr == "sampler2D") { return uniforms::SAMPLER_2D; }
 	if (uniformTypeStr == "samplerCube") { return uniforms::SAMPLER_CUBE; }
@@ -156,7 +156,7 @@ void rendering::uniforms::RealUniform::Update(const Renderer* renderer, const ma
 
 /* ==================== Vector2DUniform class implementation begin ==================== */
 rendering::uniforms::Vector2DUniform::Vector2DUniform(const std::string& name, GLint location) :
-	SimpleUniform(name, VEC_2D, location)
+	SimpleUniform(name, VEC_2, location)
 {
 }
 
@@ -174,7 +174,7 @@ void rendering::uniforms::Vector2DUniform::Update(const Renderer* renderer, cons
 
 /* ==================== Vector3DUniform class implementation begin ==================== */
 rendering::uniforms::Vector3DUniform::Vector3DUniform(const std::string& name, GLint location) :
-	SimpleUniform(name, VEC_3D, location)
+	SimpleUniform(name, VEC_3, location)
 {
 }
 
@@ -205,7 +205,7 @@ void rendering::uniforms::Vector3DUniform::Update(const Renderer* renderer, cons
 
 /* ==================== Vector4DUniform class implementation begin ==================== */
 rendering::uniforms::Vector4DUniform::Vector4DUniform(const std::string& name, GLint location) :
-	SimpleUniform(name, VEC_4D, location)
+	SimpleUniform(name, VEC_4, location)
 {
 }
 

@@ -58,7 +58,7 @@ rendering::particles::Particle::Particle(const Particle& particle) :
 	STOP_PROFILING_RENDERING("3");
 }
 
-rendering::particles::Particle::Particle(Particle&& particle) :
+rendering::particles::Particle::Particle(Particle&& particle) noexcept :
 	m_position(std::move(particle.m_position)),
 	m_velocity(std::move(particle.m_velocity)),
 	m_gravityEffectFactor(std::move(particle.m_gravityEffectFactor)),
@@ -88,7 +88,7 @@ rendering::particles::Particle& rendering::particles::Particle::operator=(const 
 	return *this;
 }
 
-rendering::particles::Particle& rendering::particles::Particle::operator=(Particle&& particle)
+rendering::particles::Particle& rendering::particles::Particle::operator=(Particle&& particle) noexcept
 {
 	START_PROFILING_RENDERING(false, "2");
 	m_position = std::move(particle.m_position);

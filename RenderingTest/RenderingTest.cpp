@@ -1,5 +1,6 @@
 #include "Def.h"
 
+#include "Rendering/AntTweakBarTypes.h"
 #include "Rendering/CameraBuilder.h"
 #include "Rendering/LightBuilder.h"
 #include "Rendering/ShaderFactory.h"
@@ -9,8 +10,10 @@
 #include "Rendering/FontFactory.h"
 #include "Rendering/Mesh.h"
 #include "Rendering/MeshIDs.h"
+#include "Rendering/TextureIDs.h"
 #include "Rendering/Material.h"
 #include "Rendering/Terrain.h"
+#include "Rendering/Image.h"
 #include "Rendering/stb_image.h"
 
 #include "Math/Transform.h"
@@ -44,10 +47,10 @@ const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\
 const string FONTS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\";
 constexpr int WINDOW_WIDTH = 1600;
 constexpr int WINDOW_HEIGHT = 900;
-const math::random::RandomGenerator& g_randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
+const random::RandomGenerator& g_randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
-std::unique_ptr<Renderer> renderer = nullptr;
+unique_ptr<Renderer> renderer = nullptr;
 
 bool cameraRotationEnabled = false;
 Camera camera;
@@ -299,7 +302,7 @@ void ErrorCallback(int errorCode, const char* description)
 	exit(EXIT_FAILURE);
 }
 
-void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_RENDERING_TEST("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
@@ -307,7 +310,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 	const int antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
-	case rendering::Aliasing::NONE:
+	case rendering::aliasing::NONE:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -315,7 +318,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("No anti-aliasing algorithm chosen");
 		break;
-	case rendering::Aliasing::FXAA:
+	case rendering::aliasing::FXAA:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -323,7 +326,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("FXAA anti-aliasing algorithm chosen");
 		break;
-	case rendering::Aliasing::MSAA:
+	case rendering::aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG_RENDERING_TEST(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
@@ -406,7 +409,7 @@ void SetCallbacks()
 	glfwSetScrollCallback(window, &ScrollEventCallback);
 }
 
-void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
@@ -495,7 +498,7 @@ void ParticlesSystemBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 
 	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
-		SetTextureID(texture_ids::INVALID).SetShaderID(shader_ids::PARTICLES_COLORS);
+		SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
@@ -645,7 +648,7 @@ void CreateScene()
 	//}
 
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).SetMaxCount(10).SetShaderID(shader_ids::PARTICLES_COLORS);
+	particlesSystemBuilder.SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).SetMaxCount(10).SetShaderId(shader_ids::PARTICLES_COLORS);
 	//particlesSystemBuilder.
 	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
@@ -694,7 +697,7 @@ void RenderScene()
 
 	RenderParticles();
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::Aliasing::FXAA) ?
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA) ?
 		rendering::shader_ids::FILTER_FXAA :
 		rendering::shader_ids::FILTER_NULL);
 }
@@ -707,7 +710,7 @@ void Run()
 
 	CreateScene();
 
-	rendering::controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(text::FontIDs::CANDARA), 1.25f, NULL,
+	rendering::controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(text::font_ids::CANDARA), 1.25f, NULL,
 		ZERO_VECTOR_2D, math::Angle(45.0f), math::Vector2D(1.0f, 1.0f), 0.25f, Color(color_ids::RED),
 		Color(color_ids::GREEN), math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
@@ -823,7 +826,7 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", rendering::Aliasing::NONE);
+	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", rendering::aliasing::NONE);
 	Run();
 
 	//MeshTest();

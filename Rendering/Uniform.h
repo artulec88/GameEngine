@@ -22,9 +22,9 @@ namespace rendering
 		/// </summary> 
 		enum UniformType
 		{
-			VEC_2D = 0,
-			VEC_3D,
-			VEC_4D,
+			VEC_2 = 0,
+			VEC_3,
+			VEC_4,
 			MATRIX_4x4,
 			INT,
 			REAL,
@@ -409,16 +409,16 @@ namespace rendering
 
 		constexpr bool IsPrimitiveUniformType(UniformType uniformType)
 		{
-			return ((uniformType == VEC_2D) || (uniformType == VEC_3D) || (uniformType == VEC_4D) || (uniformType == MATRIX_4x4) ||
+			return ((uniformType == VEC_2) || (uniformType == VEC_3) || (uniformType == VEC_4) || (uniformType == MATRIX_4x4) ||
 				(uniformType == INT) || (uniformType == REAL) || (uniformType == SAMPLER_2D) || (uniformType == SAMPLER_CUBE)) ? true : false;
 		}
 
 		UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
 		constexpr char* ConvertUniformTypeToString(UniformType uniformType)
 		{
-			return (uniformType == VEC_2D) ? "vec2" :
-				((uniformType == VEC_3D) ? "vec3" :
-					((uniformType == VEC_4D) ? "vec4" :
+			return (uniformType == VEC_2) ? "vec2" :
+				((uniformType == VEC_3) ? "vec3" :
+					((uniformType == VEC_4) ? "vec4" :
 						((uniformType == MATRIX_4x4) ? "mat4" :
 							((uniformType == INT) ? "int" :
 								((uniformType == REAL) ? "float" :

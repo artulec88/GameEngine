@@ -68,11 +68,11 @@ namespace rendering
 			void Reset() { m_countAlive = 0; }
 
 			/// <summary> Returns the maximum number of particles that the container is able to maintain. </summary>
-			/// <returns> The maximum number of particles that the container is able to maintain. </summary>
+			/// <returns> The maximum number of particles that the container is able to maintain. </returns>
 			size_t GetMaxCount() const { return m_maxCount; }
 
 			/// <summary> Returns the number of alive particles currently maintained by the container. </summary>
-			/// <returns> The number of alive particles currently maintained by the container. </summary>
+			/// <returns> The number of alive particles currently maintained by the container. </returns>
 			size_t GetAliveCount() const { return m_countAlive; }
 
 			bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
@@ -114,7 +114,7 @@ namespace rendering
 			void SetScale(size_t i, math::Real newScale) const { m_scales[i] = newScale; }
 			void SetTextureOffset(size_t i, const math::Vector2D& newTextureOffset) const { m_textureOffsets[i] = newTextureOffset; }
 			void SetColor(size_t i, const Color& newColor) const { m_colors[i] = newColor; }
-			void SetID(size_t i, int ID) const { m_IDs[i] = ID; }
+			void SetId(size_t i, int id) const { m_ids[i] = id; }
 			void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) const { m_positions[i] += positionIncrease; }
 			void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) const { m_velocities[i] += velocityIncrease; }
 			void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) const { m_accelerations[i] += accelerationIncrease; }
@@ -166,7 +166,7 @@ namespace rendering
 			std::unique_ptr<Color[]> m_colors;
 			std::unique_ptr<math::Real[]> m_masses;
 			std::unique_ptr<bool[]> m_aliveFlags;
-			std::unique_ptr<int[]> m_IDs;
+			std::unique_ptr<int[]> m_ids;
 
 			size_t m_maxCount;
 			size_t m_countAlive;

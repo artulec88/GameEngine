@@ -6,7 +6,7 @@
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 
 namespace engine
 {

@@ -62,11 +62,11 @@ namespace rendering
 			/* ==================== Non-static member variables begin ==================== */
 			/// <summary> Returns the ASCII code of the underlying character. </summary>
 			/// <returns> The ASCII code of the underlying character. </returns>
-			constexpr int GetAsciiCode() const { return m_asciiCode; };
+			constexpr int GetAsciiCode() const { return m_asciiCode; }
 
 			/// <summary> Returns the texture coordinates of the character. </summary>
 			/// <returns> The texture coordinates of the character. </returns>
-			constexpr const math::Vector2D& GetTextureCoords() const { return m_textureCoords; };
+			constexpr const math::Vector2D& GetTextureCoords() const { return m_textureCoords; }
 
 			constexpr const math::Vector2D& GetMaxTextureCoords() const { return m_maxTextureCoords; }
 			constexpr const math::Vector2D& GetOffset() const { return m_offset; }

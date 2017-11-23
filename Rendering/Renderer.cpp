@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "MeshIDs.h"
 #include "GuiImageControl.h"
+#include "AntTweakBarTypes.h"
 
 #include "Math/FloatingPoint.h"
 
@@ -11,14 +12,14 @@
 #include "Utility/ILogger.h"
 //#include "Utility/FileNotFoundException.h"
 
-#include <iomanip>
+//#include <iomanip>
 
 // TODO: BIAS_MATRIX could and should be a constexpr!
 /* static */ const math::Matrix4D rendering::Renderer::BIAS_MATRIX(math::Matrix4D(0.5f /* scale matrix */) * math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 
 rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, const std::string& texturesDirectory, const std::string& shadersDirectory,
-	const std::string& fontsDirectory, Aliasing::AntiAliasingMethod antiAliasingMethod) :
+	const std::string& fontsDirectory, aliasing::AntiAliasingMethod antiAliasingMethod) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
 	m_antiAliasingMethod(antiAliasingMethod),
@@ -89,7 +90,7 @@ rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_waterReflectionClippingPlane(GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
-	m_waterDUDVTexture(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")), // TODO: This texture will not be available from the textures factory.
+	m_waterDuDvTexture(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")), // TODO: This texture will not be available from the textures factory.
 	m_waterNormalMap(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")), // TODO: This texture will not be available from the textures factory.
 	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ nullptr, nullptr }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), GL_REPEAT, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
 	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), nullptr, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
@@ -290,7 +291,7 @@ void rendering::Renderer::InitWaterNodesRendering()
 	m_mappedValues.SetTexture("waterReflectionTexture", &m_waterReflectionTexture);
 	m_mappedValues.SetMultitexture("waterRefractionTexture", &m_waterRefractionTexture, 0);
 	m_mappedValues.SetMultitexture("waterDepthMap", &m_waterRefractionTexture, 1);
-	m_mappedValues.SetTexture("waterDUDVMap", &m_waterDUDVTexture);
+	m_mappedValues.SetTexture("waterDUDVMap", &m_waterDuDvTexture);
 	m_mappedValues.SetTexture("waterNormalMap", &m_waterNormalMap);
 	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
 	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
@@ -510,8 +511,8 @@ bool rendering::Renderer::InitShadowMap()
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
 		const ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
-		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
-		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
+		m_altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
+		m_altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
 
 		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
@@ -712,12 +713,12 @@ void rendering::Renderer::AddTriangle(const math::Vector3D& v0, const math::Vect
 	WARNING_LOG_RENDERING("Debug triangle rendering is not yet supported by the engine");
 }
 
-void rendering::Renderer::AddAABB(const math::Aabb& aabb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void rendering::Renderer::AddAabb(const math::Aabb& aabb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug AABB rendering is not yet supported by the engine");
 }
 
-void rendering::Renderer::AddOBB(const math::Obb& obb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void rendering::Renderer::AddObb(const math::Obb& obb, const Color& color, math::Real lineWidth /* = REAL_ONE */, math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug OBB rendering is not yet supported by the engine");
 }

@@ -7,7 +7,7 @@
 #include "IUpdateable.h"
 #include "Rendering\ParticlesSystem.h"
 
-//#include "Math\Math.h"
+//#include "Math/Math.h"
 //#include "Math/Angle.h"
 //#include "Math/Vector.h"
 

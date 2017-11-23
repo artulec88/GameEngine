@@ -6,7 +6,7 @@
 #include "IUpdateable.h"
 #include "IInputableMouse.h"
 
-#include "Math\Math.h"
+#include "Math/Math.h"
 #include "Math/Angle.h"
 
 #include "Physics\PhysicsObject.h"

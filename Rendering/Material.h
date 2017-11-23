@@ -80,7 +80,7 @@ namespace rendering
 
 		RENDERING_API void SetAdditionalTexture(const Texture* texture, const std::string& textureName);
 #ifdef ANT_TWEAK_BAR_ENABLED
-		RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
+		RENDERING_API void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif
 
 		/// <summary> Gives information whether or not the material uses multiple textures. </summary>

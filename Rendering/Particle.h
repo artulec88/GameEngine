@@ -46,27 +46,32 @@ namespace rendering
 			/// <summary>
 			/// Particle destructor.
 			/// </summary>
-			RENDERING_API ~Particle(void);
+			RENDERING_API ~Particle();
 
 			/// <summary>
 			/// Particle copy constructor.
 			/// </summary>
+			/// <param name="particle"> The reference to particle to copy construct from. </param>
 			RENDERING_API Particle(const Particle& particle);
 
 			/// <summary>
 			/// Particle move constructor.
 			/// </summary>
-			RENDERING_API Particle(Particle&& particle);
+			/// <param name="particle"> The r-value reference to particle to move construct from. </param>
+			RENDERING_API Particle(Particle&& particle) noexcept;
 
 			/// <summary> Particle copy assignment operator. </summary>
+			/// <param name="particle"> The reference to particle to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned particle. </returns>
 			RENDERING_API Particle& operator=(const Particle& particle);
 
 			/// <summary> Particle move assignment operator. </summary>
-			RENDERING_API Particle& operator=(Particle&& particle);
+			/// <param name="particle"> The r-value reference to particle to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned particle. </returns>
+			RENDERING_API Particle& operator=(Particle&& particle) noexcept;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			RENDERING_API const math::Vector3D& GetPosition() const { return m_position; }
 			RENDERING_API const math::Angle& GetRotation() const { return m_rotation; }
 			RENDERING_API math::Real GetScale() const { return m_scale; }
@@ -92,10 +97,12 @@ namespace rendering
 			/// <summary>
 			/// Updates the particle's state.
 			/// </summary>
-			/// <returns> <code>true</code> if the particle is still alive and <code>false</code> if particle's lifespan exceeded its lifespan limit (particle is dead).
+			/// <returns>
+			/// <code>true</code> if the particle is still alive and <code>false</code> if particle's lifespan exceeded its lifespan limit (particle is dead).
+			/// </returns>
 			RENDERING_API bool Update(math::Real deltaTime);
 		private:
-			inline void SetTextureOffset(math::Vector2D& textureOffset, int index, int textureAtlasRowsCount) const
+			void SetTextureOffset(math::Vector2D& textureOffset, int index, int textureAtlasRowsCount) const
 			{
 				int column = index % textureAtlasRowsCount;
 				int row = index / textureAtlasRowsCount;
@@ -105,26 +112,25 @@ namespace rendering
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
-			/// </summary> The vector representing the position of the particle. </summary>
+			/// <summary> The vector representing the position of the particle. </summary>
 			math::Vector3D m_position;
 
-			/// </summary> Represents current velocity of the particle. </summary>
+			/// <summary> Represents current velocity of the particle. </summary>
 			math::Vector3D m_velocity;
 
-			/// </summary>
+			/// <summary>
 			/// The value represents how much the particle is affected by gravity.
 			/// The value <code>1.0</code> means the particle is affected normally by gravity,
 			/// whereas the value <code>0.0</code> would mean the particle is not affected by gravity at all.
 			/// </summary>
 			math::Real m_gravityEffectFactor;
 
-			/// </summary>
+			/// <summary>
 			/// Information about how long the particle should stay alive for.
 			/// </summary>
 			math::Real m_lifeSpanLimit;
 
-			/// </summary>
+			/// <summary>
 			/// Information about how long the particle is alive for.
 			/// </summary>
 			math::Real m_lifeSpan;

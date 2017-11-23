@@ -35,7 +35,7 @@ rendering::BaseCamera::BaseCamera(const math::Angle& fieldOfView, math::Real asp
 {
 }
 
-rendering::BaseCamera::~BaseCamera(void)
+rendering::BaseCamera::~BaseCamera()
 {
 }
 

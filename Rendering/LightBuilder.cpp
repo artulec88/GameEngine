@@ -13,8 +13,8 @@ rendering::lighting::DirectionalLightBuilder::DirectionalLightBuilder() :
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoFlipFacesEnabled", true),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoShadowMapSizeAsPowerOf2", 9), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoShadowSoftness", 1.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoLightBleedingReductionFactor", 0.2f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoMinVariance", 0.002f)),
-	M_DEFAULT_HALF_SHADOW_AREA(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightHalfShadowArea", 40.0f)),
-	m_halfShadowArea(M_DEFAULT_HALF_SHADOW_AREA)
+	m_defaultHalfShadowArea(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightHalfShadowArea", 40.0f)),
+	m_halfShadowArea(m_defaultHalfShadowArea)
 {
 }
 
@@ -72,10 +72,10 @@ rendering::lighting::DirectionalLightBuilder::~DirectionalLightBuilder()
 
 void rendering::lighting::DirectionalLightBuilder::BuildShaders()
 {
-	m_shaderID = shader_ids::DIRECTIONAL_LIGHT;
-	m_terrainShaderID = shader_ids::DIRECTIONAL_LIGHT_TERRAIN;
-	m_noShadowShaderID = shader_ids::DIRECTIONAL_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = shader_ids::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderId = shader_ids::DIRECTIONAL_LIGHT;
+	m_terrainShaderId = shader_ids::DIRECTIONAL_LIGHT_TERRAIN;
+	m_noShadowShaderId = shader_ids::DIRECTIONAL_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderId = shader_ids::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_TERRAIN));
@@ -96,7 +96,7 @@ void rendering::lighting::DirectionalLightBuilder::BuildShaders()
 void rendering::lighting::DirectionalLightBuilder::SetDefault()
 {
 	LightBuilder<DirectionalLight>::SetDefault();
-	m_halfShadowArea = M_DEFAULT_HALF_SHADOW_AREA;
+	m_halfShadowArea = m_defaultHalfShadowArea;
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -133,9 +133,9 @@ rendering::lighting::PointLightBuilder::PointLightBuilder() :
 		Color(GET_CONFIG_VALUE_RENDERING("defaultPointLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultPointLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorAlpha", 1.0f)),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightIntensity", 1.0f), false, 0, REAL_ONE, REAL_ZERO, REAL_ZERO),
-	M_DEFAULT_POINT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationConstant", REAL_ZERO),
+	m_defaultPointLightAttenuation(GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationConstant", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationExponent", REAL_ZERO)),
-	m_attenuation(M_DEFAULT_POINT_LIGHT_ATTENUATION)
+	m_attenuation(m_defaultPointLightAttenuation)
 {
 }
 
@@ -177,10 +177,10 @@ rendering::lighting::PointLightBuilder::PointLightBuilder() :
 
 void rendering::lighting::PointLightBuilder::BuildShaders()
 {
-	m_shaderID = shader_ids::POINT_LIGHT;
-	m_terrainShaderID = shader_ids::POINT_LIGHT_TERRAIN;
-	m_noShadowShaderID = shader_ids::POINT_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = shader_ids::POINT_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderId = shader_ids::POINT_LIGHT;
+	m_terrainShaderId = shader_ids::POINT_LIGHT_TERRAIN;
+	m_noShadowShaderId = shader_ids::POINT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderId = shader_ids::POINT_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT_TERRAIN));
@@ -202,7 +202,7 @@ void rendering::lighting::PointLightBuilder::BuildShaders()
 void rendering::lighting::PointLightBuilder::SetDefault()
 {
 	LightBuilder<PointLight>::SetDefault();
-	m_attenuation = M_DEFAULT_POINT_LIGHT_ATTENUATION;
+	m_attenuation = m_defaultPointLightAttenuation;
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -226,12 +226,12 @@ rendering::lighting::SpotLightBuilder::SpotLightBuilder() :
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoFlipFacesEnabled", false),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowMapSizeAsPowerOf2", 10), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowSoftness", REAL_ONE),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoLightBleedingReductionFactor", 0.2f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightMinVariance", 0.00002f)),
-	M_DEFAULT_SPOT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationExponent", 0.05f)),
-	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightViewAngle", 120.0f), math::units::DEGREE),
-	M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoProjectionNearPlane", 0.1f)),
-	m_attenuation(M_DEFAULT_SPOT_LIGHT_ATTENUATION),
-	m_viewAngle(M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE),
-	m_shadowInfoProjectionNearPlane(M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE)
+	m_defaultSpotLightAttenuation(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationExponent", 0.05f)),
+	m_defaultSpotLightViewAngle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightViewAngle", 120.0f), math::units::DEGREE),
+	m_defaultSpotLightShadowInfoProjectionNearPlane(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoProjectionNearPlane", 0.1f)),
+	m_attenuation(m_defaultSpotLightAttenuation),
+	m_viewAngle(m_defaultSpotLightViewAngle),
+	m_shadowInfoProjectionNearPlane(m_defaultSpotLightShadowInfoProjectionNearPlane)
 {
 }
 
@@ -280,10 +280,10 @@ rendering::lighting::SpotLightBuilder::SpotLightBuilder() :
 
 void rendering::lighting::SpotLightBuilder::BuildShaders()
 {
-	m_shaderID = shader_ids::SPOT_LIGHT;
-	m_terrainShaderID = shader_ids::SPOT_LIGHT_TERRAIN;
-	m_noShadowShaderID = shader_ids::SPOT_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderId = shader_ids::SPOT_LIGHT;
+	m_terrainShaderId = shader_ids::SPOT_LIGHT_TERRAIN;
+	m_noShadowShaderId = shader_ids::SPOT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderId = shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN));
@@ -305,9 +305,9 @@ void rendering::lighting::SpotLightBuilder::BuildShaders()
 void rendering::lighting::SpotLightBuilder::SetDefault()
 {
 	LightBuilder<SpotLight>::SetDefault();
-	m_attenuation = M_DEFAULT_SPOT_LIGHT_ATTENUATION;
-	m_viewAngle = M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
-	m_shadowInfoProjectionNearPlane = M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE;
+	m_attenuation = m_defaultSpotLightAttenuation;
+	m_viewAngle = m_defaultSpotLightViewAngle;
+	m_shadowInfoProjectionNearPlane = m_defaultSpotLightShadowInfoProjectionNearPlane;
 }
 
 

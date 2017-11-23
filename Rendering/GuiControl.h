@@ -2,7 +2,6 @@
 #define __RENDERING_GUI_CONTROL_H__
 
 #include "Rendering.h"
-#include "Mesh.h"
 #include "Shader.h"
 
 #include "Math/AABR.h"

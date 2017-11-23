@@ -6,7 +6,6 @@
 #include "Math/FloatingPoint.h"
 #endif
 
-#include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 
 rendering::Camera::Camera() :
@@ -21,8 +20,8 @@ rendering::Camera::Camera(const math::Vector3D& position, const math::Quaternion
 {
 }
 
-rendering::Camera::Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity) :
-	BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+rendering::Camera::Camera(const math::Vector3D& position, const math::Quaternion& rotation, const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity) :
+	BaseCamera(fieldOfView, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_transform(position, rotation, REAL_ONE)
 {
 }

@@ -22,8 +22,8 @@ namespace rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
+			RENDERING_API SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+				int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId,
 				const Attenuation& attenuation, math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled,
 				int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness, math::Real shadowInfoLightBleedingReductionFactor,
 				math::Real shadowInfoMinVariance, const math::Angle& viewAngle);

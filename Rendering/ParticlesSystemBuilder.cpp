@@ -8,20 +8,23 @@
 #include "ParticleScaleGenerator.h"
 #include "ParticleLifeSpanGenerator.h"
 #include "ParticlesUpdater.h"
+#include "TextureIDs.h"
+#include "ShaderIDs.h"
 
 #include "Utility/IConfig.h"
 
 rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
-	utility::Builder<ParticlesSystem>(),
-	M_DEFAULT_MAX_PARTICLES_COUNT(GET_CONFIG_VALUE_RENDERING("defaultMaxParticlesCount", 10000)),
-	M_DEFAULT_ATTRIBUTES_MASK(GET_CONFIG_VALUE_RENDERING("defaultParticlesAttributesMask",
+	Builder<ParticlesSystem>(),
+	m_defaultMaxParticlesCount(GET_CONFIG_VALUE_RENDERING("defaultMaxParticlesCount", 10000)),
+	m_defaultAttributesMask(GET_CONFIG_VALUE_RENDERING("defaultParticlesAttributesMask",
 		static_cast<int>(attributes::POSITION | attributes::LIFE_SPAN | attributes::COLOR | attributes::SCALE))),
-	m_maxCount(M_DEFAULT_MAX_PARTICLES_COUNT),
-	m_attributesMask(M_DEFAULT_ATTRIBUTES_MASK)
+	m_maxCount(m_defaultMaxParticlesCount),
+	m_attributesMask(m_defaultAttributesMask),
+	m_textureId(texture_ids::INVALID),
+	m_shaderId(shader_ids::INVALID)
 	//m_particleTexture(NULL),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
-	//m_textureID(TextureIDs::PARTICLE_WATER),
 	//m_attributesMask(0),
 	//m_particleEmittersCount(1),
 	//m_particleUpdatersCount(1)

@@ -5,22 +5,22 @@
 
 /* ==================== CameraBuilder implementation begin ==================== */
 rendering::CameraBuilder::CameraBuilder() :
-	utility::Builder<Camera>(),
-	M_DEFAULT_CAMERA_POS_X(GET_CONFIG_VALUE_RENDERING("defaultCameraPosX", 0.0f)),
-	M_DEFAULT_CAMERA_POS_Y(GET_CONFIG_VALUE_RENDERING("defaultCameraPosY", 0.0f)),
-	M_DEFAULT_CAMERA_POS_Z(GET_CONFIG_VALUE_RENDERING("defaultCameraPosZ", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleX", -45.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleY", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleZ", 0.0f)),
-	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f)),
-	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f)),
-	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_RENDERING("defaultCameraSensitivity", 0.005f)),
-	m_pos(M_DEFAULT_CAMERA_POS_X, M_DEFAULT_CAMERA_POS_Y, M_DEFAULT_CAMERA_POS_Z),
-	m_rot(math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z)),
-	m_nearPlane(M_DEFAULT_CAMERA_NEAR_PLANE),
-	m_farPlane(M_DEFAULT_CAMERA_FAR_PLANE),
+	Builder<Camera>(),
+	m_defaultCameraPosX(GET_CONFIG_VALUE_RENDERING("defaultCameraPosX", 0.0f)),
+	m_defaultCameraPosY(GET_CONFIG_VALUE_RENDERING("defaultCameraPosY", 0.0f)),
+	m_defaultCameraPosZ(GET_CONFIG_VALUE_RENDERING("defaultCameraPosZ", 0.0f)),
+	m_defaultCameraRotationAngleX(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleX", -45.0f)),
+	m_defaultCameraRotationAngleY(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleY", 0.0f)),
+	m_defaultCameraRotationAngleZ(GET_CONFIG_VALUE_RENDERING("defaultCameraAngleZ", 0.0f)),
+	m_defaultCameraNearPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f)),
+	m_defaultCameraFarPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f)),
+	m_defaultCameraSensitivity(GET_CONFIG_VALUE_RENDERING("defaultCameraSensitivity", 0.005f)),
+	m_pos(m_defaultCameraPosX, m_defaultCameraPosY, m_defaultCameraPosZ),
+	m_rot(math::Matrix4D(m_defaultCameraRotationAngleX, m_defaultCameraRotationAngleY, m_defaultCameraRotationAngleZ)),
+	m_nearPlane(m_defaultCameraNearPlane),
+	m_farPlane(m_defaultCameraFarPlane),
 	m_projectionMatrix(),
-	m_sensitivity(M_DEFAULT_CAMERA_SENSITIVITY)
+	m_sensitivity(m_defaultCameraSensitivity)
 {
 }
 
@@ -74,18 +74,18 @@ rendering::CameraBuilder::~CameraBuilder()
 /* ==================== OrthoCameraBuilder implementation begin ==================== */
 rendering::OrthoCameraBuilder::OrthoCameraBuilder() :
 	CameraBuilder(),
-	M_DEFAULT_CAMERA_LEFT_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraLeftPlane", -100.0f)),
-	M_DEFAULT_CAMERA_RIGHT_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraRightPlane", 100.0f)),
-	M_DEFAULT_CAMERA_BOTTOM_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraBottomPlane", -100.0f)),
-	M_DEFAULT_CAMERA_TOP_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraTopPlane", 100.0f)),
-	m_left(M_DEFAULT_CAMERA_LEFT_PLANE),
-	m_right(M_DEFAULT_CAMERA_RIGHT_PLANE),
-	m_bottom(M_DEFAULT_CAMERA_BOTTOM_PLANE),
-	m_top(M_DEFAULT_CAMERA_TOP_PLANE)
+	m_defaultCameraLeftPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraLeftPlane", -100.0f)),
+	m_defaultCameraRightPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraRightPlane", 100.0f)),
+	m_defaultCameraBottomPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraBottomPlane", -100.0f)),
+	m_defaultCameraTopPlane(GET_CONFIG_VALUE_RENDERING("defaultCameraTopPlane", 100.0f)),
+	m_left(m_defaultCameraLeftPlane),
+	m_right(m_defaultCameraRightPlane),
+	m_bottom(m_defaultCameraBottomPlane),
+	m_top(m_defaultCameraTopPlane)
 {
 }
 
-rendering::OrthoCameraBuilder::~OrthoCameraBuilder(void)
+rendering::OrthoCameraBuilder::~OrthoCameraBuilder()
 {
 }
 
@@ -98,14 +98,14 @@ void rendering::OrthoCameraBuilder::BuildProjectionMatrix()
 /* ==================== PerspectiveCameraBuilder implementation begin ==================== */
 rendering::PerspectiveCameraBuilder::PerspectiveCameraBuilder() :
 	CameraBuilder(),
-	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)),
-	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<math::Real>(800) / 600)),
-	m_fov(M_DEFAULT_CAMERA_FIELD_OF_VIEW),
-	m_aspectRatio(M_DEFAULT_CAMERA_ASPECT_RATIO)
+	m_defaultCameraFieldOfView(GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)),
+	m_defaultCameraAspectRatio(GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<math::Real>(800) / 600)),
+	m_fov(m_defaultCameraFieldOfView),
+	m_aspectRatio(m_defaultCameraAspectRatio)
 {
 }
 
-rendering::PerspectiveCameraBuilder::~PerspectiveCameraBuilder(void)
+rendering::PerspectiveCameraBuilder::~PerspectiveCameraBuilder()
 {
 }
 

@@ -1,15 +1,13 @@
 #include "StdAfx.h"
 #include "DirectionalLight.h"
-//#include "CoreEngine.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
-#include "Utility/IConfig.h"
 
-rendering::lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
+rendering::lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+	int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId,
 	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness,
 	math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea) :
-	BaseLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, (shadowInfoShadowMapSizeAsPowerOf2 != 0)),
+	BaseLight(transform, color, intensity, shaderId, terrainShaderId, noShadowShaderId, noShadowTerrainShaderId, shadowInfoShadowMapSizeAsPowerOf2 != 0),
 	m_halfShadowArea(halfShadowArea)
 {
 	if (IsShadowingEnabled())
@@ -39,16 +37,16 @@ rendering::ShadowCameraTransform rendering::lighting::DirectionalLight::CalcShad
 	 */
 	/* ==================== Fixing the shimmering effect begin ==================== */
 	const auto shadowMapSize = static_cast<math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
-	const auto worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
+	const auto worldSpaceShadowMapTexelSize = m_halfShadowArea * 2.0f / shadowMapSize;
 	// Now we transform from the world space into the light space
-	auto lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
+	auto lightSpaceCameraPos(shadowCameraTransform.pos.Rotate(shadowCameraTransform.rot.Conjugate()));
 
 	// Now we need to snap the lightSpaceCameraPos to shadow map texel size increments
 	lightSpaceCameraPos.x = worldSpaceShadowMapTexelSize * math::Floor(lightSpaceCameraPos.x / worldSpaceShadowMapTexelSize);
 	lightSpaceCameraPos.y = worldSpaceShadowMapTexelSize * math::Floor(lightSpaceCameraPos.y / worldSpaceShadowMapTexelSize);
 
 	// Now we transform back from the light space into the world space
-	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);
+	shadowCameraTransform.pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.rot);
 	/* ==================== Fixing the shimmering effect end ==================== */
 	return shadowCameraTransform;
 }

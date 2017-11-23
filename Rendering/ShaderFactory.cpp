@@ -90,9 +90,9 @@ rendering::ShaderFactory::~ShaderFactory()
 {
 }
 
-const rendering::Shader* rendering::ShaderFactory::CreateShader(int shaderID, const std::string& shaderFileName)
+const rendering::Shader* rendering::ShaderFactory::CreateShader(int shaderId, const std::string& shaderFileName)
 {
-	const auto shaderPair = m_shaderType2ShaderMap.insert(std::make_pair(shaderID, Shader(m_shadersDirectory, shaderFileName)));
+	const auto shaderPair = m_shaderType2ShaderMap.insert(std::make_pair(shaderId, Shader(m_shadersDirectory, shaderFileName)));
 	CHECK_CONDITION_RENDERING(shaderPair.second, Utility::Logging::WARNING, "Shader \"", shaderFileName, "\" has already been created.");
 	return &shaderPair.first->second;
 }

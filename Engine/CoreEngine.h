@@ -202,7 +202,7 @@ namespace engine
 	private:
 		void CreateAudioEngine();
 		void CreatePhysicsEngine();
-		void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
 		void Run();
 		void PollEvents();
 
@@ -211,8 +211,8 @@ namespace engine
 		void StartSamplingSpf() const { m_isSamplingSpf = true; }
 		void StopSamplingSpf() const { m_isSamplingSpf = false; }
 	private:
-		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
-		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
+		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
 		void SetCallbacks();
 		void StopTimer(utility::timing::Timer& timer, long& countStats, math::statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
 		{

@@ -20,7 +20,7 @@ rendering::particles::ParticlesContainer::ParticlesContainer(size_t maxCount, co
 	m_colors(nullptr),
 	m_masses(nullptr),
 	m_aliveFlags(nullptr),
-	m_IDs(nullptr),
+	m_ids(nullptr),
 	m_maxCount(maxCount),
 	m_countAlive(0)
 {
@@ -123,7 +123,7 @@ void rendering::particles::ParticlesContainer::SwapData(size_t a, size_t b)
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::ID))
 	{
-		std::swap(m_IDs[a], m_IDs[b]);
+		std::swap(m_ids[a], m_ids[b]);
 	}
 }
 
@@ -241,10 +241,10 @@ void rendering::particles::ParticlesContainer::SetAttributesMask(attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::ID))
 	{
-		m_IDs.reset(new int[m_maxCount]);
+		m_ids.reset(new int[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
 		{
-			m_IDs[i] = -1; // some invalid ID
+			m_ids[i] = -1; // some invalid ID
 		}
 	}
 }

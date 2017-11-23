@@ -5,7 +5,7 @@
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
 #include "Engine\IRenderable.h"
-#include "Math\Math.h"
+#include "Math/Math.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"

@@ -17,8 +17,8 @@ namespace rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
-				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation);
+			RENDERING_API PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderId,
+				int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId, const Attenuation& attenuation);
 
 			/// <summary> Point light destructor. </summary>
 			RENDERING_API virtual ~PointLight();

@@ -33,7 +33,7 @@ namespace rendering
 		}; /* end enum MeshBufferType */
 	} /* end namespace mesh_buffer_types */
 
-	namespace MeshAttributeLocations
+	namespace mesh_attribute_locations
 	{
 		enum MeshAttributeLocation
 		{
@@ -44,7 +44,7 @@ namespace rendering
 			BITANGENTS = 4,
 			COUNT
 		}; /* end enum MeshAttributeLocation */
-	} /* end namespace MeshAttributeLocations */
+	} /* end namespace mesh_attribute_locations */
 
 	/// <summary>
 	/// The low-level representation of the mesh.
@@ -85,7 +85,7 @@ namespace rendering
 		/* ==================== Non-static member functions begin ==================== */
 		/// <summary> Returns the handle to the Vertex Array Object (VAO) used by the mesh data. </summary>
 		/// <returns> The handle to the Vertex Array Object (VAO) used by the mesh data. </returns>
-		GLuint GetVAO() const { return m_vao; }
+		GLuint GetVao() const { return m_vao; }
 
 		/// <summary> Binds the mesh data's Vertex Array Object (VAO) to be currently used by the rendering context. </summary>
 		void Bind() const
@@ -111,9 +111,14 @@ namespace rendering
 			CheckErrorCode(__FUNCTION__, "Finished mesh data unbinding");
 		}
 
-		/// <summary> Checks whether the buffer stored under specified key (<paramref name="buffer/>) is created and available. </summary>
-		/// <returns> <code>True</code> if the buffer under specified <paramref name="buffer"/> is available (<code>!= 0</code>) and <code>false</code> otherwise. </returns>
-		bool HasVBO(mesh_buffer_types::MeshBufferType buffer) const
+		/// <summary>
+		/// Checks whether the buffer stored under specified key (<paramref name="buffer/>) is created and available.
+		/// </summary>
+		/// <returns>
+		/// <code>True</code> if the buffer under specified <paramref name="buffer"/> is available (<code>!= 0</code>) and
+		/// <code>false</code> otherwise.
+		/// </returns>
+		bool HasVbo(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
@@ -125,7 +130,7 @@ namespace rendering
 		/// </summary>
 		/// <param name="buffer"> The index of the VBO we want to get the handle to. </param>
 		/// <returns> A handle to the vertex buffer object stored under specified key (<paramref name="buffer"/>). </returns>
-		GLuint GetVBO(mesh_buffer_types::MeshBufferType buffer) const
+		GLuint GetVbo(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
@@ -139,7 +144,7 @@ namespace rendering
 		/// </summary>
 		/// <param name="buffer"> The buffer key we want to store a handle to new VBO in. </param>
 		/// <returns> The handle to the newly created vertex buffer object (VBO). </returns>
-		GLuint CreateVBO(mesh_buffer_types::MeshBufferType buffer);
+		GLuint CreateVbo(mesh_buffer_types::MeshBufferType buffer);
 
 		/// <summary>
 		/// Modifies the specified <paramref name="buffer"/> with the new values stored in <paramref name="data"/> array.
@@ -148,8 +153,8 @@ namespace rendering
 		/// <param name="data"> The pointer to array of data that will replace the previous buffer storage. The array's length is <paramref name="dataCount"/>. </param>
 		/// <param name="dataCount"> The length of the array specified in <paramref name="data"/> pointer. </param>
 		/// <param name="singleDataEntrySize"> The size in bytes of the single value in the <paramref name="data"/> array. </param>
-		/// <param name="singleDataComponentsCount"> The number of attributes (or components) a single <paramref name="data"/> entry has. <param>
-		void ReplaceVBO(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
+		/// <param name="singleDataComponentsCount"> The number of attributes (or components) a single <paramref name="data"/> entry has. </param>
+		void ReplaceVbo(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 
 		/// <summary>
 		/// Returns the size of the mesh.
@@ -211,7 +216,7 @@ namespace rendering
 			{
 				CHECK_CONDITION_RETURN_RENDERING(lhs.m_meshData != nullptr && rhs.m_meshData != nullptr, false, Utility::Logging::ERR,
 					"Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
-				return lhs.m_meshData->GetVAO() < rhs.m_meshData->GetVAO();
+				return lhs.m_meshData->GetVao() < rhs.m_meshData->GetVao();
 			}
 		}; // end class MeshComparator
 
@@ -226,11 +231,11 @@ namespace rendering
 		/// The number of vertices in each non-<code>nullptr</code> arrays: <paramref name="positions"/>,
 		/// <paramref name="textureCoordinates"/>, <paramref name="normals"/>, <paramref name="tangents"/> and <paramref name="bitangents"/>.
 		/// </param>
-		/// <param name="positions"> The array of 3D positions in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
-		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
-		/// <param name="normals"> The array of 3D normal vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
-		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
-		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
+		/// <param name="positions"> The array of 3D positions in the mesh. The array must contain <paramref name="verticesCount"/> elements.</param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. The array must contain <paramref name="verticesCount"/> elements.</param>
+		/// <param name="normals"> The array of 3D normal vectors in the mesh. The array must contain <paramref name="verticesCount"/> elements.</param>
+		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. The array must contain <paramref name="verticesCount"/> elements.</param>
+		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. The array must contain <paramref name="verticesCount"/> elements.</param>
 		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		Mesh(int* indices, int indicesCount, int verticesCount, math::Vector3D* positions, math::Vector2D* textureCoordinates = nullptr, math::Vector3D* normals = nullptr, math::Vector3D* tangents = nullptr, math::Vector3D* bitangents = nullptr, bool calcNormalsEnabled = false, GLenum mode = GL_TRIANGLES);
@@ -293,7 +298,7 @@ namespace rendering
 		/// <returns> The size of the buffer stored under the key <paramref name="bufferType"/>. </returns>
 		RENDERING_API int GetBufferSize(mesh_buffer_types::MeshBufferType bufferType) const
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(bufferType));
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(bufferType));
 			GLint bufferSize;
 			glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
 			return bufferSize;
@@ -310,7 +315,7 @@ namespace rendering
 	protected:
 		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
-		void FillBuffer(mesh_buffer_types::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
+		void FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_attribute_locations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
 
 		void AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount);
 		void AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
