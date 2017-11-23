@@ -29,7 +29,7 @@ namespace math {
 		extern const int STATS_SAMPLES_SECOND_LEVEL;
 		extern const int STATS_SAMPLES_THIRD_LEVEL;
 
-		enum StatsID
+		enum StatsId
 		{
 			SPF = 0
 		};
@@ -71,13 +71,13 @@ namespace math {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			MATH_API void Push(StatsID statsId, T sample);
+			MATH_API void Push(StatsId statsId, T sample);
 			MATH_API int Size() const;
-			MATH_API int Size(StatsID statsId) const;
-			MATH_API T CalculateSum(StatsID statsId) const;
-			MATH_API int CalculateSamplesCount(StatsID statsId) const;
-			MATH_API T CalculateMean(StatsID statsId) const;
-			MATH_API T CalculateMedian(StatsID statsId);
+			MATH_API int Size(StatsId statsId) const;
+			MATH_API T CalculateSum(StatsId statsId) const;
+			MATH_API int CalculateSamplesCount(StatsId statsId) const;
+			MATH_API T CalculateMean(StatsId statsId) const;
+			MATH_API T CalculateMedian(StatsId statsId);
 			MATH_API int GetHierachyDepth() const;
 			/* ==================== Non-static member functions end ==================== */
 
@@ -85,7 +85,7 @@ namespace math {
 		private:
 			const int m_level;
 			std::unique_ptr<Stats<T>> m_child;
-			std::map<StatsID, std::vector<T>> m_samples;
+			std::map<StatsId, std::vector<T>> m_samples;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Stats */
 
@@ -136,6 +136,10 @@ namespace math {
 
 		class ClassStats
 		{
+			/* ==================== Static variables and functions begin ==================== */
+			static void LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan);
+			/* ==================== Static variables and functions end ==================== */
+
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			MATH_API explicit ClassStats(const std::string& className);
@@ -167,11 +171,10 @@ namespace math {
 			}
 
 			MATH_API int GetTotalNumberOfSamples() const;
-		private:
-			void LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
+		private:
 			const std::string m_className;
 
 			/// <summary> The number of methods which are currently being profiled within the class </summary>

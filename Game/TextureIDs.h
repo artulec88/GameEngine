@@ -5,11 +5,11 @@
 
 namespace Game
 {
-	namespace TextureIDs
+	namespace texture_ids
 	{
-		enum TextureID
+		enum TextureId
 		{
-			TERRAIN_DIFFUSE = Rendering::TextureIDs::COUNT,
+			TERRAIN_DIFFUSE = rendering::texture_ids::COUNT,
 			TERRAIN_DIFFUSE_2,
 			TERRAIN_DIFFUSE_3,
 			TERRAIN_DIFFUSE_4,
@@ -34,8 +34,8 @@ namespace Game
 			PARTICLE_WATER,
 			PARTICLE_FIRE,
 			PARTICLE_SMOKE
-		}; /* end enum TextureID */
-	} /* end namespace TextureIDs */
+		}; /* end enum TextureId */
+	} /* end namespace texture_ids */
 } /* end namespace Game */
 
 #endif /* __GAME_TEXTURE_IDS_H__ */

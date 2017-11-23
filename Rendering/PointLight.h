@@ -6,8 +6,8 @@
 #include "BaseLight.h"
 #include "Color.h"
 
-namespace Rendering {
-	namespace Lighting
+namespace rendering {
+	namespace lighting
 	{
 
 		class PointLight : public BaseLight
@@ -21,7 +21,7 @@ namespace Rendering {
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation);
 
 			/// <summary> Point light destructor. </summary>
-			RENDERING_API virtual ~PointLight(void);
+			RENDERING_API virtual ~PointLight();
 
 			/// <summary> Point light copy constructor. </summary>
 			PointLight(const PointLight& pointLight) = default;
@@ -34,7 +34,6 @@ namespace Rendering {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary> Gets the attenuation of the point light. </summary>
 			/// <returns> The attenuation of the point light. </returns>
 			RENDERING_API Attenuation GetAttenuation() const noexcept { return m_attenuation; }
@@ -49,7 +48,7 @@ namespace Rendering {
 			//	m_range = CalculateRange();
 			//}
 		private:
-			math::Real CalculateRange();
+			math::Real CalculateRange() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -62,8 +61,8 @@ namespace Rendering {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class PointLight */
 
-	} /* end namespace Lighting */
+	} /* end namespace lighting */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_POINT_LIGHT_H__ */

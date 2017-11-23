@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Material.h"
 
-Rendering::Material::Material(const Texture* diffuseTexture, math::Real specularIntensity, math::Real specularPower, const Texture* normalMap, const Texture* displacementMap, math::Real displacementScale /* = REAL_ZERO */, math::Real displacementOffset /* = REAL_ZERO */) :
+rendering::Material::Material(const Texture* diffuseTexture, math::Real specularIntensity, math::Real specularPower, const Texture* normalMap, const Texture* displacementMap, math::Real displacementScale /* = REAL_ZERO */, math::Real displacementOffset /* = REAL_ZERO */) :
 	m_mappedValues(),
 	m_hasMultipleTextures(false)
 {
@@ -15,13 +15,14 @@ Rendering::Material::Material(const Texture* diffuseTexture, math::Real specular
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(displacementMap != nullptr, utility::logging::EMERGENCY, "Cannot create a material. No displacement map used.");
 	m_mappedValues.SetTexture("displacementMap", displacementMap);
 
-	math::Real baseBias = displacementScale / static_cast<math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
+	const auto baseBias = displacementScale / static_cast<math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_mappedValues.SetReal("displacementScale", displacementScale);
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 	DEBUG_LOG_RENDERING("Material has been created.");
 }
 
-Rendering::Material::Material(const Texture* texture, const std::string& textureName)
+rendering::Material::Material(const Texture* texture, const std::string& textureName) :
+	m_hasMultipleTextures(false)
 {
 	DEBUG_LOG_RENDERING("Material construction has started.");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != nullptr, utility::logging::ERR, "The material is given the NULL main texture");
@@ -29,11 +30,11 @@ Rendering::Material::Material(const Texture* texture, const std::string& texture
 	DEBUG_LOG_RENDERING("Material has been created.");
 }
 
-Rendering::Material::~Material()
+rendering::Material::~Material()
 {
 }
 
-void Rendering::Material::SetAdditionalTexture(const Texture* texture, const std::string& textureName)
+void rendering::Material::SetAdditionalTexture(const Texture* texture, const std::string& textureName)
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(texture != nullptr, utility::logging::WARNING,
 		"Cannot set the additional texture for material. The texture is NULL.");
@@ -42,7 +43,7 @@ void Rendering::Material::SetAdditionalTexture(const Texture* texture, const std
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Rendering::Material::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
+void rendering::Material::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
 	m_mappedValues.InitializeTweakBar(tweakBar, groupName);
 }

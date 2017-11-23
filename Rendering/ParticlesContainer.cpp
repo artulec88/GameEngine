@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "ParticlesContainer.h"
 
-Rendering::Particles::ParticlesContainer::ParticlesContainer() :
-	ParticlesContainer(0, Attributes::AttributesMask(0))
+rendering::particles::ParticlesContainer::ParticlesContainer() :
+	ParticlesContainer(0, attributes::AttributesMask(0))
 {
 }
 
-Rendering::Particles::ParticlesContainer::ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask) :
+rendering::particles::ParticlesContainer::ParticlesContainer(size_t maxCount, const attributes::AttributesMask& attributesMask) :
 	m_attributesMask(attributesMask),
 	m_positions(nullptr),
 	m_velocities(nullptr),
@@ -27,11 +27,11 @@ Rendering::Particles::ParticlesContainer::ParticlesContainer(size_t maxCount, co
 	SetAttributesMask(m_attributesMask);
 }
 
-Rendering::Particles::ParticlesContainer::~ParticlesContainer()
+rendering::particles::ParticlesContainer::~ParticlesContainer()
 {
 }
 
-void Rendering::Particles::ParticlesContainer::Kill(size_t id)
+void rendering::particles::ParticlesContainer::Kill(size_t id)
 {
 	if (m_countAlive > 0)
 	{
@@ -45,7 +45,7 @@ void Rendering::Particles::ParticlesContainer::Kill(size_t id)
 	}
 }
 
-void Rendering::Particles::ParticlesContainer::Revive(size_t id)
+void rendering::particles::ParticlesContainer::Revive(size_t id)
 {
 	if (m_countAlive < m_maxCount)
 	{
@@ -59,7 +59,7 @@ void Rendering::Particles::ParticlesContainer::Revive(size_t id)
 	}
 }
 
-void Rendering::Particles::ParticlesContainer::SwapData(size_t a, size_t b)
+void rendering::particles::ParticlesContainer::SwapData(size_t a, size_t b)
 {
 	DELOCUST_LOG_RENDERING("Swapping data between particle #", a, " and particle #", b);
 	//std::swap(m_positions[a], m_positions[b]);
@@ -76,58 +76,58 @@ void Rendering::Particles::ParticlesContainer::SwapData(size_t a, size_t b)
 	//std::swap(m_aliveFlags[a], m_aliveFlags[b]);
 	//std::swap(m_IDs[a], m_IDs[b]);
 
-	if (m_attributesMask.IsAttributeEnabled(Attributes::POSITION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::POSITION))
 	{
 		std::swap(m_positions[a], m_positions[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
+	if (m_attributesMask.IsAttributeEnabled(attributes::VELOCITY))
 	{
 		std::swap(m_velocities[a], m_velocities[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ACCELERATION))
 	{
 		std::swap(m_accelerations[a], m_accelerations[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))
+	if (m_attributesMask.IsAttributeEnabled(attributes::GRAVITY_EFFECT_FACTOR))
 	{
 		std::swap(m_gravityEffectFactors[a], m_gravityEffectFactors[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN))
+	if (m_attributesMask.IsAttributeEnabled(attributes::LIFE_SPAN))
 	{
 		std::swap(m_lifeSpanLimits[a], m_lifeSpanLimits[b]);
 		std::swap(m_lifeSpans[a], m_lifeSpans[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ROTATION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ROTATION))
 	{
 		std::swap(m_rotations[a], m_rotations[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::SCALE))
+	if (m_attributesMask.IsAttributeEnabled(attributes::SCALE))
 	{
 		std::swap(m_scales[a], m_scales[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET))
+	if (m_attributesMask.IsAttributeEnabled(attributes::TEXTURE_OFFSET))
 	{
 		std::swap(m_textureOffsets[a], m_textureOffsets[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::COLOR))
+	if (m_attributesMask.IsAttributeEnabled(attributes::COLOR))
 	{
 		std::swap(m_colors[a], m_colors[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::MASS))
+	if (m_attributesMask.IsAttributeEnabled(attributes::MASS))
 	{
 		std::swap(m_masses[a], m_masses[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ALIVE))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ALIVE))
 	{
 		std::swap(m_aliveFlags[a], m_aliveFlags[b]);
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ID))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ID))
 	{
 		std::swap(m_IDs[a], m_IDs[b]);
 	}
 }
 
-void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::AttributesMask attributesMask)
+void rendering::particles::ParticlesContainer::SetAttributesMask(attributes::AttributesMask attributesMask)
 {
 	m_attributesMask = attributesMask;
 
@@ -145,7 +145,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	//m_aliveFlags.reset(new bool[m_count]);
 	//m_IDs.reset(new int[m_count]);
 
-	if (m_attributesMask.IsAttributeEnabled(Attributes::POSITION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::POSITION))
 	{
 		m_positions.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -153,7 +153,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_positions[i].Zero();
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
+	if (m_attributesMask.IsAttributeEnabled(attributes::VELOCITY))
 	{
 		m_velocities.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -161,7 +161,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_velocities[i].Zero();
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ACCELERATION))
 	{
 		m_accelerations.reset(new math::Vector3D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -169,7 +169,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_accelerations[i].Zero();
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))
+	if (m_attributesMask.IsAttributeEnabled(attributes::GRAVITY_EFFECT_FACTOR))
 	{
 		m_gravityEffectFactors.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -177,7 +177,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_gravityEffectFactors[i] = REAL_ZERO;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN))
+	if (m_attributesMask.IsAttributeEnabled(attributes::LIFE_SPAN))
 	{
 		m_lifeSpanLimits.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -190,7 +190,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_lifeSpans[i] = REAL_ZERO;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ROTATION))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ROTATION))
 	{
 		m_rotations.reset(new math::Angle[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -198,7 +198,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_rotations[i].Set(REAL_ZERO, math::units::RADIAN);
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::SCALE))
+	if (m_attributesMask.IsAttributeEnabled(attributes::SCALE))
 	{
 		m_scales.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -206,7 +206,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_scales[i] = REAL_ONE;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET))
+	if (m_attributesMask.IsAttributeEnabled(attributes::TEXTURE_OFFSET))
 	{
 		m_textureOffsets.reset(new math::Vector2D[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -215,7 +215,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_textureOffsets[i].y = REAL_ZERO;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::COLOR))
+	if (m_attributesMask.IsAttributeEnabled(attributes::COLOR))
 	{
 		m_colors.reset(new Color[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -223,7 +223,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_colors[i].Set(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::MASS))
+	if (m_attributesMask.IsAttributeEnabled(attributes::MASS))
 	{
 		m_masses.reset(new math::Real[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -231,7 +231,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_masses[i] = REAL_ZERO;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ALIVE))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ALIVE))
 	{
 		m_aliveFlags.reset(new bool[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)
@@ -239,7 +239,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 			m_aliveFlags[i] = false;
 		}
 	}
-	if (m_attributesMask.IsAttributeEnabled(Attributes::ID))
+	if (m_attributesMask.IsAttributeEnabled(attributes::ID))
 	{
 		m_IDs.reset(new int[m_maxCount]);
 		for (size_t i = 0; i < m_maxCount; ++i)

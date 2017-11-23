@@ -2,7 +2,7 @@
 #include "BaseLight.h"
 #include "Utility/ILogger.h"
 
-Rendering::Lighting::BaseLight::BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
+rendering::lighting::BaseLight::BaseLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled /* = false */) :
 	m_transform(transform),
 	m_color(color),
@@ -17,7 +17,7 @@ Rendering::Lighting::BaseLight::BaseLight(const math::Transform& transform, cons
 {
 }
 
-Rendering::Lighting::BaseLight::~BaseLight(void)
+rendering::lighting::BaseLight::~BaseLight()
 {
 }
 
@@ -49,7 +49,7 @@ Rendering::Lighting::BaseLight::~BaseLight(void)
 //{
 //}
 
-void Rendering::Lighting::BaseLight::SetShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+void rendering::lighting::BaseLight::SetShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
 	math::Real shadowSoftness /* = REAL_ONE */, math::Real lightBleedingReductionAmount /* = static_cast<math::Real>(0.2f) */,
 	math::Real minVariance /* = static_cast<math::Real>(0.00002f) */)
 {
@@ -58,13 +58,13 @@ void Rendering::Lighting::BaseLight::SetShadowInfo(const math::Matrix4D& project
 	CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, Utility::Logging::CRITICAL, "Cannot initialize the light. Shadow info is nullptr.");
 }
 
-Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const
+rendering::ShadowCameraTransform rendering::lighting::BaseLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const
 {
-	return Rendering::ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
+	return ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Rendering::Lighting::BaseLight::InitializeTweakBar(TwBar* lightsBar)
+void rendering::lighting::BaseLight::InitializeTweakBar(TwBar* lightsBar)
 {
 	//TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
 	//TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");

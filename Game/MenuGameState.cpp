@@ -18,29 +18,29 @@
 #include "Utility/IConfig.h"
 #include "Utility/BuilderDirector.h"
 
-Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, math::Real mainMenuFontSize) :
+Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* mainMenuFont, math::Real mainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	//m_particlesSystem(nullptr),
-	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorIDs::BLACK),
-		Rendering::Color(Rendering::ColorIDs::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
-	m_notSelectedMenuEntryColorEffect(std::make_unique<math::effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
+	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, rendering::Color(rendering::color_ids::BLACK),
+		rendering::Color(rendering::color_ids::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
+	m_notSelectedMenuEntryColorEffect(std::make_unique<math::effects::NoEffect<rendering::Color>>(rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorBlue", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorAlpha", 1.0f)))),
-	m_selectedMenuEntryColorEffect(std::make_unique<math::effects::SmoothTransitionEffect<Rendering::Color>>(
-		std::vector<Rendering::Color>{
-			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_1", 0.0f)),
-			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_2", 0.0f)),
-			Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_3", 1.0f)) }.data(),
+	m_selectedMenuEntryColorEffect(std::make_unique<math::effects::SmoothTransitionEffect<rendering::Color>>(
+		std::vector<rendering::Color>{
+			rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_1", 0.0f)),
+			rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_2", 0.0f)),
+			rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorBlue_3", 1.0f)) }.data(),
 		std::vector<math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryColorTime_3", 2.0f) }.data(), 3, false)),
-	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorRed", 1.0f),
+	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::NoEffect<rendering::Color>>(rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorBlue", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOutlineColorAlpha", 1.0f)))),
-		m_selectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::BlinkEffect<Rendering::Color>>(
-			std::vector<Rendering::Color>{
-				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_1", 0.0f)),
-				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_2", 0.0f)),
-				Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_3", 1.0f)) }.data(),
+		m_selectedMenuEntryOutlineColorEffect(std::make_unique<math::effects::BlinkEffect<rendering::Color>>(
+			std::vector<rendering::Color>{
+				rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_1", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_1", 0.0f)),
+				rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_2", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_2", 0.0f)),
+				rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorRed_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorGreen_3", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorBlue_3", 1.0f)) }.data(),
 			std::vector<math::Real>{ GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_1", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_2", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryOutlineColorDuration_3", 2.0f) }.data(), 3)),
 		m_notSelectedMenuEntryOffsetEffect(std::make_unique<math::effects::NoEffect<math::Vector2D>>(math::Vector2D(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetX", 0.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryOffsetY", 0.0f)))),
 			m_selectedMenuEntryOffsetEffect(std::make_unique<math::effects::SmoothTransitionEffect<math::Vector2D>>(
@@ -120,27 +120,27 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
 	engine::MenuEntry* mainMenuLoadMenuEntry = new engine::CompositeMenuEntry("Load", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.34f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true);
 	// TODO: Populate "Load" menu entry with children.
 	engine::MenuEntry* mainMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.51f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true);
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true);
 	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.2f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.4f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.6f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::ActionMenuEntry(engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
-		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::START_GAME, "New game", mainMenuFont,
 		mainMenuFontSize, nullptr /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, math::Vector2D(0.25f, 0.17f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuLoadMenuEntry);
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
-		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
-		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(Rendering::ColorIDs::RED), Rendering::Color(Rendering::ColorIDs::GREEN), math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 
 	m_gameManager->LoadSoundEffect("bounce.wav");
 
@@ -282,25 +282,25 @@ void Game::MenuGameState::SelectChild(size_t childIndex)
 	ERROR_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
+void Game::MenuGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	m_currentMenuEntry->GetParent()->RenderAll(Rendering::ShaderIDs::GUI, renderer);
+	m_currentMenuEntry->GetParent()->RenderAll(rendering::shader_ids::GUI, renderer);
 	RenderParticles(renderer);
 	//renderer->FinalizeRenderScene();
 
 	STOP_PROFILING_GAME("");
 }
 
-void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
+void Game::MenuGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	//DEBUG_LOG_GAME("Rendering particles started");
-	//const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::PARTICLES);
+	//const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Rendering::shader_ids::PARTICLES);
 	//renderer->BindShader(particlesShader);
 	//renderer->UpdateRendererUniforms(particlesShader);
 	//renderer->RenderParticles(particlesShader, *m_particlesSystem);

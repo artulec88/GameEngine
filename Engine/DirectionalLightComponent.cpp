@@ -5,8 +5,8 @@
 #include "Utility/IConfig.h"
 #include "Utility/Time.h"
 
-engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
-	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
+engine::DirectionalLightComponent::DirectionalLightComponent(rendering::lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const rendering::Color& sunDaytimeColor,
+	const rendering::Color& sunNearHorizonColor, const rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
 	const math::Angle& firstElevationLevel, const math::Angle& secondElevationLevel, const math::Angle& thirdElevationLevel) :
 	GameComponent(),
 #ifdef SIMULATE_SUN_BEHAVIOR

@@ -7,15 +7,15 @@
 #include "Math\RandomGenerator.h"
 #include "Math/AABB.h"
 #include "Math\Ellipsoid.h"
-#include "Math\Plane.h"
+#include "Math/Plane.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Generators
+		namespace generators
 		{
-			namespace PositionGeneratorTypes
+			namespace position_generator_types
 			{
 				enum PositionGeneratorType
 				{
@@ -24,7 +24,7 @@ namespace Rendering
 					PLANE,
 					ELLIPSOID,
 				}; /* end enum PositionGeneratorType */
-			} /* end namespace PositionGeneratorTypes */
+			} /* end namespace position_generator_types */
 
 			/// <summary>
 			/// Generates position for the particle.
@@ -37,7 +37,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				PositionGenerator() :
-					ParticleAttributeGenerator(Attributes::POSITION)
+					ParticleAttributeGenerator(attributes::POSITION)
 				{
 				}
 				virtual ~PositionGenerator()
@@ -47,18 +47,17 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				inline void Set(ParticlesContainer* particlesContainer, size_t i, const math::Vector3D& position)
+				void Set(ParticlesContainer* particlesContainer, size_t i, const math::Vector3D& position)
 				{
 					particlesContainer->SetPosition(i, position);
 				}
-				inline void Set(ParticlesContainer* particlesContainer, size_t i, math::Real x, math::Real y, math::Real z)
+				void Set(ParticlesContainer* particlesContainer, size_t i, math::Real x, math::Real y, math::Real z)
 				{
 					particlesContainer->SetPosition(i, x, y, z);
 				}
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
-			private:
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class PositionGenerator */
 
@@ -74,13 +73,12 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				RENDERING_API ConstantPositionGenerator(math::Real xPos, math::Real yPos, math::Real zPos);
-				RENDERING_API ConstantPositionGenerator(const math::Vector3D& position);
+				RENDERING_API explicit ConstantPositionGenerator(const math::Vector3D& position);
 				RENDERING_API virtual ~ConstantPositionGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -99,15 +97,14 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API BoxPositionGenerator(const math::Aabb& aabb);
+				RENDERING_API explicit BoxPositionGenerator(const math::Aabb& aabb);
 				RENDERING_API BoxPositionGenerator(const math::Vector3D& centerPoint, math::Real xOffset, math::Real yOffset, math::Real zOffset);
 				RENDERING_API BoxPositionGenerator(math::Real minX, math::Real maxX, math::Real minY, math::Real maxY, math::Real minZ, math::Real maxZ);
 				RENDERING_API virtual ~BoxPositionGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -138,8 +135,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -161,14 +157,13 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API EllipsoidPositionGenerator(const math::Ellipsoid& ellipsoid);
+				RENDERING_API explicit EllipsoidPositionGenerator(const math::Ellipsoid& ellipsoid);
 				RENDERING_API EllipsoidPositionGenerator(const math::Vector3D& center, math::Real a, math::Real b, math::Real c);
 				RENDERING_API virtual ~EllipsoidPositionGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -180,8 +175,8 @@ namespace Rendering
 				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class EllipsoidPositionGenerator */
-		} /* end namespace PositionGenerators */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace generators */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_POSITION_GENERATOR_H__ */

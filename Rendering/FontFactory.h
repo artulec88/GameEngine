@@ -5,9 +5,9 @@
 #include "Font.h"
 #include "Shader.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Text
+	namespace text
 	{
 		namespace FontIDs
 		{
@@ -73,7 +73,7 @@ namespace Rendering
 			const std::string& m_fontsDirectory;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class FontFactory */
-	} /* end namespace Text */
-} /* end namespace Rendering */
+	} /* end namespace text */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_TEXT_FONT_FACTORY_H__ */

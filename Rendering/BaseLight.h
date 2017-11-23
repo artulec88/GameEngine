@@ -9,14 +9,14 @@
 #include "Math/Transform.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBarTypes.h"
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
-namespace Rendering
+namespace rendering
 {
 	class Shader;
 
-	namespace Lighting
+	namespace lighting
 	{
 
 		class BaseLight
@@ -36,23 +36,28 @@ namespace Rendering
 				int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled = false);
 
 			/// <summary>The base light destructor.</summary>
-			RENDERING_API virtual ~BaseLight(void);
-			
+			RENDERING_API virtual ~BaseLight();
+
 			/// <summary> Base light copy constructor. </summary>
+			/// <param name="baseLight"> The reference to the base light to copy construct from. </param>
 			RENDERING_API BaseLight(const BaseLight& baseLight) = delete;
 
 			/// <summary> Base light move constructor. </summary>
+			/// <param name="baseLight"> The r-value reference to the base light to move construct from. </param>
 			RENDERING_API BaseLight(BaseLight&& baseLight) = default;
 
 			/// <summary> Base light copy assignment operator. </summary>
+			/// <param name="baseLight"> The reference to the base light to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned base light. </returns>
 			BaseLight& operator=(const BaseLight& baseLight) = delete;
 
 			/// <summary> Base light move assignment operator. </summary>
+			/// <param name="baseLight"> The r-value reference to the base light to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned base light. </returns>
 			BaseLight& operator=(BaseLight&& baseLight) = default;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
-		public:
+			/* ==================== Non-static member functions begin ==================== */
 			/// <summary> Gets the current color of the light. </summary>
 			/// <returns> Current color of the light. </returns>
 			RENDERING_API const Color& GetColor() const { return m_color; }
@@ -67,7 +72,7 @@ namespace Rendering
 
 			/// <summary> Sets new intensity for the light. </summary>
 			/// <param name="intensity"> New intensity for the light. </returns>
-			RENDERING_API void SetIntensity(math::Real intensity) { m_intensity = intensity; }
+			RENDERING_API void SetIntensity(const math::Real intensity) { m_intensity = intensity; }
 
 			/// <summary> Gives information whether light casts shadows or not. </summary>
 			/// <returns> <code>true</code> if the light casts shadows and <code>false</code> otherwise. </returns>
@@ -85,18 +90,18 @@ namespace Rendering
 			/// <returns> Constant light transform reference. </returns>
 			RENDERING_API const math::Transform& GetTransform() const { return m_transform; }
 
-			RENDERING_API inline int GetShaderID() const { return m_shaderID; }
-			RENDERING_API inline int GetTerrainShaderID() const { return m_terrainShaderID; }
-			RENDERING_API inline int GetNoShadowShaderID() const { return m_noShadowShaderID; }
-			RENDERING_API inline int GetNoShadowTerrainShaderID() const { return m_noShadowTerrainShaderID; }
+			RENDERING_API int GetShaderId() const { return m_shaderID; }
+			RENDERING_API int GetTerrainShaderId() const { return m_terrainShaderID; }
+			RENDERING_API int GetNoShadowShaderId() const { return m_noShadowShaderID; }
+			RENDERING_API int GetNoShadowTerrainShaderId() const { return m_noShadowTerrainShaderID; }
 
-			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
+			RENDERING_API const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
 
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const;
 
 			RENDERING_API void SetTransform(const math::Transform& transform) { m_transform = transform; }
-			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
-			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
+			RENDERING_API void SetIsEnabled(const bool isEnabled) { m_isEnabled = isEnabled; }
+			RENDERING_API void SetIsShadowingEnabled(const bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
 #ifdef ANT_TWEAK_BAR_ENABLED
 			RENDERING_API virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
@@ -106,7 +111,6 @@ namespace Rendering
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		protected:
 			/// <summary> The base light transform. </summary>
 			math::Transform m_transform;
 
@@ -139,8 +143,8 @@ namespace Rendering
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BaseLight */
 
-	} /* end namespace Lighting */
+	} /* end namespace lighting */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_BASE_LIGHT_H__ */

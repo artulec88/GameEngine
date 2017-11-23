@@ -11,9 +11,9 @@
 
 #include <string>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// The particles system builder.
@@ -29,7 +29,7 @@ namespace Rendering
 			RENDERING_API ParticlesSystemBuilder();
 
 			/// <summary> Particles system builder destructor. </summary>
-			RENDERING_API virtual ~ParticlesSystemBuilder(void);
+			RENDERING_API virtual ~ParticlesSystemBuilder();
 
 			/// <summary> Particles system builder copy constructor. </summary>
 			ParticlesSystemBuilder(const ParticlesSystemBuilder& particlesSystemBuilder) = delete;
@@ -45,12 +45,11 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual ParticlesSystem Get() override
+			ParticlesSystem Get() override
 			{
 				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureID, m_shaderID);
 			}
-			virtual void Build() override;
+			void Build() override;
 			
 			/// <summary> Sets the maximum number of particles that final particles system will be able to maintain. </summary>
 			/// <param name="maxCount"> The maximum number of particles that final particles system will be able to maintain. </param>
@@ -61,10 +60,19 @@ namespace Rendering
 				return *this;
 			}
 
-			/// <summary> Sets the maximum number of particles that final particles system will be able to maintain. </summary>
-			/// <param name="maxCount"> The maximum number of particles that final particles system will be able to maintain. </param>
+			/// <summary> Sets the attributes mask that the final particles system will maintain. </summary>
+			/// <param name="attributeIds"> The mask of attributes that particles system will maintain. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			RENDERING_API ParticlesSystemBuilder& SetAttributesMask(Attributes::AttributesMask attributesMask)
+			RENDERING_API ParticlesSystemBuilder& SetAttributesMask(int attributeIds)
+			{
+				m_attributesMask = attributes::AttributesMask(attributeIds);
+				return *this;
+			}
+
+			/// <summary> Sets the attributes mask that the final particles system will maintain. </summary>
+			/// <param name="attributesMask"> The mask of attributes that particles system will maintain. </param>
+			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
+			RENDERING_API ParticlesSystemBuilder& SetAttributesMask(attributes::AttributesMask attributesMask)
 			{
 				m_attributesMask = attributesMask;
 				return *this;
@@ -109,33 +117,33 @@ namespace Rendering
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
 			//RENDERING_API ParticlesSystemBuilder& AddUpdater(const ParticlesUpdater& particlesUpdater);
 		private:
-			void AddPositionGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddVelocityGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddAccelerationGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddGravityEffectFactorGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddLifeSpanGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddRotationGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddScaleGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddTextureOffsetGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddColorGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddMassGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddAliveGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
-			void AddIdGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddVelocityGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddAccelerationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddGravityEffectFactorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddLifeSpanGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddRotationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddScaleGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddTextureOffsetGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddColorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddMassGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddAliveGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
+			void AddIdGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			const size_t M_DEFAULT_MAX_PARTICLES_COUNT; // TODO: Make it static constexpr in the future.
-			const Attributes::AttributesMask M_DEFAULT_ATTRIBUTES_MASK; // TODO: Make it a static constexpr in the future.
+			const attributes::AttributesMask M_DEFAULT_ATTRIBUTES_MASK; // TODO: Make it a static constexpr in the future.
 
 			//ParticlesSystem m_particlesSystem;
 
 			size_t m_maxCount;
-			Attributes::AttributesMask m_attributesMask;
+			attributes::AttributesMask m_attributesMask;
 			int m_textureID;
 			int m_shaderID;
 
-			std::vector<Rendering::Particles::ParticlesEmitter> m_emitters;
+			std::vector<ParticlesEmitter> m_emitters;
 
 			//const ParticleTexture* m_particleTexture;
 			//Particleeffects::ParticleEffect m_particleEffect;
@@ -146,7 +154,7 @@ namespace Rendering
 			//std::vector<Rendering::Particles::ParticlesUpdater*> m_updaters;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystemBuilder */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_SYSTEM_BUILDER_H__ */

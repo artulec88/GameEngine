@@ -4,17 +4,17 @@
 #include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantLifeSpanLimitGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantLifeSpanLimitGenerator::ConstantLifeSpanLimitGenerator(math::Real lifeSpanLimit) :
+rendering::particles::generators::ConstantLifeSpanLimitGenerator::ConstantLifeSpanLimitGenerator(math::Real lifeSpanLimit) :
 	LifeSpanLimitGenerator(),
 	m_lifeSpanLimit(lifeSpanLimit)
 {
 }
 
-Rendering::Particles::Generators::ConstantLifeSpanLimitGenerator::~ConstantLifeSpanLimitGenerator()
+rendering::particles::generators::ConstantLifeSpanLimitGenerator::~ConstantLifeSpanLimitGenerator()
 {
 }
 
-void Rendering::Particles::Generators::ConstantLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::ConstantLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -24,7 +24,7 @@ void Rendering::Particles::Generators::ConstantLifeSpanLimitGenerator::Generate(
 /* ==================== class ConstantLifeSpanLimitGenerator end ==================== */
 
 /* ==================== class RangeLifeSpanLimitGenerator begin ==================== */
-Rendering::Particles::Generators::RangeLifeSpanLimitGenerator::RangeLifeSpanLimitGenerator(math::Real minLifeSpanLimit, math::Real maxLifeSpanLimit) :
+rendering::particles::generators::RangeLifeSpanLimitGenerator::RangeLifeSpanLimitGenerator(math::Real minLifeSpanLimit, math::Real maxLifeSpanLimit) :
 	LifeSpanLimitGenerator(),
 	m_minLifeSpanLimit(minLifeSpanLimit),
 	m_maxLifeSpanLimit(maxLifeSpanLimit),
@@ -32,11 +32,11 @@ Rendering::Particles::Generators::RangeLifeSpanLimitGenerator::RangeLifeSpanLimi
 {
 }
 
-Rendering::Particles::Generators::RangeLifeSpanLimitGenerator::~RangeLifeSpanLimitGenerator()
+rendering::particles::generators::RangeLifeSpanLimitGenerator::~RangeLifeSpanLimitGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::RangeLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

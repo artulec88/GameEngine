@@ -3,7 +3,7 @@
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
 
-engine::MeshRendererComponent::MeshRendererComponent(int meshID, const Rendering::Material* material) :
+engine::MeshRendererComponent::MeshRendererComponent(int meshID, const rendering::Material* material) :
 	GameComponent(),
 	IRenderable(),
 	m_meshID(meshID),
@@ -37,7 +37,7 @@ engine::MeshRendererComponent& engine::MeshRendererComponent::operator=(MeshRend
 	return *this;
 }
 
-void engine::MeshRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::MeshRendererComponent::Render(int shaderID, rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering mesh started");
 	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");

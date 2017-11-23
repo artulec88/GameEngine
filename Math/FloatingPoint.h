@@ -54,19 +54,19 @@ namespace math
 		typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
 
 		/* Constants */
-		static constexpr size_t s_kBitCount = 8 * sizeof(RawType); // number of bits in a number
-		static constexpr size_t s_kFractionBitCount = std::numeric_limits<RawType>::digits - 1; // number of fraction bits in a number
-		static constexpr size_t s_kExponentBitCount = s_kBitCount - 1 - s_kFractionBitCount; // number of exponent bits in a number
-		static constexpr Bits s_kSignBitMask = static_cast<Bits>(1) << (s_kBitCount - 1); // The mask for the sign bit
-		static constexpr Bits s_kFractionBitMask = ~static_cast<Bits>(0) >> (s_kExponentBitCount + 1); // The mask for the fraction bits
-		static constexpr Bits s_kExponentBitMask = ~(s_kSignBitMask | s_kFractionBitMask);
+		static constexpr size_t BIT_COUNT = 8 * sizeof(RawType); // number of bits in a number
+		static constexpr size_t FRACTION_BIT_COUNT = std::numeric_limits<RawType>::digits - 1; // number of fraction bits in a number
+		static constexpr size_t EXPONENT_BIT_COUNT = BIT_COUNT - 1 - FRACTION_BIT_COUNT; // number of exponent bits in a number
+		static constexpr Bits SIGN_BIT_MASK = static_cast<Bits>(1) << (BIT_COUNT - 1); // The mask for the sign bit
+		static constexpr Bits FRACTION_BIT_MASK = ~static_cast<Bits>(0) >> (EXPONENT_BIT_COUNT + 1); // The mask for the fraction bits
+		static constexpr Bits EXPONENT_BIT_MASK = ~(SIGN_BIT_MASK | FRACTION_BIT_MASK);
 		/**
 		 * How many ULP's (Units in the Last Place) we want to tolerate when comparing two numbers. The larger the value the more error we allow.
 		 * The value 0 means that two numbers must be exactly the same to be considered equal. The maximum error of a single floating-point operation is 0.5 ULP.
 		 * On Intel CPU's all floating-point calculations are done with 80-bit precision, while double has 64 bits. Therefore, 4 should be enough for ordinary use.
 		 * See the article http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm for more details on ULP
 		 */
-		static constexpr size_t s_kMaxUlps = 4;
+		static constexpr size_t MAX_ULPS = 4;
 
 		/* non-static methods */
 			/**
@@ -78,15 +78,15 @@ namespace math
 			: m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
 #endif
 		{
-			u_.value_ = x;
+			m_u.value_ = x;
 		}
 
 		//const Bits& Bits() const { return u_.bits_; } // returns the bits that represent this number
-		Bits ExponentBits() const { return s_kExponentBitMask & u_.bits_; } // returns the exponent bits of this number
-		Bits FractionBits() const { return s_kFractionBitMask & u_.bits_; } // returns the fraction bits of this number
-		Bits SignBits() const { return s_kSignBitMask & u_.bits_; } // returns the sign bit of this number
+		Bits ExponentBits() const { return EXPONENT_BIT_MASK & m_u.bits_; } // returns the exponent bits of this number
+		Bits FractionBits() const { return FRACTION_BIT_MASK & m_u.bits_; } // returns the fraction bits of this number
+		Bits SignBits() const { return SIGN_BIT_MASK & m_u.bits_; } // returns the sign bit of this number
 
-		bool IsNan() const { return (ExponentBits() == s_kExponentBitMask) && (FractionBits() != 0); } // Returns true iff this is NAN
+		bool IsNan() const { return (ExponentBits() == EXPONENT_BIT_MASK) && (FractionBits() != 0); } // Returns true iff this is NAN
 		/**
 		 * Returns true iff this number is at most s_kMaxUlps ULP's away from rhs. In particular, this function:
 		 * - returns false if either number is (or both are) NAN
@@ -97,15 +97,15 @@ namespace math
 		{
 			START_PROFILING_MATH(false, "");
 			// The IEEE standard says that any comparison operation involving a NAN must return false
-			if (IsNAN() || rhs.IsNAN())
+			if (IsNan() || rhs.IsNan())
 			{
 				STOP_PROFILING_MATH("");
 				return false;
 			}
 
-			Bits distance = DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_);
+			Bits distance = DistanceBetweenSignAndMagnitudeNumbers(m_u.bits_, rhs.m_u.bits_);
 			STOP_PROFILING_MATH("");
-			return distance <= s_kMaxUlps;
+			return distance <= MAX_ULPS;
 		}
 
 		/* static methods */
@@ -115,8 +115,8 @@ namespace math
 		static RawType ReinterpretBits(const Bits bits)
 		{
 			FloatingPoint fp(0);
-			fp.u_.bits_ = bits;
-			return fp.u_.value_;
+			fp.m_u.bits_ = bits;
+			return fp.m_u.value_;
 		}
 
 		/**
@@ -124,7 +124,7 @@ namespace math
 		 */
 		static RawType Infinity()
 		{
-			return ReinterpretBits(s_kExponentBitMask);
+			return ReinterpretBits(EXPONENT_BIT_MASK);
 		}
 
 	private:
@@ -150,7 +150,7 @@ namespace math
 		 */
 		static Bits SignAndMagnitudeToBiased(const Bits& sam)
 		{
-			return (s_kSignBitMask & sam) ? ~sam + 1 : s_kSignBitMask | sam;
+			return (SIGN_BIT_MASK & sam) ? ~sam + 1 : SIGN_BIT_MASK | sam;
 		}
 
 		/**
@@ -164,13 +164,13 @@ namespace math
 			return (biased1 >= biased2) ? (biased1 - biased2) : (biased2 - biased1);
 		}
 
-		FloatingPointUnion u_;
+		FloatingPointUnion m_u;
 	}; /* end class FloatingPoint */
 
 	//static int oneTempCounter = 0;
 	//static int twoTempCounter = 0;
 	//static int threeTempCounter = 0;
-	inline bool AlmostEqual(Real value1, Real value2)
+	inline bool AlmostEqual(const Real value1, const Real value2)
 	{
 		//if (((oneTempCounter % 10000 == 0) && (oneTempCounter > 0)) ||
 		//	((twoTempCounter % 10000 == 0) && (twoTempCounter > 0)) ||

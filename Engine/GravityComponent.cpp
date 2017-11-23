@@ -7,7 +7,7 @@
 
 #include "Utility/IConfig.h"
 
-engine::GravityComponent::GravityComponent(const Rendering::Terrain* terrain) :
+engine::GravityComponent::GravityComponent(const rendering::Terrain* terrain) :
 	GameComponent(),
 	IUpdateable(),
 	m_terrain(terrain),

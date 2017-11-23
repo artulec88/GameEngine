@@ -1328,9 +1328,9 @@ void SurfaceTest()
 		Vector3D(8.5f, 0.85f, 0.0f)};
 	for (int i = 0; i < SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
 	{
-		Real height = surface1.GetHeightAt(surfacePositions[i].GetXZ());
+		Real height = surface1.GetHeightAt(surfacePositions[i].GetXz());
 		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions[i].GetXZ() << ". Expected height equals: " << surfacePositions[i].y;
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions[i].GetXz() << ". Expected height equals: " << surfacePositions[i].y;
 		TestReport(AlmostEqual(height, surfacePositions[i].y), ss.str());
 	}
 	NOTICE_LOG_MATH_TEST("Simple surface test finished");
@@ -1350,9 +1350,9 @@ void SurfaceTest()
 		Vector3D(15.0f, 1.0f, 5.0f), Vector3D(19.0f, 1.4f, 5.0f), Vector3D(32.2f, 8.12f, 14.0f), Vector3D(32.2f, 9.98f, 17.1f), Vector3D(32.2f, 10.94f, 18.7f), Vector3D(40.0f, 12.56f, 20.1f) };
 	for (int i = 0; i < SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
 	{
-		Real height = surface2.GetHeightAt(surface2Positions[i].GetXZ());
+		Real height = surface2.GetHeightAt(surface2Positions[i].GetXz());
 		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface2Positions[i].GetXZ() << ". Expected height equals: " << surface2Positions[i].y;
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface2Positions[i].GetXz() << ". Expected height equals: " << surface2Positions[i].y;
 		TestReport(AlmostEqual(height, surface2Positions[i].y), ss.str());
 	}
 	NOTICE_LOG_MATH_TEST("More complex surface test finished");
@@ -1371,9 +1371,9 @@ void SurfaceTest()
 		Vector3D(4.0f, 1.776953148f, 6.5f), Vector3D(1.3f, 0.952783321f, 3.66f), Vector3D(7.2f, 1.479618772f, 3.5f), Vector3D(9.8f, 2.836776874f, 9.5f), Vector3D(9.9f, 0.999451696f, 0.04f), Vector3D(1.2f, 1.811448643f, 8.5f), Vector3D(3.5f, 1.718286279f, 6.29f) };
 	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3; ++i)
 	{
-		Real height = surface3.GetHeightAt(surfacePositions3[i].GetXZ());
+		Real height = surface3.GetHeightAt(surfacePositions3[i].GetXz());
 		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions3[i].GetXZ() << ". Expected height equals: " << surfacePositions3[i].y;
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions3[i].GetXz() << ". Expected height equals: " << surfacePositions3[i].y;
 		TestReport(AlmostEqual(height, surfacePositions3[i].y), ss.str());
 	}
 	NOTICE_LOG_MATH_TEST("Customary simple surface test finished");
@@ -1392,9 +1392,9 @@ void SurfaceTest()
 		Vector3D(5.0f, 9.825219501f, 5.1f), Vector3D(1.5f, 9.04133601f, 5.7f), Vector3D(5.7f, 2.386133103f, 1.25f), Vector3D(3.2f, 2.53062155f, 1.44f), Vector3D(4.75f, 6.227233357f, 2.99f), Vector3D(5.9f, 7.701587344f, 4.0f), Vector3D(0.9f, 6.761328315f, 4.1f) };
 	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4; ++i)
 	{
-		Real height = surface4.GetHeightAt(surfacePositions4[i].GetXZ());
+		Real height = surface4.GetHeightAt(surfacePositions4[i].GetXz());
 		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions4[i].GetXZ() << ". Expected height equals: " << surfacePositions4[i].y;
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions4[i].GetXz() << ". Expected height equals: " << surfacePositions4[i].y;
 		TestReport(AlmostEqual(height, surfacePositions4[i].y), ss.str());
 	}
 	NOTICE_LOG_MATH_TEST("Customary complex surface test finished");

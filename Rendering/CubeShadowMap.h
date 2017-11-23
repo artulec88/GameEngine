@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 
-namespace Rendering
+namespace rendering
 {
 
 	class CubeShadowMap
@@ -32,6 +32,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CubeShadowMap */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_CUBE_SHADOW_MAP_H__ */

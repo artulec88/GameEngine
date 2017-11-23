@@ -38,7 +38,7 @@ void engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const ma
 	DEBUG_LOG_ENGINE("Eye space ray = ", eyeSpaceRay);
 
 	// Transforming into 4D world coordinates
-	math::Vector3D worldSpaceRay((viewMatrix.Inversion() * eyeSpaceRay).GetXYZ());
+	math::Vector3D worldSpaceRay((viewMatrix.Inversion() * eyeSpaceRay).GetXyz());
 	worldSpaceRay.Normalize();
 	DEBUG_LOG_ENGINE("World space ray for position (", xPos, ", ", yPos, ") = ", worldSpaceRay);
 }

@@ -5,7 +5,7 @@
 #include "ShadowInfo.h"
 #include "Utility/IConfig.h"
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
+rendering::lighting::DirectionalLight::DirectionalLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
 	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, math::Real shadowInfoShadowSoftness,
 	math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea) :
@@ -19,16 +19,16 @@ Rendering::Lighting::DirectionalLight::DirectionalLight(const math::Transform& t
 	}
 }
 
-Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
+rendering::lighting::DirectionalLight::~DirectionalLight()
 {
 }
 
-Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const
+rendering::ShadowCameraTransform rendering::lighting::DirectionalLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const
 {
 	//return BaseLight::CalcShadowCameraTransform(cameraPos, cameraRot);
 
 	// This function in directional light allows the directional light to be casting shadows only in the area around the camera current position
-	Rendering::ShadowCameraTransform shadowCameraTransform(cameraPos + cameraRot.GetForward() * m_halfShadowArea, GetTransform().GetTransformedRot());
+	ShadowCameraTransform shadowCameraTransform(cameraPos + cameraRot.GetForward() * m_halfShadowArea, GetTransform().GetTransformedRot());
 
 	/**
 	 * The reoccurring shimmering is caused by the moving shadow camera by the value less than
@@ -38,10 +38,10 @@ Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShad
 	 * To fix the shimmering effect we have to make sure we only move by the multiple of the texel size.
 	 */
 	/* ==================== Fixing the shimmering effect begin ==================== */
-	math::Real shadowMapSize = static_cast<math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
-	math::Real worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
+	const auto shadowMapSize = static_cast<math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
+	const auto worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
 	// Now we transform from the world space into the light space
-	math::Vector3D lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
+	auto lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
 
 	// Now we need to snap the lightSpaceCameraPos to shadow map texel size increments
 	lightSpaceCameraPos.x = worldSpaceShadowMapTexelSize * math::Floor(lightSpaceCameraPos.x / worldSpaceShadowMapTexelSize);

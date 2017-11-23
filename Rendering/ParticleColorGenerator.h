@@ -6,13 +6,13 @@
 
 #include "Math\RandomGenerator.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Generators
+		namespace generators
 		{
-			namespace ColorGeneratorTypes
+			namespace color_generator_types
 			{
 				enum ColorGeneratorType
 				{
@@ -20,7 +20,7 @@ namespace Rendering
 					FROM_SET,
 					RANGE
 				}; /* end enum ColorGeneratorType */
-			} /* end namespace ColorGeneratorTypes */
+			} /* end namespace color_generator_types */
 
 			  /// <summary>
 			  /// Generates color for the particle.
@@ -33,7 +33,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				ColorGenerator() :
-					ParticleAttributeGenerator(Attributes::COLOR)
+					ParticleAttributeGenerator(attributes::COLOR)
 				{
 				}
 				virtual ~ColorGenerator()
@@ -50,7 +50,6 @@ namespace Rendering
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
-			private:
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ColorGenerator */
 
@@ -65,13 +64,12 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				RENDERING_API ConstantColorGenerator(math::Real red, math::Real green, math::Real blue, math::Real alpha = REAL_ONE);
-				RENDERING_API ConstantColorGenerator(const Color& color);
+				RENDERING_API explicit ConstantColorGenerator(const Color& color);
 				RENDERING_API virtual ~ConstantColorGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -96,8 +94,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -133,8 +130,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -150,8 +146,8 @@ namespace Rendering
 				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeColorGenerator */
-		} /* end namespace Generators */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace generators */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_ACCELERATION_GENERATOR_H__ */

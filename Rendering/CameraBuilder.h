@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// The camera builder.

@@ -9,14 +9,14 @@
 #include "Texture.h"
 
 #include "Math/Vector.h"
-#include "Math\AABR.h"
+#include "Math/AABR.h"
 
 #include <string>
 #include <vector>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Controls
+	namespace controls
 	{
 		class GuiCheckBoxControl : public GuiControl
 		{
@@ -75,7 +75,7 @@ namespace Rendering
 			Texture* m_texture;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiCheckBoxControl */
-	} /* end namespace Controls */
-} /* end namespace Rendering */
+	} /* end namespace controls */
+} /* end namespace rendering */
 
 #endif // __RENDERING_GUI_CHECK_BOX_CONTROL_H__

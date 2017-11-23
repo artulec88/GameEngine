@@ -21,7 +21,6 @@ namespace math
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		/// <summary>
 		/// Two-dimensional vector default constructor. It initializes the X and Y components to value <code>0.0</code>.
 		/// </summary>
@@ -81,31 +80,30 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Sets the values of the X and Y components.
 		/// </summary>
 		/// <param name="_x"> The new value for the X component of the vector. </param>
 		/// <param name="_y"> The new value for the Y component of the vector. </param>
-		inline void Set(Real _x, Real _y) noexcept { x = _x; y = _y; }
+		void Set(Real _x, Real _y) noexcept { x = _x; y = _y; }
 
 		/// <summary>
 		/// Increases the values of the X and Y components.
 		/// </summary>
 		/// <param name="_x"> The increase of the X component of the vector. </param>
 		/// <param name="_y"> The increase of the Y component of the vector. </param>
-		inline void Increase(Real _x, Real _y) noexcept { x += _x; y += _y; }
+		void Increase(Real _x, Real _y) noexcept { x += _x; y += _y; }
 
 		/// <summary>
 		/// Increases the values of the X and Y components.
 		/// </summary>
 		/// <param name="translation"> The 2D vector representing the translation of the current vector. </param>
-		inline void Increase(const Vector2D& translation) noexcept { operator+=(translation); }
+		void Increase(const Vector2D& translation) noexcept { operator+=(translation); }
 
 		/// <summary>
 		/// Resets the values of both X and Y components of the vector.
 		/// </summary>
-		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO); }
+		void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO); }
 
 		/// <summary> Calculates and returns the sum of components of the vector. </summary>
 		constexpr Real SumOfComponents() const noexcept { return x + y; }
@@ -196,7 +194,7 @@ namespace math
 			//	return (*this);
 			//}
 			// return (*this) / static_cast<Real>(sqrt(length));
-			const Real length = Length();
+			const auto length = Length();
 			return Vector2D(x / length, y / length);
 		}
 		Vector2D& Normalize()
@@ -208,7 +206,7 @@ namespace math
 			//}
 			//*this /= static_cast<Real>(sqrt(length));
 
-			Real length = Length();
+			const auto length = Length();
 			x /= length;
 			y /= length;
 			return *this;
@@ -230,7 +228,7 @@ namespace math
 		/// <returns> The two-dimensional vector being perpendicular to the current vector. </returns>
 		constexpr Vector2D Perp(bool isNormalizingEnabled = false) const
 		{
-			return (isNormalizingEnabled) ? Vector2D(y, -x).Normalized() : Vector2D(y, -x);
+			return isNormalizingEnabled ? Vector2D(y, -x).Normalized() : Vector2D(y, -x);
 		}
 
 		/// <summary>
@@ -248,21 +246,21 @@ namespace math
 		/// <returns> The dot product of the current vector with the given <paramref name="v"/>. </returns>
 		constexpr Real Dot(const Vector2D& v) const noexcept
 		{
-			return (x * v.x + y * v.y);
+			return x * v.x + y * v.y;
 		}
 
 		/// <summary> Finds and returns the component that is the greatest. </summary>
 		/// <returns> The greatest component of the current two-dimensional vector. </returns>
 		constexpr Real Max() const noexcept
 		{
-			return (x > y) ? x : y;
+			return x > y ? x : y;
 		}
 
 		/// <summary> Rotates the vector by a given <paramref name="angle"/>. </summary>
 		/// <param name="angle"> The angle to rotate the vector by. </param>
 		/// <returns> The two-dimensional vector of the result of rotation. </returns>
-		Vector2D Rotate(const Angle& angle);
-	public:
+		Vector2D Rotate(const Angle& angle) const;
+
 		friend std::ostream& operator<<(std::ostream& out, const Vector2D& vector)
 		{
 			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.y << ")";
@@ -271,7 +269,6 @@ namespace math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	public:
 		/// <summary>The X component value of the two-dimensional vector.</summary>
 		Real x;
 		/// <summary>The Y component value of the two-dimensional vector.</summary>
@@ -290,12 +287,11 @@ namespace math
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		/// <summary>
 		/// Three-dimensional vector default constructor. It initializes the X, Y and Z components to value <code>0.0</code>.
 		/// </summary>
 		MATH_API constexpr Vector3D() noexcept:
-			Vector3D(REAL_ZERO)
+		Vector3D(REAL_ZERO)
 		{
 		}
 
@@ -304,7 +300,7 @@ namespace math
 		/// </summary>
 		/// <param name="xyz"> The value that each component of the vector will be initialized with. </param>
 		MATH_API constexpr explicit Vector3D(Real xyz) noexcept :
-			Vector3D(xyz, xyz, xyz)
+		Vector3D(xyz, xyz, xyz)
 		{
 		}
 
@@ -316,7 +312,7 @@ namespace math
 		/// <param name="_y"> The value Y component of the vector will be initialized with. </param>
 		/// <param name="_z"> The value Z component of the vector will be initialized with. </param>
 		MATH_API constexpr Vector3D(Real _x, Real _y, Real _z) noexcept :
-			x(_x),
+		x(_x),
 			y(_y),
 			z(_z)
 		{
@@ -355,11 +351,10 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		inline void Set(Real _x, Real _y, Real _z) noexcept { x = _x; y = _y; z = _z; }
-		inline void Increase(Real _x, Real _y, Real _z) noexcept { x += _x; y += _y; z += _z; }
-		inline void Increase(const Vector3D& translation) noexcept { operator+=(translation); }
-		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
+		void Set(Real _x, Real _y, Real _z) noexcept { x = _x; y = _y; z = _z; }
+		void Increase(Real _x, Real _y, Real _z) noexcept { x += _x; y += _y; z += _z; }
+		void Increase(const Vector3D& translation) noexcept { operator+=(translation); }
+		void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
 
 		constexpr Real SumOfComponents() const noexcept { return x + y + z; }
 		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y) + Absolute(z); }
@@ -450,10 +445,10 @@ namespace math
 		MATH_API Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const;
 		Vector3D Max(const Vector3D& v) const;
 #endif
-		
-		Vector3D operator-() const { return Vector3D(-x, -y, -z); };
-		Vector3D operator*(Real s) const { return Vector3D(s * x, s * y, s * z); };
-		Vector3D operator/(Real s) const { return Vector3D(x / s, y / s, z / s); };
+
+		Vector3D operator-() const { return Vector3D(-x, -y, -z); }
+		Vector3D operator*(Real s) const { return Vector3D(s * x, s * y, s * z); }
+		Vector3D operator/(Real s) const { return Vector3D(x / s, y / s, z / s); }
 
 		MATH_API Vector3D& operator+=(const Vector3D& v) noexcept;
 		MATH_API Vector3D& operator-=(const Vector3D& v) noexcept;
@@ -466,7 +461,7 @@ namespace math
 
 		Vector3D Normalized() const
 		{
-			Real length = Length();
+			const auto length = Length();
 			return Vector3D(x / length, y / length, z / length);
 		}
 		Vector3D& Normalize()
@@ -479,29 +474,29 @@ namespace math
 			//			return;
 			//		}
 			//#endif
-			(*this) /= Length();
+			*this /= Length();
 			return *this;
 		}
 		MATH_API bool IsNormalized() const;
 
 		//Vector3D Rotate(Real angle);
-		Vector3D Rotate(const Vector3D& axis, const Angle& angle); // TODO: Possible improvement by passing axis by value. Check that!
+		Vector3D Rotate(const Vector3D& axis, const Angle& angle) const; // TODO: Possible improvement by passing axis by value. Check that!
 		MATH_API Vector3D Rotate(const Quaternion& rotation) const;
 
 		Real Dot(const Vector3D& v) const
 		{
-			return (x * v.x + y * v.y + z * v.z);
+			return x * v.x + y * v.y + z * v.z;
 		}
 
 		Real Max() const;
 
 		// vector swizzling
-		Vector2D GetXY() const { return Vector2D(x, y); }
-		Vector2D GetXZ() const { return Vector2D(x, z); }
-		Vector2D GetYZ() const { return Vector2D(y, z); }
-		Vector2D GetYX() const { return Vector2D(y, x); }
-		Vector2D GetZX() const { return Vector2D(z, x); }
-		Vector2D GetZY() const { return Vector2D(z, y); }
+		Vector2D GetXy() const { return Vector2D(x, y); }
+		Vector2D GetXz() const { return Vector2D(x, z); }
+		Vector2D GetYz() const { return Vector2D(y, z); }
+		Vector2D GetYx() const { return Vector2D(y, x); }
+		Vector2D GetZx() const { return Vector2D(z, x); }
+		Vector2D GetZy() const { return Vector2D(z, y); }
 
 		void Approach(Real step, const Vector3D& approachedVector);
 		MATH_API void ApproachX(Real step, Real approachedValue);
@@ -517,7 +512,6 @@ namespace math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	public:
 		Real x;
 		Real y;
 		Real z;
@@ -531,9 +525,8 @@ namespace math
 	struct Vector4D
 	{
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		MATH_API constexpr Vector4D() noexcept :
-			Vector4D(REAL_ZERO)
+		Vector4D(REAL_ZERO)
 		{
 		}
 		MATH_API constexpr explicit Vector4D(Real xyzw) noexcept :
@@ -556,12 +549,11 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		inline void Set(Real _x, Real _y, Real _z, Real _w) noexcept { x = _x; y = _y; z = _z; w = _w; }
-		inline void Increase(Real _x, Real _y, Real _z, Real _w) noexcept { x += _x; y += _y; z += _z; w += _w; }
-		inline void Increase(const Vector4D& translation) noexcept { operator+=(translation); }
-		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO); }
-		
+		void Set(Real _x, Real _y, Real _z, Real _w) noexcept { x = _x; y = _y; z = _z; w = _w; }
+		void Increase(Real _x, Real _y, Real _z, Real _w) noexcept { x += _x; y += _y; z += _z; w += _w; }
+		void Increase(const Vector4D& translation) noexcept { operator+=(translation); }
+		void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO); }
+
 		constexpr Real SumOfComponents() const noexcept { return x + y + z + w; }
 		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y) + Absolute(z) + Absolute(w); }
 
@@ -651,13 +643,13 @@ namespace math
 
 		Vector4D Normalized() const
 		{
-			Vector4D copyVec(*this);
+			auto copyVec(*this);
 			copyVec.Normalize();
 			return copyVec;
 		}
 		Vector4D& Normalize()
 		{
-			Real length = LengthSquared();
+			const auto length = LengthSquared();
 			//#ifdef _DEBUG
 			//		if (AlmostEqual(length, REAL_ZERO))
 			//		{
@@ -665,49 +657,49 @@ namespace math
 			//			return;
 			//		}
 			//#endif
-			(*this) /= static_cast<Real>(sqrt(length));
+			*this /= static_cast<Real>(sqrt(length));
 			return *this;
 		}
 		MATH_API bool IsNormalized() const;
 
 		Real Dot(const Vector4D& v) const
 		{
-			return (x * v.x + y * v.y + z * v.z + w * v.w);
+			return x * v.x + y * v.y + z * v.z + w * v.w;
 		}
 
 		Real Max() const;
 
 		/* ==================== Vector swizzling begin ==================== */
-		MATH_API Vector2D GetXY() const { return Vector2D(x, y); }
-		Vector2D GetXZ() const { return Vector2D(x, z); }
-		Vector2D GetYZ() const { return Vector2D(y, z); }
-		Vector2D GetYX() const { return Vector2D(y, x); }
-		Vector2D GetZX() const { return Vector2D(z, x); }
-		Vector2D GetZY() const { return Vector2D(z, y); }
-		MATH_API Vector3D GetXYZ() const { return Vector3D(x, y, z); }
-		Vector3D GetXYW() const { return Vector3D(x, y, w); }
-		Vector3D GetXZY() const { return Vector3D(x, z, y); }
-		Vector3D GetXZW() const { return Vector3D(x, z, w); }
-		Vector3D GetXWY() const { return Vector3D(x, w, y); }
-		Vector3D GetXWZ() const { return Vector3D(x, w, z); }
-		Vector3D GetYXZ() const { return Vector3D(y, x, z); }
-		Vector3D GetYXW() const { return Vector3D(y, x, w); }
-		Vector3D GetYZX() const { return Vector3D(y, z, x); }
-		Vector3D GetYZW() const { return Vector3D(y, z, w); }
-		Vector3D GetYWX() const { return Vector3D(y, w, x); }
-		Vector3D GetYWZ() const { return Vector3D(y, w, z); }
-		Vector3D GetZXY() const { return Vector3D(z, x, y); }
-		Vector3D GetZXW() const { return Vector3D(z, x, w); }
-		Vector3D GetZYX() const { return Vector3D(z, y, x); }
-		Vector3D GetZYW() const { return Vector3D(z, y, w); }
-		Vector3D GetZWX() const { return Vector3D(z, w, x); }
-		Vector3D GetZWY() const { return Vector3D(z, w, y); }
-		Vector3D GetWXY() const { return Vector3D(w, x, y); }
-		Vector3D GetWXZ() const { return Vector3D(w, x, z); }
-		Vector3D GetWYX() const { return Vector3D(w, y, x); }
-		Vector3D GetWYZ() const { return Vector3D(w, y, z); }
-		Vector3D GetWZX() const { return Vector3D(w, z, x); }
-		Vector3D GetWZY() const { return Vector3D(w, z, y); }
+		MATH_API Vector2D GetXy() const { return Vector2D(x, y); }
+		Vector2D GetXz() const { return Vector2D(x, z); }
+		Vector2D GetYz() const { return Vector2D(y, z); }
+		Vector2D GetYx() const { return Vector2D(y, x); }
+		Vector2D GetZx() const { return Vector2D(z, x); }
+		Vector2D GetZy() const { return Vector2D(z, y); }
+		MATH_API Vector3D GetXyz() const { return Vector3D(x, y, z); }
+		Vector3D GetXyw() const { return Vector3D(x, y, w); }
+		Vector3D GetXzy() const { return Vector3D(x, z, y); }
+		Vector3D GetXzw() const { return Vector3D(x, z, w); }
+		Vector3D GetXwy() const { return Vector3D(x, w, y); }
+		Vector3D GetXwz() const { return Vector3D(x, w, z); }
+		Vector3D GetYxz() const { return Vector3D(y, x, z); }
+		Vector3D GetYxw() const { return Vector3D(y, x, w); }
+		Vector3D GetYzx() const { return Vector3D(y, z, x); }
+		Vector3D GetYzw() const { return Vector3D(y, z, w); }
+		Vector3D GetYwx() const { return Vector3D(y, w, x); }
+		Vector3D GetYwz() const { return Vector3D(y, w, z); }
+		Vector3D GetZxy() const { return Vector3D(z, x, y); }
+		Vector3D GetZxw() const { return Vector3D(z, x, w); }
+		Vector3D GetZyx() const { return Vector3D(z, y, x); }
+		Vector3D GetZyw() const { return Vector3D(z, y, w); }
+		Vector3D GetZwx() const { return Vector3D(z, w, x); }
+		Vector3D GetZwy() const { return Vector3D(z, w, y); }
+		Vector3D GetWxy() const { return Vector3D(w, x, y); }
+		Vector3D GetWxz() const { return Vector3D(w, x, z); }
+		Vector3D GetWyx() const { return Vector3D(w, y, x); }
+		Vector3D GetWyz() const { return Vector3D(w, y, z); }
+		Vector3D GetWzx() const { return Vector3D(w, z, x); }
+		Vector3D GetWzy() const { return Vector3D(w, z, y); }
 		/* ==================== Vector swizzling end ==================== */
 
 		void Approach(Real step, const Vector4D& approachedVector);
@@ -725,7 +717,6 @@ namespace math
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	public:
 		Real x;
 		Real y;
 		Real z;
@@ -736,8 +727,8 @@ namespace math
 
 	namespace interpolation
 	{
-		MATH_API math::Real BarycentricInterpolation(const Vector3D& pos1, const Vector3D& pos2, const Vector3D& pos3, Real xPos, Real zPos);
-		MATH_API math::Real BarycentricInterpolation(Real xPos1, Real yPos1, Real zPos1,
+		MATH_API Real BarycentricInterpolation(const Vector3D& pos1, const Vector3D& pos2, const Vector3D& pos3, Real xPos, Real zPos);
+		MATH_API Real BarycentricInterpolation(Real xPos1, Real yPos1, Real zPos1,
 			Real xPos2, Real yPos2, Real zPos2,
 			Real xPos3, Real yPos3, Real zPos3,
 			Real xPos, Real zPos);

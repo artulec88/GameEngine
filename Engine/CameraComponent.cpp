@@ -9,7 +9,7 @@
 /* ==================== CameraComponent class implementation begin ==================== */
 engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
 	GameComponent(),
-	Rendering::BaseCamera(projectionMatrix, sensitivity),
+	rendering::BaseCamera(projectionMatrix, sensitivity),
 	IActionHandler(),
 	IStateHandler(),
 	IRangeHandler(),
@@ -19,7 +19,7 @@ engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix,
 
 engine::CameraComponent::CameraComponent(const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
 	GameComponent(),
-	Rendering::BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+	rendering::BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	IActionHandler(),
 	IStateHandler(),
 	IRangeHandler(),
@@ -34,7 +34,7 @@ engine::CameraComponent::~CameraComponent(void)
 
 engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
 	GameComponent(std::move(cameraComponent)),
-	Rendering::BaseCamera(std::move(cameraComponent)),
+	rendering::BaseCamera(std::move(cameraComponent)),
 	IActionHandler(std::move(cameraComponent)),
 	IStateHandler(std::move(cameraComponent)),
 	IRangeHandler(std::move(cameraComponent)),
@@ -47,7 +47,7 @@ engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
 engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& cameraComponent)
 {
 	GameComponent::operator=(std::move(cameraComponent));
-	Rendering::BaseCamera::operator=(std::move(cameraComponent));
+	rendering::BaseCamera::operator=(std::move(cameraComponent));
 	IActionHandler::operator=(std::move(cameraComponent));
 	IStateHandler::operator=(std::move(cameraComponent));
 	IRangeHandler::operator=(std::move(cameraComponent));

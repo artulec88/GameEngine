@@ -2,7 +2,7 @@
 #include "Terrain.h"
 
 
-Rendering::Terrain::Terrain(const math::Surface& surface, const math::Transform& terrainTransform) :
+rendering::Terrain::Terrain(const math::Surface& surface, const math::Transform& terrainTransform) :
 	//m_terrainMesh(terrainMesh),
 	m_x(0),
 	m_z(0),
@@ -16,11 +16,11 @@ Rendering::Terrain::Terrain(const math::Surface& surface, const math::Transform&
 }
 
 
-Rendering::Terrain::~Terrain()
+rendering::Terrain::~Terrain()
 {
 }
 
-math::Real Rendering::Terrain::GetHeightAt(math::Real x, math::Real z) const
+math::Real rendering::Terrain::GetHeightAt(math::Real x, math::Real z) const
 {
 #ifdef HEIGHTS_KD_TREE
 #ifdef DEBUG_LOGGING_ENABLED

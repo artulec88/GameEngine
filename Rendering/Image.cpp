@@ -3,7 +3,7 @@
 #include "stb_image.h"
 
 
-Rendering::Image::Image(const std::string& fileName, int desiredComponentsCount /* = 0 */) :
+rendering::Image::Image(const std::string& fileName, int desiredComponentsCount /* = 0 */) :
 	m_width(0),
 	m_height(0),
 	m_componentsCount(0)
@@ -18,7 +18,7 @@ Rendering::Image::Image(const std::string& fileName, int desiredComponentsCount 
 	DEBUG_LOG_RENDERING("Loading texture from file \"", fileName, "\" finished successfully");
 }
 
-Rendering::Image::~Image()
+rendering::Image::~Image()
 {
 	if (m_data != nullptr)
 	{
@@ -27,7 +27,7 @@ Rendering::Image::~Image()
 	}
 }
 
-Rendering::Image::Image(Image&& image) noexcept:
+rendering::Image::Image(Image&& image) noexcept:
 	m_data(image.m_data),
 	m_width(image.m_width),
 	m_height(image.m_height),
@@ -36,7 +36,7 @@ Rendering::Image::Image(Image&& image) noexcept:
 	image.m_data = nullptr;
 }
 
-unsigned char Rendering::Image::GetPixelAt(int row, int column) const
+unsigned char rendering::Image::GetPixelAt(int row, int column) const
 {
 	CHECK_CONDITION_RETURN_RENDERING(m_data != nullptr, 0, Utility::Logging::ERR,
 		"Cannot determine the pixel value on (", x, ", ", z, ") position. Image data is NULL.");

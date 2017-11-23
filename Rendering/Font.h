@@ -9,9 +9,9 @@
 #include "Math\Math.h"
 #include <map>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Text
+	namespace text
 	{
 		/// <summary>
 		/// The representation of the font in the rendering library.
@@ -42,20 +42,30 @@ namespace Rendering
 			/// <param name="fontTextureAtlasFileName"> The file name of the font texture atlas containing the graphical representation for all characters. </param>
 			/// <param name="fontMetaDataFileName"> The file name of the font meta data containing the information about each character. </param>
 			Font(const Shader* fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
-			/// <summary> Font destructor. </summary>
-			~Font(void);
-			/// <summary> Font copy constructor. </summary>
-			Font(const Font& font) = delete;
-			/// <summary> Font move constructor. </summary>
-			Font(Font&& font);
-			/// <summary> Font copy assignment operator. </summary>
-			Font& operator=(const Font& font) = delete;
-			/// <summary> Font move assignment operator. </summary>
-			Font& operator=(Font&& font) = delete;
-		/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
-		public:
+			/// <summary> Font destructor. </summary>
+			~Font();
+
+			/// <summary> Font copy constructor. </summary>
+			/// <param name="font">The reference to font to copy construct from. </param>
+			Font(const Font& font) = delete;
+
+			/// <summary> Font move constructor. </summary>
+			/// <param name="font">The r-value reference to font to move construct from. </param>
+			Font(Font&& font) noexcept;
+
+			/// <summary> Font copy assignment operator. </summary>
+			/// <param name="font">The reference to the font to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned font. </returns>
+			Font& operator=(const Font& font) = delete;
+
+			/// <summary> Font move assignment operator. </summary>
+			/// <param name="font">The r-value reference to the font to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned font. </returns>
+			Font& operator=(Font&& font) = delete;
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
 			const Character& GetCharacter(int asciiCode) const;
 			math::Real GetSpaceWidth() const { return m_spaceWidth; }
 			const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
@@ -67,7 +77,6 @@ namespace Rendering
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			const Shader* m_shader;
 			Texture m_textureAtlas;
 			const std::string m_metaDataFileName;
@@ -99,8 +108,8 @@ namespace Rendering
 			{
 				return font1.GetMetaDataFileName().compare(font2.GetMetaDataFileName()) < 0;
 			}
-		};
-	} /* end namespace Text */
-} /* end namespace Rendering */
+		}; /* end struct FontComparator */
+	} /* end namespace text */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_TEXT_FONT_H__ */

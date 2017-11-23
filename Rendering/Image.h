@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-namespace Rendering
+namespace rendering
 {
 
 	/// <summary>
@@ -65,6 +65,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Image */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_IMAGE_H__ */

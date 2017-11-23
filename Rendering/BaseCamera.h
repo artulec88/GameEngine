@@ -5,10 +5,10 @@
 
 #include "Math/Transform.h"
 #include "Math/Vector.h"
-#include "Math\Matrix.h"
-#include "Math\Angle.h"
+#include "Math/Matrix.h"
+#include "Math/Angle.h"
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// The base class representing the camera.
@@ -16,7 +16,6 @@ namespace Rendering
 	class BaseCamera
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -27,6 +26,7 @@ namespace Rendering
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
 		RENDERING_API BaseCamera(const math::Matrix4D& projectionMatrix, math::Real sensitivity);
+
 		/// <summary>
 		/// The constructor of the base camera object.
 		/// </summary>
@@ -35,25 +35,33 @@ namespace Rendering
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API BaseCamera(const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity);
+		RENDERING_API BaseCamera(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity);
 
 		/// <summary>
 		/// The destructor of the camera object.
 		/// </summary>
-		RENDERING_API virtual ~BaseCamera(void);
+		RENDERING_API virtual ~BaseCamera();
 
 		/// <summary> The base camera copy constructor. </summary>
+		/// <param name="baseCamera"> The reference to the base camera to copy construct from. </param>
 		BaseCamera(const BaseCamera& baseCamera) = default;
+
 		/// <summary> The base camera move constructor. </summary>
+		/// <param name="baseCamera"> The r-value reference to the base camera to move construct from. </param>
 		BaseCamera(BaseCamera&& baseCamera) = default;
+
 		/// <summary> The base camera copy assignment operator. </summary>
+		/// <param name="baseCamera"> The reference to the base camera to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned base camera. </returns>
 		BaseCamera& operator=(const BaseCamera& baseCamera) = default;
+
 		/// <summary> The base camera move assignment operator. </summary>
+		/// <param name="baseCamera"> The r-value reference to the base camera to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned base camera. </returns>
 		BaseCamera& operator=(BaseCamera&& baseCamera) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Returns the reference to the transform of the camera. </summary>
 		/// <returns> The reference to the transform of the camera. </returns>
 		RENDERING_API virtual math::Transform& GetTransform() = 0;
@@ -68,7 +76,7 @@ namespace Rendering
 
 		/// <summary> Sets the sensitivity of the camera. </summary>
 		/// <param name="sensitivity"> The new sensitivity of the camera. </param>
-		RENDERING_API void SetSensitivity(math::Real sensitivity) { m_sensitivity = sensitivity; }
+		RENDERING_API void SetSensitivity(const math::Real sensitivity) { m_sensitivity = sensitivity; }
 
 		/// <summary> Activates the camera. </summary>
 		RENDERING_API void Activate() { m_isActive = true; }
@@ -78,10 +86,10 @@ namespace Rendering
 
 		/// <summary> Checks whether the camera is active (<code>true</code> is returned) or not (<code>false</code> is returned). </summary>
 		/// <returns> <code>true</code> when the camera is currently active and <code>false</code> otherwise. </returns>
-		RENDERING_API inline bool IsActive() const { return m_isActive; }
+		RENDERING_API bool IsActive() const { return m_isActive; }
 
-		RENDERING_API inline const math::Matrix4D& GetProjection() const { return m_projection; }
-		RENDERING_API inline void SetProjection(const math::Matrix4D& projection) { m_projection = projection; }
+		RENDERING_API const math::Matrix4D& GetProjection() const { return m_projection; }
+		RENDERING_API void SetProjection(const math::Matrix4D& projection) { m_projection = projection; }
 		RENDERING_API math::Matrix4D GetViewMatrix() const;
 		RENDERING_API math::Matrix4D GetViewProjection() const;
 
@@ -125,6 +133,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class BaseCamera */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_CAMERA_H__ */

@@ -2,7 +2,7 @@
 #include "BillboardRendererComponent.h"
 #include "Rendering\Shader.h"
 
-engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMeshID, Rendering::Material* billboardMaterial) :
+engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMeshID, rendering::Material* billboardMaterial) :
 	GameComponent(),
 	IRenderable(),
 	m_billboardMeshID(billboardMeshID),
@@ -34,7 +34,7 @@ engine::BillboardsRendererComponent& engine::BillboardsRendererComponent::operat
 	return *this;
 }
 
-void engine::BillboardsRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::BillboardsRendererComponent::Render(int shaderID, rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering billboards started");
 	//shader->Bind();

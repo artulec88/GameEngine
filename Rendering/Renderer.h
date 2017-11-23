@@ -3,9 +3,7 @@
 
 #include "Rendering.h"
 #include "Camera.h"
-#include "DirectionalLight.h"
 #include "PointLight.h"
-#include "SpotLight.h"
 #include "MappedValues.h"
 #include "Material.h"
 #include "BaseLight.h"
@@ -13,7 +11,6 @@
 #include "Font.h"
 #include "GuiControl.h"
 #include "CubeShadowMap.h"
-#include "Particle.h"
 #include "FogInfo.h"
 #include "ParticlesContainer.h"
 #include "ParticlesSystem.h"
@@ -21,16 +18,13 @@
 #include "MeshFactory.h"
 #include "ShaderFactory.h"
 #include "TextureFactory.h"
-#include "GuiControl.h"
 
-#include "Math\Angle.h"
 #include "Math/Vector.h"
-#include "Math\Plane.h"
+#include "Math/Plane.h"
 #include "Math/Transform.h"
 #ifdef DEBUG_RENDERING_ENABLED
-#include "Math\Sphere.h"
 #include "Math/AABB.h"
-#include "Math\OBB.h"
+#include "Math/OBB.h"
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 #include "Math/Statistics.h"
@@ -38,14 +32,14 @@
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
 #include <string>
 #include <vector>
 #include <map>
 
-namespace Rendering
+namespace rendering
 {
 
 	class Mesh;
@@ -53,6 +47,16 @@ namespace Rendering
 	class Renderer
 	{
 		/* ==================== Static variables begin ==================== */
+	public:
+		RENDERING_API static void ClearScreen(const Color& clearColor)
+		{
+			ClearScreen(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
+		}
+		RENDERING_API static void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+		{
+			glClearColor(red, green, blue, alpha);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 	private:
 		static constexpr int SHADOW_MAPS_COUNT = 11;
 
@@ -89,10 +93,12 @@ namespace Rendering
 
 		/// <summary> Rendering engine copy assignment operator. </summary>
 		/// <param name="renderer"> The rendering engine to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned rendering engine. </returns>
 		Renderer& operator=(const Renderer& renderer) = delete;
 
 		/// <summary> Rendering engine move assignment operator. </summary>
 		/// <param name="renderer"> The rendering engine to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned rendering engine. </returns>
 		Renderer& operator=(Renderer&& renderer) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -110,9 +116,9 @@ namespace Rendering
 		RENDERING_API bool InitShadowMap();
 		RENDERING_API void FinalizeShadowMapRendering(int filterShaderID);
 
-		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, int guiControlShaderID) const;
+		RENDERING_API void RenderGuiControl(const controls::GuiControl& guiControl, int guiControlShaderID) const;
 
-		RENDERING_API void RenderParticles(int particleShaderID, const Particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(int particleShaderID, const particles::ParticlesSystem& particleSystem) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -141,7 +147,7 @@ namespace Rendering
 		{
 			return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory);
 		}
-		RENDERING_API const Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
+		RENDERING_API const particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
 		{
 			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
@@ -151,40 +157,22 @@ namespace Rendering
 		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
 		RENDERING_API const Shader* GetShader(const int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
 
-		RENDERING_API const Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-		RENDERING_API const Text::Font* GetFont(int fontID) const;
+		RENDERING_API const text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		RENDERING_API const text::Font* GetFont(int fontID) const;
 
 		RENDERING_API void BindShader(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->Bind(); }
 		RENDERING_API void UpdateRendererUniforms(const int shaderID) const { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }
 
 		RENDERING_API void ClearScreen() const
 		{
-			if (m_fogInfo.IsEnabled())
-			{
-				//math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
-				glClearColor(m_fogInfo.GetColor().GetRed(), m_fogInfo.GetColor().GetGreen(), m_fogInfo.GetColor().GetBlue(), m_fogInfo.GetColor().GetAlpha());
-			}
-			else
-			{
-				glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
-			}
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		}
-		RENDERING_API void ClearScreen(const Color& clearColor) const
-		{
-			glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		}
-		RENDERING_API void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) const
-		{
-			glClearColor(red, green, blue, alpha);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
+			ClearScreen(m_fogInfo.IsEnabled() ? m_fogInfo.GetColor() : m_backgroundColor);
 		}
 
 		/// <summary>
 		/// Enables or disables the depth test in the rendering engine.
 		/// </summary>
-		RENDERING_API  void SetDepthTest(bool enabled)
+		RENDERING_API void SetDepthTest(bool enabled)
 		{
 			enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 		}
@@ -193,7 +181,7 @@ namespace Rendering
 		RENDERING_API void SetCullFaceFront() const { glCullFace(GL_FRONT); }
 		RENDERING_API void SetCullFaceBack() const { glCullFace(GL_BACK); }
 		RENDERING_API void SetCullFaceFrontAndBack() const { glCullFace(GL_FRONT_AND_BACK); }
-		RENDERING_API void SetCullFaceDefault() const { glCullFace(Rendering::glCullFaceMode); }
+		RENDERING_API void SetCullFaceDefault() const { glCullFace(rendering::glCullFaceMode); }
 		RENDERING_API void SetDepthFuncNever() const { glDepthFunc(GL_NEVER); }
 		RENDERING_API void SetDepthFuncLess() const { glDepthFunc(GL_LESS); }
 		RENDERING_API void SetDepthFuncEqual() const { glDepthFunc(GL_EQUAL); }
@@ -202,14 +190,14 @@ namespace Rendering
 		RENDERING_API void SetDepthFuncNotEqual() const { glDepthFunc(GL_NOTEQUAL); }
 		RENDERING_API void SetDepthFuncGreaterOrEqual() const { glDepthFunc(GL_GEQUAL); }
 		RENDERING_API void SetDepthFuncAlways() const { glDepthFunc(GL_ALWAYS); }
-		RENDERING_API void SetDepthFuncDefault() const { glDepthFunc(Rendering::glDepthTestFunc); }
+		RENDERING_API void SetDepthFuncDefault() const { glDepthFunc(rendering::glDepthTestFunc); }
 
-		const Lighting::BaseLight* GetCurrentLight() const
+		const lighting::BaseLight* GetCurrentLight() const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != nullptr, Utility::Logging::ERR, "Current light is NULL.");
 			return m_currentLight;
 		}
-		const Lighting::BaseLight* SetCurrentLight(const Lighting::BaseLight* light)
+		const lighting::BaseLight* SetCurrentLight(const lighting::BaseLight* light)
 		{
 			// TODO: Null check?
 			m_currentLight = light;
@@ -220,11 +208,11 @@ namespace Rendering
 
 			return m_currentLight;
 		}
-		const Lighting::PointLight* GetCurrentPointLight() const
+		const lighting::PointLight* GetCurrentPointLight() const
 		{
 			return m_currentPointLight;
 		}
-		const Lighting::PointLight* SetCurrentPointLight(const Lighting::PointLight* pointLight)
+		const lighting::PointLight* SetCurrentPointLight(const lighting::PointLight* pointLight)
 		{
 			// TODO: Index range checking
 			m_currentPointLight = pointLight;
@@ -232,7 +220,7 @@ namespace Rendering
 		}
 		//const Lighting::SpotLight* GetCurrentSpotLight() const { return m_currentSpotLight; }
 
-		const FogEffect::FogInfo& GetFogInfo() const { return m_fogInfo; }
+		const fog_effect::FogInfo& GetFogInfo() const { return m_fogInfo; }
 
 		const BaseCamera& GetCurrentCamera() const
 		{
@@ -359,28 +347,28 @@ namespace Rendering
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		int m_windowWidth, m_windowHeight;
-		const Rendering::Aliasing::AntiAliasingMethod m_antiAliasingMethod;
+		const rendering::Aliasing::AntiAliasingMethod m_antiAliasingMethod;
 		// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 		CONST_IF_TWEAK_BAR_DISABLED bool m_applyFilterEnabled;
 		CONST_IF_TWEAK_BAR_DISABLED Color m_backgroundColor;
 		//bool m_shadowsEnabled;
 		//bool m_pointLightShadowsEnabled;
 
-		CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogInfo m_fogInfo;
+		CONST_IF_TWEAK_BAR_DISABLED fog_effect::FogInfo m_fogInfo;
 
 		CONST_IF_TWEAK_BAR_DISABLED bool m_ambientLightEnabled;
-		const Lighting::BaseLight* m_currentLight;
+		const lighting::BaseLight* m_currentLight;
 		/// <summary>
 		/// Current point light.
 		/// </summary>
-		const Lighting::PointLight* m_currentPointLight;
+		const lighting::PointLight* m_currentPointLight;
 		//Lighting::SpotLight* m_currentSpotLight; // current spot light
 
 		const BaseCamera* m_currentCamera;
 		const BaseCamera* m_tempCamera;
 
 		ShaderFactory m_shaderFactory;
-		Text::FontFactory m_fontFactory;
+		text::FontFactory m_fontFactory;
 		MeshFactory m_meshFactory;
 		TextureFactory m_textureFactory;
 
@@ -457,7 +445,7 @@ namespace Rendering
 
 
 #ifdef DEBUG_RENDERING_ENABLED
-		std::vector<std::unique_ptr<Controls::GuiControl>> m_guiControls; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
+		std::vector<std::unique_ptr<controls::GuiControl>> m_guiControls; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
 #endif
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
@@ -466,6 +454,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Renderer */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_RENDERER_H__ */

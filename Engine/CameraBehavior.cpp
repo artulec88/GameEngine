@@ -25,17 +25,17 @@ engine::StaticCameraBehavior::~StaticCameraBehavior()
 {
 }
 
-void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, Actions::Action action)
+void engine::StaticCameraBehavior::Handle(rendering::BaseCamera* camera, Actions::Action action)
 {
 	WARNING_LOG_ENGINE("Handling action ", action, " by the static camera.");
 }
 
-void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, States::State state)
+void engine::StaticCameraBehavior::Handle(rendering::BaseCamera* camera, States::State state)
 {
 	WARNING_LOG_ENGINE("Handling state ", state, " by the static camera.");
 }
 
-void engine::StaticCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
+void engine::StaticCameraBehavior::Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the static camera.");
 }
@@ -52,17 +52,17 @@ engine::RotationCameraBehavior::~RotationCameraBehavior()
 {
 }
 
-void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, Actions::Action action)
+void engine::RotationCameraBehavior::Handle(rendering::BaseCamera* camera, Actions::Action action)
 {
 	WARNING_LOG_ENGINE("Handling action ", action, " by the rotation camera.");
 }
 
-void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, States::State state)
+void engine::RotationCameraBehavior::Handle(rendering::BaseCamera* camera, States::State state)
 {
 	WARNING_LOG_ENGINE("Handling state ", state, " by the rotation camera.");
 }
 
-void engine::RotationCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
+void engine::RotationCameraBehavior::Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the rotation camera.");
 }
@@ -79,17 +79,17 @@ engine::MovementCameraBehavior::~MovementCameraBehavior()
 {
 }
 
-void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, Actions::Action action)
+void engine::MovementCameraBehavior::Handle(rendering::BaseCamera* camera, Actions::Action action)
 {
 	WARNING_LOG_ENGINE("Handling action ", action, " by the movement camera.");
 }
 
-void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, States::State state)
+void engine::MovementCameraBehavior::Handle(rendering::BaseCamera* camera, States::State state)
 {
 	WARNING_LOG_ENGINE("Handling state ", state, " by the movement camera.");
 }
 
-void engine::MovementCameraBehavior::Handle(Rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
+void engine::MovementCameraBehavior::Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value)
 {
 	WARNING_LOG_ENGINE("Handling range ", range, " with value ", value, " by the movement camera.");
 }

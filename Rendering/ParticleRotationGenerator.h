@@ -7,22 +7,22 @@
 #include "Math\RandomGenerator.h"
 #include "Math/AABB.h"
 #include "Math\Ellipsoid.h"
-#include "Math\Plane.h"
+#include "Math/Plane.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Generators
+		namespace generators
 		{
-			namespace RotationGeneratorTypes
+			namespace rotation_generator_types
 			{
 				enum RotationGeneratorType
 				{
 					CONSTANT = 0,
 					RANGE
 				}; /* end enum RotationGeneratorType */
-			} /* end namespace RotationGeneratorTypes */
+			} /* end namespace rotation_generator_types */
 
 			/// <summary>
 			/// Generates rotation for the particle.
@@ -35,7 +35,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				RotationGenerator() :
-					ParticleAttributeGenerator(Attributes::ROTATION)
+					ParticleAttributeGenerator(attributes::ROTATION)
 				{
 				}
 				virtual ~RotationGenerator()
@@ -45,14 +45,13 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				inline void Set(ParticlesContainer* particleContainer, size_t i, const math::Angle& rotationAngle)
+				void Set(ParticlesContainer* particleContainer, size_t i, const math::Angle& rotationAngle)
 				{
 					particleContainer->SetRotation(i, rotationAngle);
 				}
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
-			private:
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RotationGenerator */
 
@@ -66,13 +65,12 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API ConstantRotationGenerator(const math::Angle& angle);
+				RENDERING_API explicit ConstantRotationGenerator(const math::Angle& angle);
 				RENDERING_API virtual ~ConstantRotationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -96,8 +94,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -107,8 +104,8 @@ namespace Rendering
 				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeRotationGenerator */
-		} /* end namespace Generators */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace generators */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_ROTATION_GENERATOR_H__ */

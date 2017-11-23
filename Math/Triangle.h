@@ -50,7 +50,6 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		/// <summary> Calculates and returns the perimeter (circumference) of the triangle. </summary>
 		/// <returns> The perimeter (circumference) of the triangle. </returns>
 		MATH_API Real CalculatePerimeter() const noexcept;
@@ -185,7 +184,6 @@ namespace math
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		Vector3D m_v1;
 		Vector3D m_v2;
 		Vector3D m_v3;

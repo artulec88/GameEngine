@@ -38,18 +38,18 @@ namespace math
 		struct Row
 		{
 			constexpr explicit Row(size_t r) :
-				m_i(r)
+				index(r)
 			{
 			}
 
 			constexpr T operator[] (size_t j) const
 			{
 				// TODO: unreachable code
-				return m_i < Rows && j < Cols ? j == m_i : (throw "out of range", -1);
-				//return m_i == j;
+				return index < Rows && j < Cols ? j == index : (throw "out of range", -1);
+				//return index == j;
 			}
 
-			const size_t m_i;
+			const size_t index;
 		};
 
 		constexpr Row operator[] (size_t i) const { return Row(i); }

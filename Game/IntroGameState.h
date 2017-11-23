@@ -35,7 +35,7 @@ namespace Game
 		void Handle(engine::States::State state) override;
 		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		void Render(Rendering::Renderer* renderer) const override;
+		void Render(rendering::Renderer* renderer) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

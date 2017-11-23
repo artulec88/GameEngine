@@ -10,7 +10,7 @@
 
 ///* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
-Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::string& fileName) :
+rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::string& fileName) :
 	m_programID(glCreateProgram())
 {
 	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
@@ -18,16 +18,16 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 
 	std::string shaderText = LoadShaderData(directoryPath, fileName);
 	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
-	bool geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
+	const auto geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
 
 	/**
 	* TODO: Vertex shader text should only contain the shader file content in the #if defined(VS_BUILD) block.
 	* Analogically, the fragment shader text should only contain the content in the #if defined(FS_BUILD) block.
 	* The same should apply to the geometry shader text.
 	*/
-	std::string vertexShaderText = "#version " + glslVersion + "\n#define VS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
-	std::string geometryShaderText = "#version " + glslVersion + "\n#define GS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
-	std::string fragmentShaderText = "#version " + glslVersion + "\n#define FS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
+	const auto vertexShaderText = "#version " + glslVersion + "\n#define VS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
+	const auto geometryShaderText = "#version " + glslVersion + "\n#define GS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
+	const auto fragmentShaderText = "#version " + glslVersion + "\n#define FS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 
 	AddVertexShader(vertexShaderText);
 	if (geometryShaderPresent)
@@ -53,22 +53,22 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	//AddShaderUniforms(fragmentShaderText);
 
 #ifdef DELOCUST_LOGGING_ENABLED
-	//for (std::vector<Uniforms::UniformStruct>::const_iterator structUniformItr = m_structUniforms.begin(); structUniformItr != m_structUniforms.end(); ++structUniformItr)
+	//for (std::vector<uniforms::UniformStruct>::const_iterator structUniformItr = m_structUniforms.begin(); structUniformItr != m_structUniforms.end(); ++structUniformItr)
 	//{
 	//	DELOCUST_LOG_RENDERING("Struct uniform \"", structUniformItr->name, "\".");
-	//	for (std::vector<Uniforms::Uniform>::const_iterator structUniformUniformsItr = structUniformItr->uniforms.begin(); structUniformUniformsItr != structUniformItr->uniforms.end(); ++structUniformUniformsItr)
+	//	for (std::vector<uniforms::Uniform>::const_iterator structUniformUniformsItr = structUniformItr->uniforms.begin(); structUniformUniformsItr != structUniformItr->uniforms.end(); ++structUniformUniformsItr)
 	//	{
 	//		DELOCUST_LOG_RENDERING("Uniform \"", structUniformUniformsItr->name, "\" with type: ", structUniformUniformsItr->type, " has location: ", structUniformUniformsItr->location);
 	//	}
 	//}
-	for (std::vector<std::unique_ptr<Uniforms::UniformBase>>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
+	for (std::vector<std::unique_ptr<uniforms::UniformBase>>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
 	{
 		DELOCUST_LOG_RENDERING("Uniform: \"", (*uniformItr)->GetName(), "\" with type: ", (*uniformItr)->GetType());
 	}
 #endif
 }
 
-Rendering::ShaderData::~ShaderData()
+rendering::ShaderData::~ShaderData()
 {
 	DELOCUST_LOG_RENDERING("Destroying shader data for shader program: ", m_programID, ".");
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
@@ -82,7 +82,7 @@ Rendering::ShaderData::~ShaderData()
 	}
 }
 
-Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
+rendering::ShaderData::ShaderData(ShaderData&& shaderData) noexcept :
 	m_programID(std::move(shaderData.m_programID)),
 	m_shaders(std::move(shaderData.m_shaders)),
 	m_uniforms(std::move(shaderData.m_uniforms)),
@@ -99,7 +99,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	//shaderData.m_structUniforms.clear();
 }
 
-std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPath, const std::string& fileName) const
+std::string rendering::ShaderData::LoadShaderData(const std::string& directoryPath, const std::string& fileName) const
 {
 	DELOCUST_LOG_RENDERING("Loading shader data from file \"", fileName, "\"");
 
@@ -129,12 +129,12 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
 			//}
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, utility::logging::ERR, "Error while reading #include directive in the shader file \"", fileName, "\"");
-			std::string includeFileName = tokens[1];
+			const auto includeFileName = tokens[1];
 			//DEBUG_LOG_RENDERING("Tokens[1] = \"", tokens[1], "\". IncludeFileName=\"", includeFileName, "\"");
 			//includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
 			//DEBUG_LOG_RENDERING("Loading an include shader file \"", includeFileName, "\"");
 
-			std::string fragmentToAppend = LoadShaderData(directoryPath, includeFileName);
+			const auto fragmentToAppend = LoadShaderData(directoryPath, includeFileName);
 			output.append(fragmentToAppend + "\n");
 		}
 	}
@@ -142,17 +142,17 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 
 	DELOCUST_LOG_RENDERING("Shader \"", fileName, "\" text loaded");
 	/* ==================== Removing comments from the shader code begin ==================== */
-	size_t commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
+	auto commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
 	while (commentBegin != std::string::npos)
 	{
-		size_t commentEnd = output.find(MULTI_LINE_COMMENT_END, commentBegin);
+		const auto commentEnd = output.find(MULTI_LINE_COMMENT_END, commentBegin);
 		output.erase(commentBegin, commentEnd - commentBegin + std::string(MULTI_LINE_COMMENT_END).length());
 		commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
 	}
 	commentBegin = output.find(SINGLE_LINE_COMMENT);
 	while (commentBegin != std::string::npos)
 	{
-		size_t lineEnd = output.find("\n", commentBegin);
+		const auto lineEnd = output.find("\n", commentBegin);
 		output.erase(commentBegin, lineEnd - commentBegin);
 		commentBegin = output.find(SINGLE_LINE_COMMENT);
 	}
@@ -161,7 +161,7 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 	return output;
 }
 
-bool Rendering::ShaderData::Compile()
+bool rendering::ShaderData::Compile()
 {
 	bool compileSuccess = true;
 
@@ -172,7 +172,7 @@ bool Rendering::ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage;
 		errorMessage.reserve(infoLogLength + 1);
-		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
+		glGetProgramInfoLog(m_programID, infoLogLength, nullptr, &errorMessage[0]);
 		ERROR_LOG_RENDERING("Error linking shader program ", m_programID, ":\n", &errorMessage[0], "\r");
 	}
 
@@ -182,7 +182,7 @@ bool Rendering::ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage;
 		errorMessage.reserve(infoLogLength + 1);
-		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
+		glGetProgramInfoLog(m_programID, infoLogLength, nullptr, &errorMessage[0]);
 		ERROR_LOG_RENDERING("Error validating shader program ", m_programID, ":\n", &errorMessage[0], "\r");
 	}
 
@@ -191,9 +191,9 @@ bool Rendering::ShaderData::Compile()
 	return compileSuccess;
 }
 
-bool Rendering::ShaderData::CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength)
+bool rendering::ShaderData::CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength)
 {
-	GLint success = GL_FALSE;
+	auto success = GL_FALSE;
 	if (isProgram)
 	{
 		glGetProgramiv(shader, flag, &success);
@@ -208,17 +208,17 @@ bool Rendering::ShaderData::CheckForErrors(int shader, int flag, bool isProgram,
 	return (success == GL_FALSE); // means that an error has occurred
 }
 
-void Rendering::ShaderData::AddVertexShader(const std::string& vertexShaderText)
+void rendering::ShaderData::AddVertexShader(const std::string& vertexShaderText)
 {
 	AddProgram(vertexShaderText, GL_VERTEX_SHADER);
 }
 
-void Rendering::ShaderData::AddGeometryShader(const std::string& geometryShaderText)
+void rendering::ShaderData::AddGeometryShader(const std::string& geometryShaderText)
 {
 	AddProgram(geometryShaderText, GL_GEOMETRY_SHADER);
 }
 
-void Rendering::ShaderData::AddFragmentShader(const std::string& fragmentShaderText)
+void rendering::ShaderData::AddFragmentShader(const std::string& fragmentShaderText)
 {
 	AddProgram(fragmentShaderText, GL_FRAGMENT_SHADER);
 }
@@ -229,9 +229,9 @@ void Rendering::ShaderData::AddFragmentShader(const std::string& fragmentShaderT
 //	AddProgram(shaderText, GL_GEOMETRY_SHADER);
 //}
 
-void Rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum type)
+void rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 {
-	GLuint shader = glCreateShader(type);
+	const auto shader = glCreateShader(type);
 
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(shader != 0, utility::logging::EMERGENCY, "Error creating shader type: ", type);
 
@@ -248,7 +248,7 @@ void Rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum typ
 	{
 		std::vector<char> errorMessage;
 		errorMessage.reserve(infoLogLength + 1);
-		glGetShaderInfoLog(shader, infoLogLength, NULL, &errorMessage[0]);
+		glGetShaderInfoLog(shader, infoLogLength, nullptr, &errorMessage[0]);
 		ERROR_LOG_RENDERING("Error linking shader program: \"", &errorMessage[0], "\"");
 		//return;
 	}
@@ -257,15 +257,14 @@ void Rendering::ShaderData::AddProgram(const std::string& shaderText, GLenum typ
 	m_shaders.push_back(shader);
 }
 
-void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText)
+void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 {
-	int currentAttribLocation = 0;
-	size_t attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD);
+	auto currentAttribLocation = 0;
+	auto attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD);
 	while (attributeLocation != std::string::npos)
 	{
-		bool isCommented = false;
-		size_t lastLineEnd = vertexShaderText.rfind("\n", attributeLocation);
-
+		const auto lastLineEnd = vertexShaderText.rfind("\n", attributeLocation);
+		auto isCommented = false;
 		if (lastLineEnd != std::string::npos)
 		{
 			std::string potentialCommentSection = vertexShaderText.substr(lastLineEnd, attributeLocation - lastLineEnd);
@@ -276,22 +275,22 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 
 		if (!isCommented)
 		{
-			size_t locationLocation = vertexShaderText.find(LOCATION_KEYWORD, lastLineEnd);
+			const auto locationLocation = vertexShaderText.find(LOCATION_KEYWORD, lastLineEnd);
 			if (locationLocation != std::string::npos)
 			{
-				size_t equalLocation = vertexShaderText.find("=", locationLocation);
-				size_t begin = equalLocation + 1;
-				size_t end = vertexShaderText.find(";", begin);
+				const auto equalLocation = vertexShaderText.find("=", locationLocation);
+				const auto begin = equalLocation + 1;
+				auto end = vertexShaderText.find(";", begin);
 
 				std::string attributeLine = vertexShaderText.substr(begin, end - begin);
 				utility::string_utility::LeftTrim(attributeLine);
 
 				end = attributeLine.find(")");
-				std::string locationNumber = attributeLine.substr(0, end);
+				const auto locationNumber = attributeLine.substr(0, end);
 				currentAttribLocation = utility::string_utility::ToInt(locationNumber);
 			}
-			size_t begin = attributeLocation + std::string(ATTRIBUTE_KEYWORD).length() + 1;
-			size_t end = vertexShaderText.find(";", begin);
+			auto begin = attributeLocation + std::string(ATTRIBUTE_KEYWORD).length() + 1;
+			const auto end = vertexShaderText.find(";", begin);
 
 			std::string attributeLine = vertexShaderText.substr(begin, end - begin);
 
@@ -305,70 +304,70 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 	}
 }
 
-void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
+void rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
-	std::vector<Uniforms::UniformStructInfo> structInfos = FindUniformStructInfos(shaderText);
+	std::vector<uniforms::UniformStructInfo> structInfos = FindUniformStructInfos(shaderText);
 #ifdef DELOCUST_LOGGING_ENABLED
-	for (std::vector<Uniforms::UniformStructInfo>::const_iterator itr = structInfos.begin(); itr != structInfos.end(); ++itr)
+	for (auto itr = structInfos.begin(); itr != structInfos.end(); ++itr)
 	{
 		DELOCUST_LOG_RENDERING("struct.name = \"", itr->name, "\"");
-		for (std::vector<Uniforms::UniformInfo>::const_iterator innerItr = itr->uniformInfos.begin(); innerItr != itr->uniformInfos.end(); ++innerItr)
+		for (auto innerItr = itr->uniformInfos.begin(); innerItr != itr->uniformInfos.end(); ++innerItr)
 		{
 			DELOCUST_LOG_RENDERING("\t .memberName.name = \"", innerItr->name, "\"\t .memberName.uniformType = ", innerItr->type);
 		}
 	}
 #endif
 
-	size_t uniformKeywordLocation = shaderText.find(UNIFORM_KEYWORD);
+	auto uniformKeywordLocation = shaderText.find(UNIFORM_KEYWORD);
 	while (uniformKeywordLocation != std::string::npos)
 	{
-		size_t begin = uniformKeywordLocation + std::string(UNIFORM_KEYWORD).length();
-		size_t end = shaderText.find(";", begin);
-		std::string uniformLine = shaderText.substr(begin + 1, end - begin - 1);
+		auto begin = uniformKeywordLocation + std::string(UNIFORM_KEYWORD).length();
+		const auto end = shaderText.find(";", begin);
+		const auto uniformLine = shaderText.substr(begin + 1, end - begin - 1);
 
 		begin = uniformLine.find(" ");
 
 		const std::string uniformName = uniformLine.substr(begin + 1);
-		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
+		const uniforms::UniformType uniformType = uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
 		switch (uniformType)
 		{
-		case Uniforms::VEC_2D:
-			AddUniform<Uniforms::Vector2DUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::VEC_2D:
+			AddUniform<uniforms::Vector2DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::VEC_3D:
-			AddUniform<Uniforms::Vector3DUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::VEC_3D:
+			AddUniform<uniforms::Vector3DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::VEC_4D:
-			AddUniform<Uniforms::Vector4DUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::VEC_4D:
+			AddUniform<uniforms::Vector4DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::MATRIX_4x4:
-			AddUniform<Uniforms::MatrixUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::MATRIX_4x4:
+			AddUniform<uniforms::MatrixUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::INT:
-			AddUniform<Uniforms::IntUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::INT:
+			AddUniform<uniforms::IntUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::REAL:
-			AddUniform<Uniforms::RealUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::REAL:
+			AddUniform<uniforms::RealUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::SAMPLER_2D:
-			AddUniform<Uniforms::TextureUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::SAMPLER_2D:
+			AddUniform<uniforms::TextureUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
-		case Uniforms::SAMPLER_CUBE:
-			AddUniform<Uniforms::CubeTextureUniform>(uniformName, FindUniformLocation(uniformName));
+		case uniforms::SAMPLER_CUBE:
+			AddUniform<uniforms::CubeTextureUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 			//case BASE_LIGHT:
-		case Uniforms::DIRECTIONAL_LIGHT:
-			AddUniform<Uniforms::DirectionalLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
+		case uniforms::DIRECTIONAL_LIGHT:
+			AddUniform<uniforms::DirectionalLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
 				FindUniformLocation(uniformName + ".base.intensity"), FindUniformLocation(uniformName + ".direction"));
 			break;
-		case Uniforms::POINT_LIGHT:
-			AddUniform<Uniforms::PointLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
+		case uniforms::POINT_LIGHT:
+			AddUniform<uniforms::PointLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
 				FindUniformLocation(uniformName + ".base.intensity"), FindUniformLocation(uniformName + ".attenuation.constant"),
 				FindUniformLocation(uniformName + ".attenuation.linear"), FindUniformLocation(uniformName + ".attenuation.exponent"),
 				FindUniformLocation(uniformName + ".position"), FindUniformLocation(uniformName + ".range"));
 			break;
-		case Uniforms::SPOT_LIGHT:
-			AddUniform<Uniforms::SpotLightUniform>(uniformName, FindUniformLocation(uniformName + ".pointLight.base.color"),
+		case uniforms::SPOT_LIGHT:
+			AddUniform<uniforms::SpotLightUniform>(uniformName, FindUniformLocation(uniformName + ".pointLight.base.color"),
 				FindUniformLocation(uniformName + ".pointLight.base.intensity"), FindUniformLocation(uniformName + ".pointLight.attenuation.constant"),
 				FindUniformLocation(uniformName + ".pointLight.attenuation.linear"), FindUniformLocation(uniformName + ".pointLight.attenuation.exponent"),
 				FindUniformLocation(uniformName + ".pointLight.position"), FindUniformLocation(uniformName + ".pointLight.range"),
@@ -380,14 +379,14 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 		}
 		uniformKeywordLocation = shaderText.find(UNIFORM_KEYWORD, uniformKeywordLocation + std::string(UNIFORM_KEYWORD).length());
 	}
-	//for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
+	//for (auto uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
 	//{
 	//	ERROR_LOG_RENDERING("Uniform \"", uniformItr->name, "\" of type ", uniformItr->type, " has location ", uniformItr->location);
 	//}
 }
 
 template <class T, typename... Args>
-void Rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&... args)
+void rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&... args)
 {
 	if (uniformName.substr(0, 2) == "R_")
 	{
@@ -400,28 +399,28 @@ void Rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&...
 	//m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
 }
 
-GLint Rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
+GLint rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
 {
-	GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
-	CHECK_CONDITION_RENDERING(location != Uniforms::UniformBase::INVALID_LOCATION, Utility::Logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
+	const auto location = glGetUniformLocation(m_programID, uniformName.c_str());
+	CHECK_CONDITION_RENDERING(location != uniforms::UniformBase::INVALID_LOCATION, Utility::Logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
 	m_uniformNameToLocationMap[uniformName] = location;
 	return location;
 }
 
-std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindUniformStructInfos(const std::string& shaderText) const
+std::vector<rendering::uniforms::UniformStructInfo> rendering::ShaderData::FindUniformStructInfos(const std::string& shaderText) const
 {
-	std::vector<Uniforms::UniformStructInfo> result;
+	std::vector<uniforms::UniformStructInfo> result;
 
-	size_t structLocation = shaderText.find(STRUCT_KEY);
+	auto structLocation = shaderText.find(STRUCT_KEY);
 	DELOCUST_LOG_RENDERING("structLocation = ", structLocation);
 	while (structLocation != std::string::npos)
 	{
 		structLocation += std::string(STRUCT_KEY).length() + 1; //Ignore the struct keyword and space
 
-		size_t braceOpening = shaderText.find("{", structLocation);
-		size_t braceClosing = shaderText.find("}", braceOpening);
+		const auto braceOpening = shaderText.find("{", structLocation);
+		const auto braceClosing = shaderText.find("}", braceOpening);
 
-		Uniforms::UniformStructInfo newStruct;
+		uniforms::UniformStructInfo newStruct;
 		newStruct.name = FindUniformStructName(shaderText.substr(structLocation, braceOpening - structLocation));
 		newStruct.uniformInfos = FindUniformStructComponents(shaderText.substr(braceOpening, braceClosing - braceOpening), result);
 
@@ -431,7 +430,7 @@ std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindU
 	return result;
 }
 
-std::string Rendering::ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const
+std::string rendering::ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const
 {
 	std::vector<std::string> tokens;
 	utility::string_utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
@@ -442,18 +441,18 @@ std::string Rendering::ShaderData::FindUniformStructName(const std::string& stru
 	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
 }
 
-std::vector<Rendering::Uniforms::UniformInfo> Rendering::ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace, const std::vector<Uniforms::UniformStructInfo>& structUniformInfos) const
+std::vector<rendering::uniforms::UniformInfo> rendering::ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace, const std::vector<uniforms::UniformStructInfo>& structUniformInfos) const
 {
-	constexpr int CHARS_TO_IGNORE_COUNT = 4;
+	constexpr auto CHARS_TO_IGNORE_COUNT = 4;
 	constexpr std::array<char, CHARS_TO_IGNORE_COUNT> charsToIgnore = { ' ', '\n', '\t', '{' };
 	constexpr char delimChars[] = { '\n', ';' };
-	constexpr size_t UNSIGNED_NEG_ONE = (size_t)-1;
+	constexpr auto UNSIGNED_NEG_ONE = static_cast<size_t>(-1);
 
-	std::vector<Uniforms::UniformInfo> result;
+	std::vector<uniforms::UniformInfo> result;
 	std::vector<std::string> structLines;
 	utility::string_utility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
 
-	for (std::vector<std::string>::const_iterator structLinesItr = structLines.begin(); structLinesItr != structLines.end(); ++structLinesItr)
+	for (auto structLinesItr = structLines.begin(); structLinesItr != structLines.end(); ++structLinesItr)
 	{
 		//DEBUG_LOG_RENDERING("structLines[", i, "] = \"", structLines[i], "\"");
 		if (structLinesItr->substr(0, 2) == SINGLE_LINE_COMMENT)
@@ -461,11 +460,11 @@ std::vector<Rendering::Uniforms::UniformInfo> Rendering::ShaderData::FindUniform
 			continue;
 		}
 
-		size_t nameBegin = UNSIGNED_NEG_ONE;
-		size_t nameEnd = UNSIGNED_NEG_ONE;
+		auto nameBegin = UNSIGNED_NEG_ONE;
+		auto nameEnd = UNSIGNED_NEG_ONE;
 		for (unsigned int j = 0; j < structLinesItr->length(); ++j)
 		{
-			bool isIgnoreableCharacter = false;
+			auto isIgnoreableCharacter = false;
 			for (size_t k = 0; k < charsToIgnore.size(); ++k)
 			{
 				if ((*structLinesItr)[j] == charsToIgnore[k])
@@ -492,19 +491,19 @@ std::vector<Rendering::Uniforms::UniformInfo> Rendering::ShaderData::FindUniform
 	return result;
 }
 
-void Rendering::ShaderData::AddUniformInfos(const std::vector<Uniforms::UniformStructInfo>& structUniformInfos, std::vector<Uniforms::UniformInfo>& uniformInfos,
+void rendering::ShaderData::AddUniformInfos(const std::vector<uniforms::UniformStructInfo>& structUniformInfos, std::vector<uniforms::UniformInfo>& uniformInfos,
 	const std::string& uniformName, const std::string& uniformTypeStr) const
 {
-	const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformTypeStr.c_str());
+	const uniforms::UniformType uniformType = uniforms::ConvertStringToUniformType(uniformTypeStr.c_str());
 	DELOCUST_LOG_RENDERING("Uniform type = \"", uniformTypeStr, "\". Uniform type = ", uniformType);
 	bool structFound = false;
-	for (std::vector<Uniforms::UniformStructInfo>::const_iterator structUniformInfoItr = structUniformInfos.begin(); structUniformInfoItr != structUniformInfos.end(); ++structUniformInfoItr)
+	for (auto structUniformInfoItr = structUniformInfos.begin(); structUniformInfoItr != structUniformInfos.end(); ++structUniformInfoItr)
 	{
 		if (structUniformInfoItr->name == uniformTypeStr)
 		{
-			for (std::vector<Uniforms::UniformInfo>::const_iterator uniformInfoItr = structUniformInfoItr->uniformInfos.begin(); uniformInfoItr != structUniformInfoItr->uniformInfos.end(); ++uniformInfoItr)
+			for (auto uniformInfoItr = structUniformInfoItr->uniformInfos.begin(); uniformInfoItr != structUniformInfoItr->uniformInfos.end(); ++uniformInfoItr)
 			{
-				AddUniformInfos(structUniformInfos, uniformInfos, uniformName + "." + uniformInfoItr->name, Uniforms::ConvertUniformTypeToString(uniformInfoItr->type));
+				AddUniformInfos(structUniformInfos, uniformInfos, uniformName + "." + uniformInfoItr->name, uniforms::ConvertUniformTypeToString(uniformInfoItr->type));
 			}
 			structFound = true;
 		}
@@ -515,7 +514,7 @@ void Rendering::ShaderData::AddUniformInfos(const std::vector<Uniforms::UniformS
 	}
 }
 
-bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const
+bool rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const
 {
 	itr = m_uniformNameToLocationMap.find(uniformName);
 	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), Utility::Logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
@@ -523,7 +522,7 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 }
 
 /* ==================== Shader class begin ==================== */
-Rendering::Shader::Shader(const std::string& directoryPath, const std::string& fileName) :
+rendering::Shader::Shader(const std::string& directoryPath, const std::string& fileName) :
 	m_shaderData(directoryPath, fileName),
 	m_fileName(fileName)
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
@@ -534,7 +533,7 @@ Rendering::Shader::Shader(const std::string& directoryPath, const std::string& f
 }
 
 
-Rendering::Shader::~Shader(void)
+rendering::Shader::~Shader(void)
 {
 	DELOCUST_LOG_RENDERING("Shader destructor called for file name: \"", m_fileName, "\". ");
 }
@@ -546,7 +545,7 @@ Rendering::Shader::~Shader(void)
 //
 //}
 
-Rendering::Shader::Shader(Shader&& shader) :
+rendering::Shader::Shader(Shader&& shader) noexcept :
 	m_shaderData(std::move(shader.m_shaderData)),
 	m_fileName(std::move(shader.m_fileName))
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
@@ -558,26 +557,26 @@ Rendering::Shader::Shader(Shader&& shader) :
 	//shader.m_fileName.clear();
 }
 
-void Rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
+void rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
 {
 	START_PROFILING_RENDERING(false, "");
-	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(renderer != nullptr, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 	for (auto uniformItr = m_shaderData.GetRendererUniforms().begin(); uniformItr != m_shaderData.GetRendererUniforms().end(); ++uniformItr)
 	{
-		(*uniformItr)->Update(renderer, NULL, NULL);
+		(*uniformItr)->Update(renderer, nullptr, nullptr);
 	}
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::UpdateMaterialUniforms(const Material* material) const
+void rendering::Shader::UpdateMaterialUniforms(const Material* material) const
 {
 }
 
-void Rendering::Shader::UpdateTransformUniforms(const math::Transform& transform) const
+void rendering::Shader::UpdateTransformUniforms(const math::Transform& transform) const
 {
 }
 
-void Rendering::Shader::UpdateUniforms(const math::Transform& transform, const Material* material, const Renderer* renderer) const
+void rendering::Shader::UpdateUniforms(const math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
 	START_PROFILING_RENDERING(false, "");
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
@@ -592,12 +591,12 @@ void Rendering::Shader::UpdateUniforms(const math::Transform& transform, const M
 //{
 //	//INFO_LOG_RENDERING("Adding uniform location \"", uniform, "\".");
 //	unsigned int uniformLocation = glGetUniformLocation(program, uniform.c_str());
-//	CHECK_CONDITION_EXIT_RENDERING(uniformLocation != Uniforms::Uniform::INVALID_LOCATION, Utility::ERROR, "Could not find uniform \"", uniform, "\"");
+//	CHECK_CONDITION_EXIT_RENDERING(uniformLocation != uniforms::Uniform::INVALID_LOCATION, Utility::ERROR, "Could not find uniform \"", uniform, "\"");
 //
 //	uniforms.insert(std::pair<std::string, unsigned int>(uniform, uniformLocation));
 //}
 
-void Rendering::Shader::SetUniformi(const std::string& name, int value) const
+void rendering::Shader::SetUniformi(const std::string& name, int value) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform integer \"", name, "\":", value);
@@ -613,11 +612,11 @@ void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformf(const std::string& name, math::Real value) const
+void rendering::Shader::SetUniformf(const std::string& name, math::Real value) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform float \"", name, "\":", value);
-	//for (std::map<std::string, unsigned int>::const_iterator it = m_shaderData->GetUniformMap().begin(); it != m_shaderData->GetUniformMap().end(); ++it)
+	//for (auto it = m_shaderData->GetUniformMap().begin(); it != m_shaderData->GetUniformMap().end(); ++it)
 	//{
 	//	DEBUG_LOG_RENDERING("Uniform map <\"", it->first, "\", ", it->second, ">");
 	//}
@@ -629,7 +628,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, math::Real value) c
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector2D(const std::string& name, const math::Vector2D& vector) const
+void rendering::Shader::SetUniformVector2D(const std::string& name, const math::Vector2D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector);
@@ -643,7 +642,7 @@ void Rendering::Shader::SetUniformVector2D(const std::string& name, const math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector3D(const std::string& name, const math::Vector3D& vector) const
+void rendering::Shader::SetUniformVector3D(const std::string& name, const math::Vector3D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector);
@@ -657,7 +656,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector4D(const std::string& name, const math::Vector4D& vector) const
+void rendering::Shader::SetUniformVector4D(const std::string& name, const math::Vector4D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector);
@@ -671,7 +670,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const math::
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformVector4D(const std::string& name, math::Real x, math::Real y, math::Real z, math::Real w) const
+void rendering::Shader::SetUniformVector4D(const std::string& name, math::Real x, math::Real y, math::Real z, math::Real w) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
@@ -683,7 +682,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, math::Real x
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
+void rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color);
@@ -696,7 +695,7 @@ void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Co
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Shader::SetUniformMatrix(const std::string& name, const math::Matrix4D& matrix) const
+void rendering::Shader::SetUniformMatrix(const std::string& name, const math::Matrix4D& matrix) const
 {
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix);

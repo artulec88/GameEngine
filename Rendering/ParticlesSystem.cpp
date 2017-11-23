@@ -7,28 +7,28 @@
 
 #include "Utility/ILogger.h"
 
-Rendering::Particles::ParticlesSystem::ParticlesSystem() :
-	ParticlesSystem(0, Attributes::AttributesMask(0), TextureIDs::INVALID, ShaderIDs::INVALID)
+rendering::particles::ParticlesSystem::ParticlesSystem() :
+	ParticlesSystem(0, attributes::AttributesMask(0), texture_ids::INVALID, shader_ids::INVALID)
 {
 }
 
-Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, int particleTextureID, int particleShaderID) :
+rendering::particles::ParticlesSystem::ParticlesSystem(size_t maxCount, attributes::AttributesMask attributesMask, int particleTextureId, int particleShaderId) :
 	m_maxCount(maxCount),
 	m_particles(maxCount, attributesMask),
 	m_emitters(),
 	m_updaters(),
-	m_textureID(particleTextureID),
-	m_shaderID(particleShaderID)
+	m_textureId(particleTextureId),
+	m_shaderId(particleShaderId)
 {
 	// TODO: Determine m_shaderID based on the given attributesMask
 }
 
 
-Rendering::Particles::ParticlesSystem::~ParticlesSystem()
+rendering::particles::ParticlesSystem::~ParticlesSystem()
 {
 }
 
-void Rendering::Particles::ParticlesSystem::Update(math::Real deltaTime)
+void rendering::particles::ParticlesSystem::Update(math::Real deltaTime)
 {
 	DEBUG_LOG_RENDERING("Emitting new particles started");
 	//CRITICAL_LOG_RENDERING("Particles before emission = ");
@@ -55,7 +55,7 @@ void Rendering::Particles::ParticlesSystem::Update(math::Real deltaTime)
 	//ERROR_LOG_RENDERING(m_particles);
 }
 
-void Rendering::Particles::ParticlesSystem::Reset()
+void rendering::particles::ParticlesSystem::Reset()
 {
 	m_particles.Reset();
 }

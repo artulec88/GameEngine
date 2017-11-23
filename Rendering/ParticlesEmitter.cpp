@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "ParticlesEmitter.h"
 
-#include "Math/FloatingPoint.h"
-
 #include "Utility/ILogger.h"
 
-Rendering::Particles::ParticlesEmitter::ParticlesEmitter(math::Real numberOfParticlesToGeneratePerSecond) :
+rendering::particles::ParticlesEmitter::ParticlesEmitter(math::Real numberOfParticlesToGeneratePerSecond) :
 	m_currentTimer(REAL_ZERO),
 	m_timeToEmitOneParticle(REAL_ONE / numberOfParticlesToGeneratePerSecond)
 {
@@ -14,11 +12,11 @@ Rendering::Particles::ParticlesEmitter::ParticlesEmitter(math::Real numberOfPart
 }
 
 
-Rendering::Particles::ParticlesEmitter::~ParticlesEmitter()
+rendering::particles::ParticlesEmitter::~ParticlesEmitter()
 {
 }
 
-void Rendering::Particles::ParticlesEmitter::Emit(math::Real deltaTime, ParticlesContainer* particleContainer)
+void rendering::particles::ParticlesEmitter::Emit(math::Real deltaTime, ParticlesContainer* particleContainer)
 {
 	m_currentTimer += deltaTime;
 	if (m_currentTimer > m_timeToEmitOneParticle)

@@ -10,22 +10,20 @@
 #include "Texture.h"
 
 #include "Math/Vector.h"
-#include "Math\AABR.h"
-#include "Math\Effect.h"
+#include "Math/Effect.h"
 
 #include <string>
-#include <vector>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Controls
+	namespace controls
 	{
 		class GuiButtonControl : public GuiControl
 		{
-		/* ==================== Static variables and functions begin ==================== */
-		/* ==================== Static variables and functions end ==================== */
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
 			/// Creates a new GUI button control, loads the text's quads into a VBO and adds the text to the screen.
@@ -66,31 +64,36 @@ namespace Rendering
 			/// </param>
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
-			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, math::Real fontSize, const Texture* iconTexture, const math::Vector2D& screenPosition,
+			RENDERING_API GuiButtonControl(const std::string& text, const text::Font* font, math::Real fontSize, const Texture* iconTexture, const math::Vector2D& screenPosition,
 				const math::Angle& screenRotationAngle, const math::Vector2D& scale, math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const math::Vector2D& offset, bool isCentered = false,
 				math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 
 			/// <summary> GUI button control destructor. </summary>
-			RENDERING_API virtual ~GuiButtonControl(void);
-			
+			RENDERING_API virtual ~GuiButtonControl();
+
 			/// <summary> GUI button control copy constructor. </summary>
+			/// <param name="guiButtonControl">The reference to the GUI button control to copy construct from. </param>
 			GuiButtonControl(const GuiButtonControl& guiButtonControl) = delete;
 
 			/// <summary> GUI button control move constructor. </summary>
+			/// <param name="guiButtonControl">The r-value reference to the GUI button control to move construct from. </param>
 			GuiButtonControl(GuiButtonControl&& guiButtonControl) = delete;
 
 			/// <summary> GUI button control copy assignment operator. </summary>
+			/// <param name="guiButtonControl">The reference to the GUI button control to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned GUI button control. </returns>
 			GuiButtonControl& operator=(const GuiButtonControl& guiButtonControl) = delete;
 
 			/// <summary> GUI button control move assignment operator. </summary>
+			/// <param name="guiButtonControl">The r-value reference to the GUI button control to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned GUI button control. </returns>
 			GuiButtonControl& operator=(GuiButtonControl&& guiButtonControl) = delete;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
-		public:
-			/// <summary>
-			/// Updates GUI text's graphical effects. Does not change the text itself, nor its size, nor font.
-			/// </summary>
+			/* ==================== Non-static member functions begin ==================== */
+				/// <summary>
+				/// Updates GUI text's graphical effects. Does not change the text itself, nor its size, nor font.
+				/// </summary>
 			RENDERING_API void Update(math::Real deltaTime)
 			{
 				//m_colorEffect->Update(deltaTime);
@@ -104,7 +107,7 @@ namespace Rendering
 
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>
-			RENDERING_API const Text::Font* GetFont() const { return m_font; }
+			RENDERING_API const text::Font* GetFont() const { return m_font; }
 
 			RENDERING_API const std::string& GetText() const { return m_text; }
 			RENDERING_API void SetText(const std::string& text);
@@ -126,34 +129,33 @@ namespace Rendering
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI button.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI button.</param>
-			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
+			RENDERING_API void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
-			RENDERING_API virtual void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
+			RENDERING_API void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
 			/// based on the length of the text and the specified maximum line length.
 			/// </summary>
 			/// <returns> The number of lines of text. </returns>
-			inline int GetLinesCount() const { return m_linesCount; }
+			int GetLinesCount() const { return m_linesCount; }
 			/// <summary>
 			/// Returns <code>true</code> if the GUI text is centered and <code>false</code> otherwise.
 			/// </summary>
 			/// <returns> The value <code>true</code> if GUI text is centered and <code>false</code> otherwise. </returns>
-			inline bool IsCentered() const { return m_isCentered; }
+			bool IsCentered() const { return m_isCentered; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			std::unique_ptr<Mesh> m_mesh;
 			std::string m_text;
-			const Text::Font* m_font;
+			const text::Font* m_font;
 			math::Real m_fontSize;
 			const Texture* m_iconTexture;
 			const math::Matrix4D m_iconTransformationMatrix;
@@ -170,7 +172,7 @@ namespace Rendering
 			math::Real m_borderEdgeTransitionWidth;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiButtonControl */
-	} /* end namespace Controls */
-} /* end namespace Rendering */
+	} /* end namespace controls */
+} /* end namespace rendering */
 
 #endif // __RENDERING_GUI_BUTTON_CONTROL_H__

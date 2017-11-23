@@ -4,46 +4,46 @@
 #include "stb_image.h"
 
 #include "Utility/IConfig.h"
-#include "Utility\FileManager.h"
+#include "Utility/FileManager.h"
 
-#include <assimp\Importer.hpp>
-#include <assimp\scene.h>
-#include <assimp\postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 //#define MEASURE_MESH_TIME_ENABLED
 
-Rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const std::string& texturesDirectory) :
+rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const std::string& texturesDirectory) :
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory)
 	// If (: we initialize the map this way then Mesh's copy ctrs will be used (instead of move ctrs). Google that!
 	//m_meshType2MeshMap({ { MeshTypes::DEFAULT, std::move(Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultTexture", "defaultTexture"))) } })
 {
-	CreateMesh(MeshIDs::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
+	CreateMesh(mesh_ids::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	m_meshType2MeshMap.insert(make_pair(MeshIDs::PARTICLE,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 21)));
 #else
-	m_meshType2MeshMap.insert(make_pair(MeshIDs::PARTICLE,
+	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 17))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_meshType2MeshMap.insert(make_pair(MeshIDs::DEBUG,
+	m_meshType2MeshMap.insert(make_pair(mesh_ids::DEBUG,
 		std::make_unique<Mesh>(std::vector<math::Vector2D>{ math::Vector2D(-REAL_ONE, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ONE), math::Vector2D(-REAL_ONE, -REAL_ONE), math::Vector2D(REAL_ONE, -REAL_ONE) }.data(),
 			nullptr, 4, GL_TRIANGLE_STRIP)));
 #endif
 }
 
 
-Rendering::MeshFactory::~MeshFactory()
+rendering::MeshFactory::~MeshFactory()
 {
 }
 
-const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std::string& meshFileName)
+const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshID, const std::string& meshFileName)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
+	rendering::CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
 	CHECK_CONDITION_RENDERING(!meshFileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
 #ifdef MEASURE_MESH_TIME_ENABLED
@@ -117,16 +117,15 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	timer.Stop();
 	INFO_LOG_RENDERING("Loading model took ", timer.GetTimeSpan().ToString());
 #endif
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished model loading");
+	rendering::CheckErrorCode(__FUNCTION__, "Finished model loading");
 
-	std::pair<std::map<int, std::unique_ptr<Mesh>>::iterator, bool> meshPair =
-		m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
-			positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
+	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return meshPair.first->second.get();
 }
 
-const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID, const math::Surface& surface)
+const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshID, const math::Surface& surface)
 {
 	std::vector<math::Vector3D> positions;
 	positions.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
@@ -187,44 +186,19 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID,
 	//}
 	//#endif
 
-	std::pair<std::map<int, std::unique_ptr<Mesh>>::iterator, bool> meshPair =
-		m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
-			positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data())));
+	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshID, std::make_unique<Mesh>(indices.data(), indices.size(),
+		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data())));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
-	return meshPair.first->second.get();
-
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
+	return meshPair.first->second.get();
 }
 
-math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, const Image& heightMapImage, math::Real heightMapMaxHeight) const
+math::Vector3D rendering::MeshFactory::CalculateNormal(int x, int z, const math::Surface& surface) const
 {
-	constexpr math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
-
-	math::Real height = static_cast<math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
-	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
-	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
-	return height;
-}
-
-math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMapWidth, const math::HeightsGenerator& heightsGenerator) const
-{
-	// TODO: Range checking
-	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
-	const int heightMapIndex = GetHeightMapIndex(x, z, heightMapWidth);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
-	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	math::Real height = heightsGenerator.GenerateHeight(static_cast<math::Real>(x), static_cast<math::Real>(z));
-	return height;
-}
-
-math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const math::Surface& surface) const
-{
-	math::Real heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
-	math::Real heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
-	math::Real heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
-	math::Real heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
+	const auto heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
+	const auto heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
+	const auto heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
+	const auto heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
 	math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;

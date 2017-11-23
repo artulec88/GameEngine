@@ -13,7 +13,7 @@
 #include "IUpdateable.h"
 #endif
 
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
 namespace engine
 {
@@ -29,8 +29,8 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
-			const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
+		DirectionalLightComponent(rendering::lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const rendering::Color& sunDaytimeColor,
+			const rendering::Color& sunNearHorizonColor, const rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
 			const math::Angle& firstElevationLevel, const math::Angle& secondElevationLevel, const math::Angle& thirdElevationLevel);
 		virtual ~DirectionalLightComponent();
 		DirectionalLightComponent(const DirectionalLightComponent& directionalLightComponent) = delete;
@@ -59,19 +59,19 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::Lighting::DirectionalLight* m_directionalLight;
+		rendering::lighting::DirectionalLight* m_directionalLight;
 
 		///<summary>The maximum intensity of the directional light.</summary>
 		CONST_IF_TWEAK_BAR_DISABLED math::Real m_maxIntensity;
 
 		///<summary>The daytime color of the directional light.</summary>
-		CONST_IF_TWEAK_BAR_DISABLED Rendering::Color m_sunDaytimeColor;
+		CONST_IF_TWEAK_BAR_DISABLED rendering::Color m_sunDaytimeColor;
 
 		///<summary>The near-horizon color of the directional light.</summary>
-		CONST_IF_TWEAK_BAR_DISABLED Rendering::Color m_sunNearHorizonColor;
+		CONST_IF_TWEAK_BAR_DISABLED rendering::Color m_sunNearHorizonColor;
 
 		///<summary>The nighttime color of the directional light.</summary>
-		CONST_IF_TWEAK_BAR_DISABLED Rendering::Color m_sunNighttimeColor;
+		CONST_IF_TWEAK_BAR_DISABLED rendering::Color m_sunNighttimeColor;
 
 		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_latitude;
 		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_longitude;

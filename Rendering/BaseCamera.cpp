@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BaseCamera.h"
 
-Rendering::BaseCamera::BaseCamera(const math::Matrix4D& projectionMatrix, math::Real sensitivity) :
+rendering::BaseCamera::BaseCamera(const math::Matrix4D& projectionMatrix, math::Real sensitivity) :
 	m_projection(projectionMatrix),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
@@ -18,8 +18,8 @@ Rendering::BaseCamera::BaseCamera(const math::Matrix4D& projectionMatrix, math::
 {
 }
 
-Rendering::BaseCamera::BaseCamera(const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity) :
-	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
+rendering::BaseCamera::BaseCamera(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity) :
+	m_projection(fieldOfView, aspectRatio, zNearPlane, zFarPlane),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -35,11 +35,11 @@ Rendering::BaseCamera::BaseCamera(const math::Angle& FoV, math::Real aspectRatio
 {
 }
 
-Rendering::BaseCamera::~BaseCamera(void)
+rendering::BaseCamera::~BaseCamera(void)
 {
 }
 
-math::Matrix4D Rendering::BaseCamera::GetViewMatrix() const
+math::Matrix4D rendering::BaseCamera::GetViewMatrix() const
 {
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
 	/* ==================== SOLUTION #1 begin ==================== */
@@ -56,7 +56,7 @@ math::Matrix4D Rendering::BaseCamera::GetViewMatrix() const
 	return GetTransform().GetRot().Conjugate().ToRotationMatrix() * math::Matrix4D(GetTransform().GetPos().Negated()); // FIXME: Check matrix multiplication
 }
 
-math::Matrix4D Rendering::BaseCamera::GetViewProjection() const
+math::Matrix4D rendering::BaseCamera::GetViewProjection() const
 {
 	// This function is performed quiet often. Maybe we could, instead of multiplying three matrices (projection, rotation, translation),
 	// just remember the result in some member variable and reuse it. Of course, we would have to perform the multiplication again if any of these matrices were changed.

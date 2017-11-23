@@ -99,7 +99,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraNodeBuilder(engine::GameManager* gameManager, Rendering::BaseCamera* camera);
+		CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera);
 		virtual ~CameraNodeBuilder(void);
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
@@ -125,7 +125,7 @@ namespace Game
 		const math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
 		const math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 
-		Rendering::BaseCamera* m_camera;
+		rendering::BaseCamera* m_camera;
 		engine::camera_behavior_types::CameraBehaviorType m_cameraBehaviorType;
 
 		const engine::GameNode* m_gameNodeToFollow;

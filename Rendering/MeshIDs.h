@@ -1,19 +1,19 @@
 #ifndef __RENDERING_MESH_IDS_H__
 #define __RENDERING_MESH_IDS_H__
 
-namespace Rendering
+namespace rendering
 {
-	namespace MeshIDs
+	namespace mesh_ids
 	{
-		enum MeshID
+		enum MeshId
 		{
 			SIMPLE_PLANE,
 			PARTICLE,
 			DEBUG,
 			//TERRAIN,
 			COUNT,
-		}; /* end enum MeshID */
-	} /* end namespace MeshIDs */
-} /* end namespace Rendering */
+		}; /* end enum MeshId */
+	} /* end namespace mesh_ids */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_MESH_IDS_H__ */

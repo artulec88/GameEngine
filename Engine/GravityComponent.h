@@ -24,7 +24,7 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GravityComponent(const Rendering::Terrain* terrain);
+		ENGINE_API GravityComponent(const rendering::Terrain* terrain);
 		ENGINE_API virtual ~GravityComponent(void);
 		GravityComponent(const GravityComponent& gravityComponent) = delete;
 		GravityComponent(GravityComponent&& gravityComponent);
@@ -39,7 +39,7 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Rendering::Terrain* m_terrain;
+		const rendering::Terrain* m_terrain;
 		math::Real m_lastX, m_lastZ, m_lastHeight;
 		math::Real m_heightAdjustment;
 		/* ==================== Non-static member variables end ==================== */

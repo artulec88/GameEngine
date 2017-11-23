@@ -24,7 +24,7 @@ math::statistics::Stats<T>::~Stats()
 }
 
 template <typename T>
-void math::statistics::Stats<T>::Push(StatsID statsId, T sample)
+void math::statistics::Stats<T>::Push(StatsId statsId, T sample)
 {
 	if (Size(statsId) == MAX_SAMPLES_COUNT)
 	{
@@ -63,14 +63,14 @@ int math::statistics::Stats<T>::Size() const
 }
 
 template <typename T>
-int math::statistics::Stats<T>::Size(StatsID statsId) const
+int math::statistics::Stats<T>::Size(StatsId statsId) const
 {
 	auto mapItr = m_samples.find(statsId);
 	return (mapItr == m_samples.end()) ? 0 : static_cast<int>(mapItr->second.size());
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateSum(StatsID statsId) const
+T math::statistics::Stats<T>::CalculateSum(StatsId statsId) const
 {
 	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
@@ -94,7 +94,7 @@ T math::statistics::Stats<T>::CalculateSum(StatsID statsId) const
 }
 
 template <typename T>
-int math::statistics::Stats<T>::CalculateSamplesCount(StatsID statsId) const
+int math::statistics::Stats<T>::CalculateSamplesCount(StatsId statsId) const
 {
 	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
@@ -113,7 +113,7 @@ int math::statistics::Stats<T>::CalculateSamplesCount(StatsID statsId) const
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateMean(StatsID statsId) const
+T math::statistics::Stats<T>::CalculateMean(StatsId statsId) const
 {
 	auto mapItr = m_samples.find(statsId);
 	if (mapItr == m_samples.end())
@@ -132,7 +132,7 @@ T math::statistics::Stats<T>::CalculateMean(StatsID statsId) const
 }
 
 template <typename T>
-T math::statistics::Stats<T>::CalculateMedian(StatsID statsId)
+T math::statistics::Stats<T>::CalculateMedian(StatsId statsId)
 {
 	if (m_child != nullptr)
 	{
@@ -313,6 +313,26 @@ utility::timing::TimeSpan math::statistics::MethodStats::GetTotalTimeWithoutNest
 /* ==================== MethodStats end ==================== */
 
 /* ==================== ClassStats begin ==================== */
+/* static */ void math::statistics::ClassStats::LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan)
+{
+	if (timeSpan < utility::timing::MICROSECOND)
+	{
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::NANOSECOND));
+	}
+	else if (timeSpan < utility::timing::MILLISECOND)
+	{
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MICROSECOND));
+	}
+	else if (timeSpan < utility::timing::MINUTE)
+	{
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MILLISECOND));
+	}
+	else
+	{
+		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::SECOND));
+	}
+}
+
 math::statistics::ClassStats::ClassStats(const std::string& className) :
 	m_className(className),
 	m_profilingMethodsCount(0)
@@ -373,12 +393,12 @@ void math::statistics::ClassStats::PrintReport(const utility::timing::TimeSpan& 
 		DEBUG_LOG_MATH("\tMethod: \"", methodStatsItr->first, "\"");
 		DEBUG_LOG_MATH("\t\tInvocations count: ", methodStatsItr->second.GetInvocationsCount());
 		
-		utility::timing::TimeSpan totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
+		auto totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		LogTime("\t\tTotal time: ", totalTimeExcludingNestedCalls);
-		utility::timing::TimeSpan totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
+		auto totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
 		LogTime("\t\tTotal time including nested calls: ", totalTimeIncludingNestedCalls);
 
-		utility::timing::TimeSpan meanTime = methodStatsItr->second.CalculateMean();
+		auto meanTime = methodStatsItr->second.CalculateMean();
 		LogTime("\t\tAverage time: ", meanTime);
 		
 		DEBUG_LOG_MATH("\t\tClass usage: ", totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls * 100, "%");
@@ -411,25 +431,5 @@ int math::statistics::ClassStats::GetTotalNumberOfSamples() const
 		totalNumberOfSamples += methodStatsItr->second.GetInvocationsCount();
 	}
 	return totalNumberOfSamples;
-}
-
-void math::statistics::ClassStats::LogTime(const std::string& text, const utility::timing::TimeSpan& timeSpan) const
-{
-	if (timeSpan < utility::timing::MICROSECOND)
-	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::NANOSECOND));
-	}
-	else if (timeSpan < utility::timing::MILLISECOND)
-	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MICROSECOND));
-	}
-	else if (timeSpan < utility::timing::MINUTE)
-	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::MILLISECOND));
-	}
-	else
-	{
-		DEBUG_LOG_MATH(text, timeSpan.ToString(utility::timing::SECOND));
-	}
 }
 /* ==================== ClassStats end ==================== */

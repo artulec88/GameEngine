@@ -17,7 +17,7 @@
 #include "AntTweakBarTypes.h"
 #endif
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// A utility class serving as a container for different kinds of objects.
@@ -28,12 +28,12 @@ namespace Rendering
 		// the rendering engine sets (only once!) the ambient light color using the call SetVector4D("ambientLightColor", m_ambientLightColor.GetValuesPtr());. Whenever the m_ambientLightColor is changed
 		// the same change can be seen in the MappedValues container, so there is no need to call SetVector4D("ambientLightColor") again.
 
-		//typedef std::map<std::string, Color> StrToColorMap;
-		typedef std::map<std::string, math::Real> StrToRealMap;
-		typedef std::map<std::string, math::Vector2D> StrToVec2DMap;
-		typedef std::map<std::string, math::Vector3D> StrToVec3DMap;
-		typedef std::map<std::string, math::Vector4D> StrToVec4DMap;
-		typedef std::map<std::string, const Texture*> StrToTextureMap;
+		//using StrToColorMap = std::map<std::string, Color>;
+		using StrToRealMap = std::map<std::string, math::Real>;
+		using StrToVec2DMap = std::map<std::string, math::Vector2D>;
+		using StrToVec3DMap = std::map<std::string, math::Vector3D>;
+		using StrToVec4DMap = std::map<std::string, math::Vector4D>;
+		using StrToTextureMap = std::map<std::string, const Texture*>;
 
 		/* ==================== Static variables and functions begin ==================== */
 		static constexpr math::Real DEFAULT_VALUE = REAL_ZERO;
@@ -53,21 +53,27 @@ namespace Rendering
 		/// <summary>
 		/// Mapped values container copy constructor.
 		/// </summary>
+		/// <param name="mappedValues"> The reference to mapped values container to copy construct from. </param>
 		MappedValues(const MappedValues& mappedValues) = delete;
 
 		/// <summary>
 		/// Mapped values container move constructor.
 		/// </summary>
+		/// <param name="mappedValues"> The r-value reference to mapped values container to move construct from. </param>
 		MappedValues(MappedValues&& mappedValues) = delete;
 
 		/// <summary>
 		/// Mapped values container copy assignment operator.
 		/// </summary>
+		/// <param name="mappedValues"> The reference to mapped values container to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned mapped values container. </returns>
 		MappedValues& operator=(const MappedValues& mappedValues) = delete;
 
 		/// <summary>
 		/// Mapped values container move assignment operator.
 		/// </summary>
+		/// <param name="mappedValues"> The r-value reference to mapped values container to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned mapped values container. </returns>
 		MappedValues& operator=(MappedValues&& mappedValues) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -150,7 +156,7 @@ namespace Rendering
 			//	WARNING_LOG_RENDERING("Adding NULL texture with name \"", textureName, "\" to the map of textures");
 			//	//return;
 			//}
-			std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(textureName);
+			const auto textureItr = textureMap.find(textureName);
 			if (textureItr == textureMap.end())
 			{
 				DEBUG_LOG_RENDERING("The texture with name \"", textureName, "\" is not found in the map. Creating a new texture with this name.");
@@ -167,7 +173,7 @@ namespace Rendering
 		void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
 		{
 			const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
-			std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(multitextureName);
+			const auto textureItr = textureMap.find(multitextureName);
 			if (textureItr == textureMap.end())
 			{
 				DEBUG_LOG_RENDERING("The multitexture with name \"", multitextureName, "\" is not found in the map. Creating a new texture with this name.");
@@ -182,7 +188,7 @@ namespace Rendering
 
 		const math::Real& GetReal(const std::string& name) const
 		{
-			std::map<std::string, math::Real>::const_iterator itr = realMap.find(name);
+			const auto itr = realMap.find(name);
 			if (itr == realMap.end()) // number not found
 			{
 				WARNING_LOG_RENDERING("Real number with name \"", name, "\" has not been found");
@@ -194,7 +200,7 @@ namespace Rendering
 		const math::Vector2D& GetVec2D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, math::Vector2D>::const_iterator itr = vec2DMap.find(name);
+			const auto itr = vec2DMap.find(name);
 			if (itr == vec2DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector2D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -206,7 +212,7 @@ namespace Rendering
 		const math::Vector3D& GetVec3D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, math::Vector3D>::const_iterator itr = vec3DMap.find(name);
+			const auto itr = vec3DMap.find(name);
 			if (itr == vec3DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector3D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -218,7 +224,7 @@ namespace Rendering
 		const math::Vector4D& GetVec4D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
-			std::map<std::string, math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
+			const auto itr = m_vec4DMap.find(name);
 			if (itr == m_vec4DMap.end()) // vector not found
 			{
 				WARNING_LOG_RENDERING("Vector4D with name \"", name, "\" has not been found. Returning default vector instead.");
@@ -229,7 +235,7 @@ namespace Rendering
 
 		const Texture* GetTexture(const std::string& textureName) const
 		{
-			std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
+			const auto itr = textureMap.find(textureName);
 			if (itr == textureMap.end()) // texture not found
 			{
 				WARNING_LOG_RENDERING("Texture with name \"", textureName, "\" has not been found. Returning default texture instead.");
@@ -240,14 +246,14 @@ namespace Rendering
 
 		const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
 		{
-			std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
+			const auto itr = textureMap.find(textureName);
 			if (itr == textureMap.end()) // texture not found
 			{
 				// The texture with the specified name has not been found. However, there is still hope- we should look for it in the multitextures.
-				for (std::map<std::string, const Texture*>::const_iterator textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
+				for (auto textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
 				{
 					const std::string& textureNameItr = textureItr->first;
-					size_t spacePos = textureNameItr.find(" ");
+					const auto spacePos = textureNameItr.find(" ");
 					if (spacePos != std::string::npos)
 					{
 						if (textureNameItr.compare(0, textureName.length(), textureName) == 0)
@@ -315,6 +321,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MappedValues */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_MAPPED_VALUES_H__ */

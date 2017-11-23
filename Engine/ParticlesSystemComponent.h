@@ -8,7 +8,7 @@
 #include "Rendering\ParticlesSystem.h"
 
 //#include "Math\Math.h"
-//#include "Math\Angle.h"
+//#include "Math/Angle.h"
 //#include "Math/Vector.h"
 
 namespace engine
@@ -21,7 +21,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem);
+		ENGINE_API ParticlesSystemComponent(GameManager* gameManager, rendering::particles::ParticlesSystem* particlesSystem);
 		ENGINE_API virtual ~ParticlesSystemComponent(void);
 		ParticlesSystemComponent(const ParticlesSystemComponent& particlesSystemComponent) = delete;
 		ParticlesSystemComponent(ParticlesSystemComponent&& particlesSystemComponent);
@@ -36,7 +36,7 @@ namespace engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::Particles::ParticlesSystem* m_particlesSystem;
+		rendering::particles::ParticlesSystem* m_particlesSystem;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticlesSystemComponent */
 

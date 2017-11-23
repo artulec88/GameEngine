@@ -5,9 +5,9 @@
 #include "GuiControl.h"
 #include "Texture.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Controls
+	namespace controls
 	{
 		class GuiImageControl : public GuiControl
 		{
@@ -68,7 +68,7 @@ namespace Rendering
 			Texture* m_texture;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiImageControl */
-	} /* end namespace Controls */
-} /* end namespace Rendering */
+	} /* end namespace controls */
+} /* end namespace rendering */
 
 #endif // __RENDERING_GUI_IMAGE_CONTROL_H__

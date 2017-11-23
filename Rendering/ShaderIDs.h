@@ -1,11 +1,11 @@
 #ifndef __RENDERING_SHADER_IDS_H__
 #define __RENDERING_SHADER_IDS_H__
 
-namespace Rendering
+namespace rendering
 {
-	namespace ShaderIDs
+	namespace shader_ids
 	{
-		enum ShaderID
+		enum ShaderId
 		{
 			INVALID = 0,
 			AMBIENT,
@@ -46,9 +46,9 @@ namespace Rendering
 			SPOT_LIGHT_NO_SHADOWS,
 			SPOT_LIGHT_TERRAIN_NO_SHADOWS,
 			// TODO: Add more shader types
-			COUNT  // This value must always stay as the last one in the enum. It only represents the number of available basic texture IDs.
-		}; /* end enum ShaderID */
-	} /* end namespace ShaderIDs */
-} /* end namespace Rendering */
+			COUNT  // This value must always stay as the last one in the enum. It only represents the number of available basic shader IDs.
+		}; /* end enum ShaderId */
+	} /* end namespace shader_ids */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_SHADER_IDS_H__ */

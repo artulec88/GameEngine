@@ -217,7 +217,7 @@ void engine::GameNode::Update(math::Real delta)
 	}
 }
 
-void engine::GameNode::Render(int shaderID, Rendering::Renderer* renderer) const
+void engine::GameNode::Render(int shaderID, rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{

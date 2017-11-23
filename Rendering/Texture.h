@@ -3,14 +3,13 @@
 
 #include "Rendering.h"
 
-#include "Math\Matrix.h"
+#include "Math/Matrix.h"
 
 #include <string>
-#include <map>
 
 //#define STORE_TEXTURE_FILE_NAME
 
-namespace Rendering
+namespace rendering
 {
 
 	/// <summary>
@@ -25,33 +24,33 @@ namespace Rendering
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping, GLenum attachment);
 		TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments);
+
 		/// <summary>
 		/// Cube map texture data constructor.
 		/// </summary>
 		TextureData(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName);
-		~TextureData(void);
+
+		~TextureData();
+
 		TextureData(const TextureData& textureData) = delete;
-		TextureData(TextureData&& textureData);
+		TextureData(TextureData&& textureData) noexcept;
 		TextureData& operator=(const TextureData& textureData) = delete;
 		TextureData& operator=(TextureData&& textureData) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
 		void Bind(int textureIndex) const;
 		void BindAsRenderTarget() const;
-		inline int GetWidth() const { return m_width; }
-		inline int GetHeight() const { return m_height; }
+		int GetWidth() const { return m_width; }
+		int GetHeight() const { return m_height; }
 	private:
 		void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, GLenum wrapping);
 		void InitRenderTargets(GLenum* attachments);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		GLenum m_textureTarget;
 
 		/// <summary>
@@ -125,27 +124,31 @@ namespace Rendering
 		/// <code>GL_REPEAT</code>, or <code>GL_MIRROR_CLAMP_TO_EDGE</code>. See https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glTexParameter.xml for details.
 		/// </param>
 		/// <param name="attachment"> The attachments for the rendering targets of the texture. Particularly, useful for rendering to texture mechanism. </param>
-		RENDERING_API Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
-		RENDERING_API Texture(int width = 0, int height = 0, unsigned char* data = NULL, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
+		RENDERING_API explicit Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
+		RENDERING_API explicit Texture(int width = 0, int height = 0, unsigned char* data = nullptr, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
 		RENDERING_API Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments);
 		RENDERING_API Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName);
-		RENDERING_API virtual ~Texture(void);
+
+		RENDERING_API virtual ~Texture();
+
 		/// <summary> Texture copy constructor. </summary>
 		Texture(const Texture& texture) = delete;
+
 		/// <summary> Texture move constructor. </summary>
-		RENDERING_API Texture(Texture&& texture);
+		RENDERING_API Texture(Texture&& texture) noexcept;
+
 		/// <summary> Texture copy assignment operator. </summary>
 		Texture& operator=(const Texture& texture) = delete;
+
 		/// <summary> Texture move assignment operator. </summary>
 		Texture& operator=(Texture&& texture) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		RENDERING_API void Bind(unsigned int unit = 0, unsigned int textureIndex = 0) const;
 		RENDERING_API void BindAsRenderTarget() const;
-		RENDERING_API inline int GetWidth() const { return m_textureData.GetWidth(); }
-		RENDERING_API inline int GetHeight() const { return m_textureData.GetHeight(); }
+		RENDERING_API int GetWidth() const { return m_textureData.GetWidth(); }
+		RENDERING_API int GetHeight() const { return m_textureData.GetHeight(); }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -157,7 +160,7 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Texture */
 
-	namespace Particles
+	namespace particles
 	{
 		class ParticleTexture : public Texture
 		{
@@ -167,19 +170,23 @@ namespace Rendering
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
-			RENDERING_API virtual ~ParticleTexture(void);
+			
+			RENDERING_API virtual ~ParticleTexture();
+
 			/// <summary> Particle texture copy constructor. </summary>
 			ParticleTexture(const ParticleTexture& particleTexture) = delete;
+
 			/// <summary> Particle texture move constructor. </summary>
-			RENDERING_API ParticleTexture(ParticleTexture&& particleTexture);
+			RENDERING_API ParticleTexture(ParticleTexture&& particleTexture) noexcept;
+
 			/// <summary> Particle texture copy assignment operator. </summary>
 			ParticleTexture& operator=(const ParticleTexture& particleTexture) = delete;
+
 			/// <summary> Particle texture move assignment operator. </summary>
 			ParticleTexture& operator=(ParticleTexture&& particleTexture) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			RENDERING_API int GetRowsCount() const { return m_rowsCount; }
 			RENDERING_API bool IsAdditive() const { return m_isAdditive; }
 			/* ==================== Non-static member functions end ==================== */
@@ -197,7 +204,7 @@ namespace Rendering
 			bool m_isAdditive;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticleTexture */
-	} /* end namespace Particles */
+	} /* end namespace particles */
 
 	//class CubeShadowMapTexture : public Texture
 	//{
@@ -217,6 +224,6 @@ namespace Rendering
 	/* ==================== Non-static member variables end ==================== */
 	//}; /* end class CubeShadowMapTexture */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_TEXTURE_H__ */

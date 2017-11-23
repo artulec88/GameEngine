@@ -77,54 +77,16 @@ namespace math {
 			/// A factory-like method for creating specific sorting objects based on the given <paramref name="sortingAlgorithm"/>.
 			/// </summary>
 			MATH_API static std::unique_ptr<ISort> GetSortingObject(sorting_algorithms::SortingAlgorithm sortingAlgorithm);
-			/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Constructors and destructors begin ==================== */
-			/// <summary> The constructor of the sorting object. </summary>
-			MATH_API ISort()
-			{
-			}
-
-			/// <summary> The destructor of the sorting object. </summary>
-			MATH_API virtual ~ISort()
-			{
-			}
-			
-			/// <summary> The copy constructor of the sorting object. </summary>
-			/// <param name="sortObject"> The sorting object to copy construct from. </param>
-			ISort(const ISort& sortObject) = delete;
-
-			/// <summary> The move constructor of the sorting object. </summary>
-			/// <param name="sortObject"> The r-value reference of the sorting object to move construct from. </param>
-			ISort(ISort&& sortObject) = delete;
-
-			/// <summary> The copy assignment operator of the sorting object. </summary>
-			/// <param name="sortObject"> The sorting object to copy assign from. </param>
-			/// <returns> The reference to the newly copy-assigned <code>ISort</code> object. </returns>
-			ISort& operator=(const ISort& sortObject) = delete;
-
-			/// <summary> The move assignment operator of the sorting object. </summary>
-			/// <param name="sortObject"> The r-value reference of the sorting object to move assign from. </param>
-			/// <returns> The reference to the newly move-assigned <code>ISort</code> object. </returns>
-			ISort& operator=(ISort&& sortObject) = delete;
-		/* ==================== Constructors and destructors end ==================== */
-			
-		/* ==================== Non-static member functions begin ==================== */
-			MATH_API virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
-			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 		protected:
 			template <typename T>
-			bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
+			static bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
 			{
 				return NeedSwapping<T>(v1, v2, sortingParameters.GetOrder());
 			}
 
 			template <typename T>
-			bool NeedSwapping(const T& v1, const T& v2, orders::Order sortingOrder)
+			static bool NeedSwapping(const T& v1, const T& v2, const orders::Order sortingOrder)
 			{
 				switch (sortingOrder)
 				{
@@ -138,45 +100,7 @@ namespace math {
 				}
 			}
 
-			template <>
-			bool NeedSwapping(const Vector2D& vec1, const Vector2D& vec2, const SortingParametersChain& sortingParameters)
-			{
-				/* Checking parameters */
-				auto sortingOrder = sortingParameters.GetOrder();
-				auto sortingKey = sortingParameters.GetKey();
-				if (sortingKey == keys::COMPONENT_Z)
-				{
-					ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
-					return false;
-				}
-
-				auto v1 = CollectValueByKey(vec1, sortingKey);
-				auto v2 = CollectValueByKey(vec2, sortingKey);
-
-				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
-				{
-					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
-				}
-				return NeedSwapping(v1, v2, sortingOrder);
-			}
-
-			template <>
-			bool NeedSwapping(const Vector3D& vec1, const Vector3D& vec2, const SortingParametersChain& sortingParameters)
-			{
-				auto sortingOrder = sortingParameters.GetOrder();
-				auto sortingKey = sortingParameters.GetKey();
-
-				auto v1 = CollectValueByKey(vec1, sortingKey);
-				auto v2 = CollectValueByKey(vec2, sortingKey);
-
-				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
-				{
-					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
-				}
-				return NeedSwapping(v1, v2, sortingOrder);
-			}
-
-			Real CollectValueByKey(const Vector2D& v, keys::Key sortingKey)
+			static Real CollectValueByKey(const Vector2D& v, const keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
@@ -197,7 +121,7 @@ namespace math {
 				}
 			}
 
-			Real CollectValueByKey(const Vector3D& v, keys::Key sortingKey)
+			static Real CollectValueByKey(const Vector3D& v, const keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
@@ -217,10 +141,10 @@ namespace math {
 			}
 
 			template <typename T>
-			void Swap(T& v1, T& v2)
+			static void Swap(T& v1, T& v2)
 			{
 				std::swap(v1, v2);
-				
+
 				//T temp(std::move(v1));
 				//v1 = std::move(v2);
 				//v2 = std::move(temp);
@@ -229,11 +153,89 @@ namespace math {
 				//v1 = v2;
 				//v2 = temp;
 			}
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			/// <summary> The constructor of the sorting object. </summary>
+			MATH_API ISort()
+			{
+			}
+
+			/// <summary> The destructor of the sorting object. </summary>
+			MATH_API virtual ~ISort()
+			{
+			}
+
+			/// <summary> The copy constructor of the sorting object. </summary>
+			/// <param name="sortObject"> The sorting object to copy construct from. </param>
+			ISort(const ISort& sortObject) = delete;
+
+			/// <summary> The move constructor of the sorting object. </summary>
+			/// <param name="sortObject"> The r-value reference of the sorting object to move construct from. </param>
+			ISort(ISort&& sortObject) = delete;
+
+			/// <summary> The copy assignment operator of the sorting object. </summary>
+			/// <param name="sortObject"> The sorting object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned <code>ISort</code> object. </returns>
+			ISort& operator=(const ISort& sortObject) = delete;
+
+			/// <summary> The move assignment operator of the sorting object. </summary>
+			/// <param name="sortObject"> The r-value reference of the sorting object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned <code>ISort</code> object. </returns>
+			ISort& operator=(ISort&& sortObject) = delete;
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+			MATH_API virtual void Sort(int* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Real* values, size_t valuesCount, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey = keys::COMPONENT_X, orders::Order sortingOrder = orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
+			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ISort */
+
+		template <>
+		inline bool ISort::NeedSwapping(const Vector2D& vec1, const Vector2D& vec2, const SortingParametersChain& sortingParameters)
+		{
+			/* Checking parameters */
+			const auto sortingOrder = sortingParameters.GetOrder();
+			const auto sortingKey = sortingParameters.GetKey();
+			if (sortingKey == keys::COMPONENT_Z)
+			{
+				ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
+				return false;
+			}
+
+			const auto v1 = CollectValueByKey(vec1, sortingKey);
+			const auto v2 = CollectValueByKey(vec2, sortingKey);
+
+			if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
+			{
+				return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
+			}
+			return NeedSwapping(v1, v2, sortingOrder);
+		}
+
+		template <>
+		inline bool ISort::NeedSwapping(const Vector3D& vec1, const Vector3D& vec2, const SortingParametersChain& sortingParameters)
+		{
+			const auto sortingOrder = sortingParameters.GetOrder();
+			const auto sortingKey = sortingParameters.GetKey();
+
+			const auto v1 = CollectValueByKey(vec1, sortingKey);
+			const auto v2 = CollectValueByKey(vec2, sortingKey);
+
+			if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
+			{
+				return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
+			}
+			return NeedSwapping(v1, v2, sortingOrder);
+		}
 
 	} /* end namespace Sorting */
 

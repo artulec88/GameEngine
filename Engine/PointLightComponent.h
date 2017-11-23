@@ -15,7 +15,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PointLightComponent(Rendering::Lighting::PointLight* pointLight);
+		PointLightComponent(rendering::lighting::PointLight* pointLight);
 		virtual ~PointLightComponent();
 		PointLightComponent(const PointLightComponent& pointLightComponent) = delete;
 		PointLightComponent(PointLightComponent&& pointLightComponent);
@@ -31,7 +31,7 @@ namespace engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::Lighting::PointLight* m_pointLight;
+		rendering::lighting::PointLight* m_pointLight;
 	/* ==================== Non-static member variables end ==================== */
 	}; // end class PointLightComponent
 } // end namespace Engine

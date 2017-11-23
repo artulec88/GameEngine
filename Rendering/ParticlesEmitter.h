@@ -7,11 +7,9 @@
 
 #include "Math\Math.h"
 
-#include <memory>
-
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// Particles emitter. A particle emitter holds one or more particles property generators.
@@ -84,7 +82,7 @@ namespace Rendering
 			/// The generator will be used when new particles are emitted by this specific particles emitter.
 			/// </summary>
 			/// <param name="particleAttributeGenerator"> The specific particle attribute generator. </param>
-			RENDERING_API void AddGenerator(Generators::ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
+			RENDERING_API void AddGenerator(generators::ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -102,10 +100,10 @@ namespace Rendering
 			/// <summary>
 			/// The generators that particles emitter uses.
 			/// </summary>
-			std::vector<Generators::ParticleAttributeGenerator*> m_generators;
+			std::vector<generators::ParticleAttributeGenerator*> m_generators;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesEmitter */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_EMITTER_H__ */

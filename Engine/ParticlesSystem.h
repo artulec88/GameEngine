@@ -24,14 +24,14 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit);
+		ENGINE_API ParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit);
 		ENGINE_API virtual ~ParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API const Rendering::Particles::ParticleTexture* GetTexture() const { return m_particleTexture; }
-		ENGINE_API const Rendering::Particles::Particle* GetParticles() const { return m_particles.data(); }
+		ENGINE_API const rendering::particles::ParticleTexture* GetTexture() const { return m_particleTexture; }
+		ENGINE_API const rendering::particles::Particle* GetParticles() const { return m_particles.data(); }
 		ENGINE_API int GetAliveParticlesCount() const { return m_aliveParticlesCount; }
 		/// <summary>
 		/// Sorts particles according to the distance to the origin point.
@@ -73,8 +73,8 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::Particles::ParticleTexture* m_particleTexture;
-		std::array<Rendering::Particles::Particle, MAX_PARTICLES_COUNT> m_particles;
+		rendering::particles::ParticleTexture* m_particleTexture;
+		std::array<rendering::particles::Particle, MAX_PARTICLES_COUNT> m_particles;
 		//Rendering::ParticleContainer m_particles;
 		math::Real m_particleLifeSpanLimit;
 
@@ -94,7 +94,7 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+		ENGINE_API FireParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
 		ENGINE_API virtual ~FireParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
@@ -131,7 +131,7 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+		ENGINE_API FreeFallParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
 		ENGINE_API virtual ~FreeFallParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */

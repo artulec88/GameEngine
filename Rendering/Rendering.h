@@ -69,7 +69,7 @@
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBarTypes.h"
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #else
 #undef OPEN_GL_PROPERTIES_TWEAK_BAR
 #undef RENDERER_PROPERTIES_BAR
@@ -78,9 +78,9 @@
 #undef GAME_PROPERTIES_TWEAK_BAR
 #endif
 
-namespace Rendering
+namespace rendering
 {
-	namespace Text
+	namespace text
 	{
 		enum Alignment
 		{
@@ -89,9 +89,9 @@ namespace Rendering
 			CENTER,
 			//JUSTIFY // TODO: Implement JUSTIFY alignment
 		}; /* end enum Alignment */
-	} /* end namespace Text */
+	} /* end namespace text */
 
-	namespace FogEffect
+	namespace fog_effect
 	{
 		// must match the values in the FogCalculationType
 		enum FogFallOffType
@@ -106,7 +106,7 @@ namespace Rendering
 			PLANE_BASED = 0,
 			RANGE_BASED = 4
 		};
-	} /* end namespace FogEffect */
+	} /* end namespace fog_effect */
 
 	namespace WaterEffect
 	{
@@ -236,6 +236,6 @@ namespace Rendering
 
 	void UpdateScissorTestParameters();
 #endif
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_RENDERING_H__ */

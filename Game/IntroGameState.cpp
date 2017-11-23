@@ -63,7 +63,7 @@ void Game::IntroGameState::Handle(engine::Ranges::Range range, math::Real value)
 {
 }
 
-void Game::IntroGameState::Render(Rendering::Renderer* renderer) const
+void Game::IntroGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("INTRO game state rendering");

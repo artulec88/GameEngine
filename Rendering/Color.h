@@ -6,17 +6,15 @@
 #include "Math/Vector.h"
 
 #include <string>
-#include <sstream>
-#include <map>
 
-namespace Rendering
+namespace rendering
 {
-	namespace ColorIDs
+	namespace color_ids
 	{
 		/// <summary>
 		/// See http://www.w3schools.com/colors/colors_hex.asp.
 		/// </summary>
-		enum ColorID
+		enum ColorId
 		{
 			INDIAN_RED = 0, /// <summary> Red-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=205,92,92 </summary>
 			LIGHT_CORAL, /// <summary> Red-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=240,128,128 </summary>
@@ -167,51 +165,51 @@ namespace Rendering
 		struct ColorNameEntry
 		{
 			char const* name;
-			ColorIDs::ColorID colorId;
+			color_ids::ColorId colorId;
 		}; /* end struct ColorNameEntry */
 
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", ColorIDs::INDIAN_RED},
-		{ "light_coral", ColorIDs::INDIAN_RED },{ "salmon", ColorIDs::INDIAN_RED },{ "dark_salmon", ColorIDs::INDIAN_RED },{ "light_salmon", ColorIDs::INDIAN_RED },
-		{ "crimson", ColorIDs::INDIAN_RED },{ "red", ColorIDs::INDIAN_RED },{ "fire_brick", ColorIDs::INDIAN_RED },{ "dark_red", ColorIDs::INDIAN_RED },
-		{ "pink", ColorIDs::INDIAN_RED },{ "light_pink", ColorIDs::INDIAN_RED },{ "hot_pink", ColorIDs::INDIAN_RED },{ "deep_pink", ColorIDs::INDIAN_RED },
-		{ "medium_violet_red", ColorIDs::INDIAN_RED },{ "pale_violet_red", ColorIDs::INDIAN_RED },{ "coral", ColorIDs::INDIAN_RED },{ "tomato", ColorIDs::INDIAN_RED },
-		{ "orange_red", ColorIDs::INDIAN_RED },{ "dark_orange", ColorIDs::INDIAN_RED },{ "orange", ColorIDs::INDIAN_RED },{ "gold", ColorIDs::INDIAN_RED },
-		{ "yellow", ColorIDs::INDIAN_RED },{ "light_yellow", ColorIDs::INDIAN_RED },{ "lemon_chiffon", ColorIDs::INDIAN_RED },{ "light_goldenrod_yellow", ColorIDs::INDIAN_RED },
-		{ "papaya_whip", ColorIDs::INDIAN_RED },{ "moccasin", ColorIDs::INDIAN_RED },{ "peach_puff", ColorIDs::INDIAN_RED },{ "pale_goldenrod", ColorIDs::INDIAN_RED },
-		{ "khaki", ColorIDs::INDIAN_RED },{ "dark_khaki", ColorIDs::INDIAN_RED },{ "lavender", ColorIDs::INDIAN_RED },{ "thistle", ColorIDs::INDIAN_RED },
-		{ "plum", ColorIDs::INDIAN_RED },{ "violet", ColorIDs::INDIAN_RED },{ "orchid", ColorIDs::INDIAN_RED },{ "fuchsia", ColorIDs::INDIAN_RED },
-		{ "magenta", ColorIDs::INDIAN_RED },{ "medium_orchid", ColorIDs::INDIAN_RED },{ "blue_violet", ColorIDs::INDIAN_RED },{ "dark_violet", ColorIDs::INDIAN_RED },
-		{ "dark_orchid", ColorIDs::INDIAN_RED },{ "dark_magenta", ColorIDs::INDIAN_RED },{ "purple", ColorIDs::INDIAN_RED },{ "indigo", ColorIDs::INDIAN_RED },
-		{ "state_blue", ColorIDs::INDIAN_RED },{ "dark_state_blue", ColorIDs::INDIAN_RED },{ "medium_state_blue", ColorIDs::INDIAN_RED },{ "green_yellow", ColorIDs::INDIAN_RED },
-		{ "chartreuse", ColorIDs::INDIAN_RED },{ "lawn_green", ColorIDs::INDIAN_RED },{ "lime", ColorIDs::INDIAN_RED },{ "lime_green", ColorIDs::INDIAN_RED },
-		{ "pale_green", ColorIDs::INDIAN_RED },{ "light_green", ColorIDs::INDIAN_RED },{ "medium_spring_green", ColorIDs::INDIAN_RED },{ "spring_green", ColorIDs::INDIAN_RED },
-		{ "medium_sea_green", ColorIDs::INDIAN_RED },{ "sea_green", ColorIDs::INDIAN_RED },{ "forest_green", ColorIDs::INDIAN_RED },{ "green", ColorIDs::INDIAN_RED },
-		{ "dark_green", ColorIDs::INDIAN_RED },{ "yellow_green", ColorIDs::INDIAN_RED },{ "olive_drab", ColorIDs::INDIAN_RED },{ "olive", ColorIDs::INDIAN_RED },
-		{ "dark_olive_green", ColorIDs::INDIAN_RED },{ "medium_aquamarine", ColorIDs::INDIAN_RED },{ "dark_sea_green", ColorIDs::INDIAN_RED },{ "light_sea_green", ColorIDs::INDIAN_RED },
-		{ "dark_cyan", ColorIDs::INDIAN_RED },{ "teal", ColorIDs::INDIAN_RED },{ "aqua", ColorIDs::INDIAN_RED },{ "cyan", ColorIDs::INDIAN_RED },
-		{ "light_cyan", ColorIDs::INDIAN_RED },{ "pale_turquoise", ColorIDs::INDIAN_RED },{ "aquamarine", ColorIDs::INDIAN_RED },{ "turquoise", ColorIDs::INDIAN_RED },
-		{ "medium_turquoise", ColorIDs::INDIAN_RED },{ "dark_turquoise", ColorIDs::INDIAN_RED },{ "cadet_blue", ColorIDs::INDIAN_RED },{ "steel_blue", ColorIDs::INDIAN_RED },
-		{ "light_steel_blue", ColorIDs::INDIAN_RED },{ "powder_blue", ColorIDs::INDIAN_RED },{ "light_blue", ColorIDs::INDIAN_RED },{ "sky_blue", ColorIDs::INDIAN_RED },
-		{ "light_sky_blue", ColorIDs::INDIAN_RED },{ "deep_sky_blue", ColorIDs::INDIAN_RED },{ "dodger_blue", ColorIDs::INDIAN_RED },{ "cornflower_blue", ColorIDs::INDIAN_RED },
-		{ "royal_blue", ColorIDs::INDIAN_RED },{ "medium_blue", ColorIDs::INDIAN_RED },{ "dark_blue", ColorIDs::INDIAN_RED },{ "navy", ColorIDs::INDIAN_RED },
-		{ "midnight_blue", ColorIDs::INDIAN_RED },{ "cornsilk", ColorIDs::INDIAN_RED },{ "blanched_almond", ColorIDs::INDIAN_RED },{ "bisque", ColorIDs::INDIAN_RED },
-		{ "navajo_white", ColorIDs::INDIAN_RED },{ "wheat", ColorIDs::INDIAN_RED },{ "burly_wood", ColorIDs::INDIAN_RED },{ "tan", ColorIDs::INDIAN_RED },
-		{ "rosy_brown", ColorIDs::INDIAN_RED },{ "sandy_brown", ColorIDs::INDIAN_RED },{ "goldenrod", ColorIDs::INDIAN_RED },{ "dark_goldenrod", ColorIDs::INDIAN_RED },
-		{ "peru", ColorIDs::INDIAN_RED },{ "chocolate", ColorIDs::INDIAN_RED },{ "saddle_brown", ColorIDs::INDIAN_RED },{ "sienna", ColorIDs::INDIAN_RED },
-		{ "brown", ColorIDs::INDIAN_RED },{ "maroon", ColorIDs::INDIAN_RED },{ "white", ColorIDs::INDIAN_RED },{ "snow", ColorIDs::INDIAN_RED },
-		{ "honeydew", ColorIDs::INDIAN_RED },{ "mint_cream", ColorIDs::INDIAN_RED },{ "azure", ColorIDs::INDIAN_RED },{ "alice_blue", ColorIDs::INDIAN_RED },
-		{ "ghost_white", ColorIDs::INDIAN_RED },{ "white_smoke", ColorIDs::INDIAN_RED },{ "seashell", ColorIDs::INDIAN_RED },{ "beige", ColorIDs::INDIAN_RED },
-		{ "old_lace", ColorIDs::INDIAN_RED },{ "floral_white", ColorIDs::INDIAN_RED },{ "ivory", ColorIDs::INDIAN_RED },{ "antique_white", ColorIDs::INDIAN_RED },
-		{ "linen", ColorIDs::INDIAN_RED },{ "lavender_blush", ColorIDs::INDIAN_RED },{ "misty_rose", ColorIDs::INDIAN_RED },{ "gainsboro", ColorIDs::INDIAN_RED },
-		{ "light_grey", ColorIDs::INDIAN_RED },{ "silver", ColorIDs::INDIAN_RED },{ "dark_grey", ColorIDs::INDIAN_RED },{ "grey", ColorIDs::INDIAN_RED },
-		{ "dim_grey", ColorIDs::INDIAN_RED },{ "light_slate_grey", ColorIDs::INDIAN_RED },{ "slate_grey", ColorIDs::INDIAN_RED },{ "black", ColorIDs::INDIAN_RED } };
+		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", color_ids::INDIAN_RED},
+		{ "light_coral", color_ids::INDIAN_RED },{ "salmon", color_ids::INDIAN_RED },{ "dark_salmon", color_ids::INDIAN_RED },{ "light_salmon", color_ids::INDIAN_RED },
+		{ "crimson", color_ids::INDIAN_RED },{ "red", color_ids::INDIAN_RED },{ "fire_brick", color_ids::INDIAN_RED },{ "dark_red", color_ids::INDIAN_RED },
+		{ "pink", color_ids::INDIAN_RED },{ "light_pink", color_ids::INDIAN_RED },{ "hot_pink", color_ids::INDIAN_RED },{ "deep_pink", color_ids::INDIAN_RED },
+		{ "medium_violet_red", color_ids::INDIAN_RED },{ "pale_violet_red", color_ids::INDIAN_RED },{ "coral", color_ids::INDIAN_RED },{ "tomato", color_ids::INDIAN_RED },
+		{ "orange_red", color_ids::INDIAN_RED },{ "dark_orange", color_ids::INDIAN_RED },{ "orange", color_ids::INDIAN_RED },{ "gold", color_ids::INDIAN_RED },
+		{ "yellow", color_ids::INDIAN_RED },{ "light_yellow", color_ids::INDIAN_RED },{ "lemon_chiffon", color_ids::INDIAN_RED },{ "light_goldenrod_yellow", color_ids::INDIAN_RED },
+		{ "papaya_whip", color_ids::INDIAN_RED },{ "moccasin", color_ids::INDIAN_RED },{ "peach_puff", color_ids::INDIAN_RED },{ "pale_goldenrod", color_ids::INDIAN_RED },
+		{ "khaki", color_ids::INDIAN_RED },{ "dark_khaki", color_ids::INDIAN_RED },{ "lavender", color_ids::INDIAN_RED },{ "thistle", color_ids::INDIAN_RED },
+		{ "plum", color_ids::INDIAN_RED },{ "violet", color_ids::INDIAN_RED },{ "orchid", color_ids::INDIAN_RED },{ "fuchsia", color_ids::INDIAN_RED },
+		{ "magenta", color_ids::INDIAN_RED },{ "medium_orchid", color_ids::INDIAN_RED },{ "blue_violet", color_ids::INDIAN_RED },{ "dark_violet", color_ids::INDIAN_RED },
+		{ "dark_orchid", color_ids::INDIAN_RED },{ "dark_magenta", color_ids::INDIAN_RED },{ "purple", color_ids::INDIAN_RED },{ "indigo", color_ids::INDIAN_RED },
+		{ "state_blue", color_ids::INDIAN_RED },{ "dark_state_blue", color_ids::INDIAN_RED },{ "medium_state_blue", color_ids::INDIAN_RED },{ "green_yellow", color_ids::INDIAN_RED },
+		{ "chartreuse", color_ids::INDIAN_RED },{ "lawn_green", color_ids::INDIAN_RED },{ "lime", color_ids::INDIAN_RED },{ "lime_green", color_ids::INDIAN_RED },
+		{ "pale_green", color_ids::INDIAN_RED },{ "light_green", color_ids::INDIAN_RED },{ "medium_spring_green", color_ids::INDIAN_RED },{ "spring_green", color_ids::INDIAN_RED },
+		{ "medium_sea_green", color_ids::INDIAN_RED },{ "sea_green", color_ids::INDIAN_RED },{ "forest_green", color_ids::INDIAN_RED },{ "green", color_ids::INDIAN_RED },
+		{ "dark_green", color_ids::INDIAN_RED },{ "yellow_green", color_ids::INDIAN_RED },{ "olive_drab", color_ids::INDIAN_RED },{ "olive", color_ids::INDIAN_RED },
+		{ "dark_olive_green", color_ids::INDIAN_RED },{ "medium_aquamarine", color_ids::INDIAN_RED },{ "dark_sea_green", color_ids::INDIAN_RED },{ "light_sea_green", color_ids::INDIAN_RED },
+		{ "dark_cyan", color_ids::INDIAN_RED },{ "teal", color_ids::INDIAN_RED },{ "aqua", color_ids::INDIAN_RED },{ "cyan", color_ids::INDIAN_RED },
+		{ "light_cyan", color_ids::INDIAN_RED },{ "pale_turquoise", color_ids::INDIAN_RED },{ "aquamarine", color_ids::INDIAN_RED },{ "turquoise", color_ids::INDIAN_RED },
+		{ "medium_turquoise", color_ids::INDIAN_RED },{ "dark_turquoise", color_ids::INDIAN_RED },{ "cadet_blue", color_ids::INDIAN_RED },{ "steel_blue", color_ids::INDIAN_RED },
+		{ "light_steel_blue", color_ids::INDIAN_RED },{ "powder_blue", color_ids::INDIAN_RED },{ "light_blue", color_ids::INDIAN_RED },{ "sky_blue", color_ids::INDIAN_RED },
+		{ "light_sky_blue", color_ids::INDIAN_RED },{ "deep_sky_blue", color_ids::INDIAN_RED },{ "dodger_blue", color_ids::INDIAN_RED },{ "cornflower_blue", color_ids::INDIAN_RED },
+		{ "royal_blue", color_ids::INDIAN_RED },{ "medium_blue", color_ids::INDIAN_RED },{ "dark_blue", color_ids::INDIAN_RED },{ "navy", color_ids::INDIAN_RED },
+		{ "midnight_blue", color_ids::INDIAN_RED },{ "cornsilk", color_ids::INDIAN_RED },{ "blanched_almond", color_ids::INDIAN_RED },{ "bisque", color_ids::INDIAN_RED },
+		{ "navajo_white", color_ids::INDIAN_RED },{ "wheat", color_ids::INDIAN_RED },{ "burly_wood", color_ids::INDIAN_RED },{ "tan", color_ids::INDIAN_RED },
+		{ "rosy_brown", color_ids::INDIAN_RED },{ "sandy_brown", color_ids::INDIAN_RED },{ "goldenrod", color_ids::INDIAN_RED },{ "dark_goldenrod", color_ids::INDIAN_RED },
+		{ "peru", color_ids::INDIAN_RED },{ "chocolate", color_ids::INDIAN_RED },{ "saddle_brown", color_ids::INDIAN_RED },{ "sienna", color_ids::INDIAN_RED },
+		{ "brown", color_ids::INDIAN_RED },{ "maroon", color_ids::INDIAN_RED },{ "white", color_ids::INDIAN_RED },{ "snow", color_ids::INDIAN_RED },
+		{ "honeydew", color_ids::INDIAN_RED },{ "mint_cream", color_ids::INDIAN_RED },{ "azure", color_ids::INDIAN_RED },{ "alice_blue", color_ids::INDIAN_RED },
+		{ "ghost_white", color_ids::INDIAN_RED },{ "white_smoke", color_ids::INDIAN_RED },{ "seashell", color_ids::INDIAN_RED },{ "beige", color_ids::INDIAN_RED },
+		{ "old_lace", color_ids::INDIAN_RED },{ "floral_white", color_ids::INDIAN_RED },{ "ivory", color_ids::INDIAN_RED },{ "antique_white", color_ids::INDIAN_RED },
+		{ "linen", color_ids::INDIAN_RED },{ "lavender_blush", color_ids::INDIAN_RED },{ "misty_rose", color_ids::INDIAN_RED },{ "gainsboro", color_ids::INDIAN_RED },
+		{ "light_grey", color_ids::INDIAN_RED },{ "silver", color_ids::INDIAN_RED },{ "dark_grey", color_ids::INDIAN_RED },{ "grey", color_ids::INDIAN_RED },
+		{ "dim_grey", color_ids::INDIAN_RED },{ "light_slate_grey", color_ids::INDIAN_RED },{ "slate_grey", color_ids::INDIAN_RED },{ "black", color_ids::INDIAN_RED } };
 		static constexpr bool Same(const char* x, const char* y)
 		{
 			return (!*x && !*y) ? true : (*x == *y && Same(x + 1, y + 1));
 		}
-		static constexpr ColorIDs::ColorID Value(char const *name, ColorNameEntry const *entries) {
+		static constexpr color_ids::ColorId Value(char const *name, ColorNameEntry const *entries) {
 			return Same(entries->name, name) ? entries->colorId : Value(name, entries + 1);
 		}
 		/* ==================== Static variables and functions end ==================== */
@@ -224,7 +222,7 @@ namespace Rendering
 
 		/// <summary> Color constructor. </summary>
 		/// <param name="colorID"> The ID of the color to be used. </param>
-		RENDERING_API explicit Color(ColorIDs::ColorID colorID) noexcept;
+		RENDERING_API explicit Color(color_ids::ColorId colorId) noexcept;
 
 		/// <summary> Color constructor. </summary>
 		/// <param name="red"> The value of the RED component of the color to be used. </param>
@@ -268,7 +266,6 @@ namespace Rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-	public:
 		/// <summary> Retrieves the red component of the color. </summary>
 		/// <returns> The red component of the color. </returns>
 		RENDERING_API math::Real GetRed() const noexcept { return m_values.x; }
@@ -294,10 +291,10 @@ namespace Rendering
 			SetBlue(blue);
 			SetAlpha(alpha);
 		}
-		RENDERING_API inline void SetRed(math::Real red) noexcept { m_values.x = red; }
-		RENDERING_API inline void SetGreen(math::Real green) noexcept { m_values.y = green; }
-		RENDERING_API inline void SetBlue(math::Real blue) noexcept { m_values.z = blue; }
-		RENDERING_API inline void SetAlpha(math::Real alpha) noexcept { m_values.w = alpha; }
+		RENDERING_API void SetRed(math::Real red) noexcept { m_values.x = red; }
+		RENDERING_API void SetGreen(math::Real green) noexcept { m_values.y = green; }
+		RENDERING_API void SetBlue(math::Real blue) noexcept { m_values.z = blue; }
+		RENDERING_API void SetAlpha(math::Real alpha) noexcept { m_values.w = alpha; }
 
 		RENDERING_API Color operator+(const Color& color) const noexcept;
 		RENDERING_API Color& operator+=(const Color& color) noexcept;
@@ -325,6 +322,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Color */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_COLOR_H__ */

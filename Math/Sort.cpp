@@ -7,7 +7,7 @@ math::sorting::BubbleSort::BubbleSort() : ISort()
 {
 }
 
-math::sorting::BubbleSort::~BubbleSort(void)
+math::sorting::BubbleSort::~BubbleSort()
 {
 }
 
@@ -47,7 +47,7 @@ math::sorting::InsertionSort::InsertionSort() : ISort()
 {
 }
 
-math::sorting::InsertionSort::~InsertionSort(void)
+math::sorting::InsertionSort::~InsertionSort()
 {
 }
 
@@ -87,7 +87,7 @@ math::sorting::SelectionSort::SelectionSort() : ISort()
 {
 }
 
-math::sorting::SelectionSort::~SelectionSort(void)
+math::sorting::SelectionSort::~SelectionSort()
 {
 }
 
@@ -127,7 +127,7 @@ math::sorting::MergeSort::MergeSort() : ISort()
 {
 }
 
-math::sorting::MergeSort::~MergeSort(void)
+math::sorting::MergeSort::~MergeSort()
 {
 }
 
@@ -167,7 +167,7 @@ math::sorting::HeapSort::HeapSort() : ISort()
 {
 }
 
-math::sorting::HeapSort::~HeapSort(void)
+math::sorting::HeapSort::~HeapSort()
 {
 }
 
@@ -207,7 +207,7 @@ math::sorting::QuickSort::QuickSort() : ISort()
 {
 }
 
-math::sorting::QuickSort::~QuickSort(void)
+math::sorting::QuickSort::~QuickSort()
 {
 }
 
@@ -247,7 +247,7 @@ math::sorting::ShellSort::ShellSort() : ISort()
 {
 }
 
-math::sorting::ShellSort::~ShellSort(void)
+math::sorting::ShellSort::~ShellSort()
 {
 }
 
@@ -287,7 +287,7 @@ math::sorting::CombSort::CombSort() : ISort()
 {
 }
 
-math::sorting::CombSort::~CombSort(void)
+math::sorting::CombSort::~CombSort()
 {
 }
 
@@ -327,7 +327,7 @@ math::sorting::CountingSort::CountingSort() : ISort()
 {
 }
 
-math::sorting::CountingSort::~CountingSort(void)
+math::sorting::CountingSort::~CountingSort()
 {
 }
 
@@ -340,7 +340,7 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 	/* ==================== Calculating range of data begin ==================== */
 	auto min = INT_MAX;
 	auto max = INT_MIN;
-	for (int i = 0; i < valuesCount; ++i)
+	for (auto i = 0; i < valuesCount; ++i)
 	{
 		if (values[i] < min)
 		{
@@ -356,7 +356,7 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 
 	std::vector<int> helpTab1(valuesCount);
 	std::vector<int> helpTab2(range, 0); // filled with zeros initially
-	for (int i = 0; i < valuesCount; ++i)
+	for (auto i = 0; i < valuesCount; ++i)
 	{
 		++helpTab2[values[i] - min];
 	}
@@ -373,14 +373,14 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 
 	if (orders::ASCENDING == sortingOrder)
 	{
-		for (int i = 1; i < range; ++i)
+		for (auto i = 1; i < range; ++i)
 		{
 			helpTab2[i] += helpTab2[i - 1];
 		}
 	}
 	else
 	{
-		for (int i = range - 2; i >= 0; --i)
+		for (auto i = range - 2; i >= 0; --i)
 		{
 			helpTab2[i] += helpTab2[i + 1];
 		}
@@ -396,7 +396,7 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 	//	ERROR_LOG_MATH("helpTab2[", i, "] = ", helpTab2[i]);
 	//}
 
-	for (int i = 0; i < valuesCount; ++i)
+	for (auto i = 0; i < valuesCount; ++i)
 	{
 		helpTab1[helpTab2[values[i] - min] - 1] = values[i];
 		--helpTab2[values[i] - min];
@@ -412,7 +412,7 @@ void math::sorting::CountingSort::Sort(int* values, size_t valuesCount, orders::
 	//	ERROR_LOG_MATH("helpTab2[", i, "] = ", helpTab2[i]);
 	//}
 
-	for (int i = 0; i < valuesCount; ++i)
+	for (auto i = 0; i < valuesCount; ++i)
 	{
 		values[i] = helpTab1[i];
 	}
@@ -422,31 +422,26 @@ void math::sorting::CountingSort::Sort(Real* values, size_t valuesCount, orders:
 {
 	//Sort<Real>(values, valuesCount, VALUE, sortingOrder);
 	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
-	return;
 }
 
 void math::sorting::CountingSort::Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey /* = keys::COMPONENT_X */, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
 	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
-	return;
 }
 
 void math::sorting::CountingSort::Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey /* = keys::COMPONENT_X */, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
 	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
-	return;
 }
 
 void math::sorting::CountingSort::Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
-	return;
 }
 
 void math::sorting::CountingSort::Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
-	return;
 }
 /* ==================== CountingSort class implementation end ==================== */
 
@@ -455,7 +450,7 @@ math::sorting::RadixSort::RadixSort() : ISort()
 {
 }
 
-math::sorting::RadixSort::~RadixSort(void)
+math::sorting::RadixSort::~RadixSort()
 {
 }
 
@@ -467,31 +462,26 @@ void math::sorting::RadixSort::Sort(int* values, size_t valuesCount, orders::Ord
 void math::sorting::RadixSort::Sort(Real* values, size_t valuesCount, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
 	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
-	return;
 }
 
 void math::sorting::RadixSort::Sort(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey /* = keys::COMPONENT_X */, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
 	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
-	return;
 }
 
 void math::sorting::RadixSort::Sort(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey /* = keys::COMPONENT_X */, orders::Order sortingOrder /* = orders::ASCENDING */)
 {
 	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
-	return;
 }
 
 void math::sorting::RadixSort::Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
-	return;
 }
 
 void math::sorting::RadixSort::Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
-	return;
 }
 /* ==================== RadixSort class implementation end ==================== */
 
@@ -500,7 +490,7 @@ math::sorting::BucketSort::BucketSort() : ISort()
 {
 }
 
-math::sorting::BucketSort::~BucketSort(void)
+math::sorting::BucketSort::~BucketSort()
 {
 }
 

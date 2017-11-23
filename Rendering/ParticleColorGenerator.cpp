@@ -5,25 +5,25 @@
 #include "ParticleAccelerationGenerator.h"
 
 /* ==================== class ConstantColorGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantColorGenerator::ConstantColorGenerator(math::Real red /* = REAL_ONE */, math::Real green /* = REAL_ONE */, math::Real blue /* = REAL_ONE */, math::Real alpha /* = REAL_ONE */) :
+rendering::particles::generators::ConstantColorGenerator::ConstantColorGenerator(math::Real red /* = REAL_ONE */, math::Real green /* = REAL_ONE */, math::Real blue /* = REAL_ONE */, math::Real alpha /* = REAL_ONE */) :
 	ColorGenerator(),
 	m_color(red, green, blue, alpha)
 {
 }
 
-Rendering::Particles::Generators::ConstantColorGenerator::ConstantColorGenerator(const Color& color) :
+rendering::particles::generators::ConstantColorGenerator::ConstantColorGenerator(const Color& color) :
 	ColorGenerator(),
 	m_color(color)
 {
 }
 
-Rendering::Particles::Generators::ConstantColorGenerator::~ConstantColorGenerator()
+rendering::particles::generators::ConstantColorGenerator::~ConstantColorGenerator()
 {
 }
 
-void Rendering::Particles::Generators::ConstantColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::ConstantColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_color);
 	}
@@ -31,18 +31,18 @@ void Rendering::Particles::Generators::ConstantColorGenerator::Generate(math::Re
 /* ==================== class ConstantColorGenerator end ==================== */
 
 /* ==================== class FromSetColorGenerator begin ==================== */
-Rendering::Particles::Generators::FromSetColorGenerator::FromSetColorGenerator(std::initializer_list<Color> colors) :
+rendering::particles::generators::FromSetColorGenerator::FromSetColorGenerator(std::initializer_list<Color> colors) :
 	ColorGenerator(),
 	m_colors(colors),
 	m_randomGenerator(math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE))
 {
 }
 
-Rendering::Particles::Generators::FromSetColorGenerator::~FromSetColorGenerator()
+rendering::particles::generators::FromSetColorGenerator::~FromSetColorGenerator()
 {
 }
 
-void Rendering::Particles::Generators::FromSetColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::FromSetColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -53,7 +53,7 @@ void Rendering::Particles::Generators::FromSetColorGenerator::Generate(math::Rea
 /* ==================== class FromSetColorGenerator end ==================== */
 
 /* ==================== class RangeColorGenerator begin ==================== */
-Rendering::Particles::Generators::RangeColorGenerator::RangeColorGenerator(const Color& minColor, const Color& maxColor) :
+rendering::particles::generators::RangeColorGenerator::RangeColorGenerator(const Color& minColor, const Color& maxColor) :
 	ColorGenerator(),
 	m_minRed(minColor.GetRed() < maxColor.GetRed() ? minColor.GetRed() : maxColor.GetRed()),
 	m_maxRed(minColor.GetRed() > maxColor.GetRed() ? minColor.GetRed() : maxColor.GetRed()),
@@ -67,11 +67,11 @@ Rendering::Particles::Generators::RangeColorGenerator::RangeColorGenerator(const
 {
 }
 
-Rendering::Particles::Generators::RangeColorGenerator::~RangeColorGenerator()
+rendering::particles::generators::RangeColorGenerator::~RangeColorGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::RangeColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

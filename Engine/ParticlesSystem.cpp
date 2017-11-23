@@ -3,7 +3,7 @@
 #include <algorithm>
 
 /* ==================== ParticleSystem class begin ==================== */
-engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit) :
+engine::ParticlesSystem::ParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
 	//m_particles(),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
@@ -39,7 +39,7 @@ void engine::ParticlesSystem::SortParticles(const math::Vector3D& originPosition
 	//}
 	/* ==================== Small test whether sorting particles work fine end ==================== */
 
-	std::sort(m_particles.begin(), m_particles.end(), Rendering::Particles::ParticleComparator(originPosition));
+	std::sort(m_particles.begin(), m_particles.end(), rendering::particles::ParticleComparator(originPosition));
 }
 
 void engine::ParticlesSystem::Update(math::Real deltaTime)
@@ -57,7 +57,7 @@ void engine::ParticlesSystem::Update(math::Real deltaTime)
 /* ==================== ParticleSystem class end ==================== */
 
 /* ==================== FireParticleSystem class begin ==================== */
-engine::FireParticlesSystem::FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+engine::FireParticlesSystem::FireParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 	math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
@@ -83,7 +83,7 @@ void engine::FireParticlesSystem::GenerateParticles(const math::Vector3D& initia
 /* ==================== FreeFallParticleSystem class end ==================== */
 
 /* ==================== FreeFallParticleSystem class begin ==================== */
-engine::FreeFallParticlesSystem::FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+engine::FreeFallParticlesSystem::FreeFallParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 	math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),

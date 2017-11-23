@@ -14,7 +14,7 @@
 #include "Utility/Time.h"
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
 #include <fstream>
@@ -107,7 +107,7 @@ void engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 //	return shader;
 //}
 
-void engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& guiControl)
+void engine::GameManager::AddGuiControl(const rendering::controls::GuiControl& guiControl)
 {
 	//FontMap::const_iterator textItr = m_texts.find(guiText.GetFont());
 	//if (textItr == m_texts.end())
@@ -119,47 +119,47 @@ void engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& g
 	//m_texts[guiText.GetFont()].push_back(guiText);
 }
 
-void engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem)
+void engine::GameManager::AddParticlesSystem(rendering::particles::ParticlesSystem* particlesSystem)
 {
 	m_particlesSystems.push_back(particlesSystem);
 }
 
-const Rendering::Mesh* engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
+const rendering::Mesh* engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
 }
 
-const Rendering::Mesh* engine::GameManager::GetMesh(int meshID) const
+const rendering::Mesh* engine::GameManager::GetMesh(int meshID) const
 {
 	return CoreEngine::GetCoreEngine()->GetMesh(meshID);
 }
 
-const Rendering::Texture* engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
+const rendering::Texture* engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddTexture(textureID, textureFileName);
 }
 
-const Rendering::Texture* engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+const rendering::Texture* engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
 {
 	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureID, cubeMapTextureDirectory);
 }
 
-const Rendering::Particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+const rendering::particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
 {
 	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 }
 
-const Rendering::Texture* engine::GameManager::GetTexture(int textureID) const
+const rendering::Texture* engine::GameManager::GetTexture(int textureID) const
 {
 	return CoreEngine::GetCoreEngine()->GetTexture(textureID);
 }
 
-const Rendering::Shader* engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
+const rendering::Shader* engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
 {
 	return CoreEngine::GetCoreEngine()->AddShader(shaderID, shaderFileName);
 }
 
-const Rendering::Shader* engine::GameManager::GetShader(int shaderID) const
+const rendering::Shader* engine::GameManager::GetShader(int shaderID) const
 {
 	return CoreEngine::GetCoreEngine()->GetShader(shaderID);
 }
@@ -227,7 +227,7 @@ void engine::GameManager::Input(const engine::Input::MappedInput& input)
 //{
 //}
 
-void engine::GameManager::Render(Rendering::Renderer* renderer) const
+void engine::GameManager::Render(rendering::Renderer* renderer) const
 {
 	m_gameStateManager->Render(renderer);
 }
@@ -255,12 +255,12 @@ void engine::GameManager::RequestGameQuit() const
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
-const Rendering::Text::Font* engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
+const rendering::text::Font* engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
 	return CoreEngine::GetCoreEngine()->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
 }
 
-const Rendering::Text::Font* engine::GameManager::GetFont(int fontID) const
+const rendering::text::Font* engine::GameManager::GetFont(int fontID) const
 {
 	return CoreEngine::GetCoreEngine()->GetFont(fontID);
 }

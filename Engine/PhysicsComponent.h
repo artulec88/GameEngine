@@ -7,7 +7,7 @@
 //#include "IInputableMouse.h"
 
 #include "Math\Math.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 #include "Math/Vector.h"
 
 namespace engine

@@ -2,31 +2,30 @@
 #include "Uniform.h"
 #include "Material.h"
 #include "Renderer.h"
+#include "SpotLight.h"
 
-Rendering::Uniforms::UniformType Rendering::Uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
+rendering::uniforms::UniformType rendering::uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
 {
-	if (uniformTypeStr == "int") { return Uniforms::INT; }
-	else if (uniformTypeStr == "float") { return Uniforms::REAL; }
-	else if (uniformTypeStr == "vec2") { return Uniforms::VEC_2D; }
-	else if (uniformTypeStr == "vec3") { return Uniforms::VEC_3D; }
-	else if (uniformTypeStr == "vec4") { return Uniforms::VEC_4D; }
-	else if (uniformTypeStr == "mat4") { return Uniforms::MATRIX_4x4; }
-	else if (uniformTypeStr == "sampler2D") { return Uniforms::SAMPLER_2D; }
-	else if (uniformTypeStr == "samplerCube") { return Uniforms::SAMPLER_CUBE; }
-	else if (uniformTypeStr == "BaseLight") { return Uniforms::BASE_LIGHT; }
-	else if (uniformTypeStr == "DirectionalLight") { return Uniforms::DIRECTIONAL_LIGHT; }
-	else if (uniformTypeStr == "PointLight") { return Uniforms::POINT_LIGHT; }
-	else if (uniformTypeStr == "SpotLight") { return Uniforms::SPOT_LIGHT; }
-	else if (uniformTypeStr == "Attenuation") { return Uniforms::ATTENUATION; }
-	else
-	{
-		EMERGENCY_LOG_RENDERING("Uniform type \"", uniformTypeStr, "\" not supported by the rendering engine.");
-		exit(EXIT_FAILURE);
-	}
+	if (uniformTypeStr == "int") { return uniforms::INT; }
+	if (uniformTypeStr == "float") { return uniforms::REAL; }
+	if (uniformTypeStr == "vec2") { return uniforms::VEC_2D; }
+	if (uniformTypeStr == "vec3") { return uniforms::VEC_3D; }
+	if (uniformTypeStr == "vec4") { return uniforms::VEC_4D; }
+	if (uniformTypeStr == "mat4") { return uniforms::MATRIX_4x4; }
+	if (uniformTypeStr == "sampler2D") { return uniforms::SAMPLER_2D; }
+	if (uniformTypeStr == "samplerCube") { return uniforms::SAMPLER_CUBE; }
+	if (uniformTypeStr == "BaseLight") { return uniforms::BASE_LIGHT; }
+	if (uniformTypeStr == "DirectionalLight") { return uniforms::DIRECTIONAL_LIGHT; }
+	if (uniformTypeStr == "PointLight") { return uniforms::POINT_LIGHT; }
+	if (uniformTypeStr == "SpotLight") { return uniforms::SPOT_LIGHT; }
+	if (uniformTypeStr == "Attenuation") { return uniforms::ATTENUATION; }
+	
+	EMERGENCY_LOG_RENDERING("Uniform type \"", uniformTypeStr, "\" not supported by the rendering engine.");
+	exit(EXIT_FAILURE);
 }
 
 /* ==================== UniformBase class implementation begin ==================== */
-Rendering::Uniforms::UniformBase::UniformBase(const std::string& name, Uniforms::UniformType type) :
+rendering::uniforms::UniformBase::UniformBase(const std::string& name, uniforms::UniformType type) :
 	m_name(name),
 	m_prefix(m_name.substr(0, 2)),
 	m_unprefixedName(m_name.substr(2, m_name.length())),
@@ -34,36 +33,36 @@ Rendering::Uniforms::UniformBase::UniformBase(const std::string& name, Uniforms:
 {
 }
 
-Rendering::Uniforms::UniformBase::~UniformBase()
+rendering::uniforms::UniformBase::~UniformBase()
 {
 }
 /* ==================== UniformBase class implementation end ==================== */
 
 
 /* ==================== SimpleUniform class implementation begin ==================== */
-Rendering::Uniforms::SimpleUniform::SimpleUniform(const std::string& name, Uniforms::UniformType type, GLint location) :
+rendering::uniforms::SimpleUniform::SimpleUniform(const std::string& name, uniforms::UniformType type, GLint location) :
 	UniformBase(name, type),
 	m_location(location)
 {
 }
 
-Rendering::Uniforms::SimpleUniform::~SimpleUniform()
+rendering::uniforms::SimpleUniform::~SimpleUniform()
 {
 }
 /* ==================== SimpleUniform class implementation end ==================== */
 
 
 /* ==================== IntUniform class implementation begin ==================== */
-Rendering::Uniforms::IntUniform::IntUniform(const std::string& name, GLint location) :
+rendering::uniforms::IntUniform::IntUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, INT, location)
 {
 }
 
-Rendering::Uniforms::IntUniform::~IntUniform()
+rendering::uniforms::IntUniform::~IntUniform()
 {
 }
 
-void Rendering::Uniforms::IntUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::IntUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	//glUniform1i(GetLocation(), renderer->GetInt());
 }
@@ -72,18 +71,18 @@ void Rendering::Uniforms::IntUniform::Update(const Renderer* renderer, const mat
 
 
 /* ==================== TextureUniform class implementation begin ==================== */
-Rendering::Uniforms::TextureUniform::TextureUniform(const std::string& name, GLint location) :
+rendering::uniforms::TextureUniform::TextureUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, SAMPLER_2D, location)
 {
 }
 
-Rendering::Uniforms::TextureUniform::~TextureUniform()
+rendering::uniforms::TextureUniform::~TextureUniform()
 {
 }
 
-void Rendering::Uniforms::TextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::TextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	const auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	unsigned int multitextureIndex = 0; // used only by the multitextures
 	const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
@@ -96,18 +95,18 @@ void Rendering::Uniforms::TextureUniform::Update(const Renderer* renderer, const
 
 
 /* ==================== CubeTextureUniform class implementation begin ==================== */
-Rendering::Uniforms::CubeTextureUniform::CubeTextureUniform(const std::string& name, GLint location) :
+rendering::uniforms::CubeTextureUniform::CubeTextureUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, SAMPLER_CUBE, location)
 {
 }
 
-Rendering::Uniforms::CubeTextureUniform::~CubeTextureUniform()
+rendering::uniforms::CubeTextureUniform::~CubeTextureUniform()
 {
 }
 
-void Rendering::Uniforms::CubeTextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::CubeTextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	const auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	if (GetUnprefixedName() == "cubeShadowMap")
 	{
@@ -127,16 +126,16 @@ void Rendering::Uniforms::CubeTextureUniform::Update(const Renderer* renderer, c
 
 
 /* ==================== RealUniform class implementation begin ==================== */
-Rendering::Uniforms::RealUniform::RealUniform(const std::string& name, GLint location) :
+rendering::uniforms::RealUniform::RealUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, REAL, location)
 {
 }
 
-Rendering::Uniforms::RealUniform::~RealUniform()
+rendering::uniforms::RealUniform::~RealUniform()
 {
 }
 
-void Rendering::Uniforms::RealUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::RealUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -156,16 +155,16 @@ void Rendering::Uniforms::RealUniform::Update(const Renderer* renderer, const ma
 
 
 /* ==================== Vector2DUniform class implementation begin ==================== */
-Rendering::Uniforms::Vector2DUniform::Vector2DUniform(const std::string& name, GLint location) :
+rendering::uniforms::Vector2DUniform::Vector2DUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, VEC_2D, location)
 {
 }
 
-Rendering::Uniforms::Vector2DUniform::~Vector2DUniform()
+rendering::uniforms::Vector2DUniform::~Vector2DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector2DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::Vector2DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	const math::Vector2D& vector = renderer->GetVec2D(GetUnprefixedName());
 	glUniform2f(GetLocation(), vector.x, vector.y);
@@ -174,16 +173,16 @@ void Rendering::Uniforms::Vector2DUniform::Update(const Renderer* renderer, cons
 
 
 /* ==================== Vector3DUniform class implementation begin ==================== */
-Rendering::Uniforms::Vector3DUniform::Vector3DUniform(const std::string& name, GLint location) :
+rendering::uniforms::Vector3DUniform::Vector3DUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, VEC_3D, location)
 {
 }
 
-Rendering::Uniforms::Vector3DUniform::~Vector3DUniform()
+rendering::uniforms::Vector3DUniform::~Vector3DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector3DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::Vector3DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -205,16 +204,16 @@ void Rendering::Uniforms::Vector3DUniform::Update(const Renderer* renderer, cons
 
 
 /* ==================== Vector4DUniform class implementation begin ==================== */
-Rendering::Uniforms::Vector4DUniform::Vector4DUniform(const std::string& name, GLint location) :
+rendering::uniforms::Vector4DUniform::Vector4DUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, VEC_4D, location)
 {
 }
 
-Rendering::Uniforms::Vector4DUniform::~Vector4DUniform()
+rendering::uniforms::Vector4DUniform::~Vector4DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector4DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::Vector4DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -231,16 +230,16 @@ void Rendering::Uniforms::Vector4DUniform::Update(const Renderer* renderer, cons
 
 
 /* ==================== MatrixUniform class implementation begin ==================== */
-Rendering::Uniforms::MatrixUniform::MatrixUniform(const std::string& name, GLint location) :
+rendering::uniforms::MatrixUniform::MatrixUniform(const std::string& name, GLint location) :
 	SimpleUniform(name, MATRIX_4x4, location)
 {
 }
 
-Rendering::Uniforms::MatrixUniform::~MatrixUniform()
+rendering::uniforms::MatrixUniform::~MatrixUniform()
 {
 }
 
-void Rendering::Uniforms::MatrixUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::MatrixUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
 	if (GetName() == "T_lightMatrix")
 	{
@@ -262,7 +261,7 @@ void Rendering::Uniforms::MatrixUniform::Update(const Renderer* renderer, const 
 /* ==================== MatrixUniform class implementation end ==================== */
 
 /* ==================== BaseLightUniform class implementation begin ==================== */
-Rendering::Uniforms::BaseLightUniform::BaseLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation) :
+rendering::uniforms::BaseLightUniform::BaseLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation) :
 	UniformBase(name, BASE_LIGHT),
 	m_colorLocation(colorLocation),
 	m_intensityLocation(intensityLocation)
@@ -273,14 +272,14 @@ Rendering::Uniforms::BaseLightUniform::BaseLightUniform(const std::string& name,
 		"Cannot create base light uniform. The intensity location is invalid.");
 }
 
-Rendering::Uniforms::BaseLightUniform::~BaseLightUniform()
+rendering::uniforms::BaseLightUniform::~BaseLightUniform()
 {
 }
 /* ==================== BaseLightUniform class implementation end ==================== */
 
 
 /* ==================== DirectionalLightUniform class implementation begin ==================== */
-Rendering::Uniforms::DirectionalLightUniform::DirectionalLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint directionLocation) :
+rendering::uniforms::DirectionalLightUniform::DirectionalLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint directionLocation) :
 	BaseLightUniform(name, DIRECTIONAL_LIGHT, colorLocation, intensityLocation),
 	m_directionLocation(directionLocation)
 {
@@ -288,13 +287,13 @@ Rendering::Uniforms::DirectionalLightUniform::DirectionalLightUniform(const std:
 		"Cannot create directional light uniform. The direction location is invalid.");
 }
 
-Rendering::Uniforms::DirectionalLightUniform::~DirectionalLightUniform()
+rendering::uniforms::DirectionalLightUniform::~DirectionalLightUniform()
 {
 }
 
-void Rendering::Uniforms::DirectionalLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::DirectionalLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const Lighting::BaseLight* currentLight = renderer->GetCurrentLight();
+	const lighting::BaseLight* currentLight = renderer->GetCurrentLight();
 	const math::Vector3D& forwardVector = currentLight->GetTransform().GetTransformedRot().GetForward();
 	glUniform3f(m_directionLocation, forwardVector.x, forwardVector.y, forwardVector.z);
 	glUniform4f(GetColorLocation(), currentLight->GetColor().GetRed(), currentLight->GetColor().GetGreen(), currentLight->GetColor().GetBlue(), currentLight->GetColor().GetAlpha());
@@ -304,13 +303,13 @@ void Rendering::Uniforms::DirectionalLightUniform::Update(const Renderer* render
 
 
 /* ==================== PointLightUniform class implementation begin ==================== */
-Rendering::Uniforms::PointLightUniform::PointLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
+rendering::uniforms::PointLightUniform::PointLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
 	GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation) :
 	PointLightUniform(name, POINT_LIGHT, colorLocation, intensityLocation, constantFactorLocation, linearFactorLocation, exponentFactorLocation, positionLocation, rangeLocation)
 {
 }
 
-Rendering::Uniforms::PointLightUniform::PointLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation,
+rendering::uniforms::PointLightUniform::PointLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation,
 	GLint linearFactorLocation, GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation) :
 	BaseLightUniform(name, type, colorLocation, intensityLocation),
 	m_constantFactorLocation(constantFactorLocation),
@@ -331,13 +330,13 @@ Rendering::Uniforms::PointLightUniform::PointLightUniform(const std::string& nam
 		"Cannot create point light uniform. The range location is invalid.");
 }
 
-Rendering::Uniforms::PointLightUniform::~PointLightUniform()
+rendering::uniforms::PointLightUniform::~PointLightUniform()
 {
 }
 
-void Rendering::Uniforms::PointLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::PointLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
+	const lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
 	glUniform4f(GetColorLocation(), pointLight->GetColor().GetRed(), pointLight->GetColor().GetGreen(), pointLight->GetColor().GetBlue(), pointLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), pointLight->GetIntensity());
 	glUniform1f(m_constantFactorLocation, pointLight->GetAttenuation().GetConstant());
@@ -351,7 +350,7 @@ void Rendering::Uniforms::PointLightUniform::Update(const Renderer* renderer, co
 
 
 /* ==================== SpotLightUniform class implementation begin ==================== */
-Rendering::Uniforms::SpotLightUniform::SpotLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
+rendering::uniforms::SpotLightUniform::SpotLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
 	GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation, GLint directionLocation, GLint cutoffLocation) :
 	PointLightUniform(name, SPOT_LIGHT, colorLocation, intensityLocation, constantFactorLocation, linearFactorLocation, exponentFactorLocation, positionLocation, rangeLocation),
 	m_directionLocation(directionLocation),
@@ -363,13 +362,13 @@ Rendering::Uniforms::SpotLightUniform::SpotLightUniform(const std::string& name,
 		"Cannot create spot light uniform. The cutoff location is invalid.");
 }
 
-Rendering::Uniforms::SpotLightUniform::~SpotLightUniform()
+rendering::uniforms::SpotLightUniform::~SpotLightUniform()
 {
 }
 
-void Rendering::Uniforms::SpotLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
+void rendering::uniforms::SpotLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
+	const lighting::SpotLight* spotLight = dynamic_cast<const lighting::SpotLight*>(renderer->GetCurrentLight());
 	glUniform4f(GetColorLocation(), spotLight->GetColor().GetRed(), spotLight->GetColor().GetGreen(), spotLight->GetColor().GetBlue(), spotLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), spotLight->GetIntensity());
 	glUniform1f(m_constantFactorLocation, spotLight->GetAttenuation().GetConstant());

@@ -15,7 +15,7 @@
 #include "Math\Surface.h"
 #endif
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// Rendering engine representation of the terrain.
@@ -123,6 +123,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Terrain */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_TERRAIN_H__ */

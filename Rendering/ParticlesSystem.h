@@ -8,9 +8,9 @@
 
 #include <vector>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// Particles system. It contains a particles container, list of emitters and particles updaters.
@@ -35,7 +35,7 @@ namespace Rendering
 			/// </param>
 			/// <param name="particlesTextureID"> The ID of the texture the particles system will use. </param>
 			/// <param name=""> The ID of the shader the particles system will use. </param>
-			RENDERING_API ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, int particlesTextureID, int particlesShaderID);
+			RENDERING_API ParticlesSystem(size_t maxCount, attributes::AttributesMask attributesMask, int particlesTextureId, int particlesShaderId);
 
 			/// <summary> Particles system destructor. </summary>
 			RENDERING_API ~ParticlesSystem();
@@ -61,8 +61,8 @@ namespace Rendering
 			/// <param name="deltaTime"> The amount of time passed since the last update. </param>
 			RENDERING_API void Update(math::Real deltaTime);
 			RENDERING_API void Reset();
-			RENDERING_API int GetTextureID() const { return m_textureID; }
-			RENDERING_API int GetShaderID() const { return m_shaderID; }
+			RENDERING_API int GetTextureId() const { return m_textureId; }
+			RENDERING_API int GetShaderId() const { return m_shaderId; }
 			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetMaxCount(); }
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
@@ -78,7 +78,7 @@ namespace Rendering
 			/// <code>true</code> if the specified <paramref name="attribute"/> is maintained by the particles in the system and
 			/// <code>false</code> otherwise.
 			/// </returns>
-			RENDERING_API bool IsAttributeEnabled(Attributes::Attribute attribute) const
+			RENDERING_API bool IsAttributeEnabled(attributes::Attribute attribute) const
 			{
 				return m_particles.IsAttributeEnabled(attribute);
 			}
@@ -99,7 +99,7 @@ namespace Rendering
 			{
 				out << "Particles system: count: " << particlesSystem.m_maxCount << std::endl << particlesSystem.m_particles <<
 					std::endl << "Emitters count: " << particlesSystem.m_emitters.size() << std::endl << "Updaters count: " <<
-					particlesSystem.m_updaters.size() << std::endl << "TextureID: " << particlesSystem.m_textureID << "; shaderID: " << particlesSystem.m_shaderID;
+					particlesSystem.m_updaters.size() << std::endl << "TextureID: " << particlesSystem.m_textureId << "; shaderId: " << particlesSystem.m_shaderId;
 				return out;
 			}
 			/* ==================== Non-static member functions end ==================== */
@@ -129,16 +129,16 @@ namespace Rendering
 			/// <summary>
 			/// The ID of the particle texture. May be <code>TextureIDs::INVALID</code> if no texture is used in the system.
 			/// </summary>
-			int m_textureID;
+			int m_textureId;
 
 			/// <summary>
 			/// The ID of the shader the particles system will use.
 			/// Based on the attributes the particles have the shader's ID should be chosen appropriately.
 			/// </summary>
-			int m_shaderID;
+			int m_shaderId;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystem */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLES_SYSTEM_H__ */

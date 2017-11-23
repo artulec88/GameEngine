@@ -3,7 +3,7 @@
 #include "Utility/ILogger.h"
 #include "Math/Math.h"
 
-Rendering::CubeShadowMap::CubeShadowMap(void) :
+rendering::CubeShadowMap::CubeShadowMap(void) :
 	m_fbo(0),
 	m_renderBuffer(0),
 	m_shadowMap(0),
@@ -12,7 +12,7 @@ Rendering::CubeShadowMap::CubeShadowMap(void) :
 }
 
 
-Rendering::CubeShadowMap::~CubeShadowMap(void)
+rendering::CubeShadowMap::~CubeShadowMap(void)
 {
 	if (m_fbo != 0)
 	{
@@ -35,7 +35,7 @@ Rendering::CubeShadowMap::~CubeShadowMap(void)
 	}
 }
 
-void Rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
+void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 {
 	// See http://stackoverflow.com/questions/12879969/hardware-support-for-non-power-of-two-textures
 
@@ -94,26 +94,26 @@ void Rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 	// Disable reads from the color buffer
 	glReadBuffer(GL_NONE);
 
-	Rendering::CheckFramebufferStatus();
+	rendering::CheckFramebufferStatus();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	Rendering::CheckErrorCode(__FUNCTION__, "Initializing cube shadow map");
+	rendering::CheckErrorCode(__FUNCTION__, "Initializing cube shadow map");
 }
 
-void Rendering::CubeShadowMap::BindForWriting(GLenum cubeFace) const
+void rendering::CubeShadowMap::BindForWriting(GLenum cubeFace) const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cubeFace, m_shadowMap, 0);
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-	Rendering::CheckFramebufferStatus();
+	rendering::CheckFramebufferStatus();
 }
 
 
-void Rendering::CubeShadowMap::BindForReading(unsigned int textureUnit) const
+void rendering::CubeShadowMap::BindForReading(unsigned int textureUnit) const
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_shadowMap);
-	Rendering::CheckErrorCode(__FUNCTION__, "Binding for reading");
+	rendering::CheckErrorCode(__FUNCTION__, "Binding for reading");
 }

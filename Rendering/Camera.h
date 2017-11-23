@@ -4,9 +4,8 @@
 #include "Rendering.h"
 #include "BaseCamera.h"
 #include "Math/Transform.h"
-#include <string>
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// The class representing the camera.
@@ -47,25 +46,30 @@ namespace Rendering
 		/// <summary>
 		/// The destructor of the camera object.
 		/// </summary>
-		RENDERING_API virtual ~Camera(void);
+		RENDERING_API virtual ~Camera();
 
 		/// <summary> The camera copy constructor. </summary>
+		/// <param name="camera"> The reference to the camera to copy construct from. </param>
 		RENDERING_API Camera(const Camera& camera) = default;
 
 		/// <summary> The camera move constructor. </summary>
+		/// <param name="camera"> The r-value reference to the camera to move construct from. </param>
 		RENDERING_API Camera(Camera&& camera) = default;
 		
 		/// <summary> The camera copy assignment operator. </summary>
+		/// <param name="camera"> The reference to the camera to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned camera. </returns>
 		Camera& operator=(const Camera& camera) = default;
 
 		/// <summary> The camera move assignment operator. </summary>
+		/// <param name="camera"> The r-value reference to the camera to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned camera. </returns>
 		Camera& operator=(Camera&& camera) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		RENDERING_API virtual math::Transform& GetTransform() { return m_transform; }
-		RENDERING_API virtual const math::Transform& GetTransform() const { return m_transform; }
+		RENDERING_API math::Transform& GetTransform() override { return m_transform; }
+		RENDERING_API const math::Transform& GetTransform() const override { return m_transform; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -75,6 +79,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Camera */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_CAMERA_H__ */

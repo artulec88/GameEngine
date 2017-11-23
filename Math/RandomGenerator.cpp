@@ -3,6 +3,20 @@
 #include "Utility/ILogger.h"
 
 /* ==================== RandomGenerator class begin ==================== */
+/* static */ bool math::random::RandomGenerator::CheckIfInRange(int value, int lowerBound, int upperBound)
+{
+	const auto isInRange = value >= lowerBound && value <= upperBound;
+	CHECK_CONDITION_ALWAYS_MATH(isInRange, utility::logging::ERR, "Generated random integer (", value, ") is outside of given range [", lowerBound, "; ", upperBound, "]");
+	return isInRange;
+}
+
+/* static */ bool math::random::RandomGenerator::CheckIfInRange(Real value, Real lowerBound, Real upperBound)
+{
+	const auto isInRange = !(value < lowerBound || value > upperBound);
+	CHECK_CONDITION_ALWAYS_MATH(isInRange, utility::logging::ERR, "Generated random floating-point value (", value, ") is outside of given range [", lowerBound, "; ", upperBound, "]");
+	return isInRange;
+}
+
 math::random::RandomGenerator::RandomGenerator(unsigned seed) :
 	m_seed(seed)
 {
@@ -11,20 +25,6 @@ math::random::RandomGenerator::RandomGenerator(unsigned seed) :
 
 math::random::RandomGenerator::~RandomGenerator()
 {
-}
-
-bool math::random::RandomGenerator::CheckIfInRange(int value, int lowerBound, int upperBound) const
-{
-	const auto isInRange = value >= lowerBound && value <= upperBound;
-	CHECK_CONDITION_ALWAYS_MATH(isInRange, utility::logging::ERR, "Generated random integer (", value, ") is outside of given range [", lowerBound, "; ", upperBound, "]");
-	return isInRange;
-}
-
-bool math::random::RandomGenerator::CheckIfInRange(Real value, Real lowerBound, Real upperBound) const
-{
-	const auto isInRange = !(value < lowerBound || value > upperBound);
-	CHECK_CONDITION_ALWAYS_MATH(isInRange, utility::logging::ERR, "Generated random floating-point value (", value, ") is outside of given range [", lowerBound, "; ", upperBound, "]");
-	return isInRange;
 }
 /* ==================== RandomGenerator class end ==================== */
 

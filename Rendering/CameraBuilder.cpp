@@ -4,7 +4,7 @@
 #include "Utility/IConfig.h"
 
 /* ==================== CameraBuilder implementation begin ==================== */
-Rendering::CameraBuilder::CameraBuilder() :
+rendering::CameraBuilder::CameraBuilder() :
 	utility::Builder<Camera>(),
 	M_DEFAULT_CAMERA_POS_X(GET_CONFIG_VALUE_RENDERING("defaultCameraPosX", 0.0f)),
 	M_DEFAULT_CAMERA_POS_Y(GET_CONFIG_VALUE_RENDERING("defaultCameraPosY", 0.0f)),
@@ -24,7 +24,7 @@ Rendering::CameraBuilder::CameraBuilder() :
 {
 }
 
-Rendering::CameraBuilder::~CameraBuilder()
+rendering::CameraBuilder::~CameraBuilder()
 {
 }
 
@@ -72,7 +72,7 @@ Rendering::CameraBuilder::~CameraBuilder()
 /* ==================== CameraBuilder implementation end ==================== */
 
 /* ==================== OrthoCameraBuilder implementation begin ==================== */
-Rendering::OrthoCameraBuilder::OrthoCameraBuilder() :
+rendering::OrthoCameraBuilder::OrthoCameraBuilder() :
 	CameraBuilder(),
 	M_DEFAULT_CAMERA_LEFT_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraLeftPlane", -100.0f)),
 	M_DEFAULT_CAMERA_RIGHT_PLANE(GET_CONFIG_VALUE_RENDERING("defaultCameraRightPlane", 100.0f)),
@@ -85,18 +85,18 @@ Rendering::OrthoCameraBuilder::OrthoCameraBuilder() :
 {
 }
 
-Rendering::OrthoCameraBuilder::~OrthoCameraBuilder(void)
+rendering::OrthoCameraBuilder::~OrthoCameraBuilder(void)
 {
 }
 
-void Rendering::OrthoCameraBuilder::BuildProjectionMatrix()
+void rendering::OrthoCameraBuilder::BuildProjectionMatrix()
 {
 	m_projectionMatrix.SetOrthogonalProjection(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
 }
 /* ==================== OrthoCameraBuilder implementation end ==================== */
 
 /* ==================== PerspectiveCameraBuilder implementation begin ==================== */
-Rendering::PerspectiveCameraBuilder::PerspectiveCameraBuilder() :
+rendering::PerspectiveCameraBuilder::PerspectiveCameraBuilder() :
 	CameraBuilder(),
 	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)),
 	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<math::Real>(800) / 600)),
@@ -105,11 +105,11 @@ Rendering::PerspectiveCameraBuilder::PerspectiveCameraBuilder() :
 {
 }
 
-Rendering::PerspectiveCameraBuilder::~PerspectiveCameraBuilder(void)
+rendering::PerspectiveCameraBuilder::~PerspectiveCameraBuilder(void)
 {
 }
 
-void Rendering::PerspectiveCameraBuilder::BuildProjectionMatrix()
+void rendering::PerspectiveCameraBuilder::BuildProjectionMatrix()
 {
 	m_projectionMatrix.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 }

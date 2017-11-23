@@ -31,7 +31,7 @@
 //#include <iostream>
 //#include <fstream>
 
-using namespace Rendering;
+using namespace rendering;
 using namespace math;
 using namespace utility;
 using namespace std;
@@ -52,22 +52,22 @@ std::unique_ptr<Renderer> renderer = nullptr;
 bool cameraRotationEnabled = false;
 Camera camera;
 
-Particles::ParticlesSystem particlesSystem;
+particles::ParticlesSystem particlesSystem;
 
-namespace TestMeshIDs
+namespace test_mesh_ids
 {
-	enum TestMeshID
+	enum TestMeshId
 	{
-		TERRAIN = MeshIDs::COUNT,
+		TERRAIN = mesh_ids::COUNT,
 		CUBE
 	};
 }
 
-namespace TestTextureIDs
+namespace test_texture_ids
 {
-	enum TestTextureID
+	enum TestTextureId
 	{
-		TERRAIN_DIFFUSE = TextureIDs::COUNT,
+		TERRAIN_DIFFUSE = texture_ids::COUNT,
 		TERRAIN_DIFFUSE_2,
 		TERRAIN_DIFFUSE_3,
 		TERRAIN_DIFFUSE_4,
@@ -150,11 +150,13 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 	case GLFW_KEY_SPACE:
 		dirVector = rotation.GetUp();
 		break;
+	default:
+		break;
 	}
 	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * runModeSpeed);
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.02f);
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXz()) + 0.02f);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 }
 
@@ -297,7 +299,7 @@ void ErrorCallback(int errorCode, const char* description)
 	exit(EXIT_FAILURE);
 }
 
-void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_RENDERING_TEST("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
@@ -305,7 +307,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 	const int antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
-	case Rendering::Aliasing::NONE:
+	case rendering::Aliasing::NONE:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -313,7 +315,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("No anti-aliasing algorithm chosen");
 		break;
-	case Rendering::Aliasing::FXAA:
+	case rendering::Aliasing::FXAA:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -321,7 +323,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("FXAA anti-aliasing algorithm chosen");
 		break;
-	case Rendering::Aliasing::MSAA:
+	case rendering::Aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG_RENDERING_TEST(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
@@ -404,18 +406,18 @@ void SetCallbacks()
 	glfwSetScrollCallback(window, &ScrollEventCallback);
 }
 
-void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 
-	Rendering::InitGraphics(width, height, antiAliasingMethod);
+	rendering::InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance started");
-	renderer = std::make_unique<Rendering::Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
+	renderer = std::make_unique<rendering::Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
@@ -474,9 +476,9 @@ void LightBuilderTest()
 		return;
 	}
 
-	DirectionalLightBuilder directionalLightBuilder;
-	BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
-	Lighting::DirectionalLight directionalLight = directionalLightBuilderDirector.Construct();
+	lighting::DirectionalLightBuilder directionalLightBuilder;
+	BuilderDirector<lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
+	lighting::DirectionalLight directionalLight = directionalLightBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(directionalLight);
 }
 
@@ -487,13 +489,13 @@ void ParticlesSystemBuilderTest()
 		return;
 	}
 
-	Particles::ParticlesSystemBuilder particlesSystemBuilder;
-	BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	particles::ParticlesSystemBuilder particlesSystemBuilder;
+	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 
-	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).
-		SetTextureID(TextureIDs::INVALID).SetShaderID(ShaderIDs::PARTICLES_COLORS);
+	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
+		SetTextureID(texture_ids::INVALID).SetShaderID(shader_ids::PARTICLES_COLORS);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
@@ -509,7 +511,7 @@ math::Real GetTime()
 #ifdef ANT_TWEAK_BAR_ENABLED
 void InitializeTestTweakBars()
 {
-	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
+	rendering::AntTweakBarTypes::InitializeTweakBarTypes();
 
 	TwWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -550,13 +552,13 @@ Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Real heightMap
 
 void CreateTerrain()
 {
-	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
-		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
-		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_BLEND_MAP, "terrainBlendMap.png"), "blendMap");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
+	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(test_texture_ids::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
+		8.0f, renderer->CreateTexture(test_texture_ids::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
+		renderer->CreateTexture(test_texture_ids::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(test_texture_ids::TERRAIN_BLEND_MAP, "terrainBlendMap.png"), "blendMap");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(test_texture_ids::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(test_texture_ids::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(test_texture_ids::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
 
 	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
 	const Real heightMapMaxHeight = (heightMapImage.GetWidth() + heightMapImage.GetHeight()) / 40.0f;
@@ -564,11 +566,9 @@ void CreateTerrain()
 	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
 	{
-		const Real zReal = static_cast<Real>(z);
 		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
 		{
-			const math::Real xReal = static_cast<math::Real>(x);
-			math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
+			Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			heights.push_back(terrainHeight);
 		}
@@ -576,7 +576,7 @@ void CreateTerrain()
 	Surface surface(Vector2D(REAL_ZERO, REAL_ZERO), heightMapImage.GetWidth() - 1, heightMapImage.GetHeight() - 1, heightMapImage.GetWidth(), heightMapImage.GetHeight(), heights.data());
 
 	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
-	terrainMesh = renderer->CreateMeshFromSurface(TestMeshIDs::TERRAIN, surface);
+	terrainMesh = renderer->CreateMeshFromSurface(test_mesh_ids::TERRAIN, surface);
 	//terrainTransform.SetScale(2.0f);
 
 	terrain = std::make_unique<Terrain>(surface, terrainTransform);
@@ -604,22 +604,22 @@ void CreateCamera()
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.02f);
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXz()) + 0.02f);
 	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
 void CreateCubes()
 {
-	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
-	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
-		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
-	cubeMesh = renderer->CreateMesh(TestMeshIDs::CUBE, "cube.obj");
+	renderer->CreateTexture(test_texture_ids::CUBE_DIFFUSE, "chessboard3.jpg");
+	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(test_texture_ids::CUBE_DIFFUSE), 8.0f, 1.0f,
+		renderer->GetTexture(texture_ids::DEFAULT_NORMAL_MAP), renderer->GetTexture(texture_ids::DEFAULT_DISPLACEMENT_MAP));
+	cubeMesh = renderer->CreateMesh(test_mesh_ids::CUBE, "cube.obj");
 	for (int i = 0; i < CUBE_MESHES_ROWS; ++i)
 	{
 		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<math::Real>(j), 0.0f, 0.1f * static_cast<math::Real>(i));
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPosY(terrain->GetHeightAt(cubeTransforms[i * CUBE_MESHES_ROWS + j].GetPos().GetXZ()));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPosY(terrain->GetHeightAt(cubeTransforms[i * CUBE_MESHES_ROWS + j].GetPos().GetXz()));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
@@ -644,10 +644,10 @@ void CreateScene()
 	//	ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
 	//}
 
-	Particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).SetShaderID(ShaderIDs::PARTICLES_COLORS);
+	particles::ParticlesSystemBuilder particlesSystemBuilder;
+	particlesSystemBuilder.SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).SetMaxCount(10).SetShaderID(shader_ids::PARTICLES_COLORS);
 	//particlesSystemBuilder.
-	utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 }
 
@@ -664,7 +664,7 @@ void UpdateScene(math::Real frameTime)
 void RenderParticles()
 {
 	DEBUG_LOG_RENDERING_TEST("Rendering particles started");
-	const int particlesShaderID = Rendering::ShaderIDs::PARTICLES;
+	const int particlesShaderID = shader_ids::PARTICLES;
 	renderer->BindShader(particlesShaderID);
 	renderer->UpdateRendererUniforms(particlesShaderID);
 	//if (!particlesSystem.GetTexture()->IsAdditive())
@@ -676,27 +676,27 @@ void RenderParticles()
 
 void RenderScene()
 {
-	renderer->InitRenderScene(Color(ColorIDs::GREY), 0.5f);
+	renderer->InitRenderScene(Color(color_ids::GREY), 0.5f);
 	renderer->SetCurrentCamera(&camera);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
 
-	renderer->BindShader(ShaderIDs::AMBIENT);
-	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
+	renderer->BindShader(shader_ids::AMBIENT);
+	renderer->UpdateRendererUniforms(shader_ids::AMBIENT);
 	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
 	{
-		renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
+		renderer->Render(test_mesh_ids::CUBE, cubeMaterial.get(), cubeTransforms[i], shader_ids::AMBIENT);
 	}
-	renderer->BindShader(ShaderIDs::AMBIENT_TERRAIN);
-	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT_TERRAIN);
-	renderer->Render(TestMeshIDs::TERRAIN, terrainMaterial.get(), terrainTransform, ShaderIDs::AMBIENT_TERRAIN);
+	renderer->BindShader(shader_ids::AMBIENT_TERRAIN);
+	renderer->UpdateRendererUniforms(shader_ids::AMBIENT_TERRAIN);
+	renderer->Render(test_mesh_ids::TERRAIN, terrainMaterial.get(), terrainTransform, shader_ids::AMBIENT_TERRAIN);
 
 	RenderParticles();
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
-		Rendering::ShaderIDs::FILTER_FXAA :
-		Rendering::ShaderIDs::FILTER_NULL);
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::Aliasing::FXAA) ?
+		rendering::shader_ids::FILTER_FXAA :
+		rendering::shader_ids::FILTER_NULL);
 }
 
 void Run()
@@ -707,12 +707,12 @@ void Run()
 
 	CreateScene();
 
-	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontIDs::CANDARA), 1.25f, NULL,
-		ZERO_VECTOR_2D, math::Angle(45.0f), math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorIDs::RED),
-		Color(ColorIDs::GREEN), math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+	rendering::controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(text::FontIDs::CANDARA), 1.25f, NULL,
+		ZERO_VECTOR_2D, math::Angle(45.0f), math::Vector2D(1.0f, 1.0f), 0.25f, Color(color_ids::RED),
+		Color(color_ids::GREEN), math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Rendering::InitializeTweakBars();
+	rendering::InitializeTweakBars();
 	InitializeTestTweakBars();
 #endif
 
@@ -770,7 +770,7 @@ void Run()
 			fpsGuiButton.Update(FRAME_TIME);
 			/* ==================== REGION #2_2 end ====================*/
 #ifdef ANT_TWEAK_BAR_ENABLED
-			Rendering::CheckChangesAndUpdateGLState();
+			rendering::CheckChangesAndUpdateGLState();
 #endif
 			unprocessingTime -= FRAME_TIME;
 		}
@@ -787,7 +787,7 @@ void Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
 			fpsGuiButton.SetText(ss.str());
-			renderer->RenderGuiControl(fpsGuiButton, Rendering::ShaderIDs::GUI);
+			renderer->RenderGuiControl(fpsGuiButton, rendering::shader_ids::GUI);
 #ifdef ANT_TWEAK_BAR_ENABLED
 			int resultCode = TwDraw();
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, utility::logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
@@ -823,7 +823,7 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", Rendering::Aliasing::NONE);
+	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", rendering::Aliasing::NONE);
 	Run();
 
 	//MeshTest();

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Resource.h"
 
-Rendering::Resource::Resource(const std::string& filename) :
+rendering::Resource::Resource(const std::string& filename) :
 	m_isLoaded(false),
 	m_guid(0),
 	m_filename(filename)
@@ -10,6 +10,6 @@ Rendering::Resource::Resource(const std::string& filename) :
 }
 
 
-Rendering::Resource::~Resource(void)
+rendering::Resource::~Resource(void)
 {
 }

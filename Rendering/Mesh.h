@@ -3,27 +3,22 @@
 
 #include "Rendering.h"
 
-#include "Math/Matrix.h"
 #include "Math/Vector.h"
 #include "Math/HeightsGenerator.h"
 #include "Utility/ILogger.h"
-
-#include <string>
-#include <map>
-#include <vector>
 
 //#define HEIGHTS_KD_TREE
 #define HEIGHTS_HEIGHTMAP
 
 #ifdef HEIGHTS_KD_TREE
-#include "Math/KDTree.h"
+//#include "Math/KDTree.h"
 #endif
 
 //#define TEXTURE_ATLAS_OFFSET_CALCULATION
 
-namespace Rendering
+namespace rendering
 {
-	namespace MeshBufferTypes
+	namespace mesh_buffer_types
 	{
 		enum MeshBufferType
 		{
@@ -36,7 +31,7 @@ namespace Rendering
 			INSTANCE = 6,
 			COUNT
 		}; /* end enum MeshBufferType */
-	} /* end namespace MeshBufferTypes */
+	} /* end namespace mesh_buffer_types */
 
 	namespace MeshAttributeLocations
 	{
@@ -64,18 +59,23 @@ namespace Rendering
 		/// <summary> Simple mesh data constructor. </summary>
 		/// <param name="size"> The size of data the mesh data will store. </param>
 		explicit MeshData(GLsizei size);
+		
 		/// <summary> Mesh data destructor. </summary>
-		~MeshData(void);
+		~MeshData();
+
 		/// <summary> Mesh data copy constructor. </summary>
 		/// <param name="meshData"> The mesh data to copy from. </param>
 		MeshData(const MeshData& meshData) = delete;
+
 		/// <summary> Mesh data move constructor. </summary>
 		/// <param name="meshData"> The mesh data to move from. </param>
-		MeshData(MeshData&& meshData);
+		MeshData(MeshData&& meshData) = delete;
+
 		/// <summary> Mesh data copy assignment operator. </summary>
 		/// <param name="meshData"> The mesh data to copy assign from. </param>
 		/// <returns> The newly copy assigned mesh data. </returns>
 		MeshData& operator=(const MeshData& meshData) = delete;
+
 		/// <summary> Mesh data move assignment operator. </summary>
 		/// <param name="meshData"> The mesh data to move assign from. </param>
 		/// <returns> The newly move assigned mesh data. </returns>
@@ -83,25 +83,24 @@ namespace Rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Returns the handle to the Vertex Array Object (VAO) used by the mesh data. </summary>
 		/// <returns> The handle to the Vertex Array Object (VAO) used by the mesh data. </returns>
-		inline GLuint GetVAO() const { return m_vao; }
+		GLuint GetVAO() const { return m_vao; }
 
 		/// <summary> Binds the mesh data's Vertex Array Object (VAO) to be currently used by the rendering context. </summary>
-		inline void Bind() const
+		void Bind() const
 		{
-			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
+			rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
 			//WARNING_LOG_RENDERING("Binding mesh data \"", *this, "\".");
 			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
-			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
+			CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
 		}
 
 		/// <summary> Unbinds the mesh data's Vertex Array Object (VAO). </summary>
-		inline void Unbind() const
+		void Unbind() const
 		{
-			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
+			rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
 			//WARNING_LOG_RENDERING("Unbinding mesh data \"", *this, "\".");
 			//int index = 0;
 			//for (std::vector<GLuint>::const_iterator vboItr = m_vbos.begin(); vboItr != m_vbos.end(); ++vboItr, ++index)
@@ -109,12 +108,12 @@ namespace Rendering
 			//	glDisableVertexAttribArray(index);
 			//}
 			glBindVertexArray(0);
-			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data unbinding");
+			CheckErrorCode(__FUNCTION__, "Finished mesh data unbinding");
 		}
 
 		/// <summary> Checks whether the buffer stored under specified key (<paramref name="buffer/>) is created and available. </summary>
 		/// <returns> <code>True</code> if the buffer under specified <paramref name="buffer"/> is available (<code>!= 0</code>) and <code>false</code> otherwise. </returns>
-		inline bool HasVBO(MeshBufferTypes::MeshBufferType buffer) const
+		bool HasVBO(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
@@ -126,7 +125,7 @@ namespace Rendering
 		/// </summary>
 		/// <param name="buffer"> The index of the VBO we want to get the handle to. </param>
 		/// <returns> A handle to the vertex buffer object stored under specified key (<paramref name="buffer"/>). </returns>
-		GLuint GetVBO(MeshBufferTypes::MeshBufferType buffer) const
+		GLuint GetVBO(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
@@ -140,7 +139,7 @@ namespace Rendering
 		/// </summary>
 		/// <param name="buffer"> The buffer key we want to store a handle to new VBO in. </param>
 		/// <returns> The handle to the newly created vertex buffer object (VBO). </returns>
-		GLuint CreateVBO(MeshBufferTypes::MeshBufferType buffer);
+		GLuint CreateVBO(mesh_buffer_types::MeshBufferType buffer);
 
 		/// <summary>
 		/// Modifies the specified <paramref name="buffer"/> with the new values stored in <paramref name="data"/> array.
@@ -150,7 +149,7 @@ namespace Rendering
 		/// <param name="dataCount"> The length of the array specified in <paramref name="data"/> pointer. </param>
 		/// <param name="singleDataEntrySize"> The size in bytes of the single value in the <paramref name="data"/> array. </param>
 		/// <param name="singleDataComponentsCount"> The number of attributes (or components) a single <paramref name="data"/> entry has. <param>
-		void ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
+		void ReplaceVBO(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 
 		/// <summary>
 		/// Returns the size of the mesh.
@@ -161,10 +160,10 @@ namespace Rendering
 		friend std::ostream& operator<<(std::ostream& out, const MeshData& meshData)
 		{
 			out << "VAO = " << meshData.m_vao << "; VBOs = [";
-			for (int i = 0; i < MeshBufferTypes::COUNT; ++i)
+			for (int i = 0; i < mesh_buffer_types::COUNT; ++i)
 			{
 				out << meshData.m_buffers[i];
-				if (i + 1 < MeshBufferTypes::COUNT)
+				if (i + 1 < mesh_buffer_types::COUNT)
 				{
 					out << "; ";
 				}
@@ -184,7 +183,7 @@ namespace Rendering
 		/// <summary>
 		/// Vertex buffer objects. A handle to data representing the whole mesh (positions, texture coordinates, normals, etc.).
 		/// </summary>
-		std::array<GLuint, MeshBufferTypes::COUNT> m_buffers;
+		std::array<GLuint, mesh_buffer_types::COUNT> m_buffers;
 
 		/// <summary>
 		/// The size. It represents how much data there is in the vertex buffer object.
@@ -220,7 +219,6 @@ namespace Rendering
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
-	public:
 		/// <summary> Mesh constructor. </summary>
 		/// <param name="indices"> The array of indices in the mesh. </param>
 		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
@@ -245,7 +243,7 @@ namespace Rendering
 		Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode);
 
 		/// <summary> Mesh destructor. </summary>
-		virtual ~Mesh(void);
+		virtual ~Mesh();
 
 		/// <summary> Mesh copy constructor. </summary>
 		/// <param name="mesh"> The reference to the mesh we want to copy construct from. </param>
@@ -253,7 +251,7 @@ namespace Rendering
 
 		/// <summary> Mesh move constructor. </summary>
 		/// <param name="mesh"> The r-value reference to the mesh we want to copy construct from. </param>
-		Mesh(Mesh&& mesh);
+		Mesh(Mesh&& mesh) = delete;
 
 		/// <summary> Mesh copy assignment operator. </summary>
 		/// <param name="mesh"> The reference to the mesh we want to copy assign from. </param>
@@ -273,19 +271,19 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void Draw() const;
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, int* data, int dataCount)
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, int* data, int dataCount)
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(int), 1);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Real* data, int dataCount)
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, math::Real* data, int dataCount)
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(math::Real), 1);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Vector2D* data, int dataCount)
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, math::Vector2D* data, int dataCount)
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(math::Vector2D), 2);
 		}
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, math::Vector3D* data, int dataCount)
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, math::Vector3D* data, int dataCount)
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(math::Vector3D), 3);
 		}
@@ -293,7 +291,7 @@ namespace Rendering
 		/// <summary> Returns the size of the buffer indicated by the parameter <paramref name="bufferType"/>. </summary>
 		/// <param name="bufferType"> The type of the buffer the client wants to know the size of. </param>
 		/// <returns> The size of the buffer stored under the key <paramref name="bufferType"/>. </returns>
-		RENDERING_API int GetBufferSize(MeshBufferTypes::MeshBufferType bufferType) const
+		RENDERING_API int GetBufferSize(mesh_buffer_types::MeshBufferType bufferType) const
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(bufferType));
 			GLint bufferSize;
@@ -308,11 +306,11 @@ namespace Rendering
 		/// The pointer to data that is stored in the specified <paramref name="buffer"/>.
 		/// The value of the parameter <paramref name="bufferEntriesCount"/> contains the number of entries the buffer (and the returned pointer) stores.
 		/// </returns>
-		RENDERING_API void* GetBufferData(MeshBufferTypes::MeshBufferType buffer, int* bufferEntriesCount) const;
+		RENDERING_API void* GetBufferData(mesh_buffer_types::MeshBufferType buffer, int* bufferEntriesCount) const;
 	protected:
-		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
-		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
+		void FillBuffer(mesh_buffer_types::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
 
 		void AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount);
 		void AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
@@ -353,7 +351,7 @@ namespace Rendering
 		/// <summary> Billboards mesh copy constructor. </summary>
 		BillboardMesh(const BillboardMesh& billboardMesh) = delete;
 		/// <summary> Billboards mesh move constructor. </summary>
-		BillboardMesh(BillboardMesh&& billboardMesh);
+		BillboardMesh(BillboardMesh&& billboardMesh) = delete;
 		/// <summary> Billboards mesh copy assignment operator. </summary>
 		BillboardMesh& operator=(const BillboardMesh& billboardMesh) = delete;
 		/// <summary> Billboards mesh move assignment operator. </summary>
@@ -398,7 +396,7 @@ namespace Rendering
 		/// <summary>
 		/// Instance mesh move constructor.
 		/// </summary>
-		InstanceMesh(InstanceMesh&& instanceMesh);
+		InstanceMesh(InstanceMesh&& instanceMesh) = delete;
 		/// <summary>
 		/// Instance mesh copy assignment operator.
 		/// </summary>
@@ -507,6 +505,6 @@ namespace Rendering
 //		/* ==================== Non-static member variables end ==================== */
 //	}; /* end class TerrainMesh */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif // __RENDERING_MESH_H__

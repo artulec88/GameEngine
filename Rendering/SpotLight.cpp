@@ -1,11 +1,10 @@
 #include "StdAfx.h"
 #include "SpotLight.h"
 #include "Shader.h"
-#include "ShadowInfo.h"
 #include "Utility/IConfig.h"
-#include "Math\Matrix.h"
+#include "Math/Matrix.h"
 
-Rendering::Lighting::SpotLight::SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
+rendering::lighting::SpotLight::SpotLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation,
 	math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2,
 	math::Real shadowInfoShadowSoftness, math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance,
@@ -22,7 +21,7 @@ Rendering::Lighting::SpotLight::SpotLight(const math::Transform& transform, cons
 }
 
 
-Rendering::Lighting::SpotLight::~SpotLight(void)
+rendering::lighting::SpotLight::~SpotLight()
 {
 }
 

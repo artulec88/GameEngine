@@ -19,7 +19,7 @@ namespace engine
 		/// <summary> Mesh rendering component constructor. </summary>
 		/// <param name="meshID"> The ID of the mesh this game component will render. </param>
 		/// <param name="material"> The pointer to the material which will be applied on the mesh during rendering. </param>
-		ENGINE_API MeshRendererComponent(int meshID, const Rendering::Material* material);
+		ENGINE_API MeshRendererComponent(int meshID, const rendering::Material* material);
 
 		/// <summary> Mesh rendering component destructor. </summary>
 		ENGINE_API virtual ~MeshRendererComponent(void);
@@ -45,13 +45,13 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(int shaderID, Rendering::Renderer* renderer) const override;
+		virtual void Render(int shaderID, rendering::Renderer* renderer) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		int m_meshID;
-		const Rendering::Material* m_material;
+		const rendering::Material* m_material;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshRendererComponent */
 

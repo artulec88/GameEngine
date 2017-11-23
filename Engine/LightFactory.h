@@ -55,8 +55,8 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		const Rendering::Lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		ENGINE_API const Rendering::Lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
+		const rendering::lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		ENGINE_API const rendering::lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
 		{
 			// TODO: Check if lightId is a correct value.
 			switch (lightType)
@@ -73,26 +73,26 @@ namespace engine
 			}
 		}
 	private:
-		const Rendering::Lighting::DirectionalLight* AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		const Rendering::Lighting::PointLight* AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		const Rendering::Lighting::SpotLight* AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::DirectionalLight* AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::PointLight* AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::SpotLight* AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		/// <summary>
 		/// The vector storing all directional lights at their unique IDs.
 		/// </summary>
-		std::vector<Rendering::Lighting::DirectionalLight> m_directionalLights;
+		std::vector<rendering::lighting::DirectionalLight> m_directionalLights;
 
 		/// <summary>
 		/// The vector storing all point lights at their unique IDs.
 		/// </summary>
-		std::vector<Rendering::Lighting::PointLight> m_pointLights;
+		std::vector<rendering::lighting::PointLight> m_pointLights;
 
 		/// <summary>
 		/// The vector storing all spot lights at their unique IDs.
 		/// </summary>
-		std::vector<Rendering::Lighting::SpotLight> m_spotLights;
+		std::vector<rendering::lighting::SpotLight> m_spotLights;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightFactory */
 

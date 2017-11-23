@@ -3,17 +3,14 @@
 //#include "CoreEngine.h"
 //#include "OBJModel.h"
 #include "Math/Vector.h"
-#include "Math/Interpolation.h"
 #include "Math/FloatingPoint.h"
 #include "stb_image.h"
 
 #include "Utility/IConfig.h"
 #include "Utility/ILogger.h"
 #include "Utility/Time.h"
-#include "Math/ISort.h"
 
 #include <unordered_set>
-#include <fstream>
 
 #ifndef MEASURE_MESH_TIME_ENABLED
 #undef START_TIMER
@@ -24,7 +21,7 @@
 #define UNBIND_BUFFER(buffer) glBindBuffer(buffer, 0);
 
 /* ==================== MeshData class implementation begin ==================== */
-Rendering::MeshData::MeshData(GLsizei size) :
+rendering::MeshData::MeshData(GLsizei size) :
 	m_vao(0),
 	m_buffers({ {0, 0, 0, 0, 0, 0, 0} }),
 	m_size(size)
@@ -35,7 +32,7 @@ Rendering::MeshData::MeshData(GLsizei size) :
 }
 
 
-Rendering::MeshData::~MeshData(void)
+rendering::MeshData::~MeshData()
 {
 	for (auto bufferItr = m_buffers.begin(); bufferItr != m_buffers.end(); ++bufferItr)
 	{
@@ -52,78 +49,78 @@ Rendering::MeshData::~MeshData(void)
 	}
 }
 
-Rendering::MeshData::MeshData(MeshData&& meshData) :
-	m_vao(std::move(meshData.m_vao)),
-	m_buffers(std::move(meshData.m_buffers)),
-	m_size(std::move(meshData.m_size))
-{
-	meshData.m_vao = 0;
-	meshData.m_buffers.fill(0);
-}
+//rendering::MeshData::MeshData(MeshData&& meshData) :
+//	m_vao(std::move(meshData.m_vao)),
+//	m_buffers(std::move(meshData.m_buffers)),
+//	m_size(std::move(meshData.m_size))
+//{
+//	meshData.m_vao = 0;
+//	meshData.m_buffers.fill(0);
+//}
 
-GLuint Rendering::MeshData::CreateVBO(MeshBufferTypes::MeshBufferType buffer)
+GLuint rendering::MeshData::CreateVBO(mesh_buffer_types::MeshBufferType buffer)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started VBO creation");
+	CheckErrorCode(__FUNCTION__, "Started VBO creation");
 	glGenBuffers(1, &m_buffers[buffer]);
 	DELOCUST_LOG_RENDERING("Created VBO at index ", buffer, " for mesh data \"", *this, "\"");
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO creation");
+	CheckErrorCode(__FUNCTION__, "Finished VBO creation");
 	return m_buffers[buffer];
 }
 
-void Rendering::MeshData::ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
+void rendering::MeshData::ReplaceVBO(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started VBO data replacement function");
+	CheckErrorCode(__FUNCTION__, "Started VBO data replacement function");
 	CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, Utility::Logging::EMERGENCY,
 		"Cannot replace data in the mesh data buffer. The buffer has not been intialized.");
 
-	// TODO: Check special cases such as MeshBufferTypes::INDEX and MeshBufferTypes::INSTANCE.
+	// TODO: Check special cases such as mesh_buffer_types::INDEX and mesh_buffer_types::INSTANCE.
 	Bind();
 	switch (buffer)
 	{
-	case MeshBufferTypes::INDEX:
+	case mesh_buffer_types::INDEX:
 		break;
-	case MeshBufferTypes::POSITIONS:
-		//glDeleteBuffers(1, &m_buffers[MeshBufferTypes::POSITIONS]);
-		//glGenBuffers(1, &m_buffers[MeshBufferTypes::POSITIONS]);
-		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[MeshBufferTypes::POSITIONS]);
+	case mesh_buffer_types::POSITIONS:
+		//glDeleteBuffers(1, &m_buffers[mesh_buffer_types::POSITIONS]);
+		//glGenBuffers(1, &m_buffers[mesh_buffer_types::POSITIONS]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[mesh_buffer_types::POSITIONS]);
 		glBufferData(GL_ARRAY_BUFFER, dataCount * singleDataEntrySize, data, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::POSITIONS, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::POSITIONS, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 		m_size = dataCount;
 		break;
-	case MeshBufferTypes::TEXTURE_COORDINATES:
-		//glDeleteBuffers(1, &m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
-		//glGenBuffers(1, &m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
-		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
+	case mesh_buffer_types::TEXTURE_COORDINATES:
+		//glDeleteBuffers(1, &m_buffers[mesh_buffer_types::TEXTURE_COORDINATES]);
+		//glGenBuffers(1, &m_buffers[mesh_buffer_types::TEXTURE_COORDINATES]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[mesh_buffer_types::TEXTURE_COORDINATES]);
 		glBufferData(GL_ARRAY_BUFFER, dataCount * singleDataEntrySize, data, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 		break;
-	case MeshBufferTypes::NORMALS:
+	case mesh_buffer_types::NORMALS:
 		break;
-	case MeshBufferTypes::TANGENTS:
+	case mesh_buffer_types::TANGENTS:
 		break;
-	case MeshBufferTypes::BITANGENTS:
+	case mesh_buffer_types::BITANGENTS:
 		break;
-	case MeshBufferTypes::INSTANCE:
+	case mesh_buffer_types::INSTANCE:
 		break;
-	case MeshBufferTypes::COUNT:
+	case mesh_buffer_types::COUNT:
 	default:
 		ERROR_LOG_RENDERING("Invalid buffer specified: ", buffer, ".");
 	}
 	Unbind();
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO data replacement function");
+	rendering::CheckErrorCode(__FUNCTION__, "Finished VBO data replacement function");
 }
 /* ==================== MeshData class implementation end ==================== */
 
 /* ==================== Mesh class implementation begin ==================== */
-Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
+rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 	m_mode(mode),
 	m_meshData(nullptr)
 {
 }
 
-Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, math::Vector3D* positions, math::Vector2D* textureCoordinates /* = nullptr */,
+rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, math::Vector3D* positions, math::Vector2D* textureCoordinates /* = nullptr */,
 	math::Vector3D* normals /* = nullptr */, math::Vector3D* tangents /* = nullptr */, math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
 	m_mode(mode),
 	m_meshData(nullptr)
@@ -131,7 +128,7 @@ Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, math::V
 	AddVertices(positions, textureCoordinates, normals, tangents, bitangents, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Rendering::Mesh::Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
+rendering::Mesh::Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -140,24 +137,24 @@ Rendering::Mesh::Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCo
 	AddVertices(screenPositions, textureCoordinates, verticesCount);
 }
 
-Rendering::Mesh::~Mesh(void)
+rendering::Mesh::~Mesh()
 {
 }
 
-Rendering::Mesh::Mesh(Mesh&& mesh) :
-	m_mode(std::move(mesh.m_mode)),
-	m_meshData(std::move(mesh.m_meshData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
-{
-#ifdef STORE_MESH_FILE_NAME
-	DELOCUST_LOG_RENDERING("Mesh \"", m_fileName, "\" moved.");
-#else
-	DELOCUST_LOG_RENDERING("Mesh move constructor");
-#endif
-}
+//rendering::Mesh::Mesh(Mesh&& mesh) :
+//	m_mode(std::move(mesh.m_mode)),
+//	m_meshData(std::move(mesh.m_meshData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
+//{
+//#ifdef STORE_MESH_FILE_NAME
+//	DELOCUST_LOG_RENDERING("Mesh \"", m_fileName, "\" moved.");
+//#else
+//	DELOCUST_LOG_RENDERING("Mesh move constructor");
+//#endif
+//}
 
-void Rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount)
+void rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started adding 2D vertices to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Started adding 2D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
@@ -172,28 +169,28 @@ void Rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* tex
 
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
-	m_meshData->CreateVBO(MeshBufferTypes::POSITIONS);
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::POSITIONS));
+	m_meshData->CreateVBO(mesh_buffer_types::POSITIONS);
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(mesh_buffer_types::POSITIONS));
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), positions, GL_STATIC_DRAW);
-	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
 	if (textureCoordinates != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::TEXTURE_COORDINATES));
+		m_meshData->CreateVBO(mesh_buffer_types::TEXTURE_COORDINATES);
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(mesh_buffer_types::TEXTURE_COORDINATES));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 	}
 
 	m_meshData->Unbind();
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
 }
 
-void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount)
+void rendering::Mesh::FillBuffer(mesh_buffer_types::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started adding new values to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Started adding new values to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < positionsCount; ++i)
 	{
@@ -209,15 +206,15 @@ void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAtt
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(buffer));
 	glBufferData(GL_ARRAY_BUFFER, dataCount * sizeof(math::Real), data, GL_STATIC_DRAW);
-	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, 0, 0); // TODO: The hard-coded values here are the possible reason for adding additional parameters to the function.
+	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr); // TODO: The hard-coded values here are the possible reason for adding additional parameters to the function.
 	glEnableVertexAttribArray(attributeLocation);
 	m_meshData->Unbind();
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished adding new values to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Finished adding new values to the Mesh");
 }
 
-void Rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled)
+void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started adding 3D vertices to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Started adding 3D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
@@ -241,51 +238,51 @@ void Rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::POSITIONS));
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::POSITIONS));
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), positions, GL_STATIC_DRAW);
-	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
 	if (textureCoordinates != nullptr)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::TEXTURE_COORDINATES));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 	}
 
 	if (normals != nullptr)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::NORMALS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::NORMALS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), normals, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::NORMALS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::NORMALS, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::NORMALS);
 	}
 
 	if (tangents != nullptr)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TANGENTS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::TANGENTS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), tangents, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::TANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::TANGENTS, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::TANGENTS);
 	}
 
 	if (bitangents != nullptr)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::BITANGENTS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::BITANGENTS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), bitangents, GL_STATIC_DRAW);
-		glVertexAttribPointer(MeshAttributeLocations::BITANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(MeshAttributeLocations::BITANGENTS, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(MeshAttributeLocations::BITANGENTS);
 	}
 
 	if (indices != nullptr)
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::INDEX));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::INDEX));
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 	}
 
 	m_meshData->Unbind();
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished adding 3D vertices to the Mesh");
+	rendering::CheckErrorCode(__FUNCTION__, "Finished adding 3D vertices to the Mesh");
 }
 
 //void Rendering::Mesh::CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
@@ -328,17 +325,17 @@ void Rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 //	return false;
 //}
 
-void Rendering::Mesh::Draw() const
+void rendering::Mesh::Draw() const
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started drawing the Mesh");
+	CheckErrorCode(__FUNCTION__, "Started drawing the Mesh");
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	m_meshData->Bind();
 
-	if (m_meshData->HasVBO(MeshBufferTypes::INDEX))
+	if (m_meshData->HasVBO(mesh_buffer_types::INDEX))
 	{
 		//CRITICAL_LOG_RENDERING("Drawing elements for mesh ", m_fileName);
-		glDrawElements(m_mode, m_meshData->GetSize() /* * sizeof(int) */, GL_UNSIGNED_INT, 0);
+		glDrawElements(m_mode, m_meshData->GetSize() /* * sizeof(int) */, GL_UNSIGNED_INT, nullptr);
 		//glDrawArrays(m_mode, 0, m_meshData->GetSize() /* * sizeof(float) */);
 	}
 	else
@@ -347,20 +344,20 @@ void Rendering::Mesh::Draw() const
 	}
 
 	m_meshData->Unbind();
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished drawing the Mesh");
+	CheckErrorCode(__FUNCTION__, "Finished drawing the Mesh");
 }
 
-void Rendering::Mesh::ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
+void rendering::Mesh::ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started replacing data in the Mesh");
+	CheckErrorCode(__FUNCTION__, "Started replacing data in the Mesh");
 	//CRITICAL_LOG_RENDERING("Replacing data in the mesh. The functionality has not been tested yet.");
 	CHECK_CONDITION_RETURN_VOID_RENDERING(m_meshData->HasVBO(buffer), Utility::Logging::EMERGENCY,
 		"Cannot replace data in buffer ", buffer, " because this buffer has not been initialized at all.");
 	m_meshData->ReplaceVBO(buffer, data, dataCount, singleDataEntrySize, singleDataComponentsCount);
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished replacing data in the Mesh");
+	CheckErrorCode(__FUNCTION__, "Finished replacing data in the Mesh");
 }
 
-void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int* bufferEntriesCount) const
+void* rendering::Mesh::GetBufferData(mesh_buffer_types::MeshBufferType buffer, int* bufferEntriesCount) const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData->HasVBO(buffer), Utility::Logging::EMERGENCY,
 		"Retrieving data for the buffer type ", buffer, " cannot be performed. The buffer is 0.");
@@ -368,7 +365,7 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 	//m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(buffer));
 
-	GLint bufferSize = GetBufferSize(buffer);
+	const auto bufferSize = GetBufferSize(buffer);
 	void* data = glMapBufferRange(GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_READ_BIT);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
@@ -376,19 +373,19 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 	{
 		switch (buffer)
 		{
-		case MeshBufferTypes::POSITIONS:
-		case MeshBufferTypes::NORMALS:
-		case MeshBufferTypes::TANGENTS:
-		case MeshBufferTypes::BITANGENTS:
+		case mesh_buffer_types::POSITIONS:
+		case mesh_buffer_types::NORMALS:
+		case mesh_buffer_types::TANGENTS:
+		case mesh_buffer_types::BITANGENTS:
 			*bufferEntriesCount = bufferSize / sizeof(math::Vector3D);
 			break;
-		case MeshBufferTypes::TEXTURE_COORDINATES:
+		case mesh_buffer_types::TEXTURE_COORDINATES:
 			*bufferEntriesCount = bufferSize / sizeof(math::Vector2D);
 			break;
-		case MeshBufferTypes::INDEX:
+		case mesh_buffer_types::INDEX:
 			*bufferEntriesCount = bufferSize / sizeof(int);
 			break;
-		case MeshBufferTypes::INSTANCE:
+		case mesh_buffer_types::INSTANCE:
 			*bufferEntriesCount = bufferSize / sizeof(math::Real);
 			break;
 		default:
@@ -399,50 +396,50 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 	return data;
 }
 
-void Rendering::Mesh::CalcNormals(math::Vector3D*& normals, math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
+void rendering::Mesh::CalcNormals(math::Vector3D*& normals, math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (GL_QUADS, GL_LINES) this iterationStep variable will be incorrect
-	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
-	for(int i = 0; i < indicesCount; i += iterationStep)
+	const auto iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
+	for(auto i = 0; i < indicesCount; i += iterationStep)
 	{
-		int i0 = indices[i];
-		int i1 = indices[i + 1];
-		int i2 = indices[i + 2];
+		const auto i0 = indices[i];
+		const auto i1 = indices[i + 1];
+		const auto i2 = indices[i + 2];
 		
-		math::Vector3D v1 = positions[i1] - positions[i0];
-		math::Vector3D v2 = positions[i2] - positions[i0];
-		math::Vector3D normalVec = v1.Cross(v2).Normalized();
+		const auto v1 = positions[i1] - positions[i0];
+		const auto v2 = positions[i2] - positions[i0];
+		const auto normalVec = v1.Cross(v2).Normalized();
 		
 		normals[i0] += normalVec;
 		normals[i1] += normalVec;
 		normals[i2] += normalVec;
 	}
 	
-	for(int i = 0; i < verticesCount; i++)
+	for(auto i = 0; i < verticesCount; i++)
 	{
 		normals[i].Normalize();
 	}
 }
 
-void Rendering::Mesh::CalcTangents(math::Vector3D*& tangents, math::Vector3D* positions, math::Vector2D* textureCoordinates, size_t verticesCount) const
+void rendering::Mesh::CalcTangents(math::Vector3D*& tangents, math::Vector3D* positions, math::Vector2D* textureCoordinates, size_t verticesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
-	const int iterationStep = 3; // each face has three vertices
-	for (int i = 0; i < verticesCount - iterationStep + 1; i += iterationStep)
+	const auto iterationStep = 3; // each face has three vertices
+	for (auto i = 0; i < verticesCount - iterationStep + 1; i += iterationStep)
 	{
 		// Edges of the triangle: position delta
-		math::Vector3D deltaPos1 = positions[i + 1] - positions[i];
-		math::Vector3D deltaPos2 = positions[i + 2] - positions[i];
+		const auto deltaPos1 = positions[i + 1] - positions[i];
+		const auto deltaPos2 = positions[i + 2] - positions[i];
 
 		// UV delta
-		math::Vector2D deltaUV1 = textureCoordinates[i + 1] - textureCoordinates[i];
-		math::Vector2D deltaUV2 = textureCoordinates[i + 2] - textureCoordinates[i];
+		const auto deltaUV1 = textureCoordinates[i + 1] - textureCoordinates[i];
+		const auto deltaUV2 = textureCoordinates[i + 2] - textureCoordinates[i];
 
-		math::Real r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
-		math::Vector3D tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
-		math::Vector3D bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+		const auto r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
+		const auto tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+		//const auto bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
 		// Set the same tangent for all three vertices of the triangle. They will be merged later, during indexing.
 		tangents[i] = tangent;
@@ -477,7 +474,7 @@ void Rendering::Mesh::CalcTangents(math::Vector3D*& tangents, math::Vector3D* po
 /* ==================== Mesh class implementation end ==================== */
 
 /* ==================== BillboardMesh class implementation begin ==================== */
-Rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength) :
+rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength) :
 	Mesh(GL_POINTS),
 	m_billboardsCount(billboardsCount)
 {
@@ -488,9 +485,9 @@ Rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigne
 	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
 
 	m_meshData->Bind();
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::INSTANCE));
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(mesh_buffer_types::INSTANCE));
 	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_billboardsCount * billboardDataLength, modelMatricesValues, GL_STATIC_DRAW);
-	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)0);
+	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), nullptr);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
 	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
 	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(math::Real), (GLvoid*)(4 * sizeof(math::Real)));
@@ -506,17 +503,17 @@ Rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigne
 	m_meshData->Unbind();
 }
 
-Rendering::BillboardMesh::~BillboardMesh()
+rendering::BillboardMesh::~BillboardMesh()
 {
 }
 
-Rendering::BillboardMesh::BillboardMesh(BillboardMesh&& billboardMesh) :
-	Mesh(std::move(billboardMesh)),
-	m_billboardsCount(std::move(billboardMesh.m_billboardsCount))
-{
-}
+//rendering::BillboardMesh::BillboardMesh(BillboardMesh&& billboardMesh) :
+//	Mesh(std::move(billboardMesh)),
+//	m_billboardsCount(std::move(billboardMesh.m_billboardsCount))
+//{
+//}
 
-void Rendering::BillboardMesh::Draw() const
+void rendering::BillboardMesh::Draw() const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
@@ -529,7 +526,7 @@ void Rendering::BillboardMesh::Draw() const
 
 
 /* ==================== InstanceMesh class implementation begin ==================== */
-Rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength) :
+rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength) :
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount),
 	m_maxParticlesCount(maxParticlesCount),
@@ -542,10 +539,10 @@ Rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int po
 	AddVertices(positions, nullptr, positionsCount);
 
 	m_meshData->Bind();
-	m_meshData->CreateVBO(MeshBufferTypes::INSTANCE); // instanced attributes will be stored in this VBO
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
+	m_meshData->CreateVBO(mesh_buffer_types::INSTANCE); // instanced attributes will be stored in this VBO
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(mesh_buffer_types::INSTANCE));
 	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, nullptr, GL_STREAM_DRAW);
-	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)0);
+	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), nullptr);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
 	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
 	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(4 * sizeof(math::Real)));
@@ -573,25 +570,25 @@ Rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int po
 	m_meshData->Unbind();
 }
 
-Rendering::InstanceMesh::~InstanceMesh()
+rendering::InstanceMesh::~InstanceMesh()
 {
 }
 
-Rendering::InstanceMesh::InstanceMesh(InstanceMesh&& instanceMesh) :
-	Mesh(std::move(instanceMesh)),
-	m_positionsCount(instanceMesh.m_positionsCount),
-	m_maxParticlesCount(instanceMesh.m_maxParticlesCount),
-	m_instanceDataLength(instanceMesh.m_instanceDataLength)
-{
-}
+//rendering::InstanceMesh::InstanceMesh(InstanceMesh&& instanceMesh) :
+//	Mesh(std::move(instanceMesh)),
+//	m_positionsCount(instanceMesh.m_positionsCount),
+//	m_maxParticlesCount(instanceMesh.m_maxParticlesCount),
+//	m_instanceDataLength(instanceMesh.m_instanceDataLength)
+//{
+//}
 
-void Rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
+void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(mesh_buffer_types::INSTANCE));
 	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, data, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(math::Real) * dataSize, data);
 	//m_meshData->Unbind();

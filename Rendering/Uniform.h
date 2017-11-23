@@ -8,12 +8,12 @@
 #include <string>
 #include <vector>
 
-namespace Rendering
+namespace rendering
 {
 	class Material;
 	class Renderer;
 
-	namespace Uniforms
+	namespace uniforms
 	{
 		/// <summary>
 		/// Uniform types. It defines both:
@@ -36,11 +36,11 @@ namespace Rendering
 			SPOT_LIGHT, // structural uniform
 			ATTENUATION, // structural uniform
 			UNKNOWN
-		};
+		}; /* end enum UniformType */
 
 		struct UniformInfo
 		{
-			UniformInfo(const std::string& _name, Uniforms::UniformType _type) :
+			UniformInfo(const std::string& _name, uniforms::UniformType _type) :
 				name(_name),
 				type(_type)
 			{
@@ -48,13 +48,13 @@ namespace Rendering
 
 			const std::string name;
 			const UniformType type;
-		};
+		}; /* end struct UniformInfo */
 
 		struct UniformStructInfo
 		{
 			std::string name;
 			std::vector<UniformInfo> uniformInfos;
-		};
+		}; /* end struct UniformStructInfo */
 
 		class UniformBase
 		{
@@ -64,20 +64,40 @@ namespace Rendering
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			UniformBase(const std::string& name, Uniforms::UniformType type);
+			/// <summary> Base uniform constructor. </summary>
+			/// <param name="name"> The name of the uniform. </param>
+			/// <param name="type"> The type of the uniform. </param>
+			UniformBase(const std::string& name, UniformType type);
+
+			/// <summary> Base uniform destructor. </summary>
 			virtual ~UniformBase();
+
+			/// <summary> Base uniform copy constructor. </summary>
+			/// <param name="uniformBase"> The reference to base uniform to copy construct from. </param>
+			UniformBase(const UniformBase& uniformBase) = delete;
+
+			/// <summary> Base uniform move constructor. </summary>
+			/// <param name="uniformBase"> The r-value reference to base uniform to move construct from. </param>
+			UniformBase(UniformBase&& uniformBase) = delete;
+
+			/// <summary> Base uniform copy assignment operator. </summary>
+			/// <param name="uniformBase"> The reference to base uniform to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned base uniform. </returns>
+			UniformBase& operator=(const UniformBase& uniformBase) = delete;
+
+			/// <summary> Base uniform move assignment operator. </summary>
+			/// <param name="uniformBase"> The r-value reference to base uniform to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned base uniform. </returns>
+			UniformBase& operator=(UniformBase&& uniformBase) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) = 0;
 
-			inline const std::string& GetName() const { return m_name; }
-			inline const std::string& GetPrefix() const { return m_prefix; }
-			inline const std::string& GetUnprefixedName() const { return m_unprefixedName; }
-			inline UniformType GetType() const { return m_type; }
-		protected:
+			const std::string& GetName() const { return m_name; }
+			const std::string& GetPrefix() const { return m_prefix; }
+			const std::string& GetUnprefixedName() const { return m_unprefixedName; }
+			UniformType GetType() const { return m_type; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -96,13 +116,13 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			SimpleUniform(const std::string& name, Uniforms::UniformType type, GLint location);
+			SimpleUniform(const std::string& name, uniforms::UniformType type, GLint location);
 			virtual ~SimpleUniform();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		protected:
-			inline GLint GetLocation() const { return m_location; }
+			GLint GetLocation() const { return m_location; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -123,9 +143,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
-		protected:
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -144,9 +162,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
-		protected:
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -165,9 +181,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
-		protected:
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -186,9 +200,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
-		protected:
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -207,8 +219,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -227,8 +238,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -247,8 +257,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -267,8 +276,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -311,7 +319,6 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Updates the directional light uniform. Although the <paramref name="directionalLight"/> is specified as the <code>BaseLight</code> instance
 			/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the <code>BaseLight</code> object
@@ -320,7 +327,7 @@ namespace Rendering
 			/// <param name="renderer"> Pointer to rendering engine. </param>
 			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
 			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -352,7 +359,7 @@ namespace Rendering
 			/// <param name="renderer"> Pointer to rendering engine. </param>
 			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
 			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -378,14 +385,13 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Sets the spot light uniform.
 			/// </summary>
 			/// <param name="renderer"> Pointer to rendering engine. </param>
 			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
 			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
-			virtual void Update(const Renderer* renderer, const math::Transform* transform, const Material* material);
+			void Update(const Renderer* renderer, const math::Transform* transform, const Material* material) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -425,8 +431,8 @@ namespace Rendering
 															((uniformType == ATTENUATION) ? "Attenuation" :
 																"Unknown"))))))))))));
 		}
-	} /* end namespace Uniforms */
+	} /* end namespace uniforms */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_UNIFORM_H__ */

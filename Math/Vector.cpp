@@ -19,7 +19,7 @@ math::Vector2D& math::Vector2D::operator-=(const Vector2D& v) noexcept
 	return *this;
 }
 
-math::Vector2D& math::Vector2D::operator*=(math::Real value) noexcept
+math::Vector2D& math::Vector2D::operator*=(Real value) noexcept
 {
 	x *= value;
 	y *= value;
@@ -58,12 +58,12 @@ math::Vector2D& math::Vector2D::operator/=(const Vector2D& v) noexcept
 
 bool math::Vector2D::operator==(const Vector2D& v) const
 {
-	return ( AlmostEqual(x, v.x) && AlmostEqual(y, v.y) );
+	return AlmostEqual(x, v.x) && AlmostEqual(y, v.y);
 }
 
 bool math::Vector2D::operator!=(const Vector2D& v) const
 {
-	return (!((*this) == v));
+	return !(*this == v);
 }
 
 bool math::Vector2D::IsNormalized() const
@@ -112,10 +112,10 @@ math::Vector2D math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 }
 #endif
 
-math::Vector2D math::Vector2D::Rotate(const Angle& angle)
+math::Vector2D math::Vector2D::Rotate(const Angle& angle) const
 {
-	const Real cosine = angle.Cos();
-	const Real sine = angle.Sin();
+	const auto cosine = angle.Cos();
+	const auto sine = angle.Sin();
 
 	return Vector2D(x * cosine - y * sine, x * sine + y * cosine);
 }
@@ -123,7 +123,7 @@ math::Vector2D math::Vector2D::Rotate(const Angle& angle)
 /* ==================== Vector3D ==================== */
 math::Real math::Vector3D::Max() const
 {
-	return (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
+	return x > y ? (x > z ? x : z) : (y > z ? y : z);
 }
 
 #ifdef PASS_VECTOR_BY_VALUE
@@ -131,7 +131,7 @@ math::Vector3D math::Vector3D::Lerp(Vector3D vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
 		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
-	const math::Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
+	const auto oneMinusLerpFactor = REAL_ONE - lerpFactor;
 	vec.x = x * oneMinusLerpFactor + vec.x * lerpFactor;
 	vec.y = y * oneMinusLerpFactor + vec.y * lerpFactor;
 	vec.z = z * oneMinusLerpFactor + vec.z * lerpFactor;
@@ -173,7 +173,7 @@ math::Vector3D math::Vector3D::Max(const Vector3D& v) const
 }
 #endif
 
-math::Vector3D math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
+math::Vector3D math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle) const
 {
 	// TODO: Test which method is faster and use it instead of the other
 
@@ -190,8 +190,8 @@ math::Vector3D math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 	//return *this;
 
 	/* ==================== METHOD #2 ==================== */
-	Real sinAngle = static_cast<Real>(-angle.Sin()); // sin(-alpha) == -sin(alpha)
-	Real cosAngle = static_cast<Real>(angle.Cos()); // cos(-alpha) == cos(alpha)
+	const auto sinAngle = static_cast<Real>(-angle.Sin()); // sin(-alpha) == -sin(alpha)
+	const auto cosAngle = static_cast<Real>(angle.Cos()); // cos(-alpha) == cos(alpha)
 
 	return Cross(axis * sinAngle) + // rotation on local X
 		(*this * cosAngle) + // rotation on local Z
@@ -201,7 +201,7 @@ math::Vector3D math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 math::Vector3D math::Vector3D::Rotate(const Quaternion& rotation) const
 {
 	// TODO: This function should be reimplemented to avoid unnecessary copies of quaternions.
-	Quaternion w = rotation * (*this) * rotation.Conjugate(); // FIXME: Check quaternion multiplication
+	const auto w = rotation * *this * rotation.Conjugate(); // FIXME: Check quaternion multiplication
 	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
 
@@ -221,7 +221,7 @@ math::Vector3D& math::Vector3D::operator-=(const Vector3D& v) noexcept
 	return *this;
 }
 
-math::Vector3D& math::Vector3D::operator*=(math::Real value) noexcept
+math::Vector3D& math::Vector3D::operator*=(Real value) noexcept
 {
 	x *= value;
 	y *= value;
@@ -274,7 +274,7 @@ inline bool math::Vector3D::operator==(const Vector3D& v) const
 
 bool math::Vector3D::operator!=(const Vector3D& v) const
 {
-	return (!((*this) == v));
+	return !(*this == v);
 }
 
 bool math::Vector3D::IsNormalized() const
@@ -351,12 +351,12 @@ void math::Vector3D::ApproachZ(Real step, Real approachedValue)
 
 void math::Vector3D::Threshold(Real maxLength)
 {
-	Real length = Length();
+	const auto length = Length();
 	if (length > maxLength)
 	{
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
 			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
-		Real quotient = length / maxLength;
+		const auto quotient = length / maxLength;
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
 			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
@@ -368,7 +368,7 @@ void math::Vector3D::Threshold(Real maxLength)
 /* ==================== Vector4D ==================== */
 math::Real math::Vector4D::Max() const
 {
-	return (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
+	return x > y ? (x > z ? x : z) : (y > z ? y : z);
 }
 
 #ifdef PASS_VECTOR_BY_VALUE
@@ -396,7 +396,7 @@ math::Vector4D math::Vector4D::Lerp(Vector4D vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	const Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
+	const auto oneMinusLerpFactor = REAL_ONE - lerpFactor;
 	vec.x = x * oneMinusLerpFactor + vec.x * lerpFactor;
 	vec.y = y * oneMinusLerpFactor + vec.y * lerpFactor;
 	vec.z = z * oneMinusLerpFactor + vec.z * lerpFactor;
@@ -438,7 +438,7 @@ math::Vector4D& math::Vector4D::operator-=(const Vector4D& v) noexcept
 	return *this;
 }
 
-math::Vector4D& math::Vector4D::operator*=(math::Real value) noexcept
+math::Vector4D& math::Vector4D::operator*=(Real value) noexcept
 {
 	x *= value;
 	y *= value;
@@ -501,7 +501,7 @@ inline bool math::Vector4D::operator==(const Vector4D& v) const
 
 bool math::Vector4D::operator!=(const Vector4D& v) const
 {
-	return (!((*this) == v));
+	return !(*this == v);
 }
 
 bool math::Vector4D::IsNormalized() const
@@ -599,12 +599,12 @@ void math::Vector4D::ApproachW(Real step, Real approachedValue)
 
 void math::Vector4D::Threshold(Real maxLength)
 {
-	Real length = Length();
+	const auto length = Length();
 	if (length > maxLength)
 	{
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
 			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
-		const Real quotient = length / maxLength;
+		const auto quotient = length / maxLength;
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
 			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
@@ -625,10 +625,10 @@ math::Real math::interpolation::BarycentricInterpolation(Real xPos1, Real yPos1,
 	Real xPos3, Real yPos3, Real zPos3,
 	Real xPos, Real zPos)
 {
-	Real det = ((zPos2 - zPos3) * (xPos1 - xPos3)) + ((xPos3 - xPos2) * (zPos1 - zPos3));
-	Real b1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
-	Real b2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
-	Real b3 = 1.0f - b1 - b2;
+	const auto det = (zPos2 - zPos3) * (xPos1 - xPos3) + (xPos3 - xPos2) * (zPos1 - zPos3);
+	const auto b1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
+	const auto b2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
+	const auto b3 = 1.0f - b1 - b2;
 	//CRITICAL_LOG_MATH("[", xPos, "; ", zPos, "]: det = ", det, "; b1 = ", b1, "; b2 = ", b2, "; b3 = ", b3, "; result = ", b1 * yPos1 + b2 * yPos2 + b3 * yPos3);
 	return b1 * yPos1 + b2 * yPos2 + b3 * yPos3;
 }

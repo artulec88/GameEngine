@@ -6,20 +6,20 @@
 
 #include "Math\RandomGenerator.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Generators
+		namespace generators
 		{
-			namespace AccelerationGeneratorTypes
+			namespace acceleration_generator_types
 			{
 				enum AccelerationGeneratorType
 				{
 					CONSTANT = 0,
 					RANGE
 				}; /* end enum AccelerationGeneratorType */
-			} /* end namespace AccelerationGeneratorTypes */
+			} /* end namespace acceleration_generator_types */
 
 			/// <summary>
 			/// Generates acceleration for the particle.
@@ -32,7 +32,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				AccelerationGenerator() :
-					ParticleAttributeGenerator(Attributes::ACCELERATION)
+					ParticleAttributeGenerator(attributes::ACCELERATION)
 				{
 				}
 				virtual ~AccelerationGenerator()
@@ -49,7 +49,6 @@ namespace Rendering
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
-			private:
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class AccelerationGenerator */
 
@@ -64,13 +63,12 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				RENDERING_API ConstantAccelerationGenerator(math::Real accelerationX, math::Real accelerationY, math::Real accelerationZ);
-				RENDERING_API ConstantAccelerationGenerator(const math::Vector3D& acceleration);
+				RENDERING_API explicit ConstantAccelerationGenerator(const math::Vector3D& acceleration);
 				RENDERING_API virtual ~ConstantAccelerationGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -94,8 +92,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -109,8 +106,8 @@ namespace Rendering
 				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class RangeAccelerationGenerator */
-		} /* end namespace Generators */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace generators */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_ACCELERATION_GENERATOR_H__ */

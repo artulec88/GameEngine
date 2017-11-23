@@ -142,7 +142,7 @@ math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* ve
 	std::vector<Vector2D> positionsSortedByX;
 	for (unsigned int i = 0; i < vectorsCount; ++i)
 	{
-		positionsSortedByX.push_back(vectors[i].GetXZ());
+		positionsSortedByX.push_back(vectors[i].GetXz());
 	}
 	std::vector<Vector2D> positionsSortedByZ(positionsSortedByX.begin(), positionsSortedByX.end());
 

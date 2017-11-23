@@ -1,9 +1,9 @@
 #ifndef __RENDERING_PARTICLE_EFFECTS_H__
 #define __RENDERING_PARTICLE_EFFECTS_H__
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		namespace ParticleEffects
 		{
@@ -15,7 +15,7 @@ namespace Rendering
 				SMOKE
 			}; /* end enum ParticleEffect */
 		} /* end namespace ParticleEffects */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_EFFECTS_H__ */

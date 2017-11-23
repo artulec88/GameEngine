@@ -7,11 +7,11 @@
 
 #include "Math\RandomGenerator.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Generators
+		namespace generators
 		{
 			/// <summary>
 			/// Particle attribute generator. Particles attributes generator can generate one or more different attributes for a particle.
@@ -24,10 +24,16 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				ParticleAttributeGenerator(const Attributes::AttributesMask& attributesMask) :
+				explicit ParticleAttributeGenerator(int attributeIds) :
+					m_attributesMask(attributeIds)
+				{	
+				}
+
+				explicit ParticleAttributeGenerator(const attributes::AttributesMask& attributesMask) :
 					m_attributesMask(attributesMask)
 				{
 				}
+
 				virtual ~ParticleAttributeGenerator()
 				{
 				}
@@ -43,13 +49,12 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
 				virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) = 0;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Attributes::AttributesMask m_attributesMask;
+				attributes::AttributesMask m_attributesMask;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ParticleAttributeGenerator */
 
@@ -64,7 +69,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				IdGenerator() :
-					ParticleAttributeGenerator(Attributes::ID)
+					ParticleAttributeGenerator(attributes::ID)
 				{
 				}
 				virtual ~IdGenerator()
@@ -74,14 +79,13 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				inline void Set(ParticlesContainer* particleContainer, size_t i, int ID)
+				void Set(ParticlesContainer* particleContainer, size_t i, int ID)
 				{
 					particleContainer->SetID(i, ID);
 				}
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
-			private:
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class IdGenerator */
 
@@ -100,8 +104,7 @@ namespace Rendering
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
@@ -109,8 +112,8 @@ namespace Rendering
 				int m_id;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class BasicIdGenerator */
-		} /* end namespace Generators */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace generators */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_ATTRIBUTE_GENERATOR_H__ */

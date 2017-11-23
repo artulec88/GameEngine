@@ -8,9 +8,8 @@
 #include "Math/Vector.h"
 
 #include <string>
-#include <map>
 
-namespace Rendering
+namespace rendering
 {
 
 	/// <summary>
@@ -45,9 +44,9 @@ namespace Rendering
 		/// <param name="texture"> The texture the material will use. </param>
 		/// <param name="textureName"> The name of the texture for texture-lookup mechanism. </param>
 		RENDERING_API Material(const Texture* texture, const std::string& textureName);
-		
+
 		/// <summary> Material destructor. </summary>
-		RENDERING_API ~Material(void);
+		RENDERING_API ~Material();
 
 		/// <summary> Material copy constructor. </summary>
 		/// <param name="material"> The material to copy construct from. </param>
@@ -70,7 +69,6 @@ namespace Rendering
 
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		const math::Real& GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
 		const math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
 		const math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
@@ -87,7 +85,7 @@ namespace Rendering
 
 		/// <summary> Gives information whether or not the material uses multiple textures. </summary>
 		/// <returns> <code>true</code> when material uses multiple textures (at least two) and <code>false</code> otherwise. </returns>
-		inline bool HasMultipleTextures() const noexcept { return m_hasMultipleTextures; }
+		bool HasMultipleTextures() const noexcept { return m_hasMultipleTextures; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -104,6 +102,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Material */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_MATERIAL_H__ */

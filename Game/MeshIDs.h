@@ -5,16 +5,16 @@
 
 namespace Game
 {
-	namespace MeshIDs
+	namespace mesh_ids
 	{
-		enum MeshID
+		enum MeshId
 		{
-			FIRST_MESH = Rendering::MeshIDs::COUNT,
+			FIRST_MESH = rendering::mesh_ids::COUNT,
 			PLAYER,
 			BILLBOARD,
 			SKYBOX
-		}; /* end enum MeshID */
-	} /* end namespace MeshIDs */
+		}; /* end enum MeshId */
+	} /* end namespace mesh_ids */
 } /* end namespace Game */
 
 #endif /* __GAME_MESH_IDS_H__ */

@@ -19,7 +19,7 @@
 namespace Game
 {
 
-	class Rendering::Shader;
+	class rendering::Shader;
 
 	/* TODO: Consider inheriting from Rendering::IUpdateable class */
 	class LoadGameState : public engine::GameState, public virtual engine::IUpdateable
@@ -42,7 +42,7 @@ namespace Game
 		void Handle(engine::States::State state) override;
 		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		void Render(Rendering::Renderer* renderer) const override;
+		void Render(rendering::Renderer* renderer) const override;
 
 		void Update(math::Real elapsedTime) override;
 		/* ==================== Non-static member functions end ==================== */

@@ -4,19 +4,19 @@
 #include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class BasicIdGenerator begin ==================== */
-Rendering::Particles::Generators::BasicIdGenerator::BasicIdGenerator() :
+rendering::particles::generators::BasicIdGenerator::BasicIdGenerator() :
 	IdGenerator(),
 	m_id(0)
 {
 }
 
-Rendering::Particles::Generators::BasicIdGenerator::~BasicIdGenerator()
+rendering::particles::generators::BasicIdGenerator::~BasicIdGenerator()
 {
 }
 
-void Rendering::Particles::Generators::BasicIdGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::BasicIdGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, ++m_id);
 	}

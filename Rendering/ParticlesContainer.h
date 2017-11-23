@@ -6,13 +6,13 @@
 #include "Color.h"
 
 #include "Math/Vector.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
 #include <memory>
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// Particles container. It allocates and manages memory for a given maximum number of particles.
@@ -38,7 +38,7 @@ namespace Rendering
 			/// <summary> Particles container constructor. </summary>
 			/// <param name="maxCount"> The maximum number of particles the system may store. </param>
 			/// <param name="attributesMask"> The mask representing which attributes each particle in the container will have. </param>
-			ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask);
+			ParticlesContainer(size_t maxCount, const attributes::AttributesMask& attributesMask);
 
 			/// <summary> Particles container destructor. </summary>
 			~ParticlesContainer();
@@ -61,77 +61,76 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Resets the particles container by killing all particles instantly.
 			/// The killing procedure is simply done by resetting the number of alive particles to <code>0</code>.
 			/// </summary>
-			inline void Reset() { m_countAlive = 0; }
+			void Reset() { m_countAlive = 0; }
 
 			/// <summary> Returns the maximum number of particles that the container is able to maintain. </summary>
 			/// <returns> The maximum number of particles that the container is able to maintain. </summary>
-			inline size_t GetMaxCount() const { return m_maxCount; }
+			size_t GetMaxCount() const { return m_maxCount; }
 
 			/// <summary> Returns the number of alive particles currently maintained by the container. </summary>
 			/// <returns> The number of alive particles currently maintained by the container. </summary>
-			inline size_t GetAliveCount() const { return m_countAlive; }
+			size_t GetAliveCount() const { return m_countAlive; }
 
-			inline bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
-			inline const math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
-			inline const math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
-			inline const math::Vector3D& GetAcceleration(size_t i) const { return m_accelerations[i]; }
-			inline math::Real GetGravityEffectFactor(size_t i) const { return m_gravityEffectFactors[i]; }
-			inline math::Real GetLifeSpanLimit(size_t i) const { return m_lifeSpanLimits[i]; }
-			inline math::Real GetLifeSpan(size_t i) const { return m_lifeSpans[i]; }
-			inline const math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
-			inline math::Real GetScale(size_t i) const { return m_scales[i]; }
-			inline math::Real* GetScalePtr(size_t i) { return &m_scales[i]; }
-			inline void SetPosition(size_t i, const math::Vector3D& newPosition) { m_positions[i] = newPosition; }
-			inline void SetPosition(size_t i, math::Real x, math::Real y, math::Real z)
+			bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
+			const math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
+			const math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
+			const math::Vector3D& GetAcceleration(size_t i) const { return m_accelerations[i]; }
+			math::Real GetGravityEffectFactor(size_t i) const { return m_gravityEffectFactors[i]; }
+			math::Real GetLifeSpanLimit(size_t i) const { return m_lifeSpanLimits[i]; }
+			math::Real GetLifeSpan(size_t i) const { return m_lifeSpans[i]; }
+			const math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
+			math::Real GetScale(size_t i) const { return m_scales[i]; }
+			math::Real* GetScalePtr(size_t i) const { return &m_scales[i]; }
+			void SetPosition(size_t i, const math::Vector3D& newPosition) const { m_positions[i] = newPosition; }
+			void SetPosition(size_t i, math::Real x, math::Real y, math::Real z) const
 			{
 				m_positions[i].x = x;
 				m_positions[i].y = y;
 				m_positions[i].z = z;
 			}
-			inline void SetVelocity(size_t i, const math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
-			inline void SetVelocity(size_t i, math::Real x, math::Real y, math::Real z)
+			void SetVelocity(size_t i, const math::Vector3D& newVelocity) const { m_velocities[i] = newVelocity; }
+			void SetVelocity(size_t i, math::Real x, math::Real y, math::Real z) const
 			{
 				m_velocities[i].x = x;
 				m_velocities[i].y = y;
 				m_velocities[i].z = z;
 			}
-			inline void SetAcceleration(size_t i, const math::Vector3D& newAcceleration) { m_accelerations[i] = newAcceleration; }
-			inline void SetAcceleration(size_t i, math::Real x, math::Real y, math::Real z)
+			void SetAcceleration(size_t i, const math::Vector3D& newAcceleration) const { m_accelerations[i] = newAcceleration; }
+			void SetAcceleration(size_t i, math::Real x, math::Real y, math::Real z) const
 			{
 				m_accelerations[i].x = x;
 				m_accelerations[i].y = y;
 				m_accelerations[i].z = z;
 			}
-			inline void SetGravityEffectFactor(size_t i, math::Real newGravityEffectFactor) { m_gravityEffectFactors[i] = newGravityEffectFactor; }
-			inline void SetLifeSpanLimit(size_t i, math::Real newLifeSpanLimit) { m_lifeSpanLimits[i] = newLifeSpanLimit; }
-			inline void SetLifeSpan(size_t i, math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }
-			inline void SetRotation(size_t i, const math::Angle& newRotation) { m_rotations[i] = newRotation; }
-			inline void SetRotation(size_t i, math::Real angle, math::units::UnitType angleUnit = math::units::RADIAN) { m_rotations[i].Set(angle, angleUnit); }
-			inline void SetScale(size_t i, math::Real newScale) { m_scales[i] = newScale; }
-			inline void SetTextureOffset(size_t i, const math::Vector2D& newTextureOffset) { m_textureOffsets[i] = newTextureOffset; }
-			inline void SetColor(size_t i, const Color& newColor) { m_colors[i] = newColor; }
-			inline void SetID(size_t i, int ID) { m_IDs[i] = ID; }
-			inline void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
-			inline void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) { m_velocities[i] += velocityIncrease; }
-			inline void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) { m_accelerations[i] += accelerationIncrease; }
-			inline void IncreaseGravityEffectFactor(size_t i, math::Real gravityEffectFactorIncrease) { m_gravityEffectFactors[i] += gravityEffectFactorIncrease; }
-			inline void IncreaseLifeSpanLimit(size_t i, math::Real lifeSpanLimitIncrease) { m_lifeSpanLimits[i] += lifeSpanLimitIncrease; }
-			inline void IncreaseLifeSpan(size_t i, math::Real lifeSpanIncrease) { m_lifeSpans[i] += lifeSpanIncrease; }
-			inline void IncreaseRotation(size_t i, const math::Angle& rotationIncrease) { m_rotations[i] += rotationIncrease; }
-			inline void IncreaseScale(size_t i, math::Real scaleIncrease) { m_scales[i] += scaleIncrease; }
-			
+			void SetGravityEffectFactor(size_t i, math::Real newGravityEffectFactor) const { m_gravityEffectFactors[i] = newGravityEffectFactor; }
+			void SetLifeSpanLimit(size_t i, math::Real newLifeSpanLimit) const { m_lifeSpanLimits[i] = newLifeSpanLimit; }
+			void SetLifeSpan(size_t i, math::Real newLifeSpan) const { m_lifeSpans[i] = newLifeSpan; }
+			void SetRotation(size_t i, const math::Angle& newRotation) const { m_rotations[i] = newRotation; }
+			void SetRotation(size_t i, math::Real angle, math::units::UnitType angleUnit = math::units::RADIAN) const { m_rotations[i].Set(angle, angleUnit); }
+			void SetScale(size_t i, math::Real newScale) const { m_scales[i] = newScale; }
+			void SetTextureOffset(size_t i, const math::Vector2D& newTextureOffset) const { m_textureOffsets[i] = newTextureOffset; }
+			void SetColor(size_t i, const Color& newColor) const { m_colors[i] = newColor; }
+			void SetID(size_t i, int ID) const { m_IDs[i] = ID; }
+			void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) const { m_positions[i] += positionIncrease; }
+			void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) const { m_velocities[i] += velocityIncrease; }
+			void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) const { m_accelerations[i] += accelerationIncrease; }
+			void IncreaseGravityEffectFactor(size_t i, math::Real gravityEffectFactorIncrease) const { m_gravityEffectFactors[i] += gravityEffectFactorIncrease; }
+			void IncreaseLifeSpanLimit(size_t i, math::Real lifeSpanLimitIncrease) const { m_lifeSpanLimits[i] += lifeSpanLimitIncrease; }
+			void IncreaseLifeSpan(size_t i, math::Real lifeSpanIncrease) const { m_lifeSpans[i] += lifeSpanIncrease; }
+			void IncreaseRotation(size_t i, const math::Angle& rotationIncrease) const { m_rotations[i] += rotationIncrease; }
+			void IncreaseScale(size_t i, math::Real scaleIncrease) const { m_scales[i] += scaleIncrease; }
+
 			/// <summary>
 			/// Kills the particle stored under the specified index <paramref name="id"/>.
 			/// The function does nothing when no alive particles exist.
 			/// </summary>
 			/// <param name="id"> The index of the particle requested to be killed. </param>
 			void Kill(size_t id);
-			
+
 			/// <summary>
 			/// Revives the particle stored under the specified index <paramref name="id"/>.
 			/// The function does nothing if the number of alive particles already reached the maximum number of alive particles.
@@ -140,10 +139,10 @@ namespace Rendering
 			void Revive(size_t id);
 			void SwapData(size_t a, size_t b);
 			math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
-			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
-			inline void SetMaxParticlesCount(size_t maxCount) { m_maxCount = maxCount; }
-			void SetAttributesMask(Attributes::AttributesMask attributesMask);
-			
+			bool IsAttributeEnabled(attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
+			void SetMaxParticlesCount(size_t maxCount) { m_maxCount = maxCount; }
+			void SetAttributesMask(attributes::AttributesMask attributesMask);
+
 			friend std::ostream& operator<<(std::ostream& out, const ParticlesContainer& particlesContainer)
 			{
 				out << "Particles container: " << std::endl << "Attributes mask: " << particlesContainer.m_attributesMask <<
@@ -154,7 +153,7 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Attributes::AttributesMask m_attributesMask;
+			attributes::AttributesMask m_attributesMask;
 			std::unique_ptr<math::Vector3D[]> m_positions;
 			std::unique_ptr<math::Vector3D[]> m_velocities;
 			std::unique_ptr<math::Vector3D[]> m_accelerations;
@@ -173,7 +172,7 @@ namespace Rendering
 			size_t m_countAlive;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesContainer */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLES_CONTAINER_H__ */

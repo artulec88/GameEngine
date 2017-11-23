@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include <string>
 
-namespace Rendering
+namespace rendering
 {
 	// TODO: This class belongs in the Utility library.
 	class Resource
@@ -14,12 +14,13 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		Resource(const std::string& filename);
-		virtual ~Resource(void);
+		/// <summary> Resource constructor. </summary>
+		/// <param name="filename"> The file name. </param>
+		explicit Resource(const std::string& filename);
+		virtual ~Resource();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary>
 		/// Loads the resource.
 		/// </summary>
@@ -45,6 +46,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Resource */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif // __RENDERING_RESOURCE_H__

@@ -5,16 +5,16 @@
 #include "Mesh.h"
 #include "Shader.h"
 
-#include "Math\AABR.h"
+#include "Math/AABR.h"
 #include "Math/Vector.h"
 #include "Math/IntersectInfo.h"
-#include "Math\Effect.h"
+#include "Math/Effect.h"
 
-namespace Rendering
+namespace rendering
 {
 	class Renderer;
 
-	namespace Controls
+	namespace controls
 	{
 		//enum ControlType
 		//{
@@ -53,23 +53,28 @@ namespace Rendering
 			/// <summary>
 			/// Destroys the GUI control.
 			/// </summary>
-			RENDERING_API virtual ~GuiControl(void);
+			RENDERING_API virtual ~GuiControl();
 
 			/// <summary> GUI control copy constructor. </summary>
+			/// <param name="guiControl"> The reference to the GUI control to copy construct from. </param>
 			GuiControl(const GuiControl& guiControl) = delete;
 
 			/// <summary> GUI control move constructor. </summary>
+			/// <param name="guiControl"> The r-value reference to the GUI control to move construct from. </param>
 			GuiControl(GuiControl&& guiControl) = delete;
 
 			/// <summary> GUI control copy assignment operator. </summary>
+			/// <param name="guiControl"> The reference to the GUI control to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned GUI control. </returns>
 			GuiControl& operator=(const GuiControl& guiControl) = delete;
 
 			/// <summary> GUI control move assignment operator. </summary>
+			/// <param name="guiControl"> The r-value reference to the GUI control to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned GUI control. </returns>
 			GuiControl& operator=(GuiControl&& guiControl) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Returns information about whether the specified position is inside the GUI control or not.
 			/// </summary>
@@ -132,7 +137,7 @@ namespace Rendering
 			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
 			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) = 0;
 		protected:
-			void MoveAABR(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY);
+			void MoveAabr(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -144,7 +149,7 @@ namespace Rendering
 			math::Aabr m_aabr;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiControl */
-	} /* end namespace Controls */
-} /* end namespace Rendering */
+	} /* end namespace controls */
+} /* end namespace rendering */
 
 #endif // __RENDERING_GUI_CONTROL_H__

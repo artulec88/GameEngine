@@ -4,10 +4,10 @@
 #include "Rendering.h"
 #include "BaseLight.h"
 #include "Math/Transform.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
-namespace Rendering {
-	namespace Lighting
+namespace rendering {
+	namespace lighting
 	{
 
 		/// <summary>
@@ -40,23 +40,31 @@ namespace Rendering {
 				math::Real shadowInfoLightBleedingReductionFactor, math::Real shadowInfoMinVariance, math::Real halfShadowArea);
 
 			/// <summary> Directional light destructor. </summary>
-			RENDERING_API virtual ~DirectionalLight(void);
+			RENDERING_API virtual ~DirectionalLight();
 
 			/// <summary> Directional light copy constructor. </summary>
+			/// <param name="directionalLight"> The reference to the directional light to copy construct from. </param>
 			DirectionalLight(const DirectionalLight& directionalLight) = default;
+
 			/// <summary> Directional light move constructor. </summary>
+			/// <param name="directionalLight"> The r-value reference to the directional light to move construct from. </param>
 			RENDERING_API DirectionalLight(DirectionalLight&& directionalLight) = default;
+
 			/// <summary> Directional light copy assignment operator. </summary>
+			/// <param name="directionalLight"> The reference to the directional light to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned directional light. </returns>
 			DirectionalLight& operator=(const DirectionalLight& directionalLight) = delete;
+
 			/// <summary> Directional light move assignment operator. </summary>
+			/// <param name="directionalLight"> The r-value reference to the directional light to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned directional light. </returns>
 			RENDERING_API DirectionalLight& operator=(DirectionalLight&& directionalLight) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			//math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
-			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const;
+			RENDERING_API ShadowCameraTransform CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const override;
 
 			friend std::ostream& operator<<(std::ostream& out, const DirectionalLight& directionalLight)
 			{
@@ -72,8 +80,8 @@ namespace Rendering {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class DirectionalLight */
 
-	} /* end namespace Lighting */
+	} /* end namespace lighting */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_DIRECTIONAL_LIGHT_H__ */

@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "LightBuilder.h"
+#include "Utility/IConfig.h"
 
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
-Rendering::DirectionalLightBuilder::DirectionalLightBuilder() :
+rendering::lighting::DirectionalLightBuilder::DirectionalLightBuilder() :
 	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosZ", 0.0f)),
 		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleX", -45.0f)),
@@ -17,11 +18,11 @@ Rendering::DirectionalLightBuilder::DirectionalLightBuilder() :
 {
 }
 
-Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
+rendering::lighting::DirectionalLightBuilder::~DirectionalLightBuilder()
 {
 }
 
-//void Rendering::DirectionalLightBuilder::BuildTransform()
+//void Rendering::lighting::DirectionalLightBuilder::BuildTransform()
 //{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("directionalLightPosX", GET_CONFIG_VALUE_GAME("defaultDirectionalLightPosX", 0.0f)),
@@ -39,7 +40,7 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-//void Rendering::DirectionalLightBuilder::BuildLightParams()
+//void Rendering::lighting::DirectionalLightBuilder::BuildLightParams()
 //{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("directionalLightColorRed", GET_CONFIG_VALUE_GAME("defaultDirectionalLightColorRed", REAL_ONE)),
@@ -69,17 +70,17 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 	////	math::Angle(GET_CONFIG_VALUE_GAME("sunlightThirdElevationLevel", REAL_ONE))));
 //}
 
-void Rendering::DirectionalLightBuilder::BuildShaders()
+void rendering::lighting::DirectionalLightBuilder::BuildShaders()
 {
-	m_shaderID = ShaderIDs::DIRECTIONAL_LIGHT;
-	m_terrainShaderID = ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN;
-	m_noShadowShaderID = ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderID = shader_ids::DIRECTIONAL_LIGHT;
+	m_terrainShaderID = shader_ids::DIRECTIONAL_LIGHT_TERRAIN;
+	m_noShadowShaderID = shader_ids::DIRECTIONAL_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = shader_ids::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS;
 
-	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT));
-	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN));
-	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS));
-	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
+	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT));
+	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_TERRAIN));
+	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_NO_SHADOWS));
+	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	//m_object->SetTransform(math::Transform(m_pos, m_rot, REAL_ONE));
@@ -92,14 +93,14 @@ void Rendering::DirectionalLightBuilder::BuildShaders()
 	//m_object->SetIsShadowingEnabled(true);
 }
 
-void Rendering::DirectionalLightBuilder::SetDefault()
+void rendering::lighting::DirectionalLightBuilder::SetDefault()
 {
-	Rendering::LightBuilder<Lighting::DirectionalLight>::SetDefault();
+	LightBuilder<DirectionalLight>::SetDefault();
 	m_halfShadowArea = M_DEFAULT_HALF_SHADOW_AREA;
 }
 
 #ifdef BUILD_MESH_RENDERER
-void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
+void Rendering::lighting::DirectionalLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
 	//Material directionalLightMaterial("directionalLight_material", Texture("DirectionalLight.png"), 1, 8);
@@ -124,7 +125,7 @@ void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Rendering::PointLightBuilder::PointLightBuilder() :
+rendering::lighting::PointLightBuilder::PointLightBuilder() :
 	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultPointLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightPosZ", 0.0f)),
 		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleX", -45.0f)),
@@ -138,7 +139,7 @@ Rendering::PointLightBuilder::PointLightBuilder() :
 {
 }
 
-//void Rendering::PointLightBuilder::BuildTransform()
+//void Rendering::lighting::PointLightBuilder::BuildTransform()
 //{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("pointLightPosX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetX()),
@@ -153,7 +154,7 @@ Rendering::PointLightBuilder::PointLightBuilder() :
 	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-//void Rendering::PointLightBuilder::BuildLightParams()
+//void Rendering::lighting::PointLightBuilder::BuildLightParams()
 //{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("pointLightColorRed_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetRed()),
@@ -174,17 +175,17 @@ Rendering::PointLightBuilder::PointLightBuilder() :
 	//// TODO: Setting additional point light information
 //}
 
-void Rendering::PointLightBuilder::BuildShaders()
+void rendering::lighting::PointLightBuilder::BuildShaders()
 {
-	m_shaderID = ShaderIDs::POINT_LIGHT;
-	m_terrainShaderID = ShaderIDs::POINT_LIGHT_TERRAIN;
-	m_noShadowShaderID = ShaderIDs::POINT_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderID = shader_ids::POINT_LIGHT;
+	m_terrainShaderID = shader_ids::POINT_LIGHT_TERRAIN;
+	m_noShadowShaderID = shader_ids::POINT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = shader_ids::POINT_LIGHT_TERRAIN_NO_SHADOWS;
 
-	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT));
-	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN));
-	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS));
-	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS));
+	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT));
+	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT_TERRAIN));
+	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT_NO_SHADOWS));
+	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::POINT_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	//m_object->SetTransform(math::Transform(m_pos, m_rot, REAL_ONE));
@@ -198,14 +199,14 @@ void Rendering::PointLightBuilder::BuildShaders()
 	////m_object->SetIsShadowingEnabled(true);
 }
 
-void Rendering::PointLightBuilder::SetDefault()
+void rendering::lighting::PointLightBuilder::SetDefault()
 {
-	Rendering::LightBuilder<Lighting::PointLight>::SetDefault();
+	LightBuilder<PointLight>::SetDefault();
 	m_attenuation = M_DEFAULT_POINT_LIGHT_ATTENUATION;
 }
 
 #ifdef BUILD_MESH_RENDERER
-void Rendering::PointLightBuilder::BuildMeshRenderer()
+void Rendering::lighting::PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
 	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ m_gameManager->GetMesh("PointLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::POINT_LIGHT), 1.0f, 8.0f)));
@@ -215,7 +216,7 @@ void Rendering::PointLightBuilder::BuildMeshRenderer()
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Rendering::SpotLightBuilder::SpotLightBuilder() :
+rendering::lighting::SpotLightBuilder::SpotLightBuilder() :
 	LightBuilder(math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosZ", 0.0f)),
 		math::Quaternion(math::Matrix4D(math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleX", -45.0f)),
@@ -234,7 +235,7 @@ Rendering::SpotLightBuilder::SpotLightBuilder() :
 {
 }
 
-//void Rendering::SpotLightBuilder::BuildTransform()
+//void Rendering::lighting::SpotLightBuilder::BuildTransform()
 //{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("spotLightPosX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetX()),
@@ -249,7 +250,7 @@ Rendering::SpotLightBuilder::SpotLightBuilder() :
 	//m_rot = math::Quaternion(math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-//void Rendering::SpotLightBuilder::BuildLightParams()
+//void Rendering::lighting::SpotLightBuilder::BuildLightParams()
 //{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("spotLightColorRed_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetRed()),
@@ -277,17 +278,17 @@ Rendering::SpotLightBuilder::SpotLightBuilder() :
 	//// TODO: Setting additional spot light information
 //}
 
-void Rendering::SpotLightBuilder::BuildShaders()
+void rendering::lighting::SpotLightBuilder::BuildShaders()
 {
-	m_shaderID = ShaderIDs::SPOT_LIGHT;
-	m_terrainShaderID = ShaderIDs::SPOT_LIGHT_TERRAIN;
-	m_noShadowShaderID = ShaderIDs::SPOT_LIGHT_NO_SHADOWS;
-	m_noShadowTerrainShaderID = ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS;
+	m_shaderID = shader_ids::SPOT_LIGHT;
+	m_terrainShaderID = shader_ids::SPOT_LIGHT_TERRAIN;
+	m_noShadowShaderID = shader_ids::SPOT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS;
 
-	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT));
-	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN));
-	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS));
-	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS));
+	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT));
+	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN));
+	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT_NO_SHADOWS));
+	//m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS));
 	//// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	//m_object->SetTransform(math::Transform(m_pos, m_rot));
@@ -301,9 +302,9 @@ void Rendering::SpotLightBuilder::BuildShaders()
 	//m_object->SetIsShadowingEnabled(true);
 }
 
-void Rendering::SpotLightBuilder::SetDefault()
+void rendering::lighting::SpotLightBuilder::SetDefault()
 {
-	Rendering::LightBuilder<Lighting::SpotLight>::SetDefault();
+	LightBuilder<SpotLight>::SetDefault();
 	m_attenuation = M_DEFAULT_SPOT_LIGHT_ATTENUATION;
 	m_viewAngle = M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
 	m_shadowInfoProjectionNearPlane = M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE;
@@ -311,7 +312,7 @@ void Rendering::SpotLightBuilder::SetDefault()
 
 
 #ifdef BUILD_MESH_RENDERER
-void Rendering::SpotLightBuilder::BuildMeshRenderer()
+void Rendering::lighting::SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
 	m_gameNode->AddComponent(new MeshRendererComponent(m_gameManager->GetMesh("SpotLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::SPOT_LIGHT), 1.0f, 8.0f)));

@@ -13,6 +13,8 @@
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
 #include "Rendering\Terrain.h"
+#include "Rendering\DirectionalLight.h"
+#include "Rendering\SpotLight.h"
 
 #include "Math\Math.h"
 #ifdef PROFILING_GAME_MODULE_ENABLED
@@ -52,7 +54,7 @@ namespace Game
 		void MouseButtonEvent(int button, int action, int mods) override;
 		void MousePosEvent(double xPos, double yPos) override;
 		void ScrollEvent(double xOffset, double yOffset) override;
-		void Render(Rendering::Renderer* renderer) const override;
+		void Render(rendering::Renderer* renderer) const override;
 		void Update(math::Real elapsedTime) override;
 	private:
 		void AddShaders();
@@ -60,7 +62,7 @@ namespace Game
 		void AddWaterNodes();
 		void AddSkyboxNode();
 		void AddPlayerNode();
-		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
+		void AddBillboards(unsigned int billboardsCount, rendering::Material* billboardsMaterial);
 		void AddCameras();
 		void AddLights();
 		void AddDirectionalLight();
@@ -71,19 +73,19 @@ namespace Game
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 
-		int GetAmbientShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		int GetAmbientTerrainShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		int GetWaterShaderID(Rendering::Renderer* renderer) const
+		int GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const;
+		int GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const;
+		int GetWaterShaderID(rendering::Renderer* renderer) const
 		{
 			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
-				Rendering::ShaderIDs::WATER : Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT;
+				rendering::shader_ids::WATER : rendering::shader_ids::WATER_NO_DIRECTIONAL_LIGHT;
 		}
 
-		void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
-		void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
-		void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
-		void RenderWaterNodes(Rendering::Renderer* renderer) const;
-		void RenderSkybox(Rendering::Renderer* renderer) const;
+		void RenderSceneWithAmbientLight(rendering::Renderer* renderer) const;
+		void RenderSceneWithPointLights(rendering::Renderer* renderer) const;
+		void RenderSceneWithDirectionalAndSpotLights(rendering::Renderer* renderer) const;
+		void RenderWaterNodes(rendering::Renderer* renderer) const;
+		void RenderSkybox(rendering::Renderer* renderer) const;
 
 		/// <summary>
 		/// Water textures (reflection, refraction) rendering pass.
@@ -91,11 +93,11 @@ namespace Game
 		/// <remarks>
 		/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
 		/// </remarks>
-		void RenderWaterTextures(Rendering::Renderer* renderer) const;
-		void RenderWaterReflectionTexture(Rendering::Renderer* renderer) const;
-		void RenderWaterRefractionTexture(Rendering::Renderer* renderer) const;
-		void RenderBillboardNodes(Rendering::Renderer* renderer) const;
-		void RenderParticles(Rendering::Renderer* renderer) const;
+		void RenderWaterTextures(rendering::Renderer* renderer) const;
+		void RenderWaterReflectionTexture(rendering::Renderer* renderer) const;
+		void RenderWaterRefractionTexture(rendering::Renderer* renderer) const;
+		void RenderBillboardNodes(rendering::Renderer* renderer) const;
+		void RenderParticles(rendering::Renderer* renderer) const;
 
 		//void AdjustAmbientLightAccordingToCurrentTime();
 
@@ -117,8 +119,8 @@ namespace Game
 	private:
 		engine::GameNode m_rootGameNode;
 		engine::GameNode m_terrainNode;
-		Rendering::Terrain* m_terrain;
-		Rendering::Material* m_terrainMaterial;
+		rendering::Terrain* m_terrain;
+		rendering::Material* m_terrainMaterial;
 
 		engine::GameNode m_waterNode;
 		engine::GameNode m_skyboxNode;
@@ -126,7 +128,7 @@ namespace Game
 		std::vector<engine::GameNode> m_nodes;
 		std::vector<engine::GameNode> m_billboardsNodes;
 		
-		std::vector<Rendering::BaseCamera*> m_cameras;
+		std::vector<rendering::BaseCamera*> m_cameras;
 		unsigned int m_currentCameraIndex;
 		//std::vector<Engine::GameNode> m_cameraNodes;
 		engine::GameNode m_camerasNode;
@@ -137,15 +139,15 @@ namespace Game
 		CONST_IF_TWEAK_BAR_DISABLED math::Real m_clockSpeed;
 		utility::timing::DateTime m_inGameDateTime;
 #ifdef DRAW_GAME_TIME
-		mutable Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
+		mutable rendering::controls::GuiButtonControl m_inGameTimeGuiButton;
 #endif
 
 		math::Real m_dayNightMixFactor;
 
-		Rendering::Color m_ambientDaytimeColor;
-		Rendering::Color m_ambientSunNearHorizonColor;
-		Rendering::Color m_ambientNighttimeColor;
-		Rendering::Color m_ambientLightColor;
+		rendering::Color m_ambientDaytimeColor;
+		rendering::Color m_ambientSunNearHorizonColor;
+		rendering::Color m_ambientNighttimeColor;
+		rendering::Color m_ambientLightColor;
 
 		// TODO: We should store each type of available light in different vector. The PlayGameState should not know about possible light types.
 		// Program to interface (BaseLight) instead of concrete implementations (DirectionalLight, PointLight, SpotLight, ...).
@@ -154,11 +156,11 @@ namespace Game
 		/// <summary> The vector of all lights that are used by the game engine. </summary>
 		//std::vector<Rendering::Lighting::BaseLight*> m_lights;
 		/// <summary> The vector of directional lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::DirectionalLight> m_directionalLights;
+		std::vector<rendering::lighting::DirectionalLight> m_directionalLights;
 		/// <summary> The vector of spot lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::SpotLight> m_spotLights;
+		std::vector<rendering::lighting::SpotLight> m_spotLights;
 		/// <summary> The vector of point lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::PointLight> m_pointLights;
+		std::vector<rendering::lighting::PointLight> m_pointLights;
 		//std::vector<Lighting::SpotLight*> m_spotLights;
 
 		math::Vector2D m_previousMousePos, m_mousePos;

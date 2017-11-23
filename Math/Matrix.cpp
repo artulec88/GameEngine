@@ -485,7 +485,7 @@ math::Real math::Matrix4D::Det(int p, int q) const
 		(q < 2 ? 2 : 1),
 		(q == 3 ? 2 : 3)
 	};
-	Real result = REAL_ZERO;
+	auto result = REAL_ZERO;
 	//#define _det3(M, A00, A10, A20, A01, A11, A21, A02, A12, A22)
 	for (auto k = 0; k < 3; ++k)
 	{

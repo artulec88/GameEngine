@@ -4,9 +4,9 @@
 #include "Rendering.h"
 #include "Color.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace FogEffect
+	namespace fog_effect
 	{
 		/// <summary>
 		/// Stores all information about the fog.
@@ -26,7 +26,7 @@ namespace Rendering
 			/// <param name="fallOffType"> The fall-off type for the fog. </param>
 			/// <param name="calculationType"> The calculation type of the fog. </param>
 			/// <param name="isEnabled"><code>true</code> when specified fog is enabled and <code>false</code> otherwise.</param>
-			FogInfo(Color fogColor = Color(ColorIDs::GAINSBORO), math::Real fogStartDistance = 8.0f, math::Real fogEndDistance = 50.0f, math::Real fogDensityFactor = 0.2f,
+			explicit FogInfo(Color fogColor = Color(color_ids::GAINSBORO), math::Real fogStartDistance = 8.0f, math::Real fogEndDistance = 50.0f, math::Real fogDensityFactor = 0.2f,
 				math::Real fogGradient = 0.005f, FogFallOffType fogFallOffType = EXPONENTIAL, FogCalculationType fogCalculationType = RANGE_BASED, bool isEnabled = true) noexcept;
 			
 			/// <summary> Fog information destructor. </summary>
@@ -60,26 +60,25 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API inline const Color& GetColor() const { return m_color; }
-			RENDERING_API inline math::Real GetStartDistance() const { return m_startDistance; }
-			RENDERING_API inline math::Real GetEndDistance() const { return m_endDistance; }
-			RENDERING_API inline math::Real GetDensityFactor() const { return m_densityFactor; }
-			RENDERING_API inline math::Real GetGradient() const { return m_gradient; }
-			RENDERING_API inline FogFallOffType GetFallOffType() const { return m_fallOffType; }
-			RENDERING_API inline FogCalculationType GetCalculationType() const { return m_calculationType; }
-			RENDERING_API inline bool IsEnabled() const { return m_isEnabled; }
+			RENDERING_API const Color& GetColor() const { return m_color; }
+			RENDERING_API math::Real GetStartDistance() const { return m_startDistance; }
+			RENDERING_API math::Real GetEndDistance() const { return m_endDistance; }
+			RENDERING_API math::Real GetDensityFactor() const { return m_densityFactor; }
+			RENDERING_API math::Real GetGradient() const { return m_gradient; }
+			RENDERING_API FogFallOffType GetFallOffType() const { return m_fallOffType; }
+			RENDERING_API FogCalculationType GetCalculationType() const { return m_calculationType; }
+			RENDERING_API bool IsEnabled() const { return m_isEnabled; }
 			bool operator<(const FogInfo& fogInfo) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-			inline Color* GetColorPtr() { return &m_color; }
-			inline math::Real* GetStartDistancePtr() { return &m_startDistance; }
-			inline math::Real* GetEndDistancePtr() { return &m_endDistance; }
-			inline math::Real* GetDensityFactorPtr() { return &m_densityFactor; }
-			inline math::Real* GetGradientPtr() { return &m_gradient; }
-			inline FogFallOffType* GetFallOffTypePtr() { return &m_fallOffType; }
-			inline FogCalculationType* GetCalculationTypePtr() { return &m_calculationType; }
-			inline bool* IsEnabledPtr() { return &m_isEnabled; }
+			Color* GetColorPtr() { return &m_color; }
+			math::Real* GetStartDistancePtr() { return &m_startDistance; }
+			math::Real* GetEndDistancePtr() { return &m_endDistance; }
+			math::Real* GetDensityFactorPtr() { return &m_densityFactor; }
+			math::Real* GetGradientPtr() { return &m_gradient; }
+			FogFallOffType* GetFallOffTypePtr() { return &m_fallOffType; }
+			FogCalculationType* GetCalculationTypePtr() { return &m_calculationType; }
+			bool* IsEnabledPtr() { return &m_isEnabled; }
 #endif
 			/* ==================== Non-static member functions end ==================== */
 
@@ -112,7 +111,7 @@ namespace Rendering
 			bool m_isEnabled;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class FogInfo */
-	} /* end namespace FogEffect */
-} /* end namespace Rendering */
+	} /* end namespace fog_effect */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_FOG_INFO_H__ */

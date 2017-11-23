@@ -9,11 +9,11 @@
 #include "PlayGameState.h"
 #include "ResumeGameCommand.h"
 
-Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, math::Real playMainMenuFontSize) :
+Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* playMainMenuFont, math::Real playMainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f,
-		Rendering::Color(Rendering::ColorIDs::BLACK), Rendering::Color(Rendering::ColorIDs::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
+		rendering::Color(rendering::color_ids::BLACK), rendering::Color(rendering::color_ids::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	//m_notSelectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::effects::STATIC, 2)),
 	//m_selectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::effects::BLINK, 2)),
 	//m_notSelectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::effects::STATIC, 1)),
@@ -31,22 +31,22 @@ Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, con
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
 	engine::MenuEntry* playMenuOptionsMenuEntry = new engine::CompositeMenuEntry("Options", playMainMenuFont, playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.7f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true);
+		0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true);
 	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Sound", playMainMenuFont, playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.25f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Graphics", playMainMenuFont, playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.5f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	playMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.75f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
-		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(playMenuOptionsMenuEntry);
 	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::RESUME_GAME, "Resume", playMainMenuFont,
-		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.1f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.1f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SAVE_GAME, "Save",playMainMenuFont,
-		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.3f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.3f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::LOAD_GAME, "Load",playMainMenuFont,
-		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.5f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.5f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", playMainMenuFont,
-		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.9f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.9f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(1.0f, 0.0f, 0.0f), rendering::Color(0.0f, 1.0f, 0.0f), math::Vector2D(0.005f, 0.005f), true));
 
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
 }
@@ -152,14 +152,14 @@ void Game::PlayMenuGameState::SelectChild(int childIndex)
 	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void Game::PlayMenuGameState::Render(Rendering::Renderer* renderer) const
+void Game::PlayMenuGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("PLAY MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	m_currentMenuEntry->Render(Rendering::ShaderIDs::GUI, renderer);
+	m_currentMenuEntry->Render(rendering::shader_ids::GUI, renderer);
 	STOP_PROFILING_GAME("");
 }
 

@@ -21,7 +21,7 @@
 namespace Game
 {
 
-	class Rendering::Shader;
+	class rendering::Shader;
 
 	class PlayMenuGameState : public engine::GameState
 	{
@@ -30,7 +30,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, math::Real playMainMenuFontSize);
+		PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* playMainMenuFont, math::Real playMainMenuFontSize);
 		virtual ~PlayMenuGameState();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -43,7 +43,7 @@ namespace Game
 		void Handle(engine::States::State state) override;
 		void Handle(engine::Ranges::Range range, math::Real value) override;
 
-		void Render(Rendering::Renderer* renderer) const override;
+		void Render(rendering::Renderer* renderer) const override;
 
 		//void MouseButtonEvent(int button, int action, int mods) override;
 		//void MousePosEvent(double xPos, double yPos) override;

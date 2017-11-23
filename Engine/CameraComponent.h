@@ -15,7 +15,7 @@
 
 namespace engine
 {
-	class CameraComponent : public GameComponent, Rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
+	class CameraComponent : public GameComponent, rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */

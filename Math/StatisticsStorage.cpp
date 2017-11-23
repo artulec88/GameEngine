@@ -3,7 +3,7 @@
 #include <sstream>
 #include <fstream>
 
-/* static */ math::statistics::StatisticsStorage math::statistics::StatisticsStorage::statsStorage;
+/* static */ math::statistics::StatisticsStorage math::statistics::StatisticsStorage::s_statsStorage;
 
 math::statistics::StatisticsStorage::StatisticsStorage() :
 	m_classStatistics(),

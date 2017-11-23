@@ -62,7 +62,7 @@ namespace engine
 		/// <summary>
 		/// Renders the game state.
 		/// </summary>
-		ENGINE_API virtual void Render(Rendering::Renderer* renderer) const = 0;
+		ENGINE_API virtual void Render(rendering::Renderer* renderer) const = 0;
 
 		/// <summary>
 		/// Handles the incoming action appropriately.

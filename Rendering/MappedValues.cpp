@@ -2,17 +2,17 @@
 #include "MappedValues.h"
 #include "Utility/ILogger.h"
 
-Rendering::MappedValues::MappedValues()
+rendering::MappedValues::MappedValues()
 {
 	DELOCUST_LOG_RENDERING("Mapped values container created.");
 }
 
-Rendering::MappedValues::~MappedValues()
+rendering::MappedValues::~MappedValues()
 {
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
+void rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
 	if (realMap.empty() && vec3DMap.empty())
 	{

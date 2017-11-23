@@ -4,16 +4,16 @@
 #include "Rendering.h"
 
 #include "Math/Vector.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"
 #include "Math/Statistics.h"
 #endif
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// The representation of the single particle in the rendering engine.
@@ -167,7 +167,7 @@ namespace Rendering
 		class ParticleComparator
 		{
 		public:
-			ParticleComparator(const math::Vector3D& origin) :
+			explicit ParticleComparator(const math::Vector3D& origin) :
 				m_origin(origin)
 			{
 			}
@@ -178,7 +178,7 @@ namespace Rendering
 				{
 					return true;
 				}
-				else if (!lhs.IsAlive())
+				if (!lhs.IsAlive())
 				{
 					return false;
 				}
@@ -187,7 +187,7 @@ namespace Rendering
 		private:
 			const math::Vector3D& m_origin;
 		}; // end class ParticleComparator
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_H__ */

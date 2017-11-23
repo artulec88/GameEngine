@@ -35,19 +35,19 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture, const math::Vector2D& screenPosition,
-			const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset, bool isCentered = false,
+		ENGINE_API MenuEntry(const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture, const math::Vector2D& screenPosition,
+			const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset, bool isCentered = false,
 			math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~MenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		ENGINE_API void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
+		ENGINE_API void Render(int guiControlShaderID, rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual void Dispatch() = 0;
 		ENGINE_API virtual MenuEntry* GoTo() { return this; }
-		ENGINE_API virtual void ApplyColorEffect(const math::effects::Effect<Rendering::Color>& effect);
-		ENGINE_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Rendering::Color>& effect);
+		ENGINE_API virtual void ApplyColorEffect(const math::effects::Effect<rendering::Color>& effect);
+		ENGINE_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<rendering::Color>& effect);
 		ENGINE_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect);
 		ENGINE_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect);
 		ENGINE_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect);
@@ -59,12 +59,12 @@ namespace engine
 		ENGINE_API CompositeMenuEntry* GetParent() const { return m_parentMenuEntry; }
 		void SetParent(CompositeMenuEntry* parentMenuEntry);
 	private:
-		const Rendering::Controls::GuiControl& GetGuiControl() const { return *m_guiControl; }
+		const rendering::controls::GuiControl& GetGuiControl() const { return *m_guiControl; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		CompositeMenuEntry* m_parentMenuEntry;
-		std::unique_ptr<Rendering::Controls::GuiControl> m_guiControl;
+		std::unique_ptr<rendering::controls::GuiControl> m_guiControl;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MenuEntry */
 
@@ -78,8 +78,8 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
-			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
+		ENGINE_API CompositeMenuEntry(const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~CompositeMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
@@ -89,15 +89,15 @@ namespace engine
 		ENGINE_API void AddChild(MenuEntry* menuEntry) override;
 		ENGINE_API void Dispatch() override;
 		ENGINE_API MenuEntry* GoTo() override { return m_childrenMenuEntries[m_selectedMenuEntryIndex]; }
-		ENGINE_API void ApplyColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect);
-		ENGINE_API void ApplyOutlineColorEffectToAll(const math::effects::Effect<Rendering::Color>& effect);
+		ENGINE_API void ApplyColorEffectToAll(const math::effects::Effect<rendering::Color>& effect);
+		ENGINE_API void ApplyOutlineColorEffectToAll(const math::effects::Effect<rendering::Color>& effect);
 		ENGINE_API void ApplyOffsetEffectToAll(const math::effects::Effect<math::Vector2D>& effect);
 		ENGINE_API void ApplyCharacterWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 		ENGINE_API void ApplyCharacterEdgeTransitionWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 		ENGINE_API void ApplyBorderWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 		ENGINE_API void ApplyBorderEdgeTransitionWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 
-		ENGINE_API void RenderAll(int guiControlShaderID, Rendering::Renderer* renderer) const;
+		ENGINE_API void RenderAll(int guiControlShaderID, rendering::Renderer* renderer) const;
 		ENGINE_API size_t GetSelectedChildIndex() const { return m_selectedMenuEntryIndex; }
 		ENGINE_API size_t GetSelectedChildIndex(math::Real xPos, math::Real yPos) const;
 		ENGINE_API MenuEntry* SelectPrevChild();
@@ -119,8 +119,8 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
-			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
+		ENGINE_API ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
@@ -147,14 +147,14 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, math::Real fontSize, const Rendering::Texture* iconTexture,
-			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const math::Vector2D& offset,
+		ENGINE_API ValueMenuEntry(const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ValueMenuEntry();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		ENGINE_API void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
+		ENGINE_API void Render(int guiControlShaderID, rendering::Renderer* renderer) const override;
 		ENGINE_API void Dispatch() override;
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)
@@ -171,7 +171,7 @@ namespace engine
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		std::vector<std::string> m_values;
-		std::vector<std::unique_ptr<Rendering::Controls::GuiControl>> m_guiControls;
+		std::vector<std::unique_ptr<rendering::controls::GuiControl>> m_guiControls;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ValueMenuEntry */
 

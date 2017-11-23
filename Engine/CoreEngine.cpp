@@ -218,7 +218,7 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 
 	CreateAudioEngine();
 	CreatePhysicsEngine();
-	CreateRenderer(fullscreenEnabled, width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from Rendering configuration file. */);
+	CreateRenderer(fullscreenEnabled, width, height, title, rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from Rendering configuration file. */);
 
 	NOTICE_LOG_ENGINE("Main application construction finished");
 	STOP_PROFILING_ENGINE("");
@@ -278,30 +278,30 @@ void engine::CoreEngine::CreatePhysicsEngine()
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
 
-void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	START_PROFILING_ENGINE(true, "");
 	InitGraphics(fullscreenEnabled, width, height, title, antiAliasingMethod);
-	Rendering::InitGraphics(width, height, antiAliasingMethod);
+	rendering::InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_ENGINE("Creating Renderer instance started");
-	m_renderer = std::make_unique<Rendering::Renderer>(width, height, m_modelsDirectory, m_texturesDirectory, m_shadersDirectory, m_fontsDirectory, antiAliasingMethod);
+	m_renderer = std::make_unique<rendering::Renderer>(width, height, m_modelsDirectory, m_texturesDirectory, m_shadersDirectory, m_fontsDirectory, antiAliasingMethod);
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
 	STOP_PROFILING_ENGINE("");
 }
 
-void engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 }
 
-void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
@@ -309,7 +309,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	const int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
-	case Rendering::Aliasing::NONE:
+	case rendering::Aliasing::NONE:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -317,7 +317,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_ENGINE("No anti-aliasing algorithm chosen");
 		break;
-	case Rendering::Aliasing::FXAA:
+	case rendering::Aliasing::FXAA:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -325,7 +325,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_ENGINE("FXAA anti-aliasing algorithm chosen");
 		break;
-	case Rendering::Aliasing::MSAA:
+	case rendering::Aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG_ENGINE(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
@@ -452,11 +452,11 @@ void engine::CoreEngine::Run()
 	//math::Vector3D inGameTimeColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
 	//math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
-	Rendering::Controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
+	rendering::controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
-		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
-		Rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
+		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
+		rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
@@ -465,7 +465,7 @@ void engine::CoreEngine::Run()
 	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Logging::WARNING, "According to the core engine the game is already running.");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Rendering::InitializeTweakBars();
+	rendering::InitializeTweakBars();
 	InitializeTweakBars();
 #endif
 
@@ -580,7 +580,7 @@ void engine::CoreEngine::Run()
 			/* ==================== Switching the game state if necessary end ==================== */
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-			Rendering::CheckChangesAndUpdateGLState();
+			rendering::CheckChangesAndUpdateGLState();
 #endif
 
 			unprocessingTime -= m_frameTime;
@@ -605,7 +605,7 @@ void engine::CoreEngine::Run()
 			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			fpsGuiButton.SetText(ss.str());
-			m_renderer->RenderGuiControl(fpsGuiButton, Rendering::ShaderIDs::GUI);
+			m_renderer->RenderGuiControl(fpsGuiButton, rendering::shader_ids::GUI);
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif
@@ -773,7 +773,7 @@ void engine::CoreEngine::PopInputContext()
 #ifdef ANT_TWEAK_BAR_ENABLED
 void engine::CoreEngine::InitializeTweakBars()
 {
-	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
+	rendering::AntTweakBarTypes::InitializeTweakBarTypes();
 
 	TwWindowSize(m_windowWidth, m_windowHeight);
 

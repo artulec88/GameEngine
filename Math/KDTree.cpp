@@ -29,10 +29,10 @@ math::KdTree::KdTree(Vector3D* positions, size_t positionsCount, int numberOfSam
 		{
 			// for positions with equal XZ components we want to store only the one with the greatest Y value.
 			auto sameXzVectorFound = false;
-			const auto xz = positions[i].GetXZ();
+			const auto xz = positions[i].GetXz();
 			for (auto vecItr = uniquePositions.begin(); vecItr != uniquePositions.end(); ++vecItr)
 			{
-				if (xz == vecItr->GetXZ())
+				if (xz == vecItr->GetXz())
 				{
 					if (positions[i].y > vecItr->y)
 					{
@@ -86,7 +86,7 @@ void math::KdTree::BuildTree(Vector3D* positions, size_t positionsCount, int dep
 	//}
 
 	const auto medianIndex = positionsCount / 2;
-	m_position = positions[medianIndex].GetXZ();
+	m_position = positions[medianIndex].GetXz();
 	m_value = positions[medianIndex].y;
 
 	if (medianIndex > 0)

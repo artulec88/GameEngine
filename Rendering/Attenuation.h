@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "Math\Math.h"
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary> The class representing the gradual loss in intensity of light. </summary>
 	class Attenuation
@@ -18,24 +18,24 @@ namespace Rendering
 		/// <param name="constant"> Constant attribute of attenuation </param>
 		/// <param name="linear"> Linear attribute of attenuation </param>
 		/// <param name="exponent"> Exponent attribute of attenuation </param>
-		RENDERING_API explicit Attenuation(math::Real constant = REAL_ZERO, math::Real linear = REAL_ZERO, math::Real exponent = REAL_ONE) noexcept :
+		RENDERING_API explicit constexpr Attenuation(const math::Real constant = REAL_ZERO,
+			const math::Real linear = REAL_ZERO, const math::Real exponent = REAL_ONE) noexcept :
 			m_constant(constant),
 			m_linear(linear),
 			m_exponent(exponent)
 		{
 		}
-		/// <summary> The destructor </summary>
-		RENDERING_API ~Attenuation(void) noexcept
-		{
-		}
+
+		/// <summary> The attenuation destructor </summary>
+		RENDERING_API ~Attenuation() noexcept = default;
 
 		/// <summary> Attenuation copy constructor. </summary>
 		/// <param name="attenuation"> The attenuation to copy construct from. </param>
-		RENDERING_API Attenuation(const Attenuation& attenuation) noexcept = default;
+		RENDERING_API constexpr Attenuation(const Attenuation& attenuation) noexcept = default;
 
 		/// <summary> Attenuation move constructor. </summary>
 		/// <param name="attenuation"> The attenuation to move construct from. </param>
-		RENDERING_API Attenuation(Attenuation&& attenuation) noexcept = default;
+		RENDERING_API constexpr Attenuation(Attenuation&& attenuation) noexcept = default;
 
 		/// <summary> Attenuation copy assignment operator. </summary>
 		/// <param name="attenuation"> The attenuation to copy assign from. </param>
@@ -48,20 +48,19 @@ namespace Rendering
 		RENDERING_API Attenuation& operator=(Attenuation&& attenuation) noexcept = default;
 		/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
-	public:
+		/* ==================== Non-static member functions begin ==================== */
 		/// <summary> Gets the constant factor of the attenuation. </summary>
 		/// <returns> The constant factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline math::Real GetConstant() const noexcept { return m_constant; };
+		RENDERING_API constexpr math::Real GetConstant() const noexcept { return m_constant; }
 
 		/// <summary> Gets the linear factor of the attenuation. </summary>
 		/// <returns> The linear factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline math::Real GetLinear() const noexcept { return m_linear; };
+		RENDERING_API constexpr math::Real GetLinear() const noexcept { return m_linear; }
 
 		/// <summary> Gets the exponent factor of the attenuation. </summary>
 		/// <returns> The exponent factor in gradual loss of attenuation. </returns>
-		RENDERING_API inline math::Real GetExponent() const noexcept { return m_exponent; };
-		/* ==================== Non-static member variables end ==================== */
+		RENDERING_API constexpr math::Real GetExponent() const noexcept { return m_exponent; }
+		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
@@ -81,6 +80,6 @@ namespace Rendering
 		math::Real m_exponent;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Attenuation */
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_ATTENUATION_H__ */

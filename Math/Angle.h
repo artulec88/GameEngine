@@ -312,8 +312,8 @@ namespace math
 		START_PROFILING_MATH(false, "");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
 		// In case the angle is outside specified range use: https://pl.wikipedia.org/wiki/Trygonometryczne_wzory_redukcyjne.
-		constexpr Real angleSecondPowerFactor = static_cast<Real>(0.4967);
-		constexpr Real angleFourthPowerFactor = static_cast<Real>(0.03705);
+		constexpr auto angleSecondPowerFactor = static_cast<Real>(0.4967);
+		constexpr auto angleFourthPowerFactor = static_cast<Real>(0.03705);
 		STOP_PROFILING_MATH("");
 		return REAL_ONE - (angleSecondPowerFactor * m_angle * m_angle) + (angleFourthPowerFactor * m_angle * m_angle * m_angle * m_angle);
 	}
@@ -322,11 +322,11 @@ namespace math
 	{
 		START_PROFILING_MATH(false, "");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
-		constexpr Real angleSecondPowerFactor = static_cast<Real>(0.4999999963);
-		constexpr Real angleFourthPowerFactor = static_cast<Real>(0.0416666418);
-		constexpr Real angleSixthPowerFactor = static_cast<Real>(0.0013888397);
-		constexpr Real angleEighthPowerFactor = static_cast<Real>(0.0000247609);
-		constexpr Real angleTenthPowerFactor = static_cast<Real>(0.0000002605);
+		constexpr auto angleSecondPowerFactor = static_cast<Real>(0.4999999963);
+		constexpr auto angleFourthPowerFactor = static_cast<Real>(0.0416666418);
+		constexpr auto angleSixthPowerFactor = static_cast<Real>(0.0013888397);
+		constexpr auto angleEighthPowerFactor = static_cast<Real>(0.0000247609);
+		constexpr auto angleTenthPowerFactor = static_cast<Real>(0.0000002605);
 		STOP_PROFILING_MATH("");
 		return REAL_ONE - (angleSecondPowerFactor * pow(m_angle, 2)) + (angleFourthPowerFactor * pow(m_angle, 4)) -
 			(angleSixthPowerFactor * pow(m_angle, 6)) + (angleEighthPowerFactor * pow(m_angle, 8)) - (angleTenthPowerFactor * pow(m_angle, 10));
@@ -336,8 +336,8 @@ namespace math
 	{
 		START_PROFILING_MATH(false, "");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 4]!).
-		constexpr Real angleSecondPowerFactor = static_cast<Real>(0.31755);
-		constexpr Real angleFourthPowerFactor = static_cast<Real>(0.2033);
+		constexpr auto angleSecondPowerFactor = static_cast<Real>(0.31755);
+		constexpr auto angleFourthPowerFactor = static_cast<Real>(0.2033);
 		STOP_PROFILING_MATH("");
 		return static_cast<Real>(m_angle + angleSecondPowerFactor * pow(m_angle, 3) + angleFourthPowerFactor * pow(m_angle, 5));
 	}

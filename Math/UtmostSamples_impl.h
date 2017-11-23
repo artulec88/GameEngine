@@ -10,7 +10,7 @@ math::statistics::UtmostSamples<T>::UtmostSamples() :
 	m_minSamples(),
 	m_maxSamples()
 {
-	for (int i = 0; i < NUMBER_OF_SAMPLES; ++i)
+	for (auto i = 0; i < NUMBER_OF_SAMPLES; ++i)
 	{
 		m_minSamples[i] = 999999999;
 		m_maxSamples[i] = 0;
@@ -27,22 +27,24 @@ void math::statistics::UtmostSamples<T>::ProcessSample(const T& sample)
 {
 	bool maxFound = false;
 	bool minFound = false;
-	for (int i = 0; i < NUMBER_OF_SAMPLES; ++i)
+	for (auto i = 0; i < NUMBER_OF_SAMPLES; ++i)
 	{
-		if ((minFound) && (maxFound))
-			return;
-		if ((!minFound) && (sample < m_minSamples[i]))
+		if (minFound && maxFound)
 		{
-			for (int j = i; j < NUMBER_OF_SAMPLES - 1; ++j)
+			return;
+		}
+		if (!minFound && sample < m_minSamples[i])
+		{
+			for (auto j = i; j < NUMBER_OF_SAMPLES - 1; ++j)
 			{
 				m_minSamples[j + 1] = m_minSamples[j];
 			}
 			m_minSamples[i] = sample;
 			minFound = true;
 		}
-		if ((!maxFound) && (sample > m_maxSamples[i]))
+		if (!maxFound && sample > m_maxSamples[i])
 		{
-			for (int j = i; j < NUMBER_OF_SAMPLES - 1; ++j)
+			for (auto j = i; j < NUMBER_OF_SAMPLES - 1; ++j)
 			{
 				m_maxSamples[j + 1] = m_maxSamples[j];
 			}
@@ -57,12 +59,12 @@ std::string math::statistics::UtmostSamples<T>::ToString()
 {
 	std::stringstream ss("");
 	ss << "minSamples = { ";
-	for (int i = 0; i < NUMBER_OF_SAMPLES; ++i)
+	for (auto i = 0; i < NUMBER_OF_SAMPLES; ++i)
 	{
 		ss << m_minSamples[i] << "; ";
 	}
 	ss << " } maxTimes = { ";
-	for (int i = 0; i < NUMBER_OF_SAMPLES; ++i)
+	for (auto i = 0; i < NUMBER_OF_SAMPLES; ++i)
 	{
 		ss << m_maxSamples[i] << "; ";
 	}

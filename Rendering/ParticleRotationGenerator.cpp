@@ -4,17 +4,17 @@
 #include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantRotationGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantRotationGenerator::ConstantRotationGenerator(const math::Angle& angle) :
+rendering::particles::generators::ConstantRotationGenerator::ConstantRotationGenerator(const math::Angle& angle) :
 	RotationGenerator(),
 	m_angle(angle)
 {
 }
 
-Rendering::Particles::Generators::ConstantRotationGenerator::~ConstantRotationGenerator()
+rendering::particles::generators::ConstantRotationGenerator::~ConstantRotationGenerator()
 {
 }
 
-void Rendering::Particles::Generators::ConstantRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::ConstantRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -24,7 +24,7 @@ void Rendering::Particles::Generators::ConstantRotationGenerator::Generate(math:
 /* ==================== class ConstantRotationGenerator end ==================== */
 
 /* ==================== class RangeRotationGenerator begin ==================== */
-Rendering::Particles::Generators::RangeRotationGenerator::RangeRotationGenerator(const math::Angle& minAngle, const math::Angle& maxAngle) :
+rendering::particles::generators::RangeRotationGenerator::RangeRotationGenerator(const math::Angle& minAngle, const math::Angle& maxAngle) :
 	RotationGenerator(),
 	m_minAngleInRadians(minAngle.Get()),
 	m_maxAngleInRadians(maxAngle.Get()),
@@ -32,11 +32,11 @@ Rendering::Particles::Generators::RangeRotationGenerator::RangeRotationGenerator
 {
 }
 
-Rendering::Particles::Generators::RangeRotationGenerator::~RangeRotationGenerator()
+rendering::particles::generators::RangeRotationGenerator::~RangeRotationGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::RangeRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

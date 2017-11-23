@@ -6,7 +6,7 @@
 #include "GameNode.h"
 #include "IUpdateable.h"
 
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 
 namespace engine
 {

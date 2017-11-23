@@ -15,7 +15,7 @@ engine::LightFactory::~LightFactory()
 {
 }
 
-const Rendering::Lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightID)
+const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightID)
 {
 	switch (lightType)
 	{
@@ -31,7 +31,7 @@ const Rendering::Lighting::BaseLight* engine::LightFactory::CreateLight(LightTyp
 	return NULL;
 }
 
-const Rendering::Lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	// TODO: This code needs to be fixed.
 
@@ -48,12 +48,12 @@ const Rendering::Lighting::DirectionalLight* engine::LightFactory::AddDirectiona
 	return NULL;
 }
 
-const Rendering::Lighting::PointLight* engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::PointLight* engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	return NULL;
 }
 
-const Rendering::Lighting::SpotLight* engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::SpotLight* engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	return NULL;
 }

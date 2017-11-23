@@ -3,16 +3,11 @@
 
 #include "Rendering.h"
 
-#include "Math/Vector.h"
-#include "Math\Angle.h"
-
-#include <memory>
-
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
-		namespace Attributes
+		namespace attributes
 		{
 			enum Attribute
 			{
@@ -35,7 +30,6 @@ namespace Rendering
 			class AttributesMask
 			{
 				/* ==================== Static variables and functions begin ==================== */
-			private:
 				/// <summary> The number of possible particle attributes. </summary>
 				static constexpr int COUNT = 12;
 				/* ==================== Static variables and functions end ==================== */
@@ -47,7 +41,7 @@ namespace Rendering
 				/// The simple integer value whose binary representation indicates which particle attributes
 				/// are supposed to be enabled and which not.
 				/// </param>
-				constexpr AttributesMask(int attributesMask) :
+				constexpr explicit AttributesMask(int attributesMask) :
 					m_attributesMask(attributesMask)
 				{
 				}
@@ -58,7 +52,7 @@ namespace Rendering
 
 				/// <summary> Attributes mask move constructor. </summary>
 				/// <param name="attributesMask"> The attributes mask to move-construct from. </param>
-				AttributesMask(AttributesMask&& attributesMask) = default;
+				AttributesMask(AttributesMask&& attributesMask) noexcept = default;
 
 				/// <summary> Attributes mask copy assignment operator. </summary>
 				/// <param name="attributesMask"> The attributes mask to copy-assign from. </param>
@@ -66,11 +60,10 @@ namespace Rendering
 
 				/// <summary> Attributes mask move assignment operator. </summary>
 				/// <param name="attributesMask"> The attributes mask to move-assign from. </param>
-				AttributesMask& operator=(AttributesMask&& attributesMask) = default;
+				AttributesMask& operator=(AttributesMask&& attributesMask) noexcept = default;
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
-			public:
 				/// <summary>
 				/// Simple function returning <code>true</code> when specified <paramref name="attribute"/>
 				/// is enabled in the attributes mask and <code>false</code> otherwise.
@@ -80,7 +73,7 @@ namespace Rendering
 				/// <code>true</code> when specified <paramref name="attribute"/> is enabled in the attributes mask
 				/// and <code>false</code> otherwise.
 				/// </returns>
-				inline constexpr bool IsAttributeEnabled(Attribute attribute) const
+				constexpr bool IsAttributeEnabled(Attribute attribute) const
 				{
 					return ((m_attributesMask & attribute) == attribute);
 				}
@@ -89,7 +82,7 @@ namespace Rendering
 				/// Performs bitwise AND operation on two possible particle attributes.
 				/// </summary>
 				/// See: http://stackoverflow.com/questions/1448396/how-to-use-enums-as-flags-in-c.
-				inline AttributesMask operator&(Attribute attr)
+				AttributesMask operator&(Attribute attr) const
 				{
 					return AttributesMask(m_attributesMask & static_cast<int>(attr));
 				}
@@ -97,16 +90,16 @@ namespace Rendering
 				/// Performs bitwise OR operation on two possible particle attributes.
 				/// </summary>
 				/// See: http://stackoverflow.com/questions/1448396/how-to-use-enums-as-flags-in-c.
-				inline AttributesMask operator|(Attribute attr)
+				AttributesMask operator|(Attribute attr) const
 				{
 					return AttributesMask(m_attributesMask | static_cast<int>(attr));
 				}
-				inline AttributesMask& operator&=(Attribute attr)
+				AttributesMask& operator&=(Attribute attr)
 				{
 					m_attributesMask &= static_cast<int>(attr);
 					return *this;
 				}
-				inline AttributesMask& operator|=(Attribute attr)
+				AttributesMask& operator|=(Attribute attr)
 				{
 					m_attributesMask |= static_cast<int>(attr);
 					return *this;
@@ -123,8 +116,8 @@ namespace Rendering
 				int m_attributesMask;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class AttributesMask */
-		} /* end namespace Attributes */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+		} /* end namespace attributes */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLE_ATTRIBUTES_H__ */

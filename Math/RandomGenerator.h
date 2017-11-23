@@ -14,6 +14,9 @@ namespace math
 		class RandomGenerator
 		{
 		/* ==================== Static variables begin ==================== */
+		protected:
+			static bool CheckIfInRange(int value, int lowerBound, int upperBound);
+			static bool CheckIfInRange(Real value, Real lowerBound, Real upperBound);
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -66,9 +69,6 @@ namespace math
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random floating-point result. </param>
 			/// <param name="upperBound">Specifies the upper bound (inclusive) of the random floating-point result. </param>
 			MATH_API virtual Real NextFloat(Real lowerBound, Real upperBound) const = 0;
-		protected:
-			bool CheckIfInRange(int value, int lowerBound, int upperBound) const;
-			bool CheckIfInRange(Real value, Real lowerBound, Real upperBound) const;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

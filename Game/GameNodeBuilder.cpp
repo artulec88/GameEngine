@@ -21,7 +21,7 @@ Game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, Rendering::BaseCamera* camera) :
+Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera) :
 	GameNodeBuilder(gameManager),
 	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
 		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(engine::camera_behavior_types::STATIC)))),
@@ -139,19 +139,19 @@ void Game::SkyboxBuilder::BuildComponents()
 {
 	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
-	const Rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_DAY, cubeMapDayDirectory);
+	const rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
 	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
-	const Rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_NIGHT, cubeMapNightDirectory);
+	const rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);
 	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != nullptr, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
 
 	//SetTexture("cubeMapDay", m_skyboxTextureDay);
 	//SetTexture("cubeMapNight", m_skyboxTextureNight);
 
-	Rendering::Material* skyboxMaterial = new Rendering::Material(skyboxTextureDay, "cubeMapDay");
+	rendering::Material* skyboxMaterial = new rendering::Material(skyboxTextureDay, "cubeMapDay");
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
-	m_gameManager->AddMesh(MeshIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
-	m_gameNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial));
+	m_gameManager->AddMesh(mesh_ids::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
+	m_gameNode.AddComponent(new engine::MeshRendererComponent(mesh_ids::SKYBOX, skyboxMaterial));
 
 	m_gameNode.AddComponent(new engine::ConstantRotationComponent(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
 }

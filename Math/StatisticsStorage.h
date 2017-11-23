@@ -19,11 +19,11 @@ namespace math {
 		{
 			using ClassNames2ClassStatsMap = std::map<std::string, std::unique_ptr<ClassStats>>;
 			/* ==================== Static variables and functions begin ==================== */
-			static StatisticsStorage statsStorage;
+			static StatisticsStorage s_statsStorage;
 		public:
 			MATH_API static constexpr StatisticsStorage& GetStatisticsStorage()
 			{
-				return statsStorage;
+				return s_statsStorage;
 			}
 			/* ==================== Static variables and functions end ==================== */
 

@@ -4,12 +4,11 @@
 #include "PointLight.h"
 #include "Attenuation.h"
 
-#include "Math/Vector.h"
-#include "Math\Angle.h"
+#include "Math/Angle.h"
 #include "Math/Transform.h"
 
-namespace Rendering {
-	namespace Lighting
+namespace rendering {
+	namespace lighting
 	{
 		/// <summary>
 		/// The representation of the spot light in the rendering library.
@@ -30,20 +29,28 @@ namespace Rendering {
 				math::Real shadowInfoMinVariance, const math::Angle& viewAngle);
 
 			/// <summary> Spot light destructor. </summary>
-			RENDERING_API virtual ~SpotLight(void);
+			RENDERING_API virtual ~SpotLight();
 
 			/// <summary> Spot light copy constructor. </summary>
+			/// <param name="spotLight"> The reference to spot light to copy construct from. </param>
 			SpotLight(const SpotLight& spotLight) = delete;
+
 			/// <summary> Spot light move constructor. </summary>
+			/// <param name="spotLight"> The r-value reference to spot light to move assign from. </param>
 			RENDERING_API SpotLight(SpotLight&& spotLight) = default;
+
 			/// <summary> Spot light copy assignment operator. </summary>
+			/// <param name="spotLight"> The reference to spot light to copy assign from. </param>
+			/// <returns> The reference to the newly copu-assigned spot light. </returns>
 			SpotLight& operator=(const SpotLight& spotLight) = delete;
+
 			/// <summary> Spot light move assignment operator. </summary>
+			/// <param name="spotLight"> The r-value reference to spot light to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned spot light. </returns>
 			RENDERING_API SpotLight& operator=(SpotLight&& spotLight) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Returns a value of a cosine (so it is in range between <code>-1</code> and <code>1</code>) of the angle
 			/// between light direction and the spot light's cone edge.
@@ -70,8 +77,8 @@ namespace Rendering {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SpotLight */
 
-	} /* end namespace Lighting */
+	} /* end namespace lighting */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_SPOT_LIGHT_H__ */

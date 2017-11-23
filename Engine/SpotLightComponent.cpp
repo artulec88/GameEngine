@@ -2,7 +2,7 @@
 #include "SpotLightComponent.h"
 
 
-engine::SpotLightComponent::SpotLightComponent(Rendering::Lighting::SpotLight* spotLight) :
+engine::SpotLightComponent::SpotLightComponent(rendering::lighting::SpotLight* spotLight) :
 	GameComponent(),
 	m_spotLight(spotLight)
 {

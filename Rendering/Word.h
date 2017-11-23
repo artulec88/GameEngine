@@ -4,9 +4,9 @@
 #include "Rendering.h"
 #include "Character.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Text
+	namespace text
 	{
 		/// <summary>
 		/// The internal representation of a single text word.
@@ -57,7 +57,7 @@ namespace Rendering
 			math::Real m_fontSize;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Word */
-	} /* end namespace Text */
-} /* end namespace Rendering */
+	} /* end namespace text */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_WORD_H__ */

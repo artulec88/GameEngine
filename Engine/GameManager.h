@@ -28,7 +28,7 @@ namespace engine
 {
 	class GameManager : public IUpdateable
 	{
-		typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Controls::GuiButtonControl>, Rendering::Text::FontComparator> FontMap;
+		typedef std::map<const rendering::text::Font*, std::vector<rendering::controls::GuiButtonControl>, rendering::text::FontComparator> FontMap;
 		typedef std::map<Actions::Action, std::list<GameNode*>> ActionsToGameNodesMap;
 		typedef std::map<Actions::Action, std::vector<IActionHandler*>> ActionsToHandlersMap;
 		typedef std::map<Actions::Action, const GameCommand*> ActionsToGameCommandsMap;
@@ -81,27 +81,27 @@ namespace engine
 		ENGINE_API void Input(Actions::Action actionID);
 		ENGINE_API virtual void Input(const engine::Input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
-		ENGINE_API void Render(Rendering::Renderer* renderer) const;
+		ENGINE_API void Render(rendering::Renderer* renderer) const;
 
-		ENGINE_API inline const std::vector<Rendering::Particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
+		ENGINE_API inline const std::vector<rendering::particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 		ENGINE_API virtual math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
-		ENGINE_API const Rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) const;
-		ENGINE_API inline const Rendering::Mesh* GetMesh(int meshID) const;
+		ENGINE_API const rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) const;
+		ENGINE_API inline const rendering::Mesh* GetMesh(int meshID) const;
 
-		ENGINE_API const Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) const;
-		ENGINE_API const Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const;
-		ENGINE_API const Rendering::Particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
-		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const;
+		ENGINE_API const rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) const;
+		ENGINE_API const rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const;
+		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
+		ENGINE_API inline const rendering::Texture* GetTexture(int textureID) const;
 
-		ENGINE_API const Rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const;
-		ENGINE_API const Rendering::Shader* GetShader(int shaderID) const;
+		ENGINE_API const rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const;
+		ENGINE_API const rendering::Shader* GetShader(int shaderID) const;
 
-		ENGINE_API const Rendering::Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-		ENGINE_API const Rendering::Text::Font* GetFont(int fontID) const;
+		ENGINE_API const rendering::text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		ENGINE_API const rendering::text::Font* GetFont(int fontID) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
@@ -149,13 +149,13 @@ namespace engine
 
 		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
 		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, math::Real volume, math::Real pitch) const;
-		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
-		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
+		ENGINE_API void AddGuiControl(const rendering::controls::GuiControl& guiControl);
+		ENGINE_API void AddParticlesSystem(rendering::particles::ParticlesSystem* particlesSystem);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
+		std::vector<rendering::particles::ParticlesSystem*> m_particlesSystems;
 		std::unique_ptr<GameStateManager> m_gameStateManager;
 		bool m_isGameLoaded;
 

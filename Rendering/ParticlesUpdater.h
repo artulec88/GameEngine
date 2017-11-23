@@ -5,11 +5,11 @@
 #include "ParticlesContainer.h"
 
 #include "Math/Vector.h"
-#include "Math\Effect.h"
+#include "Math/Effect.h"
 
-namespace Rendering
+namespace rendering
 {
-	namespace Particles
+	namespace particles
 	{
 		/// <summary>
 		/// Particles updater. It follows the Single-responsibility-principle. It is used only to update particle's parameters
@@ -41,15 +41,16 @@ namespace Rendering
 
 			/// <summary> Particle updater copy assignment operator. </summary>
 			/// <param name="particlesUpdater"> The particles updater to copy-assign from. </param>
+			/// <returns> The reference to the newly copy-assigned particles updater. </returns>
 			ParticlesUpdater& operator=(const ParticlesUpdater& particlesUpdater) = delete;
 
 			/// <summary> Particle updater move assignment operator. </summary>
 			/// <param name="particlesUpdater"> The particles updater to move-assign from. </param>
+			/// <returns> The reference to the newly move-assigned particles updater. </returns>
 			ParticlesUpdater& operator=(ParticlesUpdater&& particlesUpdater) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Updates the particles states by <paramref name="deltaTime"/>.
 			/// </summary>
@@ -59,7 +60,6 @@ namespace Rendering
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesUpdater */
 
@@ -70,13 +70,12 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API EulerParticlesUpdater(const math::Vector3D& acceleration);
+			RENDERING_API explicit EulerParticlesUpdater(const math::Vector3D& acceleration);
 			RENDERING_API virtual ~EulerParticlesUpdater();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API virtual void Update(math::Real deltaTime, ParticlesContainer* particlesContainer);
+			RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -97,12 +96,10 @@ namespace Rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API virtual void Update(math::Real deltaTime, ParticlesContainer* particlesContainer);
+			RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class LifeSpanParticlesUpdater */
 
@@ -113,13 +110,12 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API RotationParticlesUpdater(const math::Angle& rotationSpeedAngle);
+			RENDERING_API explicit RotationParticlesUpdater(const math::Angle& rotationSpeedAngle);
 			RENDERING_API virtual ~RotationParticlesUpdater();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API virtual void Update(math::Real deltaTime, ParticlesContainer* particlesContainer);
+			RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -135,13 +131,12 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API ScaleEffectParticlesUpdater(math::effects::Effect<math::Real>* effect);
+			RENDERING_API explicit ScaleEffectParticlesUpdater(math::effects::Effect<math::Real>* effect);
 			RENDERING_API virtual ~ScaleEffectParticlesUpdater();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API virtual void Update(math::Real deltaTime, ParticlesContainer* particlesContainer);
+			RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -149,7 +144,7 @@ namespace Rendering
 			math::effects::Effect<math::Real>* m_effect;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ScaleEffectParticlesUpdater */
-	} /* end namespace Particles */
-} /* end namespace Rendering */
+	} /* end namespace particles */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_PARTICLES_UPDATER_H__ */

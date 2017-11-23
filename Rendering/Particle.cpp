@@ -2,7 +2,7 @@
 #include "Particle.h"
 #include "Texture.h"
 
-Rendering::Particles::Particle::Particle() :
+rendering::particles::Particle::Particle() :
 	m_position(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_gravityEffectFactor(REAL_ZERO),
@@ -18,7 +18,7 @@ Rendering::Particles::Particle::Particle() :
 	STOP_PROFILING_RENDERING("1");
 }
 
-Rendering::Particles::Particle::Particle(const math::Vector3D& position, const math::Vector3D& velocity,
+rendering::particles::Particle::Particle(const math::Vector3D& position, const math::Vector3D& velocity,
 	math::Real gravityEffectFactor, math::Real lifespanLimit, const math::Angle& rotation, math::Real scale) :
 	m_position(position),
 	m_velocity(velocity),
@@ -36,13 +36,13 @@ Rendering::Particles::Particle::Particle(const math::Vector3D& position, const m
 }
 
 
-Rendering::Particles::Particle::~Particle()
+rendering::particles::Particle::~Particle()
 {
 	START_PROFILING_RENDERING(false, "");
 	STOP_PROFILING_RENDERING("");
 }
 
-Rendering::Particles::Particle::Particle(const Particle& particle) :
+rendering::particles::Particle::Particle(const Particle& particle) :
 	m_position(particle.m_position),
 	m_velocity(particle.m_velocity),
 	m_gravityEffectFactor(particle.m_gravityEffectFactor),
@@ -58,7 +58,7 @@ Rendering::Particles::Particle::Particle(const Particle& particle) :
 	STOP_PROFILING_RENDERING("3");
 }
 
-Rendering::Particles::Particle::Particle(Particle&& particle) :
+rendering::particles::Particle::Particle(Particle&& particle) :
 	m_position(std::move(particle.m_position)),
 	m_velocity(std::move(particle.m_velocity)),
 	m_gravityEffectFactor(std::move(particle.m_gravityEffectFactor)),
@@ -74,7 +74,7 @@ Rendering::Particles::Particle::Particle(Particle&& particle) :
 	STOP_PROFILING_RENDERING("4");
 }
 
-Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(const Particle& particle)
+rendering::particles::Particle& rendering::particles::Particle::operator=(const Particle& particle)
 {
 	START_PROFILING_RENDERING(false, "1");
 	m_position = particle.m_position;
@@ -88,7 +88,7 @@ Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(const 
 	return *this;
 }
 
-Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(Particle&& particle)
+rendering::particles::Particle& rendering::particles::Particle::operator=(Particle&& particle)
 {
 	START_PROFILING_RENDERING(false, "2");
 	m_position = std::move(particle.m_position);
@@ -102,7 +102,7 @@ Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(Partic
 	return *this;
 }
 
-void Rendering::Particles::Particle::Revive(const math::Vector3D& position, const math::Vector3D& velocity,
+void rendering::particles::Particle::Revive(const math::Vector3D& position, const math::Vector3D& velocity,
 	math::Real gravityEffectFactor, math::Real lifespanLimit, const math::Angle& rotation, math::Real scale)
 {
 	START_PROFILING_RENDERING(false, "");
@@ -117,7 +117,7 @@ void Rendering::Particles::Particle::Revive(const math::Vector3D& position, cons
 	STOP_PROFILING_RENDERING("");
 }
 
-bool Rendering::Particles::Particle::Update(math::Real deltaTime)
+bool rendering::particles::Particle::Update(math::Real deltaTime)
 {
 	START_PROFILING_RENDERING(false, "");
 	m_velocity.y += GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime;
@@ -131,7 +131,7 @@ bool Rendering::Particles::Particle::Update(math::Real deltaTime)
 	//return IsAlive();
 }
 
-void Rendering::Particles::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, math::Vector2D& textureOffset0, math::Vector2D& textureOffset1, math::Real& textureAtlasBlendFactor) const
+void rendering::particles::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, math::Vector2D& textureOffset0, math::Vector2D& textureOffset1, math::Real& textureAtlasBlendFactor) const
 {
 	START_PROFILING_RENDERING(false, "");
 	/* Updating the texture offsets and the blend factor begin */

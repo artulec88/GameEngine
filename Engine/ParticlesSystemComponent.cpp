@@ -2,7 +2,7 @@
 #include "ParticlesSystemComponent.h"
 
 
-engine::ParticlesSystemComponent::ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem) :
+engine::ParticlesSystemComponent::ParticlesSystemComponent(GameManager* gameManager, rendering::particles::ParticlesSystem* particlesSystem) :
 	GameComponent(),
 	IUpdateable(),
 	m_particlesSystem(particlesSystem)

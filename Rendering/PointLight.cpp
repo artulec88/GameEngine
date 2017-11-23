@@ -3,7 +3,7 @@
 #include "Shader.h"
 #include "Utility/IConfig.h"
 
-Rendering::Lighting::PointLight::PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
+rendering::lighting::PointLight::PointLight(const math::Transform& transform, const Color& color, math::Real intensity, int shaderID,
 	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation) :
 	BaseLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, false),
 	m_attenuation(attenuation),
@@ -12,21 +12,21 @@ Rendering::Lighting::PointLight::PointLight(const math::Transform& transform, co
 	// Beware of using new operator in the constructor (See e.g. http://herbsutter.com/2008/07/25/constructor-exceptions-in-c-c-and-java/)
 }
 
-Rendering::Lighting::PointLight::~PointLight(void)
+rendering::lighting::PointLight::~PointLight()
 {
 }
 
-math::Real Rendering::Lighting::PointLight::CalculateRange()
+math::Real rendering::lighting::PointLight::CalculateRange() const
 {
 	// TODO: If exponent equals 0.0 then we will divide by zero at the end of this function.
-	math::Real a = m_attenuation.GetExponent();
-	math::Real b = m_attenuation.GetLinear();
+	const auto a = m_attenuation.GetExponent();
+	const auto b = m_attenuation.GetLinear();
 
 	const math::Real maxColorElement = (m_color.GetRed() > m_color.GetGreen()) ?
 		((m_color.GetRed() > m_color.GetBlue()) ? m_color.GetRed() : m_color.GetBlue()) :
 		((m_color.GetGreen() > m_color.GetBlue()) ? m_color.GetGreen() : m_color.GetBlue());
 	const int colorDepth = GET_CONFIG_VALUE_RENDERING("colorDepth", 256); // TODO: Think about moving this constant somewhere else and also make it a static constexpr.
-	math::Real c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
+	const auto c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
 
 	return (-b + sqrt(b*b - 4 * a*c)) / (2 * a);
 }

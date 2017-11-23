@@ -2,7 +2,7 @@
 #include "PointLightComponent.h"
 
 
-engine::PointLightComponent::PointLightComponent(Rendering::Lighting::PointLight* pointLight) :
+engine::PointLightComponent::PointLightComponent(rendering::lighting::PointLight* pointLight) :
 	GameComponent(),
 	m_pointLight(pointLight)
 {

@@ -93,7 +93,7 @@ namespace engine
 
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
-		virtual void Render(Rendering::Renderer* renderer) const = 0;
+		virtual void Render(rendering::Renderer* renderer) const = 0;
 
 		/// <summary>
 		/// Handles the incoming action appropriately.
@@ -176,7 +176,7 @@ namespace engine
 
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
-		void Render(Rendering::Renderer* renderer) const override;
+		void Render(rendering::Renderer* renderer) const override;
 
 		/// <summary>
 		/// Handles the incoming action appropriately.

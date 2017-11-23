@@ -2,7 +2,7 @@
 #include "FontFactory.h"
 #include "Utility/ILogger.h"
 
-Rendering::Text::FontFactory::FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory) :
+rendering::text::FontFactory::FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory) :
 	m_textShader(textShader),
 	m_fontType2FontMap(),
 	m_texturesDirectory(texturesDirectory),
@@ -16,11 +16,11 @@ Rendering::Text::FontFactory::FontFactory(const Shader* textShader, const std::s
 }
 
 
-Rendering::Text::FontFactory::~FontFactory()
+rendering::text::FontFactory::~FontFactory()
 {
 }
 
-const Rendering::Text::Font* Rendering::Text::FontFactory::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
+const rendering::text::Font* rendering::text::FontFactory::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
 	std::pair<std::map<int, Font>::iterator, bool> fontPair =
 		m_fontType2FontMap.insert(std::make_pair(fontID, Font(m_textShader, m_texturesDirectory + fontTextureFileName, m_fontsDirectory + fontMetaDataFileName)));
@@ -28,7 +28,7 @@ const Rendering::Text::Font* Rendering::Text::FontFactory::CreateFont(int fontID
 	return &fontPair.first->second;
 }
 
-const Rendering::Text::Font* Rendering::Text::FontFactory::GetFont(int fontID) const
+const rendering::text::Font* rendering::text::FontFactory::GetFont(int fontID) const
 {
 	DEBUG_LOG_RENDERING("Retrieving font for font ID: ", fontID);
 	CHECK_CONDITION_EXIT_RENDERING(m_fontType2FontMap.find(fontID) != m_fontType2FontMap.end(), Utility::Logging::EMERGENCY,

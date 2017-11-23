@@ -40,11 +40,11 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 	m_inGameDateTime(GET_CONFIG_VALUE_GAME("inGameYear", 2016), GET_CONFIG_VALUE_GAME("inGameMonth", 5),
 		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
 #ifdef DRAW_GAME_TIME
-	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), nullptr,
+	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(rendering::text::FontIDs::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), nullptr,
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), math::Angle(GET_CONFIG_VALUE_GAME("screenRotationInGameTime", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_GAME("screenScaleInGameTimeX", 1.0f), GET_CONFIG_VALUE_GAME("screenScaleInGameTimeY", 1.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
-		Rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
-		Rendering::Color(GET_CONFIG_VALUE_GAME("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeBlue", 0.0f)),
+		rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
+		rendering::Color(GET_CONFIG_VALUE_GAME("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeBlue", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_GAME("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_GAME("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_GAME("isCenteredInGameTime", false),
 		GET_CONFIG_VALUE_GAME("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_GAME("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_GAME("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE_GAME("borderEdgeTransitionWidthInGameTime", 0.1f)),
@@ -107,17 +107,17 @@ void Game::PlayGameState::Entered()
 	testMesh1.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh1PosX", 42.0f), GET_CONFIG_VALUE_GAME("testMesh1PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh1PosZ", 40.0f));
 	testMesh1.GetTransform().SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1.GetTransform().SetScale(0.1f);
-	testMesh1.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
-		new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0,
-			m_gameManager->AddTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"),
-			m_gameManager->AddTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
+	testMesh1.AddComponent(new engine::MeshRendererComponent(rendering::mesh_ids::SIMPLE_PLANE,
+		new rendering::Material(m_gameManager->AddTexture(texture_ids::BRICKS, "bricks2.jpg"), 0.0f, 0,
+			m_gameManager->AddTexture(texture_ids::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"),
+			m_gameManager->AddTexture(texture_ids::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	engine::GameNode testMesh2;
 	testMesh2.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh2PosX", 8.0f), GET_CONFIG_VALUE_GAME("testMesh2PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh2PosZ", 0.0f));
 	testMesh2.GetTransform().SetRot(math::Quaternion(math::Matrix4D(math::Angle(90.0f), math::Angle(90.0f), math::Angle(0.0f))));
-	testMesh2.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
-		new Rendering::Material(m_gameManager->GetTexture(TextureIDs::BRICKS), 0.0f, 0,
-			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	testMesh2.AddComponent(new engine::MeshRendererComponent(rendering::mesh_ids::SIMPLE_PLANE,
+		new rendering::Material(m_gameManager->GetTexture(texture_ids::BRICKS), 0.0f, 0,
+			m_gameManager->GetTexture(rendering::texture_ids::DEFAULT_NORMAL_MAP),
+			m_gameManager->GetTexture(rendering::texture_ids::DEFAULT_DISPLACEMENT_MAP))));
 	m_nodes.push_back(std::move(testMesh2));
 	m_nodes.push_back(std::move(testMesh1));
 	m_nodes.back().AddChild(&m_nodes[0]);
@@ -200,34 +200,34 @@ void Game::PlayGameState::Revealed()
 
 void Game::PlayGameState::AddShaders()
 {
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("ambientLightTerrainShader", "forward-ambient-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP, GET_CONFIG_VALUE_STR_GAME("shadowMapShader", "ShadowMapGenerator.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP_CUBE, GET_CONFIG_VALUE_STR_GAME("cubeShadowMapShader", "CubeShadowMapGenerator.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxShader", "skybox-shader.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX_PROCEDURAL, GET_CONFIG_VALUE_STR_GAME("skyboxProceduralShader", "skybox-procedural-shader.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::WATER, GET_CONFIG_VALUE_STR_GAME("waterShader", "water-shader.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("waterNoDirectionalLightShader", "water-no-directional-light-shader.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::BILLBOARD, GET_CONFIG_VALUE_STR_GAME("billboardShader", "billboard-shader.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("directionalLightShader", "forward-directional.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("directionalLightTerrainShader", "forward-directional-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowShader", "forward-directional-no-shadows.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT, GET_CONFIG_VALUE_STR_GAME("pointLightShader", "forward-point.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("pointLightTerrainShader", "forward-point-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowShader", "forward-point-no-shadows.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT, GET_CONFIG_VALUE_STR_GAME("spotLightShader", "forward-spot.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("spotLightTerrainShader", "forward-spot-terrain.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowShader", "forward-spot-no-shadows.glsl"));
-	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("ambientLightTerrainShader", "forward-ambient-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SHADOW_MAP, GET_CONFIG_VALUE_STR_GAME("shadowMapShader", "ShadowMapGenerator.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SHADOW_MAP_CUBE, GET_CONFIG_VALUE_STR_GAME("cubeShadowMapShader", "CubeShadowMapGenerator.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxShader", "skybox-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SKYBOX_PROCEDURAL, GET_CONFIG_VALUE_STR_GAME("skyboxProceduralShader", "skybox-procedural-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::WATER, GET_CONFIG_VALUE_STR_GAME("waterShader", "water-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::WATER_NO_DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("waterNoDirectionalLightShader", "water-no-directional-light-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::BILLBOARD, GET_CONFIG_VALUE_STR_GAME("billboardShader", "billboard-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("directionalLightShader", "forward-directional.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("directionalLightTerrainShader", "forward-directional-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowShader", "forward-directional-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::POINT_LIGHT, GET_CONFIG_VALUE_STR_GAME("pointLightShader", "forward-point.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::POINT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("pointLightTerrainShader", "forward-point-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::POINT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowShader", "forward-point-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::POINT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SPOT_LIGHT, GET_CONFIG_VALUE_STR_GAME("spotLightShader", "forward-spot.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("spotLightTerrainShader", "forward-spot-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SPOT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowShader", "forward-spot-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
 }
 
 void Game::PlayGameState::AddTerrainNode()
@@ -236,16 +236,16 @@ void Game::PlayGameState::AddTerrainNode()
 	DEBUG_LOG_GAME("Adding terrain node");
 	//m_terrainMesh = new Rendering::TerrainMesh(0, 0, math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
 	//	GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f)), GET_CONFIG_VALUE_GAME("terrainVertexCount", 128));
-	m_terrainMaterial = new Rendering::Material(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f),
-		GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f), m_gameManager->AddTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-		m_gameManager->AddTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
+	m_terrainMaterial = new rendering::Material(m_gameManager->AddTexture(texture_ids::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f),
+		GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f), m_gameManager->AddTexture(texture_ids::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		m_gameManager->AddTexture(texture_ids::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
 		GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f), GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f));
 
 	//m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_BLEND_MAP, GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
-	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_2, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
-	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(texture_ids::TERRAIN_BLEND_MAP, GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(texture_ids::TERRAIN_DIFFUSE_2, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(texture_ids::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(texture_ids::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
 	//m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	//m_terrainNode.AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, m_terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -259,7 +259,7 @@ void Game::PlayGameState::AddWaterNodes()
 {
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	m_waterNode.AddComponent(new engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
+	m_waterNode.AddComponent(new engine::MeshRendererComponent(rendering::mesh_ids::SIMPLE_PLANE,
 		nullptr /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
@@ -287,8 +287,8 @@ void Game::PlayGameState::AddPlayerNode()
 	m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	m_playerNode.GetTransform().SetScale(0.0005f);
 	m_playerNode.CreatePhysicsObject(122.0f, math::Vector3D(0.0f, 0.0f, 0.0f));
-	m_gameManager->AddMesh(MeshIDs::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
-	m_playerNode.AddComponent(new engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	m_gameManager->AddMesh(mesh_ids::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
+	m_playerNode.AddComponent(new engine::MeshRendererComponent(mesh_ids::PLAYER, new rendering::Material(m_gameManager->AddTexture(texture_ids::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(texture_ids::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(rendering::texture_ids::DEFAULT_DISPLACEMENT_MAP))));
 	m_playerNode.AddComponent(new engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, math::Angle(152.0f, math::units::DEGREE), 0.015f, 0.0002f));
 	m_playerNode.AddComponent(new engine::GravityComponent(m_terrain));
 	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(Particleeffects::FOUNTAIN);
@@ -297,7 +297,7 @@ void Game::PlayGameState::AddPlayerNode()
 	m_rootGameNode.AddChild(&m_playerNode);
 }
 
-void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
+void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering::Material* billboardsMaterial)
 {
 	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 	const auto angle = REAL_ZERO;
@@ -332,7 +332,7 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 	}
 	engine::GameNode billboardsNode;
 	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, math::Matrix4D::SIZE * math::Matrix4D::SIZE));
-	billboardsNode.AddComponent(new engine::BillboardsRendererComponent(MeshIDs::BILLBOARD, billboardsMaterial));
+	billboardsNode.AddComponent(new engine::BillboardsRendererComponent(mesh_ids::BILLBOARD, billboardsMaterial));
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
 
@@ -341,12 +341,12 @@ void Game::PlayGameState::AddCameras()
 	START_PROFILING_GAME(true, "");
 
 	// TODO: temporary code begin.
-	m_cameras.push_back(new Rendering::Camera(math::Vector3D(50.0f, 0.5f, 49.95f), math::NO_ROTATION_QUATERNION, math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
+	m_cameras.push_back(new rendering::Camera(math::Vector3D(50.0f, 0.5f, 49.95f), math::NO_ROTATION_QUATERNION, math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
 	m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 
-	Rendering::PerspectiveCameraBuilder cameraBuilder;
-	utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(&cameraBuilder);
+	rendering::PerspectiveCameraBuilder cameraBuilder;
+	utility::BuilderDirector<rendering::Camera> cameraBuilderDirector(&cameraBuilder);
 	int camerasCount = GET_CONFIG_VALUE_GAME("camerasCount", 3);
 	for (int i = 0; i < camerasCount; ++i)
 	{
@@ -363,7 +363,7 @@ void Game::PlayGameState::AddCameras()
 		{
 			cameraBuilder.SetPosZ(GET_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr, 0.0f));
 		}
-		Rendering::Camera camera = cameraBuilderDirector.Construct();
+		rendering::Camera camera = cameraBuilderDirector.Construct();
 	}
 
 	//CameraNodeBuilder cameraNodeBuilder(m_gameManager, &camera);
@@ -412,9 +412,9 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	Rendering::DirectionalLightBuilder directionalLightBuilder;
-	utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
-	Rendering::Lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
+	rendering::lighting::DirectionalLightBuilder directionalLightBuilder;
+	utility::BuilderDirector<rendering::lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
+	rendering::lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
 	++m_directionalLightsCount;
 	m_directionalLights.push_back(std::move(directionalLight));
@@ -427,11 +427,11 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		Rendering::PointLightBuilder pointLightBuilder;
-		utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
+		rendering::lighting::PointLightBuilder pointLightBuilder;
+		utility::BuilderDirector<rendering::lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
-			Rendering::Lighting::PointLight pointLight = lightBuilderDirector.Construct();
+			rendering::lighting::PointLight pointLight = lightBuilderDirector.Construct();
 			m_pointLights.push_back(std::move(pointLight));
 			//m_lights.push_back(pointLight);
 		}
@@ -449,8 +449,8 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		Rendering::SpotLightBuilder spotLightBuilder;
-		utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
+		rendering::lighting::SpotLightBuilder spotLightBuilder;
+		utility::BuilderDirector<rendering::lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
 			m_spotLights.push_back(std::move(lightBuilderDirector.Construct()));
@@ -653,7 +653,7 @@ void Game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
+void Game::PlayGameState::Render(rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
@@ -683,20 +683,20 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugGuiControls(m_gameManager->GetShader(Rendering::ShaderIDs::GUI));
+	renderer->RenderDebugGuiControls(m_gameManager->GetShader(rendering::shader_ids::GUI));
 #endif
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ? Rendering::ShaderIDs::FILTER_FXAA : Rendering::ShaderIDs::FILTER_NULL);
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::Aliasing::FXAA) ? rendering::shader_ids::FILTER_FXAA : rendering::shader_ids::FILTER_NULL);
 
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
-	renderer->RenderGuiControl(m_inGameTimeGuiButton, Rendering::ShaderIDs::TEXT);
+	renderer->RenderGuiControl(m_inGameTimeGuiButton, rendering::shader_ids::TEXT);
 #endif
 
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* renderer) const
 {
 	int ambientShaderID = GetAmbientShaderID(renderer->GetFogInfo());
 	renderer->BindShader(ambientShaderID);
@@ -709,48 +709,48 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* rende
 	m_terrainNode.Render(ambientTerrainShaderID, renderer);
 }
 
-void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithPointLights(rendering::Renderer* renderer) const
 {
 	for (size_t i = 0; i < m_pointLights.size(); ++i)
 	{
-		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(&(m_pointLights[i]));
+		const rendering::lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(&(m_pointLights[i]));
 		if (currentPointLight->IsEnabled())
 		{
 			DEBUG_LOG_GAME("Point light at index ", i, " is disabled");
 			continue;
 		}
-		m_rootGameNode.Render(currentPointLight->GetShaderID(), renderer);
-		m_terrainNode.Render(currentPointLight->GetTerrainShaderID(), renderer);
+		m_rootGameNode.Render(currentPointLight->GetShaderId(), renderer);
+		m_terrainNode.Render(currentPointLight->GetTerrainShaderId(), renderer);
 	}
 }
 
-void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	for (auto lightItr = m_directionalLights.begin(); lightItr != m_directionalLights.end(); ++lightItr)
 	{
 		if (lightItr->IsEnabled())
 		{
-			const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
+			const rendering::lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const int shadowMapShaderID = Rendering::ShaderIDs::SHADOW_MAP;
+				const int shadowMapShaderID = rendering::shader_ids::SHADOW_MAP;
 				renderer->BindShader(shadowMapShaderID);
 				renderer->UpdateRendererUniforms(shadowMapShaderID);
 				m_rootGameNode.Render(shadowMapShaderID, renderer);
 				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
-				renderer->FinalizeShadowMapRendering(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR);
+				renderer->FinalizeShadowMapRendering(rendering::shader_ids::FILTER_GAUSSIAN_BLUR);
 			}
 
 			renderer->InitLightRendering();
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
-			renderer->BindShader(currentLight->GetShaderID());
-			renderer->UpdateRendererUniforms(currentLight->GetShaderID());
-			m_rootGameNode.Render(currentLight->GetShaderID(), renderer);
-			renderer->BindShader(currentLight->GetTerrainShaderID());
-			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderID());
-			m_terrainNode.Render(currentLight->GetTerrainShaderID(), renderer);
+			renderer->BindShader(currentLight->GetShaderId());
+			renderer->UpdateRendererUniforms(currentLight->GetShaderId());
+			m_rootGameNode.Render(currentLight->GetShaderId(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShaderId());
+			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderId());
+			m_terrainNode.Render(currentLight->GetTerrainShaderId(), renderer);
 			renderer->FinalizeLightRendering();
 		}
 	}
@@ -758,33 +758,33 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 	{
 		if (lightItr->IsEnabled())
 		{
-			const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
+			const rendering::lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const int shadowMapShaderID = Rendering::ShaderIDs::SHADOW_MAP;
+				const int shadowMapShaderID = rendering::shader_ids::SHADOW_MAP;
 				renderer->BindShader(shadowMapShaderID);
 				renderer->UpdateRendererUniforms(shadowMapShaderID);
 				m_rootGameNode.Render(shadowMapShaderID, renderer);
 				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
-				renderer->FinalizeShadowMapRendering(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR);
+				renderer->FinalizeShadowMapRendering(rendering::shader_ids::FILTER_GAUSSIAN_BLUR);
 			}
 
 			renderer->InitLightRendering();
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
-			renderer->BindShader(currentLight->GetShaderID());
-			renderer->UpdateRendererUniforms(currentLight->GetShaderID());
-			m_rootGameNode.Render(currentLight->GetShaderID(), renderer);
-			renderer->BindShader(currentLight->GetTerrainShaderID());
-			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderID());
-			m_terrainNode.Render(currentLight->GetTerrainShaderID(), renderer);
+			renderer->BindShader(currentLight->GetShaderId());
+			renderer->UpdateRendererUniforms(currentLight->GetShaderId());
+			m_rootGameNode.Render(currentLight->GetShaderId(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShaderId());
+			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderId());
+			m_terrainNode.Render(currentLight->GetTerrainShaderId(), renderer);
 			renderer->FinalizeLightRendering();
 		}
 	}
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Skybox rendering started");
@@ -803,7 +803,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	renderer->SetDepthFuncLessOrEqual();
-	const int skyboxShaderID = Rendering::ShaderIDs::SKYBOX;
+	const int skyboxShaderID = rendering::shader_ids::SKYBOX;
 	renderer->BindShader(skyboxShaderID);
 	renderer->UpdateRendererUniforms(skyboxShaderID);
 	m_skyboxNode.Render(skyboxShaderID, renderer);
@@ -816,7 +816,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -829,7 +829,7 @@ void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) con
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -837,7 +837,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	return;
 
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
-	const Rendering::BaseCamera& currentCameraCopy(renderer->GetCurrentCamera());
+	const rendering::BaseCamera& currentCameraCopy(renderer->GetCurrentCamera());
 	//Rendering::BaseCamera reflectionCamera(currentCameraCopy);
 	//const math::Real cameraHeight = reflectionCamera.GetPos().GetY();
 	//math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
@@ -885,7 +885,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -927,7 +927,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	// TODO: Add some condition here that will prevent any water nodes rendering if there are no water nodes available.
@@ -953,7 +953,7 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderBillboardNodes(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering billboards started");
@@ -963,7 +963,7 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	const int billboardShaderID = Rendering::ShaderIDs::BILLBOARD;
+	const int billboardShaderID = rendering::shader_ids::BILLBOARD;
 	renderer->BindShader(billboardShaderID);
 	renderer->UpdateRendererUniforms(billboardShaderID);
 	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
@@ -976,11 +976,11 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
-	const int particlesShaderID = Rendering::ShaderIDs::PARTICLES;
+	const int particlesShaderID = rendering::shader_ids::PARTICLES;
 	renderer->BindShader(particlesShaderID);
 	renderer->UpdateRendererUniforms(particlesShaderID);
 	for (auto particleSystemItr = m_gameManager->GetParticlesSystems().begin(); particleSystemItr != m_gameManager->GetParticlesSystems().end(); ++particleSystemItr)
@@ -1081,7 +1081,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	STOP_PROFILING_GAME("");
 //}
 
-int Game::PlayGameState::GetAmbientShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const
+int Game::PlayGameState::GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled()) // if (fogInfo != nullptr)
@@ -1089,73 +1089,73 @@ int Game::PlayGameState::GetAmbientShaderID(const Rendering::FogEffect::FogInfo&
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 
 		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
+		if (fogInfo.GetFallOffType() == rendering::fog_effect::LINEAR)
 		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
+			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED;
+				return rendering::shader_ids::AMBIENT_FOG_LINEAR_PLANE_BASED;
 			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
+			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED;
+				return rendering::shader_ids::AMBIENT_FOG_LINEAR_RANGE_BASED;
 			}
 		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
+		else if (fogInfo.GetFallOffType() == rendering::fog_effect::EXPONENTIAL)
 		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
+			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED;
+				return rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED;
 			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
+			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED;
+				return rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED;
 			}
 		}
 	}
 	STOP_PROFILING_ENGINE("");
-	return Rendering::ShaderIDs::AMBIENT;
+	return rendering::shader_ids::AMBIENT;
 }
 
-int Game::PlayGameState::GetAmbientTerrainShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const
+int Game::PlayGameState::GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled())
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
+		if (fogInfo.GetFallOffType() == rendering::fog_effect::LINEAR)
 		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
+			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED;
+				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED;
 			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
+			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED;
+				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED;
 			}
 		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
+		else if (fogInfo.GetFallOffType() == rendering::fog_effect::EXPONENTIAL)
 		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
+			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED;
+				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED;
 			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
+			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED;
+				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED;
 			}
 			}
 		}
 	STOP_PROFILING_ENGINE("");
-	return Rendering::ShaderIDs::AMBIENT_TERRAIN;
+	return rendering::shader_ids::AMBIENT_TERRAIN;
 	}
 
 unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)

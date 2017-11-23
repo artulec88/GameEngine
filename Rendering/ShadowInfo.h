@@ -4,9 +4,9 @@
 #include "Rendering.h"
 #include "Math/Vector.h"
 #include "Math\Quaternion.h"
-#include "Math\Matrix.h"
+#include "Math/Matrix.h"
 
-namespace Rendering
+namespace rendering
 {
 	/// <summary>
 	/// 
@@ -79,30 +79,29 @@ namespace Rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Gets the projection matrix that shadow info uses. </summary>
 		/// <returns> The projection matrix that shadow info uses. </returns>
-		RENDERING_API inline const math::Matrix4D& GetProjection() const noexcept { return m_projectionMatrix; }
+		RENDERING_API const math::Matrix4D& GetProjection() const noexcept { return m_projectionMatrix; }
 
 		/// <summary> Gets the shadow softness value. </summary>
 		/// <returns> The shadow softness value. </returns>
-		RENDERING_API inline math::Real GetShadowSoftness() const noexcept { return m_shadowSoftness; }
+		RENDERING_API math::Real GetShadowSoftness() const noexcept { return m_shadowSoftness; }
 
 		/// <summary> Gets the minimal variance of the shadow info. </summary>
 		/// <returns> The minimal variance of the shadow info. </returns>
-		RENDERING_API inline math::Real GetMinVariance() const noexcept { return m_minVariance; }
+		RENDERING_API math::Real GetMinVariance() const noexcept { return m_minVariance; }
 
 		/// <summary> Gets the light bleeding reduction factor. </summary>
 		/// <returns> The light bleeding reduction factor. </returns>
-		RENDERING_API inline math::Real GetLightBleedingReductionFactor() const noexcept { return m_lightBleedingReductionFactor; }
+		RENDERING_API math::Real GetLightBleedingReductionFactor() const noexcept { return m_lightBleedingReductionFactor; }
 
 		/// <summary> Gets the information whether or not the rendering engine should first turn on backface culling before rendering to the shadow map. </summary>
 		/// <returns> <code>true</code> when before rendering to shadow map we should turn on backface culling. Otherwise <code>false</code>. </returns>
-		RENDERING_API inline bool IsFlipFacesEnabled() const noexcept { return m_flipFacesEnabled; }
+		RENDERING_API bool IsFlipFacesEnabled() const noexcept { return m_flipFacesEnabled; }
 
 		/// <summary> Gets the exponent of the final shadow map size. </summary>
 		/// <returns> The exponent of the final shadow map size. </returns>
-		RENDERING_API inline int GetShadowMapSizeAsPowerOf2() const noexcept { return m_shadowMapSizeAsPowerOf2; }
+		RENDERING_API int GetShadowMapSizeAsPowerOf2() const noexcept { return m_shadowMapSizeAsPowerOf2; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -132,6 +131,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShadowInfo */
 
-} /* end namespace Rendering */
+} /* end namespace rendering */
 
 #endif /* __RENDERING_SHADOW_INFO_H__ */

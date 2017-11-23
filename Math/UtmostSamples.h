@@ -19,7 +19,6 @@ namespace math {
 		class UtmostSamples
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		private:
 			static constexpr int NUMBER_OF_SAMPLES = 3;
 			/* ==================== Static variables and functions end ==================== */
 
@@ -30,7 +29,6 @@ namespace math {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			void ProcessSample(const T& sample);
 			std::string ToString();
 			/* ==================== Non-static member functions end ==================== */
@@ -40,7 +38,7 @@ namespace math {
 			std::array<T, NUMBER_OF_SAMPLES> m_minSamples;
 			std::array<T, NUMBER_OF_SAMPLES> m_maxSamples;
 			/* ==================== Non-static member variables end ==================== */
-		}; /* end class UtmostTimeSamples */
+		}; /* end class UtmostSamples */
 
 	} /* end namespace statistics */
 

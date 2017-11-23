@@ -11,11 +11,11 @@
 
 #include "Utility/IConfig.h"
 
-Rendering::Particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
+rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	utility::Builder<ParticlesSystem>(),
 	M_DEFAULT_MAX_PARTICLES_COUNT(GET_CONFIG_VALUE_RENDERING("defaultMaxParticlesCount", 10000)),
 	M_DEFAULT_ATTRIBUTES_MASK(GET_CONFIG_VALUE_RENDERING("defaultParticlesAttributesMask",
-		static_cast<int>(Attributes::POSITION | Attributes::LIFE_SPAN | Attributes::COLOR | Attributes::SCALE))),
+		static_cast<int>(attributes::POSITION | attributes::LIFE_SPAN | attributes::COLOR | attributes::SCALE))),
 	m_maxCount(M_DEFAULT_MAX_PARTICLES_COUNT),
 	m_attributesMask(M_DEFAULT_ATTRIBUTES_MASK)
 	//m_particleTexture(NULL),
@@ -49,11 +49,11 @@ Rendering::Particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 }
 
 
-Rendering::Particles::ParticlesSystemBuilder::~ParticlesSystemBuilder()
+rendering::particles::ParticlesSystemBuilder::~ParticlesSystemBuilder()
 {
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::Build()
+void rendering::particles::ParticlesSystemBuilder::Build()
 {
 
 	//m_particleTexture = m_gameManager->AddParticleTexture(m_textureID,
@@ -162,29 +162,29 @@ void Rendering::Particles::ParticlesSystemBuilder::Build()
 //	}
 //}
 
-Rendering::Particles::ParticlesSystemBuilder& Rendering::Particles::ParticlesSystemBuilder::AddEmitter(const ParticlesEmitter& particlesEmitter)
+rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::AddEmitter(const ParticlesEmitter& particlesEmitter)
 {
 	m_emitters.push_back(particlesEmitter);
 	return *this;
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::POSITION), Utility::Logging::DEBUG,
 	//	"The position attribute is disabled for the current particles system");
 
-	//Generators::PositionGeneratorTypes::PositionGeneratorType positionGeneratorType = static_cast<Generators::PositionGeneratorTypes::PositionGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::PositionGeneratorTypes::CONSTANT)));
+	//generators::position_generator_types::PositionGeneratorType positionGeneratorType = static_cast<generators::position_generator_types::PositionGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(generators::position_generator_types::CONSTANT)));
 	//switch (positionGeneratorType)
 	//{
-	//case Generators::PositionGeneratorTypes::CONSTANT:
-	//	emitter->AddGenerator(new Generators::ConstantPositionGenerator(
+	//case generators::position_generator_types::CONSTANT:
+	//	emitter->AddGenerator(new generators::ConstantPositionGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPosX" + m_configurationSuffix + "_" + indexStr, 50.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPosY" + m_configurationSuffix + "_" + indexStr, -1.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPosZ" + m_configurationSuffix + "_" + indexStr, 60.0f)));
 	//	break;
-	//case Generators::PositionGeneratorTypes::BOX:
-	//	emitter->AddGenerator(new Generators::BoxPositionGenerator(
+	//case generators::position_generator_types::BOX:
+	//	emitter->AddGenerator(new generators::BoxPositionGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorMinX" + m_configurationSuffix + "_" + indexStr, 40.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorMaxX" + m_configurationSuffix + "_" + indexStr, 60.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorMinY" + m_configurationSuffix + "_" + indexStr, -2.0f),
@@ -192,15 +192,15 @@ void Rendering::Particles::ParticlesSystemBuilder::AddPositionGenerator(Particle
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorMinZ" + m_configurationSuffix + "_" + indexStr, 50.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorMaxZ" + m_configurationSuffix + "_" + indexStr, 40.0f)));
 	//	break;
-	//case Generators::PositionGeneratorTypes::PLANE:
-	//	emitter->AddGenerator(new Generators::PlanePositionGenerator(
+	//case generators::position_generator_types::PLANE:
+	//	emitter->AddGenerator(new generators::PlanePositionGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPlaneNormalX" + m_configurationSuffix + "_" + indexStr, 40.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPlaneNormalY" + m_configurationSuffix + "_" + indexStr, 40.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPlaneNormalZ" + m_configurationSuffix + "_" + indexStr, 40.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPlaneDistance" + m_configurationSuffix + "_" + indexStr, 40.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterPositionGeneratorPlaneRadius" + m_configurationSuffix + "_" + indexStr, 40.0f)));
 	//	break;
-	//case Generators::PositionGeneratorTypes::ELLIPSOID:
+	//case generators::position_generator_types::ELLIPSOID:
 	//	WARNING_LOG_RENDERING("Not yet supported");
 	//	break;
 	//default:
@@ -208,23 +208,23 @@ void Rendering::Particles::ParticlesSystemBuilder::AddPositionGenerator(Particle
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddVelocityGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddVelocityGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY), Utility::Logging::DEBUG,
 	//	"The velocity attribute is disabled for the current particles system");
 
-	//Generators::VelocityGeneratorTypes::VelocityGeneratorType velocityGeneratorType = static_cast<Generators::VelocityGeneratorTypes::VelocityGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::VelocityGeneratorTypes::CONSTANT)));
+	//generators::velocity_generator_types::VelocityGeneratorType velocityGeneratorType = static_cast<generators::velocity_generator_types::VelocityGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(generators::velocity_generator_types::CONSTANT)));
 	//switch (velocityGeneratorType)
 	//{
-	//case Generators::VelocityGeneratorTypes::CONSTANT:
-	//	emitter->AddGenerator(new Generators::ConstantVelocityGenerator(
+	//case generators::velocity_generator_types::CONSTANT:
+	//	emitter->AddGenerator(new generators::ConstantVelocityGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorX" + m_configurationSuffix + "_" + indexStr, 50.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorY" + m_configurationSuffix + "_" + indexStr, -1.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorZ" + m_configurationSuffix + "_" + indexStr, 60.0f)));
 	//	break;
-	//case Generators::VelocityGeneratorTypes::RANGE:
-	//	emitter->AddGenerator(new Generators::RangeVelocityGenerator(
+	//case generators::velocity_generator_types::RANGE:
+	//	emitter->AddGenerator(new generators::RangeVelocityGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorMinX" + m_configurationSuffix + "_" + indexStr, -3.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorMaxX" + m_configurationSuffix + "_" + indexStr, 3.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterVelocityGeneratorMinY" + m_configurationSuffix + "_" + indexStr, 5.0f),
@@ -237,22 +237,22 @@ void Rendering::Particles::ParticlesSystemBuilder::AddVelocityGenerator(Particle
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddAccelerationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddAccelerationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION), Utility::Logging::DEBUG,
 	//	"The acceleration attribute is disabled for the current particles system");
 
-	//Generators::AccelerationGeneratorTypes::AccelerationGeneratorType accelerationGeneratorType = static_cast<Generators::AccelerationGeneratorTypes::AccelerationGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::AccelerationGeneratorTypes::CONSTANT)));
+	//Generators::acceleration_generator_types::AccelerationGeneratorType accelerationGeneratorType = static_cast<Generators::AccelerationGeneratorTypes::AccelerationGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::acceleration_generator_types::CONSTANT)));
 	//switch (accelerationGeneratorType)
 	//{
-	//case Generators::AccelerationGeneratorTypes::CONSTANT:
+	//case Generators::acceleration_generator_types::CONSTANT:
 	//	emitter->AddGenerator(new Generators::ConstantAccelerationGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorX" + m_configurationSuffix + "_" + indexStr, 0.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorY" + m_configurationSuffix + "_" + indexStr, -5.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorZ" + m_configurationSuffix + "_" + indexStr, 0.0f)));
 	//	break;
-	//case Generators::AccelerationGeneratorTypes::RANGE:
+	//case Generators::acceleration_generator_types::RANGE:
 	//	emitter->AddGenerator(new Generators::RangeAccelerationGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorMinX" + m_configurationSuffix + "_" + indexStr, -1.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterAccelerationGeneratorMaxX" + m_configurationSuffix + "_" + indexStr, 1.0f),
@@ -266,28 +266,28 @@ void Rendering::Particles::ParticlesSystemBuilder::AddAccelerationGenerator(Part
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddGravityEffectFactorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddGravityEffectFactorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::GRAVITY_EFFECT_FACTOR), utility::logging::DEBUG,
 		"The gravity effect factor attribute is disabled for the current particles system");
 
 	// TODO: Implement this function
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddLifeSpanGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddLifeSpanGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN), Utility::Logging::DEBUG,
 	//	"The life span attribute is disabled for the current particles system");
 
-	//Generators::LifeSpanGeneratorTypes::LifeSpanGeneratorType lifeSpanGeneratorType = static_cast<Generators::LifeSpanGeneratorTypes::LifeSpanGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterLifeSpanGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::LifeSpanGeneratorTypes::CONSTANT)));
+	//generators::life_span_generator_types::LifeSpanGeneratorType lifeSpanGeneratorType = static_cast<generators::life_span_generator_types::LifeSpanGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterLifeSpanGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(generators::life_span_generator_types::CONSTANT)));
 	//switch (lifeSpanGeneratorType)
 	//{
-	//case Generators::LifeSpanGeneratorTypes::CONSTANT:
+	//case generators::life_span_generator_types::CONSTANT:
 	//	emitter->AddGenerator(new Generators::ConstantLifeSpanLimitGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterLifeSpanGenerator" + m_configurationSuffix + "_" + indexStr, 5.0f)));
 	//	break;
-	//case Generators::LifeSpanGeneratorTypes::RANGE:
+	//case generators::life_span_generator_types::RANGE:
 	//	emitter->AddGenerator(new Generators::RangeLifeSpanLimitGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterLifeSpanGeneratorMin" + m_configurationSuffix + "_" + indexStr, 2.0f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterLifeSpanGeneratorMax" + m_configurationSuffix + "_" + indexStr, 3.0f)));
@@ -297,22 +297,22 @@ void Rendering::Particles::ParticlesSystemBuilder::AddLifeSpanGenerator(Particle
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddRotationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddRotationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ROTATION), Utility::Logging::DEBUG,
 	//	"The rotation attribute is disabled for the current particles system");
 
-	//Generators::RotationGeneratorTypes::RotationGeneratorType rotationGeneratorType = static_cast<Generators::RotationGeneratorTypes::RotationGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::RotationGeneratorTypes::CONSTANT)));
+	//generators::rotation_generator_types::RotationGeneratorType rotationGeneratorType = static_cast<generators::rotation_generator_types::RotationGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(generators::rotation_generator_types::CONSTANT)));
 	//switch (rotationGeneratorType)
 	//{
-	//case Generators::RotationGeneratorTypes::CONSTANT:
-	//	emitter->AddGenerator(new Generators::ConstantRotationGenerator(math::Angle(
+	//case generators::rotation_generator_types::CONSTANT:
+	//	emitter->AddGenerator(new generators::ConstantRotationGenerator(math::Angle(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGenerator" + m_configurationSuffix + "_" + indexStr, 5.0f))
 	//		));
 	//	break;
-	//case Generators::RotationGeneratorTypes::RANGE:
-	//	emitter->AddGenerator(new Generators::RangeRotationGenerator(
+	//case generators::rotation_generator_types::RANGE:
+	//	emitter->AddGenerator(new generators::RangeRotationGenerator(
 	//		math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMin" + m_configurationSuffix + "_" + indexStr, 2.0f)),
 	//		math::Angle(GET_CONFIG_VALUE_RENDERING("particleEmitterRotationGeneratorMax" + m_configurationSuffix + "_" + indexStr, 3.0f))));
 	//	break;
@@ -321,21 +321,21 @@ void Rendering::Particles::ParticlesSystemBuilder::AddRotationGenerator(Particle
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddScaleGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddScaleGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::SCALE), Utility::Logging::DEBUG,
 	//	"The scale attribute is disabled for the current particles system");
 
-	//Generators::ScaleGeneratorTypes::ScaleGeneratorType scaleGeneratorType = static_cast<Generators::ScaleGeneratorTypes::ScaleGeneratorType>(
-	//	GET_CONFIG_VALUE_RENDERING("particleEmitterScaleGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(Generators::ScaleGeneratorTypes::CONSTANT)));
+	//generators::scale_generator_types::ScaleGeneratorType scaleGeneratorType = static_cast<generators::scale_generator_types::ScaleGeneratorType>(
+	//	GET_CONFIG_VALUE_RENDERING("particleEmitterScaleGeneratorType" + m_configurationSuffix + "_" + indexStr, static_cast<int>(generators::scale_generator_types::CONSTANT)));
 	//switch (scaleGeneratorType)
 	//{
-	//case Generators::ScaleGeneratorTypes::CONSTANT:
-	//	emitter->AddGenerator(new Generators::ConstantScaleGenerator(
+	//case generators::scale_generator_types::CONSTANT:
+	//	emitter->AddGenerator(new generators::ConstantScaleGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterScaleGenerator" + m_configurationSuffix + "_" + indexStr, 0.5f)));
 	//	break;
-	//case Generators::ScaleGeneratorTypes::RANGE:
-	//	emitter->AddGenerator(new Generators::RangeScaleGenerator(
+	//case generators::scale_generator_types::RANGE:
+	//	emitter->AddGenerator(new generators::RangeScaleGenerator(
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterScaleGeneratorMin" + m_configurationSuffix + "_" + indexStr, 0.1f),
 	//		GET_CONFIG_VALUE_RENDERING("particleEmitterScaleGeneratorMax" + m_configurationSuffix + "_" + indexStr, 2.0f)));
 	//	break;
@@ -344,32 +344,32 @@ void Rendering::Particles::ParticlesSystemBuilder::AddScaleGenerator(ParticlesEm
 	//}
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddTextureOffsetGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddTextureOffsetGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::TEXTURE_OFFSET), utility::logging::DEBUG,
 		"The texture offset attribute is disabled for the current particles system");
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddColorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddColorGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::COLOR), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::COLOR), utility::logging::DEBUG,
 		"The color attribute is disabled for the current particles system");
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddMassGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddMassGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::MASS), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::MASS), utility::logging::DEBUG,
 		"The mass attribute is disabled for the current particles system");
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddAliveGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddAliveGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ALIVE), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::ALIVE), utility::logging::DEBUG,
 		"The alive attribute is disabled for the current particles system");
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::AddIdGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
+void rendering::particles::ParticlesSystemBuilder::AddIdGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ID), utility::logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(attributes::ID), utility::logging::DEBUG,
 		"The ID attribute is disabled for the current particles system");
 }

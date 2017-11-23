@@ -14,7 +14,7 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		SpotLightComponent(Rendering::Lighting::SpotLight* spotLight);
+		SpotLightComponent(rendering::lighting::SpotLight* spotLight);
 		virtual ~SpotLightComponent();
 		SpotLightComponent(const SpotLightComponent& spotLightComponent) = delete;
 		SpotLightComponent(SpotLightComponent&& spotLightComponent);
@@ -30,7 +30,7 @@ namespace engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::Lighting::SpotLight* m_spotLight;
+		rendering::lighting::SpotLight* m_spotLight;
 	/* ==================== Non-static member variables end ==================== */
 	}; // end class SpotLightComponent
 } // end namespace Engine

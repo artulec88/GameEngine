@@ -4,22 +4,22 @@
 #include "Math/RandomGeneratorFactory.h"
 
 /* ==================== class ConstantVelocityGenerator begin ==================== */
-Rendering::Particles::Generators::ConstantVelocityGenerator::ConstantVelocityGenerator(const math::Vector3D& velocity) :
+rendering::particles::generators::ConstantVelocityGenerator::ConstantVelocityGenerator(const math::Vector3D& velocity) :
 	ConstantVelocityGenerator(velocity.x, velocity.y, velocity.z)
 {
 }
 
-Rendering::Particles::Generators::ConstantVelocityGenerator::ConstantVelocityGenerator(math::Real velocityX, math::Real velocityY, math::Real velocityZ) :
+rendering::particles::generators::ConstantVelocityGenerator::ConstantVelocityGenerator(math::Real velocityX, math::Real velocityY, math::Real velocityZ) :
 	VelocityGenerator(),
 	m_velocity(velocityX, velocityY, velocityZ)
 {
 }
 
-Rendering::Particles::Generators::ConstantVelocityGenerator::~ConstantVelocityGenerator()
+rendering::particles::generators::ConstantVelocityGenerator::~ConstantVelocityGenerator()
 {
 }
 
-void Rendering::Particles::Generators::ConstantVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::ConstantVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -29,7 +29,7 @@ void Rendering::Particles::Generators::ConstantVelocityGenerator::Generate(math:
 /* ==================== class ConstantVelocityGenerator end ==================== */
 
 /* ==================== class RangeVelocityGenerator begin ==================== */
-Rendering::Particles::Generators::RangeVelocityGenerator::RangeVelocityGenerator(math::Real minSpeedX, math::Real maxSpeedX, math::Real minSpeedY, math::Real maxSpeedY, math::Real minSpeedZ, math::Real maxSpeedZ) :
+rendering::particles::generators::RangeVelocityGenerator::RangeVelocityGenerator(math::Real minSpeedX, math::Real maxSpeedX, math::Real minSpeedY, math::Real maxSpeedY, math::Real minSpeedZ, math::Real maxSpeedZ) :
 	VelocityGenerator(),
 	m_minSpeedX(minSpeedX),
 	m_maxSpeedX(maxSpeedX),
@@ -41,11 +41,11 @@ Rendering::Particles::Generators::RangeVelocityGenerator::RangeVelocityGenerator
 {
 }
 
-Rendering::Particles::Generators::RangeVelocityGenerator::~RangeVelocityGenerator()
+rendering::particles::generators::RangeVelocityGenerator::~RangeVelocityGenerator()
 {
 }
 
-void Rendering::Particles::Generators::RangeVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void rendering::particles::generators::RangeVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{

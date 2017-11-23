@@ -3,7 +3,7 @@
 
 #include "Utility/ILogger.h"
 
-Rendering::Controls::GuiControl::GuiControl(const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale) :
+rendering::controls::GuiControl::GuiControl(const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale) :
 	m_screenPosition(screenPosition),
 	m_screenRotation(screenRotationAngle),
 	m_scale(scale),
@@ -13,11 +13,11 @@ Rendering::Controls::GuiControl::GuiControl(const math::Vector2D& screenPosition
 }
 
 
-Rendering::Controls::GuiControl::~GuiControl()
+rendering::controls::GuiControl::~GuiControl()
 {
 }
 
-void Rendering::Controls::GuiControl::MoveAABR(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY)
+void rendering::controls::GuiControl::MoveAabr(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY)
 {
 	m_aabr.SetBottomLeftPos(math::Vector2D(m_screenPosition.x + bottomLeftOffsetX, (m_screenPosition.y + bottomLeftOffsetY)));
 	m_aabr.SetTopRightPos(math::Vector2D(m_screenPosition.x + topRightOffsetX, m_screenPosition.y + topRightOffsetY));

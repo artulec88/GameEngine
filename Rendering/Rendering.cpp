@@ -3,50 +3,50 @@
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 
-int Rendering::supportedOpenGLLevel;
-std::string Rendering::glslVersion;
+int rendering::supportedOpenGLLevel;
+std::string rendering::glslVersion;
 
 /* ==================== Blending parameters begin ==================== */
-bool Rendering::glBlendEnabled, Rendering::glBlendEnabledOld;
-GLenum Rendering::glBlendSfactor, Rendering::glBlendSfactorOld;
-GLenum Rendering::glBlendDfactor, Rendering::glBlendDfactorOld;
+bool rendering::glBlendEnabled, rendering::glBlendEnabledOld;
+GLenum rendering::glBlendSfactor, rendering::glBlendSfactorOld;
+GLenum rendering::glBlendDfactor, rendering::glBlendDfactorOld;
 /* ==================== Blending parameters end ==================== */
 
 /* ==================== Color logic operation parameters begin ==================== */
-bool Rendering::glColorLogicOperationEnabled, Rendering::glColorLogicOperationEnabledOld;
-GLenum Rendering::glColorLogicOperationCode, Rendering::glColorLogicOperationCodeOld;
+bool rendering::glColorLogicOperationEnabled, rendering::glColorLogicOperationEnabledOld;
+GLenum rendering::glColorLogicOperationCode, rendering::glColorLogicOperationCodeOld;
 /* ==================== Color logic operation parameters end ==================== */
 
 /* ==================== Color logic operation parameters begin ==================== */
-bool Rendering::glCullFaceEnabled, Rendering::glCullFaceEnabledOld;
-GLenum Rendering::glCullFaceMode, Rendering::glCullFaceModeOld;
+bool rendering::glCullFaceEnabled, rendering::glCullFaceEnabledOld;
+GLenum rendering::glCullFaceMode, rendering::glCullFaceModeOld;
 /* ==================== Color logic operation parameters end ==================== */
 
 /* ==================== Depth clamping parameters begin ==================== */
-bool Rendering::glDepthClampEnabled, Rendering::glDepthClampEnabledOld;
+bool rendering::glDepthClampEnabled, rendering::glDepthClampEnabledOld;
 /* ==================== Depth clamping parameters end ==================== */
 
 /* ==================== Depth test parameters begin ==================== */
-bool Rendering::glDepthTestEnabled, Rendering::glDepthTestEnabledOld;
-GLenum Rendering::glDepthTestFunc, Rendering::glDepthTestFuncOld;
-math::Real Rendering::glDepthRangeNearValue, Rendering::glDepthRangeNearValueOld;
-math::Real Rendering::glDepthRangeFarValue, Rendering::glDepthRangeFarValueOld;
+bool rendering::glDepthTestEnabled, rendering::glDepthTestEnabledOld;
+GLenum rendering::glDepthTestFunc, rendering::glDepthTestFuncOld;
+math::Real rendering::glDepthRangeNearValue, rendering::glDepthRangeNearValueOld;
+math::Real rendering::glDepthRangeFarValue, rendering::glDepthRangeFarValueOld;
 /* ==================== Depth test parameters end ==================== */
 
 /* ==================== Dithering parameters begin ==================== */
-bool Rendering::glDitheringEnabled, Rendering::glDitheringEnabledOld;
+bool rendering::glDitheringEnabled, rendering::glDitheringEnabledOld;
 /* ==================== Dithering parameters end ==================== */
 
 /* ==================== Front face parameters begin ==================== */
-GLenum Rendering::glFrontFaceMode, Rendering::glFrontFaceModeOld;
+GLenum rendering::glFrontFaceMode, rendering::glFrontFaceModeOld;
 /* ==================== Front face parameters end ==================== */
 
 /* ==================== Scissor test parameters begin ==================== */
-bool Rendering::glScissorTestEnabled, Rendering::glScissorTestEnabledOld;
-GLint Rendering::glScissorBoxLowerLeftCornerX, Rendering::glScissorBoxLowerLeftCornerXOld;
-GLint Rendering::glScissorBoxLowerLeftCornerY, Rendering::glScissorBoxLowerLeftCornerYOld;
-GLsizei Rendering::glScissorBoxWidth, Rendering::glScissorBoxWidthOld;
-GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
+bool rendering::glScissorTestEnabled, rendering::glScissorTestEnabledOld;
+GLint rendering::glScissorBoxLowerLeftCornerX, rendering::glScissorBoxLowerLeftCornerXOld;
+GLint rendering::glScissorBoxLowerLeftCornerY, rendering::glScissorBoxLowerLeftCornerYOld;
+GLsizei rendering::glScissorBoxWidth, rendering::glScissorBoxWidthOld;
+GLsizei rendering::glScissorBoxHeight, rendering::glScissorBoxHeightOld;
 /* ==================== Scissor test parameters end ==================== */
 
 //bool Rendering::FogEffect::FogKey::operator<(const Rendering::FogEffect::FogKey& fog) const
@@ -62,7 +62,7 @@ GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 //	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
 //}
 
-void Rendering::DetermineGlVersion()
+void rendering::DetermineGlVersion()
 {
 	int majorVersion;
 	int minorVersion;
@@ -106,14 +106,14 @@ void Rendering::DetermineGlVersion()
 	}
 }
 
-void Rendering::PrintGlReport()
+void rendering::PrintGlReport()
 {
 	INFO_LOG_RENDERING("OpenGL report:\n\tVendor:\t\t\t\"", glGetString(GL_VENDOR), "\"\n\tRenderer name:\t\t\"", glGetString(GL_RENDERER),
 		"\"\n\tVersion:\t\t\"", glGetString(GL_VERSION), "\"\n\tGLSL version:\t\t\"", glGetString(GL_SHADING_LANGUAGE_VERSION), "\"");
 	//INFO_LOG_RENDERING("OpenGL extensions: ", glGetString(GL_EXTENSIONS));
 }
 
-void Rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod)
+void rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	NOTICE_LOG_RENDERING("Initializing graphics started");
 
@@ -208,7 +208,7 @@ void Rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod
  * If enabled, blen the computed fragment color values with the values in the color buffers.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glBlendFunc.xml
  */
-void Rendering::ReadBlendParameter()
+void rendering::ReadBlendParameter()
 {
 	glBlendEnabled = GET_CONFIG_VALUE_RENDERING("GL_BLEND_ENABLED", false);
 	glBlendEnabledOld = glBlendEnabled;
@@ -280,7 +280,7 @@ void Rendering::ReadBlendParameter()
  * If enabled, apply the currently selected logical operation to the computed fragment color and color buffer values.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glLogicOp.xml
  */
-void Rendering::ReadColorLogicOperationParameter()
+void rendering::ReadColorLogicOperationParameter()
 {
 	glColorLogicOperationEnabled = GET_CONFIG_VALUE_RENDERING("GL_COLOR_LOGIC_OP_ENABLED", false);
 	glColorLogicOperationEnabledOld = glColorLogicOperationEnabled;
@@ -328,7 +328,7 @@ void Rendering::ReadColorLogicOperationParameter()
  * If enabled, cull polygons based on their winding in window coordinates.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glCullFace.xml
  */
-void Rendering::ReadCullFaceParameter()
+void rendering::ReadCullFaceParameter()
 {
 	glCullFaceEnabled = GET_CONFIG_VALUE_RENDERING("GL_CULL_FACE_ENABLED", false);
 	glCullFaceEnabledOld = glCullFaceEnabled;
@@ -366,7 +366,7 @@ void Rendering::ReadCullFaceParameter()
  * This effectively means that there is no near or far plane clipping.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthRange.xml
  */
-void Rendering::ReadDepthClampParameter()
+void rendering::ReadDepthClampParameter()
 {
 	glDepthClampEnabled = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_CLAMP_ENABLED", false);
 	glDepthClampEnabledOld = glDepthClampEnabled;
@@ -387,7 +387,7 @@ void Rendering::ReadDepthClampParameter()
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthFunc.xml
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthRange.xml
  */
-void Rendering::ReadDepthTestParameter()
+void rendering::ReadDepthTestParameter()
 {
 	glDepthTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_TEST_ENABLED", false);
 	glDepthTestEnabledOld = glDepthTestEnabled;
@@ -434,7 +434,7 @@ void Rendering::ReadDepthTestParameter()
 /**
  * If enabled, dither color components or indices before they are written to the color buffer.
  */
-void Rendering::ReadDitherParameter()
+void rendering::ReadDitherParameter()
 {
 	glDitheringEnabled = GET_CONFIG_VALUE_RENDERING("GL_DITHER_ENABLED", false);
 	glDitheringEnabledOld = glDitheringEnabled;
@@ -454,7 +454,7 @@ void Rendering::ReadDitherParameter()
  * Defines front- and back-facing polygons
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glFrontFace.xml
  */
-void Rendering::ReadFrontFaceParameter()
+void rendering::ReadFrontFaceParameter()
 {
 	std::string frontFaceStr = GET_CONFIG_VALUE_STR_RENDERING("GL_FRONT_FACE", "GL_CW");
 	if (frontFaceStr == "GL_CW") { glFrontFaceMode = GL_CW; } // every face I draw in clockwise order is a front face
@@ -476,7 +476,7 @@ void Rendering::ReadFrontFaceParameter()
  * If enabled, histogram incoming RGBA color values.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glHistogram.xml
  */
-void Rendering::ReadHistogramParameter()
+void rendering::ReadHistogramParameter()
 {
 	if (supportedOpenGLLevel > 300)
 	{
@@ -484,7 +484,7 @@ void Rendering::ReadHistogramParameter()
 		CheckErrorCode(__FUNCTION__, "Initializing histogram parameters");
 		return;
 	}
-	int histogramEnabled = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_ENABLED", 0);
+	const auto histogramEnabled = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_ENABLED", 0);
 	if (histogramEnabled == 0)
 	{
 		glDisable(GL_HISTOGRAM);
@@ -550,7 +550,7 @@ void Rendering::ReadHistogramParameter()
 		histogramInternalFormat = GL_RGBA;
 	}
 
-	bool histogramSink = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_SINK", false);
+	const auto histogramSink = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_SINK", false);
 	glHistogram(histogramTarget, histogramWidth, histogramInternalFormat, histogramSink);
 
 	if (histogramSink)
@@ -586,7 +586,7 @@ void Rendering::ReadHistogramParameter()
  * If enabled, discard fragments that are outside the scissor rectangle.
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glScissor.xml
  */
-void Rendering::ReadScissorTestParameter(int width, int height)
+void rendering::ReadScissorTestParameter(int width, int height)
 {
 	glScissorTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_TEST_ENABLED", false);
 	glScissorTestEnabledOld = glScissorTestEnabled;
@@ -624,9 +624,9 @@ void Rendering::ReadScissorTestParameter(int width, int height)
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glStencilFuncSeparate.xml
  * See https://www.opengl.org/sdk/docs/man3/xhtml/glStencilOp.xml
  */
-void Rendering::ReadStencilTestParameter()
+void rendering::ReadStencilTestParameter()
 {
-	int stencilTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_STENCIL_TEST_ENABLED", 0);
+	const auto stencilTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_STENCIL_TEST_ENABLED", 0);
 	if (stencilTestEnabled == 0)
 	{
 		glDisable(GL_STENCIL_TEST);
@@ -664,7 +664,7 @@ void Rendering::ReadStencilTestParameter()
 /**
  * Reads different kinds of OpenGL capabilities regarding textures.
  */
-void Rendering::ReadTextureParameters()
+void rendering::ReadTextureParameters()
 {
 	// TODO: Not yet implemented
 	glEnable(GL_TEXTURE_2D);
@@ -677,7 +677,7 @@ void Rendering::ReadTextureParameters()
 /**
  * See the link: https://www.opengl.org/wiki/GLAPI/glGetError
  */
-void Rendering::CheckErrorCode(const char* functionName, const char* comment)
+void rendering::CheckErrorCode(const char* functionName, const char* comment)
 {
 	GLenum errCode = glGetError();
 	if (errCode == GL_NO_ERROR)
@@ -716,7 +716,7 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 	}
 }
 
-void Rendering::CheckFramebufferStatus()
+void rendering::CheckFramebufferStatus()
 {
 	/**
 	* See https://www.opengl.org/sdk/docs/man3/xhtml/glCheckFramebufferStatus.xml
@@ -758,15 +758,15 @@ void Rendering::CheckFramebufferStatus()
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void TW_CALL Rendering::TweakBarErrorHandler(const char* errorMessage)
+void TW_CALL rendering::TweakBarErrorHandler(const char* errorMessage)
 {
 	ERROR_LOG_RENDERING("TweakBar error: \"", errorMessage, "\"");
 }
 
-void Rendering::InitializeTweakBars()
+void rendering::InitializeTweakBars()
 {
-	TwInit(TW_OPENGL_CORE, NULL); // Initializing AntTweakBar library
-	TwHandleErrors(Rendering::TweakBarErrorHandler);
+	TwInit(TW_OPENGL_CORE, nullptr); // Initializing AntTweakBar library
+	TwHandleErrors(TweakBarErrorHandler);
 
 #ifdef OPEN_GL_PROPERTIES_TWEAK_BAR
 	TwEnumVal blendSFactorEV[] = { { GL_ZERO, "GL_ZERO" }, { GL_ONE, "GL_ONE" }, { GL_SRC_COLOR, "GL_SRC_COLOR" }, { GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR" },
@@ -827,11 +827,11 @@ void Rendering::InitializeTweakBars()
 	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' min=50");
 	TwAddVarRW(glPropertiesBar, "scissorTestBoxHeight", TW_TYPE_INT32, &glScissorBoxHeight, " label='Box height' group='Scissor test' min=50");
 
-	TwSetParam(glPropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+	TwSetParam(glPropertiesBar, nullptr, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 #endif
 }
 
-void Rendering::CheckChangesAndUpdateGLState()
+void rendering::CheckChangesAndUpdateGLState()
 {
 #ifdef OPEN_GL_PROPERTIES_TWEAK_BAR
 	UpdateBlendParameters(); /* ==================== Checking blending parameters ==================== */
@@ -847,7 +847,7 @@ void Rendering::CheckChangesAndUpdateGLState()
 #endif
 }
 
-void Rendering::UpdateBlendParameters()
+void rendering::UpdateBlendParameters()
 {
 	if ((glBlendEnabled == glBlendEnabledOld) && (glBlendSfactor == glBlendSfactorOld) && (glBlendDfactor == glBlendDfactorOld))
 	{
@@ -877,7 +877,7 @@ void Rendering::UpdateBlendParameters()
 	}
 }
 
-void Rendering::UpdateColorLogicOperationParameters()
+void rendering::UpdateColorLogicOperationParameters()
 {
 	if ((glColorLogicOperationEnabled == glColorLogicOperationEnabledOld) && (glColorLogicOperationCode == glColorLogicOperationCodeOld))
 	{
@@ -906,7 +906,7 @@ void Rendering::UpdateColorLogicOperationParameters()
 	}
 }
 
-void Rendering::UpdateCullFaceParameters()
+void rendering::UpdateCullFaceParameters()
 {
 	if ((glCullFaceEnabled == glCullFaceEnabledOld) && (glCullFaceMode == glCullFaceModeOld))
 	{
@@ -939,7 +939,7 @@ void Rendering::UpdateCullFaceParameters()
 
 }
 
-void Rendering::UpdateDepthClampParameters()
+void rendering::UpdateDepthClampParameters()
 {
 	if (glDepthClampEnabled == glDepthClampEnabledOld)
 	{
@@ -962,7 +962,7 @@ void Rendering::UpdateDepthClampParameters()
 	}
 }
 
-void Rendering::UpdateDepthTestParameters()
+void rendering::UpdateDepthTestParameters()
 {
 	if (glDepthTestEnabled != glDepthTestEnabledOld)
 	{
@@ -992,7 +992,7 @@ void Rendering::UpdateDepthTestParameters()
 	//TODO: if (glDepthRangeNearValue
 }
 
-void Rendering::UpdateDitheringParameters()
+void rendering::UpdateDitheringParameters()
 {
 	if (glDitheringEnabled == glDitheringEnabledOld)
 	{
@@ -1013,7 +1013,7 @@ void Rendering::UpdateDitheringParameters()
 	}
 }
 
-void Rendering::UpdateFrontFaceParameters()
+void rendering::UpdateFrontFaceParameters()
 {
 	if (glFrontFaceMode == glFrontFaceModeOld)
 	{
@@ -1026,7 +1026,7 @@ void Rendering::UpdateFrontFaceParameters()
 	NOTICE_LOG_RENDERING(glFrontFaceMode, " value has been chosen for the front face parameter");
 }
 
-void Rendering::UpdateScissorTestParameters()
+void rendering::UpdateScissorTestParameters()
 {
 	if (glScissorTestEnabled != glScissorTestEnabledOld)
 	{

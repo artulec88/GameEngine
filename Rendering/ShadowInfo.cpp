@@ -2,7 +2,7 @@
 #include "ShadowInfo.h"
 #include "Utility/ILogger.h"
 
-Rendering::ShadowInfo::ShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2, math::Real shadowSoftness /* = 1.0f */, math::Real lightBleedingReductionFactor /* = 0.2f */, math::Real minVariance /* = 0.00002f */) :
+rendering::ShadowInfo::ShadowInfo(const math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2, math::Real shadowSoftness /* = 1.0f */, math::Real lightBleedingReductionFactor /* = 0.2f */, math::Real minVariance /* = 0.00002f */) :
 	m_projectionMatrix(projection),
 	m_flipFacesEnabled(flipFacesEnabled),
 	m_shadowMapSizeAsPowerOf2(shadowMapSizeAsPowerOf2),
@@ -23,6 +23,6 @@ Rendering::ShadowInfo::ShadowInfo(const math::Matrix4D& projection, bool flipFac
 //}
 
 
-Rendering::ShadowInfo::~ShadowInfo()
+rendering::ShadowInfo::~ShadowInfo()
 {
 }
