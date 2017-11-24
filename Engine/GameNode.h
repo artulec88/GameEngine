@@ -10,8 +10,8 @@
 #include "IUpdateable.h"
 #include "GameNodeCommand.h"
 
-#include "Rendering\Renderer.h"
-#include "Rendering\Shader.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/Shader.h"
 
 #include "Math/Transform.h"
 

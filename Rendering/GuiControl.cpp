@@ -19,7 +19,7 @@ rendering::controls::GuiControl::~GuiControl()
 
 void rendering::controls::GuiControl::MoveAabr(math::Real bottomLeftOffsetX, math::Real bottomLeftOffsetY, math::Real topRightOffsetX, math::Real topRightOffsetY)
 {
-	m_aabr.SetBottomLeftPos(math::Vector2D(m_screenPosition.x + bottomLeftOffsetX, (m_screenPosition.y + bottomLeftOffsetY)));
+	m_aabr.SetBottomLeftPos(math::Vector2D(m_screenPosition.x + bottomLeftOffsetX, m_screenPosition.y + bottomLeftOffsetY));
 	m_aabr.SetTopRightPos(math::Vector2D(m_screenPosition.x + topRightOffsetX, m_screenPosition.y + topRightOffsetY));
 	DELOCUST_LOG_RENDERING("AABR for the GUI control is:\n\t", m_aabr.GetBottomLeftPos(), "\n\t", m_aabr.GetTopRightPos());
 }

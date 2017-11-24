@@ -52,7 +52,7 @@ void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 	// Create the depth buffer
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, cubeMapSize, cubeMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, cubeMapSize, cubeMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -70,7 +70,7 @@ void rendering::CubeShadowMap::Init(unsigned int windowWidth, unsigned int windo
 
 	for (unsigned int i = 0; i < cubeMapFacesCount; ++i)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cubeMapSize, cubeMapSize, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cubeMapSize, cubeMapSize, 0, GL_RED, GL_FLOAT, nullptr);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);

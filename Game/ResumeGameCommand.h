@@ -2,7 +2,7 @@
 #define __GAME_RESUME_GAME_COMMAND_H__
 
 #include "Engine\GameCommand.h"
-#include "Engine\GameManager.h"
+#include "Engine/GameManager.h"
 
 namespace Game
 {

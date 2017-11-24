@@ -5,7 +5,7 @@
 #include "GameComponent.h"
 #include "IUpdateable.h"
 
-#include "Rendering\Terrain.h"
+#include "Rendering/Terrain.h"
 
 #include "Math/Vector.h"
 

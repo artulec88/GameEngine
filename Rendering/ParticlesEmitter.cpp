@@ -21,10 +21,10 @@ void rendering::particles::ParticlesEmitter::Emit(math::Real deltaTime, Particle
 	m_currentTimer += deltaTime;
 	if (m_currentTimer > m_timeToEmitOneParticle)
 	{
-		const size_t maxNewParticles = static_cast<size_t>(m_currentTimer / m_timeToEmitOneParticle);
-		m_currentTimer = std::fmod(m_currentTimer, m_timeToEmitOneParticle); // see http://en.cppreference.com/w/cpp/numeric/math/fmod.
-		const size_t startId = particleContainer->GetAliveCount();
-		const size_t endId = std::min(startId + maxNewParticles, particleContainer->GetMaxCount());
+		const auto maxNewParticles = static_cast<size_t>(m_currentTimer / m_timeToEmitOneParticle);
+		m_currentTimer = fmod(m_currentTimer, m_timeToEmitOneParticle); // see http://en.cppreference.com/w/cpp/numeric/math/fmod.
+		const auto startId = particleContainer->GetAliveCount();
+		const auto endId = std::min(startId + maxNewParticles, particleContainer->GetMaxCount());
 
 		//ERROR_LOG_RENDERING("Delta time = ", deltaTime, "[ms]. MaxNewParticles = ", maxNewParticles, ". StartId = ", startId, ". EndId = ",
 		//	endId, ". Alive = ", particleContainer->GetAliveCount(), ". All = ", particleContainer->GetCount());
@@ -34,7 +34,7 @@ void rendering::particles::ParticlesEmitter::Emit(math::Real deltaTime, Particle
 			gen->Generate(deltaTime, particleContainer, startId, endId);
 		}
 
-		for (size_t i = startId; i < endId; ++i)
+		for (auto i = startId; i < endId; ++i)
 		{
 			particleContainer->Revive(i);
 		}

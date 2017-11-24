@@ -55,9 +55,9 @@ void rendering::controls::GuiButtonControl::SetText(const std::string& text)
 	text::Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);
 	text::Word currentWord(m_fontSize);
 	bool added;
-	for (std::string::const_iterator textItr = text.begin(); textItr != text.end(); ++textItr)
+	for (auto textItr = text.begin(); textItr != text.end(); ++textItr)
 	{
-		const int asciiCode = static_cast<int>((*textItr));
+		const auto asciiCode = static_cast<int>(*textItr);
 		if (asciiCode == text::Font::SPACE_ASCII_CODE)
 		{
 			added = currentLine.AttemptToAddWord(currentWord);
@@ -84,14 +84,14 @@ void rendering::controls::GuiButtonControl::SetText(const std::string& text)
 
 	// Creating quad vertices based on the lines vector
 	m_linesCount = static_cast<int>(lines.size());
-	math::Real minCursorX = REAL_MAX;
-	math::Real maxCursorX = REAL_MIN;
-	math::Real cursorY = REAL_ZERO;
+	auto minCursorX = REAL_MAX;
+	auto maxCursorX = REAL_MIN;
+	auto cursorY = REAL_ZERO;
 	std::vector<math::Vector2D> positions;
 	std::vector<math::Vector2D> textureCoordinates;
 	for (auto lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
 	{
-		math::Real cursorX = (m_isCentered) ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
+		auto cursorX = m_isCentered ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
 		if (minCursorX > cursorX)
 		{
 			minCursorX = cursorX;
@@ -101,14 +101,14 @@ void rendering::controls::GuiButtonControl::SetText(const std::string& text)
 			for (auto characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
 			{
 				// Adding positions
-				const math::Real x = cursorX + (characterItr->GetOffset().x * m_fontSize);
-				const math::Real y = cursorY + (characterItr->GetOffset().y * m_fontSize);
-				const math::Real maxX = x + (characterItr->GetSize().x * m_fontSize);
-				const math::Real maxY = y + (characterItr->GetSize().y * m_fontSize);
-				const math::Real properX = (2.0f * x) - 1.0f;
-				const math::Real properY = (-2.0f * y) + 1.0f;
-				const math::Real properMaxX = (2.0f * maxX) - 1.0f;
-				const math::Real properMaxY = (-2.0f * maxY) + 1.0f;
+				const auto x = cursorX + characterItr->GetOffset().x * m_fontSize;
+				const auto y = cursorY + characterItr->GetOffset().y * m_fontSize;
+				const auto maxX = x + characterItr->GetSize().x * m_fontSize;
+				const auto maxY = y + characterItr->GetSize().y * m_fontSize;
+				const auto properX = 2.0f * x - 1.0f;
+				const auto properY = -2.0f * y + 1.0f;
+				const auto properMaxX = 2.0f * maxX - 1.0f;
+				const auto properMaxY = -2.0f * maxY + 1.0f;
 
 				//CRITICAL_LOG_RENDERING(tempCount++, ")\n\t(x, y) = (", x, ", ", y, ");\n\t(maxX, maxY) = (", maxX, ", ", maxY,
 				//	");\n\t(properX, properY) = (", properX, ", ", properY, ");\n\t(properMaxX, properMaxY) = (", properMaxX, ", ", properMaxY, ");");

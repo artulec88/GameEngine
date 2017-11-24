@@ -47,15 +47,16 @@ namespace rendering
 
 			/// <summary> Particles emitter copy assignment operator. </summary>
 			/// <param name="particlesEmitter"> The particles emitter to copy-assign from. </param>
+			/// <returns> The reference to the newly copy-assigned particles emitter. </returns>
 			ParticlesEmitter& operator=(const ParticlesEmitter& particlesEmitter) = delete;
 
 			/// <summary> Particles emitter move assignment operator. </summary>
 			/// <param name="particlesEmitter"> The particles emitter to move-assign from. </param>
+			/// <returns> The reference to the newly move-assigned particles emitter. </returns>
 			ParticlesEmitter& operator=(ParticlesEmitter&& particlesEmitter) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Based on the given <paramref name="numberOfParticlesToGeneratePerSecond"/> the time for one particle to be generated is calculated.
 			/// </summary>

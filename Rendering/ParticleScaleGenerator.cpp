@@ -16,7 +16,7 @@ rendering::particles::generators::ConstantScaleGenerator::~ConstantScaleGenerato
 
 void rendering::particles::generators::ConstantScaleGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_scale);
 	}
@@ -38,7 +38,7 @@ rendering::particles::generators::RangeScaleGenerator::~RangeScaleGenerator()
 
 void rendering::particles::generators::RangeScaleGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_randomGenerator.NextFloat(m_minScale, m_maxScale));
 	}

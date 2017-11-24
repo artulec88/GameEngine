@@ -21,7 +21,7 @@ rendering::particles::generators::ConstantVelocityGenerator::~ConstantVelocityGe
 
 void rendering::particles::generators::ConstantVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_velocity);
 	}
@@ -47,7 +47,7 @@ rendering::particles::generators::RangeVelocityGenerator::~RangeVelocityGenerato
 
 void rendering::particles::generators::RangeVelocityGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, math::Vector3D{ m_randomGenerator.NextFloat(m_minSpeedX, m_maxSpeedX), m_randomGenerator.NextFloat(m_minSpeedY, m_maxSpeedY), m_randomGenerator.NextFloat(m_minSpeedZ, m_maxSpeedZ) });
 	}

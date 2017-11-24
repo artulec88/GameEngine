@@ -29,17 +29,17 @@ void rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* gr
 	_snprintf_s(defFloatStr, 256, 255, " step=0.01 precision=2 group='Floats' ");
 	_snprintf_s(defVec3DStr, 256, 255, " group='Vectors' ");
 
-	for (StrToRealMap::iterator realItr = m_realMap.begin(); realItr != m_realMap.end(); ++realItr)
+	for (auto realItr = m_realMap.begin(); realItr != m_realMap.end(); ++realItr)
 	{
-		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, (realItr->first).c_str());
-		TwAddVarRW(tweakBar, temp, TW_TYPE_FLOAT, &(realItr->second), defFloatStr);
+		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, realItr->first.c_str());
+		TwAddVarRW(tweakBar, temp, TW_TYPE_FLOAT, &realItr->second, defFloatStr);
 	}
-	for (StrToVec3DMap::iterator vec3DItr = m_vec3Map.begin(); vec3DItr != m_vec3Map.end(); ++vec3DItr)
+	for (auto vec3DItr = m_vec3Map.begin(); vec3DItr != m_vec3Map.end(); ++vec3DItr)
 	{
-		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, (vec3DItr->first).c_str());
-		TwAddVarRW(tweakBar, temp, vector3DType, &(vec3DItr->second), defVec3DStr);
+		_snprintf_s(temp, 256, 255, "%s\\%s", groupName, vec3DItr->first.c_str());
+		TwAddVarRW(tweakBar, temp, vector3DType, &vec3DItr->second, defVec3DStr);
 	}
-	const char* tweakBarName = TwGetBarName(tweakBar);
+	const auto tweakBarName = TwGetBarName(tweakBar);
 	char defStr[256];
 	if (!m_realMap.empty())
 	{

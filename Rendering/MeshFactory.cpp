@@ -43,7 +43,7 @@ rendering::MeshFactory::~MeshFactory()
 
 const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std::string& meshFileName)
 {
-	rendering::CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
+	CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
 	CHECK_CONDITION_RENDERING(!meshFileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
 #ifdef MEASURE_MESH_TIME_ENABLED
@@ -79,10 +79,10 @@ const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std:
 	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	for (unsigned int i = 0; i < model->mNumVertices; ++i)
 	{
-		const aiVector3D* pPos = &(model->mVertices[i]);
-		const aiVector3D* pNormal = &(model->mNormals[i]);
-		const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
-		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
+		const auto* pPos = &model->mVertices[i];
+		const auto pNormal = &model->mNormals[i];
+		const auto pTexCoord = model->HasTextureCoords(0) ? &model->mTextureCoords[0][i] : &aiZeroVector;
+		auto pTangent = model->HasTangentsAndBitangents() ? &model->mTangents[i] : &aiZeroVector;
 		if (pTangent == nullptr)
 		{
 			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", meshFileName, "\"");
@@ -117,7 +117,7 @@ const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std:
 	timer.Stop();
 	INFO_LOG_RENDERING("Loading model took ", timer.GetTimeSpan().ToString());
 #endif
-	rendering::CheckErrorCode(__FUNCTION__, "Finished model loading");
+	CheckErrorCode(__FUNCTION__, "Finished model loading");
 
 	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshId, std::make_unique<Mesh>(indices.data(), indices.size(),
 		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
@@ -135,12 +135,12 @@ const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshId,
 	normals.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
 	std::vector<math::Vector3D> tangents;
 	tangents.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
-	for (int z = 0; z < surface.GetVerticalVerticesCount(); ++z)
+	for (auto z = 0; z < surface.GetVerticalVerticesCount(); ++z)
 	{
-		const math::Real zReal = static_cast<math::Real>(z);
-		for (int x = 0; x < surface.GetHorizontalVerticesCount(); ++x)
+		const auto zReal = static_cast<math::Real>(z);
+		for (auto x = 0; x < surface.GetHorizontalVerticesCount(); ++x)
 		{
-			const math::Real xReal = static_cast<math::Real>(x);
+			const auto xReal = static_cast<math::Real>(x);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			positions.emplace_back(surface.GetPositionAt(x, z));
 			//CRITICAL_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", positions.back());
@@ -152,14 +152,14 @@ const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshId,
 
 	std::vector<int> indices;
 	indices.reserve((surface.GetHorizontalVerticesCount() - 1) * (surface.GetVerticalVerticesCount() - 1) * 6);
-	for (int gz = 0; gz < surface.GetVerticalVerticesCount() - 1; ++gz)
+	for (auto gz = 0; gz < surface.GetVerticalVerticesCount() - 1; ++gz)
 	{
-		for (int gx = 0; gx < surface.GetHorizontalVerticesCount() - 1; ++gx)
+		for (auto gx = 0; gx < surface.GetHorizontalVerticesCount() - 1; ++gx)
 		{
-			int bottomLeft = (gz * surface.GetHorizontalVerticesCount()) + gx;
-			int bottomRight = bottomLeft + 1;
-			int topLeft = ((gz + 1) * surface.GetHorizontalVerticesCount()) + gx;
-			int topRight = topLeft + 1;
+			const auto bottomLeft = gz * surface.GetHorizontalVerticesCount() + gx;
+			const auto bottomRight = bottomLeft + 1;
+			const auto topLeft = (gz + 1) * surface.GetHorizontalVerticesCount() + gx;
+			const auto topRight = topLeft + 1;
 			indices.push_back(bottomLeft);
 			indices.push_back(topLeft);
 			indices.push_back(bottomRight);
@@ -195,10 +195,10 @@ const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshId,
 
 math::Vector3D rendering::MeshFactory::CalculateNormal(int x, int z, const math::Surface& surface) const
 {
-	const auto heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
-	const auto heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
-	const auto heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
-	const auto heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
+	const auto heightLeft = x >= 1 ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
+	const auto heightRight = x < surface.GetHorizontalVerticesCount() - 1 ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
+	const auto heightDown = z >= 1 ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
+	const auto heightUp = z < surface.GetVerticalVerticesCount() - 1 ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
 	math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;

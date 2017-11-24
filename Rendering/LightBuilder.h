@@ -209,7 +209,7 @@ namespace rendering
 		/// <summary>
 		/// Directional light builder.
 		/// </summary>
-		class DirectionalLightBuilder : public LightBuilder<lighting::DirectionalLight>
+		class DirectionalLightBuilder : public LightBuilder<DirectionalLight>
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
@@ -304,7 +304,7 @@ namespace rendering
 			void SetDefault() override;
 			PointLight Get() override
 			{
-				return lighting::PointLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderId, m_terrainShaderId, m_noShadowShaderId, m_noShadowTerrainShaderId,
+				return PointLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderId, m_terrainShaderId, m_noShadowShaderId, m_noShadowTerrainShaderId,
 					m_attenuation);
 			}
 			/* ==================== Non-static member functions end ==================== */

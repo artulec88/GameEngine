@@ -43,7 +43,7 @@ unsigned char rendering::Image::GetPixelAt(int row, int column) const
 		"Cannot determine the pixel value on (", x, ", ", z, ") position. Image data is NULL.");
 	CHECK_CONDITION_RETURN_RENDERING(row >= 0 && row < m_height && column >= 0 && column < heightMapWidth, REAL_ZERO,
 		Utility::Logging::ERR, "Cannot determine the pixel value on (", x, ", ", z, ") position. It is out of range.");
-	const int pixelIndex = row * m_width + column;
+	const auto pixelIndex = row * m_width + column;
 	CHECK_CONDITION_RENDERING(pixelIndex >= 0 && pixelIndex < m_width * m_height, Utility::Logging::ERR,
 		"The pixel index calculation is incorrect. Calculated index (", pixelIndex, ") is out of range [0; ", m_width * m_height, ")");
 	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);

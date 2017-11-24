@@ -28,7 +28,7 @@ namespace rendering
 		RENDERING_API MeshFactory(const std::string& modelsDirectory, const std::string& texturesDirectory);
 
 		/// <summary>The destructor.</summary>
-		RENDERING_API ~MeshFactory(void);
+		RENDERING_API ~MeshFactory();
 
 		/// <summary> Mesh factory copy constructor. </summary>
 		/// <param name="meshFactory"> The mesh factory to copy construct from. </param>

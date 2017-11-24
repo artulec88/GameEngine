@@ -2,9 +2,9 @@
 #define __INTRO_GAME_STATE_H__
 
 #include "Def.h"
-#include "Rendering\Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Engine\IRenderable.h"
-#include "Engine\GameState.h"
+#include "Engine/GameState.h"
 //#include "Rendering\GameCommand.h"
 #include "Math/Math.h"
 #include "Engine\GameNode.h"

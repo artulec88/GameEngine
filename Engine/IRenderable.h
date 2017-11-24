@@ -3,8 +3,8 @@
 
 #include "Engine.h"
 
-#include "Rendering\Shader.h"
-#include "Rendering\Renderer.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Renderer.h"
 
 #include "Math/Math.h"
 

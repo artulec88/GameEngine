@@ -1,6 +1,6 @@
 #include "ShowIntroCommand.h"
 #include "Def.h"
-#include "Engine\GameManager.h"
+#include "Engine/GameManager.h"
 
 Game::ShowIntroCommand::ShowIntroCommand() :
 	engine::GameCommand()

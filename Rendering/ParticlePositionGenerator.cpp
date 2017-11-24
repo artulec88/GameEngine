@@ -22,7 +22,7 @@ rendering::particles::generators::ConstantPositionGenerator::~ConstantPositionGe
 
 void rendering::particles::generators::ConstantPositionGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_position);
 	}
@@ -51,7 +51,7 @@ rendering::particles::generators::PlanePositionGenerator::~PlanePositionGenerato
 void rendering::particles::generators::PlanePositionGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		//math::Vector3D randomPos(m_plane.GenerateRandomPositionWithinRadius(m_radius));
 		//CRITICAL_LOG_MATH("Random position on plane: ", randomPos);
@@ -94,7 +94,7 @@ rendering::particles::generators::BoxPositionGenerator::~BoxPositionGenerator()
 
 void rendering::particles::generators::BoxPositionGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, math::Vector3D{ m_randomGenerator.NextFloat(m_minX, m_maxX), m_randomGenerator.NextFloat(m_minY, m_maxY), m_randomGenerator.NextFloat(m_minZ, m_maxZ) });
 	}
@@ -126,10 +126,10 @@ void rendering::particles::generators::EllipsoidPositionGenerator::Generate(math
 	// TODO: Picking random point inside the ellipsoid with uniform probability.
 	// See http://stackoverflow.com/questions/5529148/algorithm-calculate-pseudo-random-point-inside-an-ellipse.
 	// http://math.stackexchange.com/questions/87230/picking-random-points-in-the-volume-of-sphere-with-uniform-probability.
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		const math::Angle randomAngle{ m_randomGenerator.NextFloat(REAL_ZERO, 2.0f * math::PI), math::units::RADIAN };
-		const math::Real randomValueSquareRoot{ sqrt(m_randomGenerator.NextFloat(REAL_ZERO, REAL_ONE)) };
+		const auto randomValueSquareRoot{ sqrt(m_randomGenerator.NextFloat(REAL_ZERO, REAL_ONE)) };
 		//math::Real x = (randomValueSquareRoot * randomAngle.Cos()) * m_a;
 		//math::Real y = (randomValueSquareRoot * randomAngle.Sin()) * m_b;
 		Set(particleContainer, i, m_center + math::Vector3D{ m_randomGenerator.NextFloat(-m_a, m_a), m_randomGenerator.NextFloat(-m_b, m_b), m_randomGenerator.NextFloat(-m_c, m_c) });

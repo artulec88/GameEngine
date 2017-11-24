@@ -16,7 +16,7 @@ rendering::particles::generators::ConstantRotationGenerator::~ConstantRotationGe
 
 void rendering::particles::generators::ConstantRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_angle);
 	}
@@ -38,7 +38,7 @@ rendering::particles::generators::RangeRotationGenerator::~RangeRotationGenerato
 
 void rendering::particles::generators::RangeRotationGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, math::Angle(m_randomGenerator.NextFloat(m_minAngleInRadians, m_maxAngleInRadians), math::units::RADIAN));
 	}

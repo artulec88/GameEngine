@@ -3,7 +3,6 @@
 
 #include "Rendering.h"
 #include "Shader.h"
-#include "ShaderIDs.h"
 
 #include "Utility/ILogger.h"
 
@@ -46,7 +45,7 @@ namespace rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 		RENDERING_API const Shader* CreateShader(int shaderId, const std::string& shaderFileName);
-		RENDERING_API const Shader* GetShader(int shaderId) const
+		RENDERING_API const Shader* GetShader(const int shaderId) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_shaderType2ShaderMap.find(shaderId) != m_shaderType2ShaderMap.end(), Utility::Logging::EMERGENCY,
 				"No shader has been created for the specified type of shader (", shaderId, ").");

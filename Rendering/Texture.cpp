@@ -24,7 +24,7 @@ rendering::TextureData::TextureData(const std::string& fileName, GLenum textureT
 	Image image(fileName, STBI_rgb_alpha);
 	m_width = image.GetWidth();
 	m_height = image.GetHeight();
-	unsigned char* imageData = image.GetData();
+	auto imageData = image.GetData();
 	InitTextures(&imageData, &filter, &internalFormat, &format, wrapping);
 	if (attachment != GL_NONE)
 	{
@@ -62,10 +62,10 @@ rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	constexpr int cubeMapFacesCount = 6;
+	constexpr auto cubeMapFacesCount = 6;
 
 	std::array<Image, cubeMapFacesCount> cubeMapImages = { Image(posXFileName, STBI_rgb_alpha), Image(negXFileName, STBI_rgb_alpha), Image(posYFileName, STBI_rgb_alpha), Image(negYFileName, STBI_rgb_alpha), Image(posZFileName, STBI_rgb_alpha), Image(negZFileName, STBI_rgb_alpha) };
-	for (int i = 0; i < cubeMapFacesCount; ++i)
+	for (auto i = 0; i < cubeMapFacesCount; ++i)
 	{
 		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(cubeMapImages[i].GetData() != nullptr, utility::logging::EMERGENCY,
 			"Unable to load texture #", i, " for the cube map");
@@ -102,7 +102,7 @@ rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 		GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
 		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 	};
-	for (int i = 0; i < cubeMapFacesCount; ++i)
+	for (auto i = 0; i < cubeMapFacesCount; ++i)
 	{
 		glTexImage2D(targets[i], 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapImages[i].GetData());
 	}
@@ -139,7 +139,7 @@ rendering::TextureData::~TextureData()
 rendering::TextureData::TextureData(TextureData&& textureData) noexcept :
 	m_textureTarget(std::move(textureData.m_textureTarget)),
 	m_texturesCount(std::move(textureData.m_texturesCount)),
-	m_textureIDs(std::move(textureData.m_textureIDs)),
+	m_textureIDs(move(textureData.m_textureIDs)),
 	m_width(std::move(textureData.m_width)),
 	m_height(std::move(textureData.m_height)),
 	m_framebuffer(std::move(textureData.m_framebuffer)),
@@ -159,7 +159,7 @@ void rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 
 	glGenTextures(m_texturesCount, &m_textureIDs[0]);
 	CheckErrorCode(__FUNCTION__, "Generating textures");
-	for (int i = 0; i < m_texturesCount; ++i)
+	for (auto i = 0; i < m_texturesCount; ++i)
 	{
 		glBindTexture(m_textureTarget, m_textureIDs[i]);
 		glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
@@ -182,7 +182,7 @@ void rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 		CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_WRAP_* wrapping parameters.");
 
 		// If we want to use mipmapping we must submit the data to the texture before.
-		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, (data == nullptr) ? nullptr : data[i]);
+		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data == nullptr ? nullptr : data[i]);
 
 		if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
 			filters[i] == GL_NEAREST_MIPMAP_LINEAR ||
@@ -220,12 +220,12 @@ void rendering::TextureData::InitRenderTargets(GLenum* attachments)
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 
 	std::vector<GLenum> drawBuffers(m_texturesCount);
-	bool hasDepth = false;
+	auto hasDepth = false;
 
-	for (int i = 0; i < m_texturesCount; ++i)
+	for (auto i = 0; i < m_texturesCount; ++i)
 	{
 		DELOCUST_LOG_RENDERING("The texture uses ", attachments[i], " as an attachment");
-		if ( (attachments[i] == GL_DEPTH_ATTACHMENT) || (attachments[i] == GL_STENCIL_ATTACHMENT) )
+		if ( attachments[i] == GL_DEPTH_ATTACHMENT || attachments[i] == GL_STENCIL_ATTACHMENT )
 		{
 			/**
 			 * The draw buffers are only concerned about the fragment shader's output so in fact they are not needed for depth and stencil buffers.
@@ -271,8 +271,8 @@ void rendering::TextureData::InitRenderTargets(GLenum* attachments)
 	}
 	glDrawBuffers(m_texturesCount, drawBuffers.data());
 
-	GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	CHECK_CONDITION_EXIT_RENDERING(framebufferStatus == GL_FRAMEBUFFER_COMPLETE, Utility::Logging::CRITICAL, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is ", status, ".");
+	CHECK_CONDITION_EXIT_RENDERING(GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER), Utility::Logging::CRITICAL,
+		"Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is ", status, ".");
 }
 
 void rendering::TextureData::BindAsRenderTarget() const

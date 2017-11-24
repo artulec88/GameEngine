@@ -41,20 +41,25 @@ namespace rendering
 			RENDERING_API ~ParticlesSystem();
 
 			/// <summary> Particles system copy constructor. </summary>
+			/// <param name="particlesSystem"> The reference to particles system to copy construct from. </param>
 			ParticlesSystem(const ParticlesSystem& particlesSystem) = default;
 
 			/// <summary> Particles system move constructor. </summary>
+			/// <param name="particlesSystem"> The r-value reference to particles system to move construct from. </param>
 			RENDERING_API ParticlesSystem(ParticlesSystem&& particlesSystem) = default;
 
 			/// <summary> Particles system copy assignment operator. </summary>
+			/// <param name="particlesSystem"> The reference to particles system to copy assign from. </param>
+			/// <returns> The reference to newly copy-assigned particles system. </returns>
 			ParticlesSystem& operator=(const ParticlesSystem& particlesSystem) = default;
 
 			/// <summary> Particles system move assignment operator. </summary>
+			/// <param name="particlesSystem"> The r-value reference to particles system to move assign from. </param>
+			/// <returns> The reference to newly move-assigned particles system. </returns>
 			RENDERING_API ParticlesSystem& operator=(ParticlesSystem&& particlesSystem) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Updates the particles system. The simulation moves forward in time by the specified <paramref name="deltaTime"/> value.
 			/// </summary>

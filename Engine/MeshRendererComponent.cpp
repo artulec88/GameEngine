@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "MeshRendererComponent.h"
-#include "Rendering\Shader.h"
-#include "Rendering\Renderer.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Renderer.h"
 
 engine::MeshRendererComponent::MeshRendererComponent(int meshID, const rendering::Material* material) :
 	GameComponent(),

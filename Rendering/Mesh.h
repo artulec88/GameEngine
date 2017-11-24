@@ -90,7 +90,7 @@ namespace rendering
 		/// <summary> Binds the mesh data's Vertex Array Object (VAO) to be currently used by the rendering context. </summary>
 		void Bind() const
 		{
-			rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
+			CheckErrorCode(__FUNCTION__, "Started mesh data binding");
 			//WARNING_LOG_RENDERING("Binding mesh data \"", *this, "\".");
 			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
@@ -100,7 +100,7 @@ namespace rendering
 		/// <summary> Unbinds the mesh data's Vertex Array Object (VAO). </summary>
 		void Unbind() const
 		{
-			rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
+			CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
 			//WARNING_LOG_RENDERING("Unbinding mesh data \"", *this, "\".");
 			//int index = 0;
 			//for (std::vector<GLuint>::const_iterator vboItr = m_vbos.begin(); vboItr != m_vbos.end(); ++vboItr, ++index)
@@ -165,7 +165,7 @@ namespace rendering
 		friend std::ostream& operator<<(std::ostream& out, const MeshData& meshData)
 		{
 			out << "VAO = " << meshData.m_vao << "; VBOs = [";
-			for (int i = 0; i < mesh_buffer_types::COUNT; ++i)
+			for (auto i = 0; i < mesh_buffer_types::COUNT; ++i)
 			{
 				out << meshData.m_buffers[i];
 				if (i + 1 < mesh_buffer_types::COUNT)
@@ -313,9 +313,9 @@ namespace rendering
 		/// </returns>
 		RENDERING_API void* GetBufferData(mesh_buffer_types::MeshBufferType buffer, int* bufferEntriesCount) const;
 	protected:
-		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
+		void ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount) const;
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
-		void FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_attribute_locations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount);
+		void FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_attribute_locations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount) const;
 
 		void AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount);
 		void AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
@@ -327,7 +327,6 @@ namespace rendering
 
 
 	/* ==================== Non-static member variables begin ==================== */
-	protected:
 #ifdef STORE_MESH_FILE_NAME
 		std::string m_fileName;
 #endif
@@ -351,21 +350,31 @@ namespace rendering
 		/// <param name="billboardsCount"> The number of billboards that will use this billboards mesh. </param>
 		/// <param name="billboardDataLength"> The data length for a single billboard in the <paramref name="modelMatricesValues"/>. </param>
 		BillboardMesh(math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
+
 		/// <summary> Billboards mesh destructor. </summary>
-		virtual ~BillboardMesh(void);
+		virtual ~BillboardMesh();
+
 		/// <summary> Billboards mesh copy constructor. </summary>
+		/// <param name="billboardMesh"> The reference to billboard mesh to copy construct from. </param>
 		BillboardMesh(const BillboardMesh& billboardMesh) = delete;
+
 		/// <summary> Billboards mesh move constructor. </summary>
+		/// <param name="billboardMesh"> The r-value reference to billboard mesh to move construct from. </param>
 		BillboardMesh(BillboardMesh&& billboardMesh) = delete;
+
 		/// <summary> Billboards mesh copy assignment operator. </summary>
+		/// <param name="billboardMesh"> The reference to billboard mesh to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned billboard mesh. </returns>
 		BillboardMesh& operator=(const BillboardMesh& billboardMesh) = delete;
+
 		/// <summary> Billboards mesh move assignment operator. </summary>
+		/// <param name="billboardMesh"> The r-value reference to billboard mesh to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned billboard mesh. </returns>
 		BillboardMesh& operator=(BillboardMesh&& billboardMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Draw() const override;
+		void Draw() const override;
 		/* ==================== Non-static member functions end ==================== */
 
 
@@ -381,7 +390,6 @@ namespace rendering
 	class InstanceMesh : public Mesh
 	{
 		/* ==================== Non-static member functions begin ==================== */
-	private:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -390,30 +398,40 @@ namespace rendering
 		/// Instance mesh constructor.
 		/// </summary>
 		InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
+
 		/// <summary>
 		/// Instance mesh destructor.
 		/// </summary>
-		virtual ~InstanceMesh(void);
+		virtual ~InstanceMesh();
+
 		/// <summary>
 		/// Instance mesh copy constructor.
 		/// </summary>
+		/// <param name="instanceMesh"> The reference to instance mesh to copy construct from. </param>
 		InstanceMesh(const InstanceMesh& instanceMesh) = delete;
+
 		/// <summary>
 		/// Instance mesh move constructor.
 		/// </summary>
+		/// <param name="instanceMesh"> The r-value reference to instance mesh to move construct from. </param>
 		InstanceMesh(InstanceMesh&& instanceMesh) = delete;
+
 		/// <summary>
 		/// Instance mesh copy assignment operator.
 		/// </summary>
+		/// <param name="instanceMesh"> The reference to instance mesh to copy assign from. </param>
+		/// <returns> The reference to newly copy-assigned instance mesh. </returns>
 		InstanceMesh& operator=(const InstanceMesh& instanceMesh) = delete;
+
 		/// <summary>
 		/// Instance mesh move assignment operator.
 		/// </summary>
+		/// <param name="instanceMesh"> The r-value reference to instance mesh to move assign from. </param>
+		/// <returns> The reference to newly move-assigned instance mesh. </returns>
 		InstanceMesh& operator=(InstanceMesh&& instanceMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Gives information about the amount of data one instance uses. </summary>
 		/// <returns> The amount of data used by every instance. </returns>
 		unsigned int GetInstanceDataLength() const { return m_instanceDataLength; }

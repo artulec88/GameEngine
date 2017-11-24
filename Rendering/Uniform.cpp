@@ -6,26 +6,26 @@
 
 rendering::uniforms::UniformType rendering::uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
 {
-	if (uniformTypeStr == "int") { return uniforms::INT; }
-	if (uniformTypeStr == "float") { return uniforms::REAL; }
-	if (uniformTypeStr == "vec2") { return uniforms::VEC_2; }
-	if (uniformTypeStr == "vec3") { return uniforms::VEC_3; }
-	if (uniformTypeStr == "vec4") { return uniforms::VEC_4; }
-	if (uniformTypeStr == "mat4") { return uniforms::MATRIX_4x4; }
-	if (uniformTypeStr == "sampler2D") { return uniforms::SAMPLER_2D; }
-	if (uniformTypeStr == "samplerCube") { return uniforms::SAMPLER_CUBE; }
-	if (uniformTypeStr == "BaseLight") { return uniforms::BASE_LIGHT; }
-	if (uniformTypeStr == "DirectionalLight") { return uniforms::DIRECTIONAL_LIGHT; }
-	if (uniformTypeStr == "PointLight") { return uniforms::POINT_LIGHT; }
-	if (uniformTypeStr == "SpotLight") { return uniforms::SPOT_LIGHT; }
-	if (uniformTypeStr == "Attenuation") { return uniforms::ATTENUATION; }
+	if (uniformTypeStr == "int") { return INT; }
+	if (uniformTypeStr == "float") { return REAL; }
+	if (uniformTypeStr == "vec2") { return VEC_2; }
+	if (uniformTypeStr == "vec3") { return VEC_3; }
+	if (uniformTypeStr == "vec4") { return VEC_4; }
+	if (uniformTypeStr == "mat4") { return MATRIX_4x4; }
+	if (uniformTypeStr == "sampler2D") { return SAMPLER_2D; }
+	if (uniformTypeStr == "samplerCube") { return SAMPLER_CUBE; }
+	if (uniformTypeStr == "BaseLight") { return BASE_LIGHT; }
+	if (uniformTypeStr == "DirectionalLight") { return DIRECTIONAL_LIGHT; }
+	if (uniformTypeStr == "PointLight") { return POINT_LIGHT; }
+	if (uniformTypeStr == "SpotLight") { return SPOT_LIGHT; }
+	if (uniformTypeStr == "Attenuation") { return ATTENUATION; }
 	
 	EMERGENCY_LOG_RENDERING("Uniform type \"", uniformTypeStr, "\" not supported by the rendering engine.");
 	exit(EXIT_FAILURE);
 }
 
 /* ==================== UniformBase class implementation begin ==================== */
-rendering::uniforms::UniformBase::UniformBase(const std::string& name, uniforms::UniformType type) :
+rendering::uniforms::UniformBase::UniformBase(const std::string& name, UniformType type) :
 	m_name(name),
 	m_prefix(m_name.substr(0, 2)),
 	m_unprefixedName(m_name.substr(2, m_name.length())),
@@ -40,7 +40,7 @@ rendering::uniforms::UniformBase::~UniformBase()
 
 
 /* ==================== SimpleUniform class implementation begin ==================== */
-rendering::uniforms::SimpleUniform::SimpleUniform(const std::string& name, uniforms::UniformType type, GLint location) :
+rendering::uniforms::SimpleUniform::SimpleUniform(const std::string& name, UniformType type, GLint location) :
 	UniformBase(name, type),
 	m_location(location)
 {
@@ -82,10 +82,10 @@ rendering::uniforms::TextureUniform::~TextureUniform()
 
 void rendering::uniforms::TextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	const auto samplerSlot = renderer->GetSamplerSlot(GetPrefix() == "R_" ? GetUnprefixedName() : GetName());
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	unsigned int multitextureIndex = 0; // used only by the multitextures
-	const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
+	const auto texture = GetPrefix() == "R_" ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 	texture->Bind(samplerSlot, multitextureIndex);
 	glUniform1i(GetLocation(), samplerSlot);
@@ -106,7 +106,7 @@ rendering::uniforms::CubeTextureUniform::~CubeTextureUniform()
 
 void rendering::uniforms::CubeTextureUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	const auto samplerSlot = renderer->GetSamplerSlot(GetPrefix() == "R_" ? GetUnprefixedName() : GetName());
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	if (GetUnprefixedName() == "cubeShadowMap")
 	{
@@ -115,7 +115,7 @@ void rendering::uniforms::CubeTextureUniform::Update(const Renderer* renderer, c
 	else
 	{
 		unsigned int multitextureIndex = 0; // used only by the multitextures
-		const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
+		const auto* texture = GetPrefix() == "R_" ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
 		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 		texture->Bind(samplerSlot, multitextureIndex);
 	}
@@ -166,7 +166,7 @@ rendering::uniforms::Vector2DUniform::~Vector2DUniform()
 
 void rendering::uniforms::Vector2DUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const math::Vector2D& vector = renderer->GetVec2D(GetUnprefixedName());
+	const auto& vector = renderer->GetVec2D(GetUnprefixedName());
 	glUniform2f(GetLocation(), vector.x, vector.y);
 }
 /* ==================== Vector2DUniform class implementation end ==================== */
@@ -186,17 +186,17 @@ void rendering::uniforms::Vector3DUniform::Update(const Renderer* renderer, cons
 {
 	if (GetPrefix() == "R_")
 	{
-		const math::Vector3D& vector = renderer->GetVec3D(GetUnprefixedName());
+		const auto& vector = renderer->GetVec3D(GetUnprefixedName());
 		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 	else if (GetName() == "C_eyePos")
 	{
-		const math::Vector3D& vector = renderer->GetCurrentCamera().GetTransform().GetPos();
+		const auto& vector = renderer->GetCurrentCamera().GetTransform().GetPos();
 		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 	else
 	{
-		const math::Vector3D& vector = material->GetVec3D(GetName());
+		const auto& vector = material->GetVec3D(GetName());
 		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 }
@@ -217,12 +217,12 @@ void rendering::uniforms::Vector4DUniform::Update(const Renderer* renderer, cons
 {
 	if (GetPrefix() == "R_")
 	{
-		const math::Vector4D& vector = renderer->GetVec4D(GetUnprefixedName());
+		const auto& vector = renderer->GetVec4D(GetUnprefixedName());
 		glUniform4f(GetLocation(), vector.x, vector.y, vector.z, vector.w);
 	}
 	else
 	{
-		const math::Vector4D& vector = material->GetVec4D(GetName());
+		const auto& vector = material->GetVec4D(GetName());
 		glUniform4f(GetLocation(), vector.x, vector.y, vector.z, vector.w);
 	}
 }
@@ -293,8 +293,8 @@ rendering::uniforms::DirectionalLightUniform::~DirectionalLightUniform()
 
 void rendering::uniforms::DirectionalLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const lighting::BaseLight* currentLight = renderer->GetCurrentLight();
-	const math::Vector3D& forwardVector = currentLight->GetTransform().GetTransformedRot().GetForward();
+	const auto currentLight = renderer->GetCurrentLight();
+	const auto& forwardVector = currentLight->GetTransform().GetTransformedRot().GetForward();
 	glUniform3f(m_directionLocation, forwardVector.x, forwardVector.y, forwardVector.z);
 	glUniform4f(GetColorLocation(), currentLight->GetColor().GetRed(), currentLight->GetColor().GetGreen(), currentLight->GetColor().GetBlue(), currentLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), currentLight->GetIntensity());
@@ -336,13 +336,13 @@ rendering::uniforms::PointLightUniform::~PointLightUniform()
 
 void rendering::uniforms::PointLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
+	const auto pointLight = renderer->GetCurrentPointLight();
 	glUniform4f(GetColorLocation(), pointLight->GetColor().GetRed(), pointLight->GetColor().GetGreen(), pointLight->GetColor().GetBlue(), pointLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), pointLight->GetIntensity());
 	glUniform1f(m_constantFactorLocation, pointLight->GetAttenuation().GetConstant());
 	glUniform1f(m_linearFactorLocation, pointLight->GetAttenuation().GetLinear());
 	glUniform1f(m_exponentFactorLocation, pointLight->GetAttenuation().GetExponent());
-	const math::Vector3D& posVector = pointLight->GetTransform().GetTransformedPos();
+	const auto& posVector = pointLight->GetTransform().GetTransformedPos();
 	glUniform3f(m_positionLocation, posVector.x, posVector.y, posVector.z);
 	glUniform1f(m_rangeLocation, pointLight->GetRange());
 }
@@ -368,16 +368,16 @@ rendering::uniforms::SpotLightUniform::~SpotLightUniform()
 
 void rendering::uniforms::SpotLightUniform::Update(const Renderer* renderer, const math::Transform* transform, const Material* material)
 {
-	const lighting::SpotLight* spotLight = dynamic_cast<const lighting::SpotLight*>(renderer->GetCurrentLight());
+	const auto spotLight = dynamic_cast<const lighting::SpotLight*>(renderer->GetCurrentLight());
 	glUniform4f(GetColorLocation(), spotLight->GetColor().GetRed(), spotLight->GetColor().GetGreen(), spotLight->GetColor().GetBlue(), spotLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), spotLight->GetIntensity());
 	glUniform1f(m_constantFactorLocation, spotLight->GetAttenuation().GetConstant());
 	glUniform1f(m_linearFactorLocation, spotLight->GetAttenuation().GetLinear());
 	glUniform1f(m_exponentFactorLocation, spotLight->GetAttenuation().GetExponent());
-	const math::Vector3D& posVector = spotLight->GetTransform().GetTransformedPos();
+	const auto& posVector = spotLight->GetTransform().GetTransformedPos();
 	glUniform3f(m_positionLocation, posVector.x, posVector.y, posVector.z);
 	glUniform1f(m_rangeLocation, spotLight->GetRange());
-	const math::Vector3D& forwardVector = spotLight->GetTransform().GetTransformedRot().GetForward();
+	const auto& forwardVector = spotLight->GetTransform().GetTransformedRot().GetForward();
 	glUniform3f(m_directionLocation, forwardVector.x, forwardVector.y, forwardVector.z);
 	glUniform1f(m_cutoffLocation, spotLight->GetCutoff());
 }

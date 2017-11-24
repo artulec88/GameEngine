@@ -170,7 +170,7 @@ namespace rendering
 
 		void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
 		{
-			const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
+			const auto multitextureName = textureName + " " + std::to_string(textureIndex);
 			const auto textureItr = m_textureMap.find(multitextureName);
 			if (textureItr == m_textureMap.end())
 			{
@@ -250,14 +250,14 @@ namespace rendering
 				// The texture with the specified name has not been found. However, there is still hope- we should look for it in the multitextures.
 				for (auto textureItr = m_textureMap.begin(); textureItr != m_textureMap.end(); ++textureItr)
 				{
-					const std::string& textureNameItr = textureItr->first;
+					const auto& textureNameItr = textureItr->first;
 					const auto spacePos = textureNameItr.find(" ");
 					if (spacePos != std::string::npos)
 					{
 						if (textureNameItr.compare(0, textureName.length(), textureName) == 0)
 						{
 							// multitexture found
-							(*multitextureIndex) = std::stoi(textureNameItr.substr(spacePos + 1));
+							*multitextureIndex = stoi(textureNameItr.substr(spacePos + 1));
 							return textureItr->second;
 						}
 					}

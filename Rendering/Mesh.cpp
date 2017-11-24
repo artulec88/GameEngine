@@ -36,9 +36,9 @@ rendering::MeshData::~MeshData()
 {
 	for (auto bufferItr = m_buffers.begin(); bufferItr != m_buffers.end(); ++bufferItr)
 	{
-		if ((*bufferItr) != 0)
+		if (*bufferItr != 0)
 		{
-			glDeleteBuffers(1, &(*bufferItr));
+			glDeleteBuffers(1, &*bufferItr);
 			*bufferItr = 0;
 		}
 	}
@@ -109,7 +109,7 @@ void rendering::MeshData::ReplaceVbo(mesh_buffer_types::MeshBufferType buffer, v
 		ERROR_LOG_RENDERING("Invalid buffer specified: ", buffer, ".");
 	}
 	Unbind();
-	rendering::CheckErrorCode(__FUNCTION__, "Finished VBO data replacement function");
+	CheckErrorCode(__FUNCTION__, "Finished VBO data replacement function");
 }
 /* ==================== MeshData class implementation end ==================== */
 
@@ -154,7 +154,7 @@ rendering::Mesh::~Mesh()
 
 void rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* textureCoordinates, int verticesCount)
 {
-	rendering::CheckErrorCode(__FUNCTION__, "Started adding 2D vertices to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Started adding 2D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
@@ -185,12 +185,12 @@ void rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* tex
 	}
 
 	m_meshData->Unbind();
-	rendering::CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
 }
 
-void rendering::Mesh::FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_attribute_locations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount)
+void rendering::Mesh::FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_attribute_locations::MeshAttributeLocation attributeLocation, math::Real* data, unsigned int dataCount) const
 {
-	rendering::CheckErrorCode(__FUNCTION__, "Started adding new values to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Started adding new values to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < positionsCount; ++i)
 	{
@@ -209,12 +209,12 @@ void rendering::Mesh::FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_
 	glVertexAttribPointer(attributeLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr); // TODO: The hard-coded values here are the possible reason for adding additional parameters to the function.
 	glEnableVertexAttribArray(attributeLocation);
 	m_meshData->Unbind();
-	rendering::CheckErrorCode(__FUNCTION__, "Finished adding new values to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Finished adding new values to the Mesh");
 }
 
 void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* textureCoordinates, math::Vector3D* normals, math::Vector3D* tangents, math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled)
 {
-	rendering::CheckErrorCode(__FUNCTION__, "Started adding 3D vertices to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Started adding 3D vertices to the Mesh");
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
@@ -225,7 +225,7 @@ void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
-	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>((indices != nullptr) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
+	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>(indices != nullptr ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	if (calcNormalsEnabled)
 	{
@@ -282,7 +282,7 @@ void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 	}
 
 	m_meshData->Unbind();
-	rendering::CheckErrorCode(__FUNCTION__, "Finished adding 3D vertices to the Mesh");
+	CheckErrorCode(__FUNCTION__, "Finished adding 3D vertices to the Mesh");
 }
 
 //void Rendering::Mesh::CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
@@ -347,7 +347,7 @@ void rendering::Mesh::Draw() const
 	CheckErrorCode(__FUNCTION__, "Finished drawing the Mesh");
 }
 
-void rendering::Mesh::ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
+void rendering::Mesh::ReplaceData(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount) const
 {
 	CheckErrorCode(__FUNCTION__, "Started replacing data in the Mesh");
 	//CRITICAL_LOG_RENDERING("Replacing data in the mesh. The functionality has not been tested yet.");
@@ -366,7 +366,7 @@ void* rendering::Mesh::GetBufferData(mesh_buffer_types::MeshBufferType buffer, i
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(buffer));
 
 	const auto bufferSize = GetBufferSize(buffer);
-	void* data = glMapBufferRange(GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_READ_BIT);
+	const auto data = glMapBufferRange(GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_READ_BIT);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	if (bufferEntriesCount != nullptr)
@@ -437,7 +437,7 @@ void rendering::Mesh::CalcTangents(math::Vector3D*& tangents, math::Vector3D* po
 		const auto deltaUv1 = textureCoordinates[i + 1] - textureCoordinates[i];
 		const auto deltaUv2 = textureCoordinates[i + 2] - textureCoordinates[i];
 
-		const auto r = REAL_ONE / (deltaUv1.Cross(deltaUv2));
+		const auto r = REAL_ONE / deltaUv1.Cross(deltaUv2);
 		const auto tangent = (deltaPos1 * deltaUv2.y - deltaPos2 * deltaUv1.y) * r;
 		//const auto bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 

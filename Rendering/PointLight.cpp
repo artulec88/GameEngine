@@ -22,10 +22,10 @@ math::Real rendering::lighting::PointLight::CalculateRange() const
 	const auto a = m_attenuation.GetExponent();
 	const auto b = m_attenuation.GetLinear();
 
-	const math::Real maxColorElement = (m_color.GetRed() > m_color.GetGreen()) ?
-		((m_color.GetRed() > m_color.GetBlue()) ? m_color.GetRed() : m_color.GetBlue()) :
-		((m_color.GetGreen() > m_color.GetBlue()) ? m_color.GetGreen() : m_color.GetBlue());
-	const int colorDepth = GET_CONFIG_VALUE_RENDERING("colorDepth", 256); // TODO: Think about moving this constant somewhere else and also make it a static constexpr.
+	const auto maxColorElement = m_color.GetRed() > m_color.GetGreen() ?
+		(m_color.GetRed() > m_color.GetBlue() ? m_color.GetRed() : m_color.GetBlue()) :
+		m_color.GetGreen() > m_color.GetBlue() ? m_color.GetGreen() : m_color.GetBlue();
+	const auto colorDepth = GET_CONFIG_VALUE_RENDERING("colorDepth", 256); // TODO: Think about moving this constant somewhere else and also make it a static constexpr.
 	const auto c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
 
 	return (-b + sqrt(b*b - 4 * a*c)) / (2 * a);

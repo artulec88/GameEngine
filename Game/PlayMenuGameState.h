@@ -2,8 +2,8 @@
 #define __PLAY_MENU_GAME_STATE_H__
 
 #include "Def.h"
-#include "Rendering\Renderer.h"
-#include "Engine\GameState.h"
+#include "Rendering/Renderer.h"
+#include "Engine/GameState.h"
 #include "Engine\IRenderable.h"
 #include "Math/Math.h"
 #include "Engine\GameNode.h"

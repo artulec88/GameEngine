@@ -3,7 +3,7 @@
 #include "Engine/GameManager.h"
 #include "Engine/GameCommand.h"
 #include "Engine/CoreEngine.h"
-#include "Rendering/Shader.h"
+#include "Rendering/ShaderIDs.h"
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 #include "PlayGameState.h"

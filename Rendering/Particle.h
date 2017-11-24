@@ -104,8 +104,8 @@ namespace rendering
 		private:
 			void SetTextureOffset(math::Vector2D& textureOffset, int index, int textureAtlasRowsCount) const
 			{
-				int column = index % textureAtlasRowsCount;
-				int row = index / textureAtlasRowsCount;
+				const auto column = index % textureAtlasRowsCount;
+				const auto row = index / textureAtlasRowsCount;
 				textureOffset.x = static_cast<math::Real>(column) / textureAtlasRowsCount;
 				textureOffset.y = static_cast<math::Real>(row) / textureAtlasRowsCount;
 			}

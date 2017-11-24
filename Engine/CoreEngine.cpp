@@ -6,6 +6,7 @@
 #include "Math/Math.h"
 
 #include "Rendering/AntTweakBarTypes.h"
+#include "Rendering/ShaderIDs.h"
 
 #include "Utility/ILogger.h"
 #include "Utility/Config.h"

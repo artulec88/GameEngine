@@ -135,11 +135,11 @@ void rendering::particles::Particle::CalculateTextureAtlasInfo(int textureAtlasR
 {
 	START_PROFILING_RENDERING(false, "");
 	/* Updating the texture offsets and the blend factor begin */
-	math::Real lifeSpanFactor = m_lifeSpan / m_lifeSpanLimit;
-	int stageCount = textureAtlasRowsCount * textureAtlasRowsCount;
-	math::Real textureAtlasProgression = lifeSpanFactor * stageCount;
-	int index0 = math::Floor(textureAtlasProgression);
-	int index1 = (index0 == stageCount - 1) ? index0 : index0 + 1;
+	const auto lifeSpanFactor = m_lifeSpan / m_lifeSpanLimit;
+	const auto stageCount = textureAtlasRowsCount * textureAtlasRowsCount;
+	const auto textureAtlasProgression = lifeSpanFactor * stageCount;
+	const auto index0 = math::Floor(textureAtlasProgression);
+	const auto index1 = index0 == stageCount - 1 ? index0 : index0 + 1;
 	textureAtlasBlendFactor = textureAtlasProgression - static_cast<int>(textureAtlasProgression); // fractional part of the variable
 	
 	SetTextureOffset(textureOffset0, index0, textureAtlasRowsCount);

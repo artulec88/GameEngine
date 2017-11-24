@@ -32,7 +32,7 @@ math::Real rendering::Terrain::GetHeightAt(math::Real x, math::Real z) const
 #endif
 #elif defined HEIGHTS_SURFACE
 #ifdef DEBUG_LOGGING_ENABLED
-	math::Real y = m_surface.GetHeightAt(x, z);
+	const auto y = m_surface.GetHeightAt(x, z);
 	DEBUG_LOG_RENDERING("Height ", y, " returned for position [", x, "; ", z, "].");
 	return y;
 #else

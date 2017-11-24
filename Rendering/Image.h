@@ -19,24 +19,41 @@ namespace rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Image constructor. </summary>
+		/// <param name="fileName"> The <code>string</code> representing the system path to the image. </param>
+		/// <param name="desiredComponentsCount"> The number of desired components count. </param>
 		RENDERING_API explicit Image(const std::string& fileName, int desiredComponentsCount = 0);
-		RENDERING_API ~Image(void);
+
+		/// <summary> Image destructor. </summary>
+		RENDERING_API ~Image();
+
+		/// <summary> Image copy constructor. </summary>
+		/// <param name="image"> The reference to the image to copy construct from. </param>
 		Image(const Image& image) = delete;
+
 		/// <summary>
 		/// Image move constructor that initializes its member variables using the specified image <paramref name="image"/>.
 		/// </summary>
 		/// <param name="image"> The r-value reference to the image that will be used to move construct new image. </param>
 		RENDERING_API Image(Image&& image) noexcept;
+
+		/// <summary> Image copy assignment operator. </summary>
+		/// <param name="image"> The reference to the image to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned image. </returns>
 		Image& operator=(const Image& image) = delete;
+
+		/// <summary> Image move assignment operator. </summary>
+		/// <param name="image"> The r-value reference to the image to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned image. </returns>
 		Image& operator=(Image&& image) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		RENDERING_API unsigned char GetPixelAt(int row, int column) const;
 		RENDERING_API unsigned char* GetData() const { return m_data; }
-		RENDERING_API inline int GetWidth() const { return m_width; }
-		RENDERING_API inline int GetHeight() const { return m_height; }
-		RENDERING_API inline int GetComponentsCount() const { return m_componentsCount; }
+		RENDERING_API int GetWidth() const { return m_width; }
+		RENDERING_API int GetHeight() const { return m_height; }
+		RENDERING_API int GetComponentsCount() const { return m_componentsCount; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

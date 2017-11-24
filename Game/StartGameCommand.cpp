@@ -3,7 +3,7 @@
 #include "LoadGameState.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\GameStateManager.h"
-#include "Engine\GameManager.h"
+#include "Engine/GameManager.h"
 
 Game::StartGameCommand::StartGameCommand() :
 	engine::GameCommand()

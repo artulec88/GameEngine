@@ -16,9 +16,9 @@ rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programId != 0, utility::logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
-	std::string shaderText = LoadShaderData(directoryPath, fileName);
+	const auto shaderText = LoadShaderData(directoryPath, fileName);
 	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
-	const auto geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
+	const auto geometryShaderPresent = shaderText.find("defined(GS_BUILD)") != std::string::npos; // geometry shader found
 
 	/**
 	* TODO: Vertex shader text should only contain the shader file content in the #if defined(VS_BUILD) block.
@@ -71,7 +71,7 @@ rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 rendering::ShaderData::~ShaderData()
 {
 	DELOCUST_LOG_RENDERING("Destroying shader data for shader program: ", m_programId, ".");
-	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
+	for (auto shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
 		glDetachShader(m_programId, *shaderItr);
 		glDeleteShader(*shaderItr);
@@ -84,10 +84,10 @@ rendering::ShaderData::~ShaderData()
 
 rendering::ShaderData::ShaderData(ShaderData&& shaderData) noexcept :
 m_programId(std::move(shaderData.m_programId)),
-	m_shaders(std::move(shaderData.m_shaders)),
-	m_uniforms(std::move(shaderData.m_uniforms)),
-	m_rendererUniforms(std::move(shaderData.m_rendererUniforms)),
-	m_uniformNameToLocationMap(std::move(shaderData.m_uniformNameToLocationMap))
+	m_shaders(move(shaderData.m_shaders)),
+	m_uniforms(move(shaderData.m_uniforms)),
+	m_rendererUniforms(move(shaderData.m_rendererUniforms)),
+	m_uniformNameToLocationMap(move(shaderData.m_uniformNameToLocationMap))
 	//m_structUniforms(std::move(shaderData.m_structUniforms))
 {
 	DELOCUST_LOG_RENDERING("ShaderData move constructor called for program: ", m_programId, ". ");
@@ -163,7 +163,7 @@ std::string rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 
 bool rendering::ShaderData::Compile()
 {
-	bool compileSuccess = true;
+	auto compileSuccess = true;
 
 	glLinkProgram(m_programId);
 	int infoLogLength;
@@ -205,7 +205,7 @@ bool rendering::ShaderData::CheckForErrors(int shader, int flag, bool isProgram,
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 	}
 
-	return (success == GL_FALSE); // means that an error has occurred
+	return success == GL_FALSE; // means that an error has occurred
 }
 
 void rendering::ShaderData::AddVertexShader(const std::string& vertexShaderText)
@@ -267,7 +267,7 @@ void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 		auto isCommented = false;
 		if (lastLineEnd != std::string::npos)
 		{
-			std::string potentialCommentSection = vertexShaderText.substr(lastLineEnd, attributeLocation - lastLineEnd);
+			const auto potentialCommentSection = vertexShaderText.substr(lastLineEnd, attributeLocation - lastLineEnd);
 
 			//Potential false positives are both in comments, and in macros.
 			isCommented = potentialCommentSection.find("//") != std::string::npos || potentialCommentSection.find("#") != std::string::npos;
@@ -282,7 +282,7 @@ void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 				const auto begin = equalLocation + 1;
 				auto end = vertexShaderText.find(";", begin);
 
-				std::string attributeLine = vertexShaderText.substr(begin, end - begin);
+				auto attributeLine = vertexShaderText.substr(begin, end - begin);
 				utility::string_utility::LeftTrim(attributeLine);
 
 				end = attributeLine.find(")");
@@ -292,10 +292,10 @@ void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 			auto begin = attributeLocation + std::string(ATTRIBUTE_KEYWORD).length() + 1;
 			const auto end = vertexShaderText.find(";", begin);
 
-			std::string attributeLine = vertexShaderText.substr(begin, end - begin);
+			const auto attributeLine = vertexShaderText.substr(begin, end - begin);
 
 			begin = attributeLine.find(" ");
-			std::string attributeName = attributeLine.substr(begin + 1);
+			const auto attributeName = attributeLine.substr(begin + 1);
 
 			glBindAttribLocation(m_programId, currentAttribLocation, attributeName.c_str());
 			++currentAttribLocation;
@@ -306,7 +306,7 @@ void rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 
 void rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
-	std::vector<uniforms::UniformStructInfo> structInfos = FindUniformStructInfos(shaderText);
+	const auto structInfos = FindUniformStructInfos(shaderText);
 #ifdef DELOCUST_LOGGING_ENABLED
 	for (auto itr = structInfos.begin(); itr != structInfos.end(); ++itr)
 	{
@@ -327,8 +327,8 @@ void rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 
 		begin = uniformLine.find(" ");
 
-		const std::string uniformName = uniformLine.substr(begin + 1);
-		const uniforms::UniformType uniformType = uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
+		const auto uniformName = uniformLine.substr(begin + 1);
+		const auto uniformType = uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
 		switch (uniformType)
 		{
 		case uniforms::VEC_2:
@@ -494,16 +494,16 @@ std::vector<rendering::uniforms::UniformInfo> rendering::ShaderData::FindUniform
 void rendering::ShaderData::AddUniformInfos(const std::vector<uniforms::UniformStructInfo>& structUniformInfos, std::vector<uniforms::UniformInfo>& uniformInfos,
 	const std::string& uniformName, const std::string& uniformTypeStr) const
 {
-	const uniforms::UniformType uniformType = uniforms::ConvertStringToUniformType(uniformTypeStr.c_str());
+	const auto uniformType = uniforms::ConvertStringToUniformType(uniformTypeStr.c_str());
 	DELOCUST_LOG_RENDERING("Uniform type = \"", uniformTypeStr, "\". Uniform type = ", uniformType);
-	bool structFound = false;
+	auto structFound = false;
 	for (auto structUniformInfoItr = structUniformInfos.begin(); structUniformInfoItr != structUniformInfos.end(); ++structUniformInfoItr)
 	{
 		if (structUniformInfoItr->name == uniformTypeStr)
 		{
 			for (auto uniformInfoItr = structUniformInfoItr->uniformInfos.begin(); uniformInfoItr != structUniformInfoItr->uniformInfos.end(); ++uniformInfoItr)
 			{
-				AddUniformInfos(structUniformInfos, uniformInfos, uniformName + "." + uniformInfoItr->name, uniforms::ConvertUniformTypeToString(uniformInfoItr->type));
+				AddUniformInfos(structUniformInfos, uniformInfos, uniformName + "." + uniformInfoItr->name, ConvertUniformTypeToString(uniformInfoItr->type));
 			}
 			structFound = true;
 		}
@@ -518,7 +518,7 @@ bool rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 {
 	itr = m_uniformNameToLocationMap.find(uniformName);
 	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), Utility::Logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
-	return (itr != m_uniformNameToLocationMap.end());
+	return itr != m_uniformNameToLocationMap.end();
 }
 
 /* ==================== Shader class begin ==================== */
@@ -533,7 +533,7 @@ rendering::Shader::Shader(const std::string& directoryPath, const std::string& f
 }
 
 
-rendering::Shader::~Shader(void)
+rendering::Shader::~Shader()
 {
 	DELOCUST_LOG_RENDERING("Shader destructor called for file name: \"", m_fileName, "\". ");
 }
@@ -547,7 +547,7 @@ rendering::Shader::~Shader(void)
 
 rendering::Shader::Shader(Shader&& shader) noexcept :
 	m_shaderData(std::move(shader.m_shaderData)),
-	m_fileName(std::move(shader.m_fileName))
+	m_fileName(move(shader.m_fileName))
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Shader"))
 #endif

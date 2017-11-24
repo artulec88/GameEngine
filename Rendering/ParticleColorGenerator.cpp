@@ -44,7 +44,7 @@ rendering::particles::generators::FromSetColorGenerator::~FromSetColorGenerator(
 
 void rendering::particles::generators::FromSetColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		const size_t colorIndex = m_randomGenerator.NextInt(0, m_colors.size() - 1);
 		Set(particleContainer, i, m_colors[colorIndex]);
@@ -73,7 +73,7 @@ rendering::particles::generators::RangeColorGenerator::~RangeColorGenerator()
 
 void rendering::particles::generators::RangeColorGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, Color{ m_randomGenerator.NextFloat(m_minRed, m_maxRed), m_randomGenerator.NextFloat(m_minGreen, m_maxGreen),
 			m_randomGenerator.NextFloat(m_minBlue, m_maxBlue), m_randomGenerator.NextFloat(m_minAlpha, m_maxAlpha) });

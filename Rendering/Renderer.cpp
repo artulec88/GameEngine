@@ -5,6 +5,7 @@
 #include "MeshIDs.h"
 #include "GuiImageControl.h"
 #include "AntTweakBarTypes.h"
+#include "ShaderIDs.h"
 
 #include "Math/FloatingPoint.h"
 
@@ -164,7 +165,7 @@ rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 }
 
 
-rendering::Renderer::~Renderer(void)
+rendering::Renderer::~Renderer()
 {
 	INFO_LOG_RENDERING("Destroying rendering engine...");
 	START_PROFILING_RENDERING(true, "");
@@ -403,9 +404,9 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 		return;
 	}
 	DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
-	const Shader* particleShader = m_shaderFactory.GetShader(particleShaderID);
+	const auto particleShader = m_shaderFactory.GetShader(particleShaderID);
 	particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
-	const particles::ParticleTexture* particleTexture = static_cast<const particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureId()));
+	const auto particleTexture = static_cast<const particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureId()));
 	particleTexture->Bind();
 	particleShader->SetUniformi("particleTexture", 0);
 	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<math::Real>(particleTexture->GetRowsCount()));
@@ -420,7 +421,7 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 
 	m_particleInstanceVboData.clear();
-	const math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
+	const auto cameraViewMatrix = m_currentCamera->GetViewMatrix();
 	for (size_t i = 0; i < particlesSystem.GetAliveParticlesCount(); ++i)
 	{
 		math::Matrix4D modelMatrix(particlesSystem.GetPosition(i));
@@ -438,7 +439,7 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 
 		if (particlesSystem.IsAttributeEnabled(particles::attributes::ROTATION))
 		{
-			const math::Matrix4D particleRotation(math::Quaternion(math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i)).ToRotationMatrix());
+			const auto particleRotation(math::Quaternion(math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i)).ToRotationMatrix());
 			if (particlesSystem.IsAttributeEnabled(particles::attributes::SCALE) && !math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
 			{
 				modelMatrix = modelMatrix * particleRotation * math::Matrix4D(particlesSystem.GetScale(i));
@@ -453,7 +454,7 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 			modelMatrix = modelMatrix * math::Matrix4D(particlesSystem.GetScale(i));
 		}
 
-		math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
+		const auto mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 1));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 2));
@@ -500,17 +501,17 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 
 bool rendering::Renderer::InitShadowMap()
 {
-	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-	const auto shadowMapIndex = (shadowInfo == nullptr) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+	const auto shadowInfo = m_currentLight->GetShadowInfo();
+	const auto shadowMapIndex = shadowInfo == nullptr ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
 	m_mappedValues.SetTexture("shadowMap", &m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex].BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
 
-	if ( /* (m_shadowEnabled) && */ (shadowInfo != nullptr))
+	if ( /* (m_shadowEnabled) && */ shadowInfo != nullptr)
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
-		const ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
+		const auto shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
 		m_altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
 		m_altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
 
@@ -528,20 +529,18 @@ bool rendering::Renderer::InitShadowMap()
 		}
 		return true; // shadows enabled
 	}
-	else // current light does not cast shadow or shadowing is disabled at all
-	{
-		// we set the light matrix this way so that, if no shadow should be cast
-		// everything in the scene will be mapped to the same point
-		m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-		m_mappedValues.SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
-		return false; // shadows disabled
-	}
+	
+	// current light does not cast shadow or shadowing is disabled at all. In that case we set the light matrix this way so that,
+	// if no shadow should be cast everything in the scene will be mapped to the same point
+	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_mappedValues.SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+	m_mappedValues.SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+	return false; // shadows disabled
 }
 
 void rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 {
-	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+	const auto shadowInfo = m_currentLight->GetShadowInfo();
 	if (shadowInfo != nullptr)
 	{
 		const auto shadowMapIndex = shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;

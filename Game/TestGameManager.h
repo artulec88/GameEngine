@@ -9,11 +9,11 @@
 #include "LoadGameCommand.h"
 
 #include "Engine\QuitGameCommand.h"
-#include "Engine\GameManager.h"
+#include "Engine/GameManager.h"
 #include "Engine\GameNode.h"
-#include "Rendering\DirectionalLight.h"
+#include "Rendering/DirectionalLight.h"
 #include "Rendering\PointLight.h"
-#include "Rendering\SpotLight.h"
+#include "Rendering/SpotLight.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"

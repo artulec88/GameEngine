@@ -10,6 +10,6 @@ rendering::Resource::Resource(const std::string& filename) :
 }
 
 
-rendering::Resource::~Resource(void)
+rendering::Resource::~Resource()
 {
 }

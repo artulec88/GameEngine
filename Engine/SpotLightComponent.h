@@ -2,7 +2,7 @@
 #define __ENGINE_SPOT_LIGHT_COMPONENT_H__
 
 #include "Engine.h"
-#include "Rendering\SpotLight.h"
+#include "Rendering/SpotLight.h"
 #include "GameComponent.h"
 
 namespace engine

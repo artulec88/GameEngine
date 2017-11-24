@@ -176,12 +176,12 @@ namespace rendering
 		{
 			enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 		}
-		RENDERING_API void SetBlendingEnabled(bool enabled) const { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
+		RENDERING_API void SetBlendingEnabled(bool enabled) const { enabled ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
 		RENDERING_API void SetBlendFunc(GLenum sFactor, GLenum dFactor) const { glBlendFunc(sFactor, dFactor); }
 		RENDERING_API void SetCullFaceFront() const { glCullFace(GL_FRONT); }
 		RENDERING_API void SetCullFaceBack() const { glCullFace(GL_BACK); }
 		RENDERING_API void SetCullFaceFrontAndBack() const { glCullFace(GL_FRONT_AND_BACK); }
-		RENDERING_API void SetCullFaceDefault() const { glCullFace(rendering::glCullFaceMode); }
+		RENDERING_API void SetCullFaceDefault() const { glCullFace(glCullFaceMode); }
 		RENDERING_API void SetDepthFuncNever() const { glDepthFunc(GL_NEVER); }
 		RENDERING_API void SetDepthFuncLess() const { glDepthFunc(GL_LESS); }
 		RENDERING_API void SetDepthFuncEqual() const { glDepthFunc(GL_EQUAL); }
@@ -190,7 +190,7 @@ namespace rendering
 		RENDERING_API void SetDepthFuncNotEqual() const { glDepthFunc(GL_NOTEQUAL); }
 		RENDERING_API void SetDepthFuncGreaterOrEqual() const { glDepthFunc(GL_GEQUAL); }
 		RENDERING_API void SetDepthFuncAlways() const { glDepthFunc(GL_ALWAYS); }
-		RENDERING_API void SetDepthFuncDefault() const { glDepthFunc(rendering::glDepthTestFunc); }
+		RENDERING_API void SetDepthFuncDefault() const { glDepthFunc(glDepthTestFunc); }
 
 		const lighting::BaseLight* GetCurrentLight() const
 		{
@@ -237,8 +237,9 @@ namespace rendering
 
 		unsigned int GetSamplerSlot(const std::string& samplerName) const
 		{
-			std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), utility::logging::ERR, "Sampler name \"", samplerName, "\" has not been found in the sampler map.");
+			const auto samplerItr = m_samplerMap.find(samplerName);
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), utility::logging::ERR,
+				"Sampler name \"", samplerName, "\" has not been found in the sampler map.");
 			return samplerItr->second;
 		}
 
@@ -345,9 +346,8 @@ namespace rendering
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		int m_windowWidth, m_windowHeight;
-		const rendering::aliasing::AntiAliasingMethod m_antiAliasingMethod;
+		const aliasing::AntiAliasingMethod m_antiAliasingMethod;
 		// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 		CONST_IF_TWEAK_BAR_DISABLED bool m_applyFilterEnabled;
 		CONST_IF_TWEAK_BAR_DISABLED Color m_backgroundColor;

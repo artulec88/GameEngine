@@ -29,38 +29,42 @@ namespace rendering
 			RENDERING_API GuiImageControl(Texture* texture, const math::Vector2D& screenPosition, const math::Angle& screenRotationAngle, const math::Vector2D& scale);
 			
 			/// <summary> GUI image control destructor. </summary>
-			RENDERING_API virtual ~GuiImageControl(void);
+			RENDERING_API virtual ~GuiImageControl();
 
 			/// <summary> GUI image control copy constructor. </summary>
+			/// <param name="guiImageControl"> The reference to GUI image control to copy construct from. </param>
 			GuiImageControl(const GuiImageControl& guiImageControl) = delete;
 
 			/// <summary> GUI image control move constructor. </summary>
+			/// <param name="guiImageControl"> The r-value reference to GUI image control to move construct from. </param>
 			GuiImageControl(GuiImageControl&& guiImageControl) = delete;
 
 			/// <summary> GUI image control copy assignment operator. </summary>
+			/// <param name="guiImageControl"> The reference to GUI image control to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned GUI image control. </returns>
 			GuiImageControl& operator=(const GuiImageControl& guiImageControl) = delete;
 
 			/// <summary> GUI image control move assignment operator. </summary>
+			/// <param name="guiImageControl"> The r-value reference to GUI image control to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned GUI image control. </returns>
 			GuiImageControl& operator=(GuiImageControl&& guiImageControl) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Draws the GUI image control on the screen using the specified rendering engine and shader.
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI image.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI image.</param>
-			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
+			RENDERING_API void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
-			RENDERING_API virtual void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
-			RENDERING_API virtual void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
-		private:
+			RENDERING_API void ApplyColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API void ApplyOutlineColorEffect(const math::effects::Effect<Color>& effect) override;
+			RENDERING_API void ApplyOffsetEffect(const math::effects::Effect<math::Vector2D>& effect) override;
+			RENDERING_API void ApplyCharacterWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyCharacterEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyBorderWidthEffect(const math::effects::Effect<math::Real>& effect) override;
+			RENDERING_API void ApplyBorderEdgeTransitionWidthEffect(const math::effects::Effect<math::Real>& effect) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

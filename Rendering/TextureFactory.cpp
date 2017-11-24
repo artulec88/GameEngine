@@ -13,11 +13,11 @@ rendering::TextureFactory::TextureFactory(const std::string& texturesDirectory) 
 {
 	// This way we make sure that Texture's move ctrs are used instead of copy ctrs.
 	//m_textureType2TextureMap.insert(make_pair(TextureTypes::DEFAULT, Rendering::Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultNormalMap", "defaultNormalMap.jpg"))));
-	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_TEXTURE, rendering::Texture(m_texturesDirectory +
+	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_TEXTURE, Texture(m_texturesDirectory +
 		GET_CONFIG_VALUE_STR_RENDERING("defaultTexture", "defaultTexture.png"))));
-	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_NORMAL_MAP, rendering::Texture(m_texturesDirectory +
+	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_NORMAL_MAP, Texture(m_texturesDirectory +
 		GET_CONFIG_VALUE_STR_RENDERING("defaultNormalMap", "defaultNormalMap.jpg"))));
-	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_DISPLACEMENT_MAP, rendering::Texture(m_texturesDirectory +
+	m_textureType2TextureMap.insert(std::make_pair(texture_ids::DEFAULT_DISPLACEMENT_MAP, Texture(m_texturesDirectory +
 		GET_CONFIG_VALUE_STR_RENDERING("defaultDisplacementMap", "defaultDisplacementMap.jpg"))));
 }
 
@@ -47,7 +47,7 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 	constexpr char* expectedNegZFaceFilename = "back";
 
 	utility::FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(m_texturesDirectory + cubeTextureDirectory);
+	auto filenames = fileManager.ListAllFilesInDirectory(m_texturesDirectory + cubeTextureDirectory);
 	auto cubeMapPosXFaceFileFound = false; auto cubeMapPosXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
 	auto cubeMapNegXFaceFileFound = false; auto cubeMapNegXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
 	auto cubeMapPosYFaceFileFound = false; auto cubeMapPosYFaceFileName = cubeTextureDirectory + directoryPathSeparator;
@@ -56,35 +56,35 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 	auto cubeMapNegZFaceFileFound = false; auto cubeMapNegZFaceFileName = cubeTextureDirectory + directoryPathSeparator;
 	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
 	{
-		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find(expectedPosXFaceFilename) != std::string::npos))
+		if (!cubeMapPosXFaceFileFound && (*filenameItr).find(expectedPosXFaceFilename) != std::string::npos)
 		{
 			cubeMapPosXFaceFileFound = true;
-			cubeMapPosXFaceFileName += (*filenameItr);
+			cubeMapPosXFaceFileName += *filenameItr;
 		}
-		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find(expectedNegXFaceFilename) != std::string::npos))
+		if (!cubeMapNegXFaceFileFound && (*filenameItr).find(expectedNegXFaceFilename) != std::string::npos)
 		{
 			cubeMapNegXFaceFileFound = true;
-			cubeMapNegXFaceFileName += (*filenameItr);
+			cubeMapNegXFaceFileName += *filenameItr;
 		}
-		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find(expectedPosYFaceFilename) != std::string::npos))
+		if (!cubeMapPosYFaceFileFound && (*filenameItr).find(expectedPosYFaceFilename) != std::string::npos)
 		{
 			cubeMapPosYFaceFileFound = true;
-			cubeMapPosYFaceFileName += (*filenameItr);
+			cubeMapPosYFaceFileName += *filenameItr;
 		}
-		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find(expectedNegYFaceFilename) != std::string::npos))
+		if (!cubeMapNegYFaceFileFound && (*filenameItr).find(expectedNegYFaceFilename) != std::string::npos)
 		{
 			cubeMapNegYFaceFileFound = true;
-			cubeMapNegYFaceFileName += (*filenameItr);
+			cubeMapNegYFaceFileName += *filenameItr;
 		}
-		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find(expectedPosZFaceFilename) != std::string::npos))
+		if (!cubeMapPosZFaceFileFound && (*filenameItr).find(expectedPosZFaceFilename) != std::string::npos)
 		{
 			cubeMapPosZFaceFileFound = true;
-			cubeMapPosZFaceFileName += (*filenameItr);
+			cubeMapPosZFaceFileName += *filenameItr;
 		}
-		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find(expectedNegZFaceFilename) != std::string::npos))
+		if (!cubeMapNegZFaceFileFound && (*filenameItr).find(expectedNegZFaceFilename) != std::string::npos)
 		{
 			cubeMapNegZFaceFileFound = true;
-			cubeMapNegZFaceFileName += (*filenameItr);
+			cubeMapNegZFaceFileName += *filenameItr;
 		}
 	}
 	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosXFaceFileFound, Utility::Logging::ERR, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting

@@ -16,7 +16,7 @@ rendering::particles::generators::ConstantLifeSpanLimitGenerator::~ConstantLifeS
 
 void rendering::particles::generators::ConstantLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_lifeSpanLimit);
 	}
@@ -38,7 +38,7 @@ rendering::particles::generators::RangeLifeSpanLimitGenerator::~RangeLifeSpanLim
 
 void rendering::particles::generators::RangeLifeSpanLimitGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-	for (size_t i = startId; i < endId; ++i)
+	for (auto i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, m_randomGenerator.NextFloat(m_minLifeSpanLimit, m_maxLifeSpanLimit));
 	}

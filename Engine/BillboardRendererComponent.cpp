@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BillboardRendererComponent.h"
-#include "Rendering\Shader.h"
+#include "Rendering/Shader.h"
 
 engine::BillboardsRendererComponent::BillboardsRendererComponent(int billboardMeshID, rendering::Material* billboardMaterial) :
 	GameComponent(),

@@ -75,7 +75,7 @@ namespace rendering
 				/// </returns>
 				constexpr bool IsAttributeEnabled(Attribute attribute) const
 				{
-					return ((m_attributesMask & attribute) == attribute);
+					return (m_attributesMask & attribute) == attribute;
 				}
 
 				/// <summary>

@@ -40,7 +40,7 @@ namespace rendering
 
 		struct UniformInfo
 		{
-			UniformInfo(const std::string& _name, uniforms::UniformType _type) :
+			UniformInfo(const std::string& _name, UniformType _type) :
 				name(_name),
 				type(_type)
 			{
@@ -116,7 +116,7 @@ namespace rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			SimpleUniform(const std::string& name, uniforms::UniformType type, GLint location);
+			SimpleUniform(const std::string& name, UniformType type, GLint location);
 			virtual ~SimpleUniform();
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -409,27 +409,28 @@ namespace rendering
 
 		constexpr bool IsPrimitiveUniformType(UniformType uniformType)
 		{
-			return ((uniformType == VEC_2) || (uniformType == VEC_3) || (uniformType == VEC_4) || (uniformType == MATRIX_4x4) ||
-				(uniformType == INT) || (uniformType == REAL) || (uniformType == SAMPLER_2D) || (uniformType == SAMPLER_CUBE)) ? true : false;
+			return uniformType <= SAMPLER_CUBE;
+			//return uniformType == VEC_2 || uniformType == VEC_3 || uniformType == VEC_4 || uniformType == MATRIX_4x4 ||
+			//	uniformType == INT || uniformType == REAL || uniformType == SAMPLER_2D || uniformType == SAMPLER_CUBE ? true : false;
 		}
 
 		UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
 		constexpr char* ConvertUniformTypeToString(UniformType uniformType)
 		{
-			return (uniformType == VEC_2) ? "vec2" :
-				((uniformType == VEC_3) ? "vec3" :
-					((uniformType == VEC_4) ? "vec4" :
-						((uniformType == MATRIX_4x4) ? "mat4" :
-							((uniformType == INT) ? "int" :
-								((uniformType == REAL) ? "float" :
-									((uniformType == SAMPLER_2D) ? "sampler2D" :
-										((uniformType == SAMPLER_CUBE) ? "samplerCube" :
-											((uniformType == BASE_LIGHT) ? "BaseLight" :
-												((uniformType == DIRECTIONAL_LIGHT) ? "DirectionalLight" :
-													((uniformType == POINT_LIGHT) ? "PointLight" :
-														((uniformType == SPOT_LIGHT) ? "SpotLight" :
-															((uniformType == ATTENUATION) ? "Attenuation" :
-																"Unknown"))))))))))));
+			return uniformType == VEC_2 ? "vec2" :
+				uniformType == VEC_3 ? "vec3" :
+				uniformType == VEC_4 ? "vec4" :
+				uniformType == MATRIX_4x4 ? "mat4" :
+				uniformType == INT ? "int" :
+				uniformType == REAL ? "float" :
+				uniformType == SAMPLER_2D ? "sampler2D" :
+				uniformType == SAMPLER_CUBE ? "samplerCube" :
+				uniformType == BASE_LIGHT ? "BaseLight" :
+				uniformType == DIRECTIONAL_LIGHT ? "DirectionalLight" :
+				uniformType == POINT_LIGHT ? "PointLight" :
+				uniformType == SPOT_LIGHT ? "SpotLight" :
+				uniformType == ATTENUATION ? "Attenuation" :
+				"Unknown";
 		}
 	} /* end namespace uniforms */
 

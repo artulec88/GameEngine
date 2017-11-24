@@ -3,11 +3,7 @@
 
 bool rendering::text::Line::AttemptToAddWord(const Word& word)
 {
-	math::Real additionalLength = word.GetWordWidth();
-	if (!m_words.empty())
-	{
-		additionalLength += m_spaceSize;
-	}
+	const auto additionalLength = word.GetWordWidth() + m_words.empty() ? REAL_ZERO : m_spaceSize;
 	if (m_currentLineLength + additionalLength > m_maxLength)
 	{
 		return false;
