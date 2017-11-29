@@ -3,14 +3,13 @@
 
 #include "Engine.h"
 
-#include "Rendering\Texture.h"
-#include "Rendering\Particle.h"
-//#include "Rendering\ParticleContainer.h"
+#include "Rendering/Texture.h"
+#include "Rendering/Particle.h"
+//#include "Rendering/ParticleContainer.h"
 
 #include "Math/Vector.h"
 #include "Math/RandomGeneratorFactory.h"
 
-#include <list>
 #include <array>
 
 namespace engine
@@ -25,11 +24,10 @@ namespace engine
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit);
-		ENGINE_API virtual ~ParticlesSystem(void);
+		ENGINE_API virtual ~ParticlesSystem();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		ENGINE_API const rendering::particles::ParticleTexture* GetTexture() const { return m_particleTexture; }
 		ENGINE_API const rendering::particles::Particle* GetParticles() const { return m_particles.data(); }
 		ENGINE_API int GetAliveParticlesCount() const { return m_aliveParticlesCount; }
@@ -45,7 +43,7 @@ namespace engine
 		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime) = 0;
 		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition) = 0;
 	protected:
-		inline int FindDeadParticleIndex() const
+		int FindDeadParticleIndex() const
 		{
 			for (int i = m_lastRevivedParticleIndex; i < MAX_PARTICLES_COUNT; ++i)
 			{
@@ -72,7 +70,6 @@ namespace engine
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		rendering::particles::ParticleTexture* m_particleTexture;
 		std::array<rendering::particles::Particle, MAX_PARTICLES_COUNT> m_particles;
 		//Rendering::ParticleContainer m_particles;
@@ -96,18 +93,17 @@ namespace engine
 	public:
 		ENGINE_API FireParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
-		ENGINE_API virtual ~FireParticlesSystem(void);
+		ENGINE_API virtual ~FireParticlesSystem();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime);
-		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition)
+		ENGINE_API void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime) override;
+		ENGINE_API void EmitParticle(const math::Vector3D& initialPosition) override
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
-			math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			const auto dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			const auto dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			const auto dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
 			math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
@@ -133,13 +129,12 @@ namespace engine
 	public:
 		ENGINE_API FreeFallParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 			math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale);
-		ENGINE_API virtual ~FreeFallParticlesSystem(void);
+		ENGINE_API virtual ~FreeFallParticlesSystem();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime);
-		ENGINE_API virtual inline void EmitParticle(const math::Vector3D& initialPosition)
+		ENGINE_API void GenerateParticles(const math::Vector3D& initialPosition, math::Real deltaTime) override;
+		ENGINE_API void EmitParticle(const math::Vector3D& initialPosition) override
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
 			math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
@@ -161,6 +156,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FreeFallParticlesSystem */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_PARTICLES_SYSTEM_H__

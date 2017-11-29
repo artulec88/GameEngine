@@ -21,6 +21,6 @@ void Game::StartGameCommand::Execute(engine::GameManager* gameManager) const
 	// We load here instead of going into the LoadGameState, because of the multi-threading problems we faced. VAOs cannot be shared across different graphics context,
 	// so it is not easy to switch the graphics context (from main window to the thread window), load all necessary resources and have them accessible from the main window context.
 	gameManager->Load();
-	gameManager->SetTransition(new engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), engine::GameStateTransitioning::SWITCH, engine::GameStateModality::EXCLUSIVE));
+	gameManager->SetTransition(new engine::game_state_transitioning::GameStateTransition(gameManager->GetPlayGameState(), engine::game_state_transitioning::SWITCH, engine::game_state_modality::EXCLUSIVE));
 	//gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetLoadGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 }

@@ -4,7 +4,7 @@
 #include "Engine.h"
 
 namespace engine {
-	namespace Input
+	namespace input
 	{
 		/// <summary>
 		/// Interface for objects which can react to player's mouse input
@@ -58,8 +58,8 @@ namespace engine {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class IInputableMouse */
 
-	} /* end namespace Input */
+	} /* end namespace input */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_INPUT_IINPUTABLE_MOUSE_H__ */

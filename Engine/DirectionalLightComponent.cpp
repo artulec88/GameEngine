@@ -33,7 +33,7 @@ engine::DirectionalLightComponent::~DirectionalLightComponent()
 	SAFE_DELETE(m_directionalLight);
 }
 
-engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) :
+engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) noexcept:
 	GameComponent(std::move(directionalLightComponent)),
 #ifdef SIMULATE_SUN_BEHAVIOR
 	IUpdateable(std::move(directionalLightComponent)),
@@ -53,7 +53,7 @@ engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightCom
 {
 }
 
-engine::DirectionalLightComponent& engine::DirectionalLightComponent::operator=(DirectionalLightComponent&& directionalLightComponent)
+engine::DirectionalLightComponent& engine::DirectionalLightComponent::operator=(DirectionalLightComponent&& directionalLightComponent) noexcept
 {
 	GameComponent::operator=(std::move(directionalLightComponent));
 #ifdef SIMULATE_SUN_BEHAVIOR

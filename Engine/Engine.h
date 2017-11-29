@@ -48,6 +48,6 @@
 namespace engine
 {
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_ENGINE_H__ */

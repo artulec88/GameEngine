@@ -2,12 +2,17 @@
 #define __INTRO_GAME_STATE_H__
 
 #include "Def.h"
-#include "Rendering/Renderer.h"
-#include "Engine\IRenderable.h"
+
+#include "Engine/IRenderable.h"
 #include "Engine/GameState.h"
-//#include "Rendering\GameCommand.h"
+#include "Engine/GameManager.h"
+#include "Engine/GameNode.h"
+
+#include "Rendering/Renderer.h"
+//#include "Rendering/GameCommand.h"
+
 #include "Math/Math.h"
-#include "Engine\GameNode.h"
+
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"
 #include "Math/Statistics.h"
@@ -31,9 +36,9 @@ namespace Game
 		void Leaving() override;
 		void Obscuring() override;
 		void Revealed() override;
-		void Handle(engine::Actions::Action action) override;
-		void Handle(engine::States::State state) override;
-		void Handle(engine::Ranges::Range range, math::Real value) override;
+		void Handle(engine::actions::Action action) override;
+		void Handle(engine::states::State state) override;
+		void Handle(engine::ranges::Range range, math::Real value) override;
 
 		void Render(rendering::Renderer* renderer) const override;
 		/* ==================== Non-static member functions end ==================== */

@@ -14,16 +14,15 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		SpotLightComponent(rendering::lighting::SpotLight* spotLight);
+		explicit SpotLightComponent(rendering::lighting::SpotLight* spotLight);
 		virtual ~SpotLightComponent();
 		SpotLightComponent(const SpotLightComponent& spotLightComponent) = delete;
-		SpotLightComponent(SpotLightComponent&& spotLightComponent);
+		SpotLightComponent(SpotLightComponent&& spotLightComponent) noexcept;
 		SpotLightComponent& operator=(const SpotLightComponent& spotLightComponent) = delete;
-		SpotLightComponent& operator=(SpotLightComponent&& spotLightComponent);
+		SpotLightComponent& operator=(SpotLightComponent&& spotLightComponent) noexcept;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
 		//virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
 		//virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
@@ -33,7 +32,7 @@ namespace engine
 		rendering::lighting::SpotLight* m_spotLight;
 	/* ==================== Non-static member variables end ==================== */
 	}; // end class SpotLightComponent
-} // end namespace Engine
+} // end namespace engine
 
 #endif // __ENGINE_SPOT_LIGHT_COMPONENT_H__
 

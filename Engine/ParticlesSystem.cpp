@@ -102,9 +102,9 @@ void engine::FreeFallParticlesSystem::GenerateParticles(const math::Vector3D& in
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
-		math::Real x = initialPosition.x - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
-		math::Real y = initialPosition.y + 0.5f;
-		math::Real z = initialPosition.z - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
+		const auto x = initialPosition.x - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
+		const auto y = initialPosition.y + 0.5f;
+		const auto z = initialPosition.z - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
 		EmitParticle(math::Vector3D(x, y, z));
 		m_currentTimer -= m_timeForGeneratingOneParticle;
 	}

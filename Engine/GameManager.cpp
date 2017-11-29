@@ -17,8 +17,6 @@
 #include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
-#include <fstream>
-
 engine::GameManager* engine::GameManager::s_gameManager = nullptr;
 
 /* static */ engine::GameManager* engine::GameManager::GetGameManager()
@@ -59,7 +57,7 @@ engine::GameManager::GameManager() :
 		SAFE_DELETE(engine::GameManager::s_gameManager);
 	}
 
-	m_actionsToGameCommandsMap.insert(std::make_pair(Actions::EMPTY, &m_emptyGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(actions::EMPTY, &m_emptyGameCommand));
 	//m_actionsToGameCommandsMap.insert(make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
 
 	engine::GameManager::s_gameManager = this;
@@ -124,50 +122,50 @@ void engine::GameManager::AddParticlesSystem(rendering::particles::ParticlesSyst
 	m_particlesSystems.push_back(particlesSystem);
 }
 
-const rendering::Mesh* engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
+const rendering::Mesh* engine::GameManager::AddMesh(int meshId, const std::string& meshFileName) const
 {
-	return CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
+	return CoreEngine::GetCoreEngine()->AddMesh(meshId, meshFileName);
 }
 
-const rendering::Mesh* engine::GameManager::GetMesh(int meshID) const
+const rendering::Mesh* engine::GameManager::GetMesh(int meshId) const
 {
-	return CoreEngine::GetCoreEngine()->GetMesh(meshID);
+	return CoreEngine::GetCoreEngine()->GetMesh(meshId);
 }
 
-const rendering::Texture* engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
+const rendering::Texture* engine::GameManager::AddTexture(int textureId, const std::string& textureFileName) const
 {
-	return CoreEngine::GetCoreEngine()->AddTexture(textureID, textureFileName);
+	return CoreEngine::GetCoreEngine()->AddTexture(textureId, textureFileName);
 }
 
-const rendering::Texture* engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+const rendering::Texture* engine::GameManager::AddCubeTexture(int textureId, const std::string& cubeMapTextureDirectory) const
 {
-	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureID, cubeMapTextureDirectory);
+	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureId, cubeMapTextureDirectory);
 }
 
-const rendering::particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+const rendering::particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
 {
-	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureId, particleTextureFileName, rowsCount, isAdditive);
 }
 
-const rendering::Texture* engine::GameManager::GetTexture(int textureID) const
+const rendering::Texture* engine::GameManager::GetTexture(int textureId) const
 {
-	return CoreEngine::GetCoreEngine()->GetTexture(textureID);
+	return CoreEngine::GetCoreEngine()->GetTexture(textureId);
 }
 
-const rendering::Shader* engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
+const rendering::Shader* engine::GameManager::AddShader(int shaderId, const std::string& shaderFileName) const
 {
-	return CoreEngine::GetCoreEngine()->AddShader(shaderID, shaderFileName);
+	return CoreEngine::GetCoreEngine()->AddShader(shaderId, shaderFileName);
 }
 
-const rendering::Shader* engine::GameManager::GetShader(int shaderID) const
+const rendering::Shader* engine::GameManager::GetShader(int shaderId) const
 {
-	return CoreEngine::GetCoreEngine()->GetShader(shaderID);
+	return CoreEngine::GetCoreEngine()->GetShader(shaderId);
 }
 
-void engine::GameManager::Input(Actions::Action actionID)
+void engine::GameManager::Input(actions::Action actionId)
 {
-	CRITICAL_LOG_ENGINE("Handling action: ", actionID);
-	ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(actionID);
+	CRITICAL_LOG_ENGINE("Handling action: ", actionId);
+	const auto gameCommandItr = m_actionsToGameCommandsMap.find(actionId);
 	if (gameCommandItr != m_actionsToGameCommandsMap.end())
 	{
 		gameCommandItr->second->Execute(this);
@@ -182,25 +180,25 @@ void engine::GameManager::Input(Actions::Action actionID)
 		//		(*actionHandler)->Handle(actionID);
 		//	}
 		//}
-		m_gameStateManager->Handle(actionID);
-		for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[actionID].begin(); gameNodeItr != m_actionsToGameNodesMap[actionID].end(); ++gameNodeItr)
+		m_gameStateManager->Handle(actionId);
+		for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[actionId].begin(); gameNodeItr != m_actionsToGameNodesMap[actionId].end(); ++gameNodeItr)
 		{
-			(*gameNodeItr)->Handle(actionID);
+			(*gameNodeItr)->Handle(actionId);
 		}
 	}
 }
 
-void engine::GameManager::Input(const engine::Input::MappedInput& input)
+void engine::GameManager::Input(const input::MappedInput& input)
 {
-	for (Input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
+	for (input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
 	{
 		Input(*actionItr);
 	}
-	for (Input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
+	for (input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
 	{
-		const States::State state = *stateItr;
+		const states::State state = *stateItr;
 		DEBUG_LOG_ENGINE("Handling the state ", state);
-		StatesToGameCommandsMap::const_iterator gameCommandItr = m_statesToGameCommandsMap.find(state);
+		const auto gameCommandItr = m_statesToGameCommandsMap.find(state);
 		if (gameCommandItr != m_statesToGameCommandsMap.end())
 		{
 			gameCommandItr->second->Execute(this);
@@ -214,10 +212,10 @@ void engine::GameManager::Input(const engine::Input::MappedInput& input)
 			}
 		}
 	}
-	for (Input::RangesContainer::const_iterator rangeItr = input.m_ranges.begin(); rangeItr != input.m_ranges.end(); ++rangeItr)
+	for (input::RangesContainer::const_iterator rangeItr = input.m_ranges.begin(); rangeItr != input.m_ranges.end(); ++rangeItr)
 	{
 		// TODO: Ranges processing.
-		const Ranges::Range range = rangeItr->first;
+		const ranges::Range range = rangeItr->first;
 		const math::Real value = rangeItr->second;
 		m_gameStateManager->Handle(range, value);
 	}
@@ -232,17 +230,17 @@ void engine::GameManager::Render(rendering::Renderer* renderer) const
 	m_gameStateManager->Render(renderer);
 }
 
-void engine::GameManager::SetTransition(engine::GameStateTransitioning::GameStateTransition* gameStateTransition)
+void engine::GameManager::SetTransition(game_state_transitioning::GameStateTransition* gameStateTransition) const
 {
 	m_gameStateManager->SetTransition(gameStateTransition);
 }
 
-void engine::GameManager::PerformStateTransition()
+void engine::GameManager::PerformStateTransition() const
 {
 	m_gameStateManager->PerformStateTransition();
 }
 
-void engine::GameManager::PopState()
+void engine::GameManager::PopState() const
 {
 	m_gameStateManager->Pop();
 }
@@ -255,14 +253,14 @@ void engine::GameManager::RequestGameQuit() const
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
-const rendering::text::Font* engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
+const rendering::text::Font* engine::GameManager::CreateFont(int fontId, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
-	return CoreEngine::GetCoreEngine()->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
+	return CoreEngine::GetCoreEngine()->CreateFont(fontId, fontTextureFileName, fontMetaDataFileName);
 }
 
-const rendering::text::Font* engine::GameManager::GetFont(int fontID) const
+const rendering::text::Font* engine::GameManager::GetFont(int fontId) const
 {
-	return CoreEngine::GetCoreEngine()->GetFont(fontID);
+	return CoreEngine::GetCoreEngine()->GetFont(fontId);
 }
 
 void engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const
@@ -286,7 +284,7 @@ void engine::GameManager::InitializeTweakBars()
 	m_gameBar = TwNewBar("GameBar");
 	//TwAddVarRW(m_gameBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
 	//TwSetParam(m_gameBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
-	TwSetParam(m_gameBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(m_gameBar, nullptr, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 
 	// TODO: Move these to PlayGameState InitializeTweakBars() method.
 	//TwAddVarRO(m_gameBar, "ambientLight", TW_TYPE_COLOR4F, &m_ambientLightColor, " label='Color' group='Ambient light'");

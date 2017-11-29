@@ -3,15 +3,12 @@
 
 #include "Engine.h"
 #include "GameComponent.h"
-#include "IUpdateable.h"
 #include "IActionHandler.h"
 #include "IStateHandler.h"
 #include "IRangeHandler.h"
 #include "CameraBehavior.h"
 
-#include "Rendering\BaseCamera.h"
-
-#include <vector>
+#include "Rendering/BaseCamera.h"
 
 namespace engine
 {
@@ -28,54 +25,61 @@ namespace engine
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="sensitivity"> The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
 		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior = NULL);
+		ENGINE_API CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior = nullptr);
+
 		/// <summary>
 		/// The constructor of the base camera object.
 		/// </summary>
-		/// <param name="fov">The field of view of the camera.</param>
+		/// <param name="fieldOfView">The field of view of the camera.</param>
 		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
 		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior = NULL);
-		ENGINE_API virtual ~CameraComponent(void);
+		ENGINE_API CameraComponent(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior = nullptr);
+
+		ENGINE_API virtual ~CameraComponent();
 		
 		/// <summary> The camera component copy constructor. </summary>
+		/// <param name="cameraComponent"> The reference to camera component to copy construct from. </param>
 		ENGINE_API CameraComponent(const CameraComponent& cameraComponent) = delete;
 
 		/// <summary> The camera component move constructor. </summary>
-		ENGINE_API CameraComponent(CameraComponent&& cameraComponent);
+		/// <param name="cameraComponent"> The r-value reference to camera component to move construct from. </param>
+		ENGINE_API CameraComponent(CameraComponent&& cameraComponent) noexcept;
 
 		/// <summary> The camera component copy assignment operator. </summary>
+		/// <param name="cameraComponent"> The reference to camera component to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned camera component. </returns>
 		CameraComponent& operator=(const CameraComponent& cameraComponent) = delete;
 
 		/// <summary> The camera component move assignment operator. </summary>
-		CameraComponent& operator=(CameraComponent&& cameraComponent);
+		/// <param name="cameraComponent"> The r-value reference to camera component to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned camera component. </returns>
+		CameraComponent& operator=(CameraComponent&& cameraComponent) noexcept;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		ENGINE_API virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
 		ENGINE_API virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 		ENGINE_API void SetCameraBehavior(CameraBehavior* cameraBehavior) { m_cameraBehavior = cameraBehavior; }
-		ENGINE_API void Handle(Actions::Action action)
+		ENGINE_API void Handle(actions::Action action) override
 		{
-			if (m_cameraBehavior != NULL && IsActive())
+			if (m_cameraBehavior != nullptr && IsActive())
 			{
 				m_cameraBehavior->Handle(this, action);
 			}
 		}
-		ENGINE_API void Handle(States::State state)
+		ENGINE_API void Handle(states::State state) override
 		{
-			if (m_cameraBehavior != NULL && IsActive())
+			if (m_cameraBehavior != nullptr && IsActive())
 			{
 				m_cameraBehavior->Handle(this, state);
 			}
 		}
-		ENGINE_API void Handle(Ranges::Range range, math::Real value)
+		ENGINE_API void Handle(ranges::Range range, math::Real value) override
 		{
-			if (m_cameraBehavior != NULL && IsActive())
+			if (m_cameraBehavior != nullptr && IsActive())
 			{
 				m_cameraBehavior->Handle(this, range, value);
 			}
@@ -183,6 +187,6 @@ namespace engine
 	//	/* ==================== Non-static member variables end ==================== */
 	//}; /* end class CameraFollowComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_CAMERA_COMPONENT_H__

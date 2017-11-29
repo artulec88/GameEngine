@@ -12,7 +12,7 @@
 
 namespace engine
 {
-	namespace Input
+	namespace input
 	{
 		/// <summary>
 		/// The input context.
@@ -38,7 +38,7 @@ namespace engine
 			/// <returns>
 			/// An action that is associated with the specified <paramref name="button"/>. If no such action is found then <code>Actions::INVALID</code> is returned.
 			/// </returns>
-			Actions::Action MapButtonToAction(raw_input_keys::RawInputKey button) const;
+			actions::Action MapButtonToAction(raw_input_keys::RawInputKey button) const;
 			/// <summary>
 			/// Attempts to map a raw button to a state. If it fails <code>States::STATE_INVALID</code> is returned.
 			/// </summary>
@@ -46,7 +46,7 @@ namespace engine
 			/// <returns>
 			/// A state that is associated with the specified <paramref name="button"/>. If no such state is found then <code>States::STATE_INVALID</code> is returned.
 			/// </returns>
-			States::State MapButtonToState(raw_input_keys::RawInputKey button) const;
+			states::State MapButtonToState(raw_input_keys::RawInputKey button) const;
 			/// <summary>
 			/// Attempts to map a raw axis to a range. If it fails <code>Ranges::RANGE_INVALID</code> is returned.
 			/// </summary>
@@ -54,7 +54,7 @@ namespace engine
 			/// <returns>
 			/// A range that is associated with the specified <paramref name="axis"/>. If no such range is found then <code>Ranges::RANGE_INVALID</code> is returned.
 			/// </returns>
-			Ranges::Range MapAxisToRange(RawInputAxes::RawInputAxis axis) const;
+			ranges::Range MapAxisToRange(RawInputAxes::RawInputAxis axis) const;
 
 			/// <summary>
 			/// Retrieves the sensitivity associated with a given <paramref name="range"/>.
@@ -63,24 +63,24 @@ namespace engine
 			/// <returns>
 			/// The sensitivity associated with a specified <paramref name="range"/>.
 			/// </returns>
-			math::Real GetSensitivity(Ranges::Range range) const;
+			math::Real GetSensitivity(ranges::Range range) const;
 
 			const InputRangeConverter& GetConverter() const { return *m_converter; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			std::map<raw_input_keys::RawInputKey, Actions::Action> m_actionsMap;
-			std::map<raw_input_keys::RawInputKey, States::State> m_statesMap;
-			std::map<RawInputAxes::RawInputAxis, Ranges::Range> m_rangesMap;
+			std::map<raw_input_keys::RawInputKey, actions::Action> m_actionsMap;
+			std::map<raw_input_keys::RawInputKey, states::State> m_statesMap;
+			std::map<RawInputAxes::RawInputAxis, ranges::Range> m_rangesMap;
 
-			std::map<Ranges::Range, math::Real> m_sensitivitiesMap;
+			std::map<ranges::Range, math::Real> m_sensitivitiesMap;
 			std::unique_ptr<InputRangeConverter> m_converter;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class InputContext */
 
-	} /* end namespace Input */
+	} /* end namespace input */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_INPUT_CONTEXT_H__

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LightFactory.h"
 
-#include "Utility\BuilderDirector.h"
+#include "Utility/BuilderDirector.h"
 
 engine::LightFactory::LightFactory() :
 	m_directionalLights(),
@@ -15,20 +15,20 @@ engine::LightFactory::~LightFactory()
 {
 }
 
-const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightID)
+const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightId)
 {
 	switch (lightType)
 	{
 	case LightTypes::DIRECTIONAL:
-		return AddDirectionalLight(lightID);
+		return AddDirectionalLight(lightId);
 	case LightTypes::POINT:
-		return AddPointLight(lightID);
+		return AddPointLight(lightId);
 	case LightTypes::SPOT:
-		return AddSpotLight(lightID);
+		return AddSpotLight(lightId);
 	default:
 		ERROR_LOG_ENGINE("Cannot create the light. Incorrect light type (", lightType, ") has been specified.");
 	}
-	return NULL;
+	return nullptr;
 }
 
 const rendering::lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
@@ -39,21 +39,21 @@ const rendering::lighting::DirectionalLight* engine::LightFactory::AddDirectiona
 	//Engine::DirectionalLightBuilder directionalLightBuilder(m_shaderFactory);
 	//Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
 	//lightBuilderDirector.Construct();
-	//if (directionalLightBuilder.Get() != NULL)
+	//if (directionalLightBuilder.Get() != nullptr)
 	//{
 	//	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLightBuilder.Get()->GetIntensity(), " is being added to directional / spot lights vector");
-	//	m_directionalLights[lightID] = *directionalLightBuilder.Get();
+	//	m_directionalLights[lightId] = *directionalLightBuilder.Get();
 	//}
 
-	return NULL;
+	return nullptr;
 }
 
-const rendering::lighting::PointLight* engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::PointLight* engine::LightFactory::AddPointLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
-	return NULL;
+	return nullptr;
 }
 
-const rendering::lighting::SpotLight* engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::SpotLight* engine::LightFactory::AddSpotLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
-	return NULL;
+	return nullptr;
 }

@@ -2,14 +2,14 @@
 #define __GAME_GAME_NODE_BUILDER_H__
 
 #include "Def.h"
-#include "Engine\GameNode.h"
+#include "Engine/GameNode.h"
 #include "Engine/GameManager.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\ConstantRotationComponent.h"
 #include "Engine\CameraBehavior.h"
 
 #include "Rendering\Camera.h"
-#include "Rendering\Texture.h"
+#include "Rendering/Texture.h"
 
 #include "Utility/Builder.h"
 #include "Utility\StringUtility.h"

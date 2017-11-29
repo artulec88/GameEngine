@@ -14,16 +14,16 @@ engine::SpotLightComponent::~SpotLightComponent()
 	SAFE_DELETE(m_spotLight);
 }
 
-engine::SpotLightComponent::SpotLightComponent(SpotLightComponent&& spotLightComponent) :
+engine::SpotLightComponent::SpotLightComponent(SpotLightComponent&& spotLightComponent) noexcept:
 	GameComponent(std::move(spotLightComponent)),
 	m_spotLight(std::move(spotLightComponent.m_spotLight))
 {
-	spotLightComponent.m_spotLight = NULL;
+	spotLightComponent.m_spotLight = nullptr;
 }
 
-engine::SpotLightComponent& engine::SpotLightComponent::operator=(SpotLightComponent&& spotLightComponent)
+engine::SpotLightComponent& engine::SpotLightComponent::operator=(SpotLightComponent&& spotLightComponent) noexcept
 {
 	GameComponent::operator=(std::move(spotLightComponent));
 	m_spotLight = std::move(spotLightComponent.m_spotLight);
-	spotLightComponent.m_spotLight = NULL;
+	spotLightComponent.m_spotLight = nullptr;
 }

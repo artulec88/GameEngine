@@ -82,6 +82,27 @@ engine::CoreEngine* engine::CoreEngine::s_coreEngine = nullptr;
 	return s_coreEngine;
 }
 
+/* static */ void engine::CoreEngine::InitGlew()
+{
+	INFO_LOG_ENGINE("Initializing GLEW started");
+	glewExperimental = true; // Needed in core profile
+	GLenum err = glewInit();
+
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(GLEW_OK == err, utility::logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
+	if (GLEW_VERSION_2_0)
+	{
+		DEBUG_LOG_ENGINE("OpenGL 2.0 supported");
+	}
+	else
+	{
+		ERROR_LOG_ENGINE("Initializing GLEW failed. OpenGL 2.0 NOT supported");
+		exit(EXIT_FAILURE);
+	}
+
+	INFO_LOG_ENGINE("Using GLEW version ", glewGetString(GLEW_VERSION));
+	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
+}
+
 /* static */ void engine::CoreEngine::ErrorCallback(int errorCode, const char* description)
 {
 	GetCoreEngine()->ErrorCallbackEvent(errorCode, description);
@@ -158,6 +179,19 @@ engine::CoreEngine* engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
+/* static */ void engine::CoreEngine::PollEvents()
+{
+	glfwPollEvents();
+}
+
+/* static */ math::Real engine::CoreEngine::GetTime()
+{
+	return static_cast<math::Real>(glfwGetTime());
+	//return Time(glfwGetTime());
+
+	//return Time::Now();
+}
+
 engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
 	const std::string& configDirectory /* = "..\\Config\\" */, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
@@ -179,18 +213,18 @@ engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory),
 	m_audioDirectory(audioDirectory),
-	m_glfwKeysToRawInputKeysMap({ {GLFW_KEY_A, Input::raw_input_keys::KEY_A}, { GLFW_KEY_B, Input::raw_input_keys::KEY_B },
-		{ GLFW_KEY_C, Input::raw_input_keys::KEY_C }, { GLFW_KEY_D, Input::raw_input_keys::KEY_D }, { GLFW_KEY_E, Input::raw_input_keys::KEY_E }, { GLFW_KEY_F, Input::raw_input_keys::KEY_F },
-		{ GLFW_KEY_G, Input::raw_input_keys::KEY_G }, { GLFW_KEY_H, Input::raw_input_keys::KEY_H }, { GLFW_KEY_I, Input::raw_input_keys::KEY_I }, { GLFW_KEY_J, Input::raw_input_keys::KEY_J },
-		{ GLFW_KEY_K, Input::raw_input_keys::KEY_K }, { GLFW_KEY_L, Input::raw_input_keys::KEY_L }, { GLFW_KEY_M, Input::raw_input_keys::KEY_M }, { GLFW_KEY_N, Input::raw_input_keys::KEY_N },
-		{ GLFW_KEY_O, Input::raw_input_keys::KEY_O }, { GLFW_KEY_P, Input::raw_input_keys::KEY_P }, { GLFW_KEY_Q, Input::raw_input_keys::KEY_Q }, { GLFW_KEY_R, Input::raw_input_keys::KEY_R },
-		{ GLFW_KEY_S, Input::raw_input_keys::KEY_S }, { GLFW_KEY_T, Input::raw_input_keys::KEY_T }, { GLFW_KEY_U, Input::raw_input_keys::KEY_U }, { GLFW_KEY_V, Input::raw_input_keys::KEY_V },
-		{ GLFW_KEY_W, Input::raw_input_keys::KEY_W }, { GLFW_KEY_X, Input::raw_input_keys::KEY_X }, { GLFW_KEY_Y, Input::raw_input_keys::KEY_Y }, { GLFW_KEY_Z, Input::raw_input_keys::KEY_Z },
-		{ GLFW_KEY_UP, Input::raw_input_keys::KEY_UP }, { GLFW_KEY_DOWN, Input::raw_input_keys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::raw_input_keys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::raw_input_keys::KEY_ENTER },
-		{ GLFW_MOUSE_BUTTON_LEFT, Input::raw_input_keys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::raw_input_keys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::raw_input_keys::MOUSE_KEY_RIGHT },
-		{ GLFW_KEY_SPACE, Input::raw_input_keys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, Input::raw_input_keys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, Input::raw_input_keys::KEY_LEFT_ALT },
-		{ GLFW_KEY_LEFT_SHIFT, Input::raw_input_keys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, Input::raw_input_keys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, Input::raw_input_keys::KEY_RIGHT_ALT },
-		{ GLFW_KEY_RIGHT_SHIFT, Input::raw_input_keys::KEY_RIGHT_SHIFT } }),
+	m_glfwKeysToRawInputKeysMap({ {GLFW_KEY_A, input::raw_input_keys::KEY_A}, { GLFW_KEY_B, input::raw_input_keys::KEY_B },
+		{ GLFW_KEY_C, input::raw_input_keys::KEY_C }, { GLFW_KEY_D, input::raw_input_keys::KEY_D }, { GLFW_KEY_E, input::raw_input_keys::KEY_E }, { GLFW_KEY_F, input::raw_input_keys::KEY_F },
+		{ GLFW_KEY_G, input::raw_input_keys::KEY_G }, { GLFW_KEY_H, input::raw_input_keys::KEY_H }, { GLFW_KEY_I, input::raw_input_keys::KEY_I }, { GLFW_KEY_J, input::raw_input_keys::KEY_J },
+		{ GLFW_KEY_K, input::raw_input_keys::KEY_K }, { GLFW_KEY_L, input::raw_input_keys::KEY_L }, { GLFW_KEY_M, input::raw_input_keys::KEY_M }, { GLFW_KEY_N, input::raw_input_keys::KEY_N },
+		{ GLFW_KEY_O, input::raw_input_keys::KEY_O }, { GLFW_KEY_P, input::raw_input_keys::KEY_P }, { GLFW_KEY_Q, input::raw_input_keys::KEY_Q }, { GLFW_KEY_R, input::raw_input_keys::KEY_R },
+		{ GLFW_KEY_S, input::raw_input_keys::KEY_S }, { GLFW_KEY_T, input::raw_input_keys::KEY_T }, { GLFW_KEY_U, input::raw_input_keys::KEY_U }, { GLFW_KEY_V, input::raw_input_keys::KEY_V },
+		{ GLFW_KEY_W, input::raw_input_keys::KEY_W }, { GLFW_KEY_X, input::raw_input_keys::KEY_X }, { GLFW_KEY_Y, input::raw_input_keys::KEY_Y }, { GLFW_KEY_Z, input::raw_input_keys::KEY_Z },
+		{ GLFW_KEY_UP, input::raw_input_keys::KEY_UP }, { GLFW_KEY_DOWN, input::raw_input_keys::KEY_DOWN }, { GLFW_KEY_ESCAPE, input::raw_input_keys::KEY_ESCAPE }, { GLFW_KEY_ENTER, input::raw_input_keys::KEY_ENTER },
+		{ GLFW_MOUSE_BUTTON_LEFT, input::raw_input_keys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, input::raw_input_keys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, input::raw_input_keys::MOUSE_KEY_RIGHT },
+		{ GLFW_KEY_SPACE, input::raw_input_keys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, input::raw_input_keys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, input::raw_input_keys::KEY_LEFT_ALT },
+		{ GLFW_KEY_LEFT_SHIFT, input::raw_input_keys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, input::raw_input_keys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, input::raw_input_keys::KEY_RIGHT_ALT },
+		{ GLFW_KEY_RIGHT_SHIFT, input::raw_input_keys::KEY_RIGHT_SHIFT } }),
 	m_inputMapping(m_configDirectory, GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),
@@ -377,28 +411,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	DEBUG_LOG_ENGINE("Initializing GLFW finished successfully");
 }
 
-void engine::CoreEngine::InitGlew()
-{
-	INFO_LOG_ENGINE("Initializing GLEW started");
-	glewExperimental = true; // Needed in core profile
-	GLenum err = glewInit();
-
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(GLEW_OK == err, utility::logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
-	if (GLEW_VERSION_2_0)
-	{
-		DEBUG_LOG_ENGINE("OpenGL 2.0 supported");
-	}
-	else
-	{
-		ERROR_LOG_ENGINE("Initializing GLEW failed. OpenGL 2.0 NOT supported");
-		exit(EXIT_FAILURE);
-	}
-
-	INFO_LOG_ENGINE("Using GLEW version ", glewGetString(GLEW_VERSION));
-	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
-}
-
-void engine::CoreEngine::SetCallbacks()
+void engine::CoreEngine::SetCallbacks() const
 {
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, utility::logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
@@ -447,7 +460,7 @@ void engine::CoreEngine::Stop()
 void engine::CoreEngine::Run()
 {
 	START_PROFILING_ENGINE(true, "");
-	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
+	const int threadSleepTime = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
 	//math::Vector3D fpsColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
@@ -455,7 +468,7 @@ void engine::CoreEngine::Run()
 	//math::Vector3D inGameTimeColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
 	//math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
-	rendering::controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
+	rendering::controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(rendering::text::font_ids::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), nullptr,
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
 		math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
@@ -624,7 +637,7 @@ void engine::CoreEngine::Run()
 		else
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
-			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME)); // Sleep for some time to prevent the thread from constant looping
+			std::this_thread::sleep_for(std::chrono::milliseconds(threadSleepTime)); // Sleep for some time to prevent the thread from constant looping
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 			++m_renderingNotRequiredCount;
 #endif
@@ -635,7 +648,7 @@ void engine::CoreEngine::Run()
 	}
 }
 
-void engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height) const
 {
 	m_renderer->SetWindowWidth(width);
 	m_renderer->SetWindowHeight(height);
@@ -679,14 +692,14 @@ void engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 	exit(EXIT_FAILURE);
 }
 
-void engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
+void engine::CoreEngine::CloseWindowEvent(GLFWwindow* window) const
 {
 	m_game->CloseWindowEvent();
 }
 
 void engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	std::map<int, Input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
+	std::map<int, input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Key ", key, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
@@ -697,7 +710,7 @@ void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
 	DELOCUST_LOG_ENGINE("Mouse button event: button=", button, "\t action=", action, "\t mods=", mods);
 
-	std::map<int, Input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
+	std::map<int, input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Button ", button, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
@@ -709,42 +722,27 @@ void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 void engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	DEBUG_LOG_ENGINE("Mouse position = (", xPos, ", ", yPos, ")");
-	m_inputMapping.SetRawAxisValue(engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
-	m_inputMapping.SetRawAxisValue(engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
+	m_inputMapping.SetRawAxisValue(engine::input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
+	m_inputMapping.SetRawAxisValue(engine::input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
 	//lastXPos = xPos;
 	//lastYPos = yPos;
 	//m_game->MousePosEvent(xPos, yPos);
 }
 
-void engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+void engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset) const
 {
 	m_game->ScrollEvent(xOffset, yOffset);
 }
 
-void engine::CoreEngine::PollEvents()
-{
-	glfwPollEvents();
-}
-
-math::Real engine::CoreEngine::GetTime() const
-{
-	return static_cast<math::Real>(glfwGetTime());
-	//return Time(glfwGetTime());
-
-	//return Time::Now();
-}
-
 void engine::CoreEngine::ClearScreen() const
 {
+	m_renderer->ClearScreen();
 }
 
-void engine::CoreEngine::SetCursorPos(math::Real xPos, math::Real yPos)
+void engine::CoreEngine::SetCursorPos(math::Real xPos, math::Real yPos) const
 {
-	if (m_renderer == NULL)
-	{
-		CRITICAL_LOG_ENGINE("Cannot set cursor position. The rendering engine is NULL.");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_renderer != nullptr, utility::logging::CRITICAL,
+		"Cannot set cursor position. The rendering engine is NULL.");
 	glfwSetCursorPos(m_window, xPos, yPos);
 }
 
@@ -758,8 +756,9 @@ void engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
 	//m_renderer->AddBillboardNode(billboardNode);
 }
 
-void engine::CoreEngine::AddPhysicsObject(physics::PhysicsObject* physicsObject)
+void engine::CoreEngine::AddPhysicsObject(physics::PhysicsObject* physicsObject) const
 {
+	// TODO: Check if physics engine is available and act accordingly if it doesn't
 	m_physicsEngine->AddPhysicsObject(physicsObject);
 }
 
@@ -805,7 +804,7 @@ void engine::CoreEngine::InitializeTweakBars()
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 }
 
-void engine::CoreEngine::InitializeGameTweakBars()
+void engine::CoreEngine::InitializeGameTweakBars() const
 {
 	m_game->InitializeTweakBars();
 	m_renderer->InitializeTweakBars();

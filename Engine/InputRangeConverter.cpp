@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-engine::Input::InputRangeConverter::InputRangeConverter(const std::string& inputContextName)
+engine::input::InputRangeConverter::InputRangeConverter(const std::string& inputContextName)
 {
 	const auto convertersCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "ConvertersCount", 0);
 	for (auto i = 0; i < convertersCount; ++i)
@@ -15,7 +15,7 @@ engine::Input::InputRangeConverter::InputRangeConverter(const std::string& input
 		std::stringstream ss("");
 		ss << (convertersCount + 1);
 
-		Ranges::Range range = static_cast<Ranges::Range>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Range_" + ss.str(), 0));
+		ranges::Range range = static_cast<ranges::Range>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Range_" + ss.str(), 0));
 		Converter converter(GET_CONFIG_VALUE_ENGINE(inputContextName + "ConverterMinInput_" + ss.str(), 0.0f), GET_CONFIG_VALUE_ENGINE(inputContextName + "ConverterMaxInput_" + ss.str(), 0.0f),
 			GET_CONFIG_VALUE_ENGINE(inputContextName + "ConverterMinOutput_" + ss.str(), 0.0f), GET_CONFIG_VALUE_ENGINE(inputContextName + "ConverterMaxOutput_" + ss.str(), 0.0f));
 		CHECK_CONDITION_EXIT_ALWAYS_ENGINE(converter.m_maxInput >= converter.m_minInput, utility::logging::ERR,
@@ -26,7 +26,7 @@ engine::Input::InputRangeConverter::InputRangeConverter(const std::string& input
 	}
 }
 
-engine::Input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStream)
+engine::input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStream)
 {
 	if (!inFileStream)
 	{
@@ -36,10 +36,10 @@ engine::Input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStr
 	const auto convertersCount = utility::FileManager::AttemptRead<unsigned>(inFileStream);
 	for (auto i = 0; i < convertersCount; ++i)
 	{
-		Ranges::Range range;
+		ranges::Range range;
 		Converter converter;
 
-		range = static_cast<Ranges::Range>(utility::FileManager::AttemptRead<unsigned>(inFileStream));
+		range = static_cast<ranges::Range>(utility::FileManager::AttemptRead<unsigned>(inFileStream));
 		converter.m_minInput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
 		converter.m_maxInput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
 		converter.m_minOutput = utility::FileManager::AttemptRead<math::Real>(inFileStream);
@@ -55,6 +55,6 @@ engine::Input::InputRangeConverter::InputRangeConverter(std::ifstream& inFileStr
 }
 
 
-engine::Input::InputRangeConverter::~InputRangeConverter()
+engine::input::InputRangeConverter::~InputRangeConverter()
 {
 }

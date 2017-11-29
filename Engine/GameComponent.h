@@ -26,26 +26,31 @@ namespace engine
 		/// Game component default constructor.
 		/// </summary>
 		GameComponent();
+
 		/// <summary>
 		/// Game component destructor.
 		/// </summary>
-		virtual ~GameComponent(void);
+		virtual ~GameComponent();
+
 		/// <summary>
 		/// Game component copy constructor.
 		/// </summary>
 		/// <param name="gameComponent> The game component we want to copy construct from. </param>
 		GameComponent(const GameComponent& gameComponent) = delete;
+
 		/// <summary>
 		/// Game component move constructor.
 		/// </summary>
 		/// <param name="gameComponent> The game component we want to move construct from. </param>
 		GameComponent(GameComponent&& gameComponent) = default;
+
 		/// <summary>
 		/// Game component copy assignment operator.
 		/// </summary>
 		/// <param name="gameComponent> The game component we want to copy assign from. </param>
 		/// <returns> The game component we assigned new values to. </returns>
 		GameComponent& operator=(const GameComponent& gameComponent) = delete;
+
 		/// <summary>
 		/// Game component move assignment operator.
 		/// </summary>
@@ -55,7 +60,6 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		//virtual void Execute() const = 0;
 
 		/// <summary>
@@ -76,7 +80,7 @@ namespace engine
 		/// <returns> The unmodifiable transform of the parent game node. </returns>
 		const math::Transform& GetTransform() const;
 
-		physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
+		physics::PhysicsObject* GetPhysicsObject() const { return m_parentGameNode->GetPhysicsObject(); }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -85,6 +89,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_GAME_COMPONENT_H__

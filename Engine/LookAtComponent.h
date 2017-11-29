@@ -7,7 +7,6 @@
 #include "GameNode.h"
 
 #include "Math/Transform.h"
-#include "Math/Vector.h"
 
 namespace engine
 {
@@ -16,8 +15,8 @@ namespace engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API LookAtComponent(GameNode* gameNode);
-		ENGINE_API virtual ~LookAtComponent(void);
+		ENGINE_API explicit LookAtComponent(GameNode* gameNode);
+		ENGINE_API virtual ~LookAtComponent();
 		LookAtComponent(const LookAtComponent& lookAtComponent) = delete;
 		LookAtComponent(LookAtComponent&& lookAtComponent) = default;
 		LookAtComponent& operator=(const LookAtComponent& lookAtComponent) = delete;
@@ -25,8 +24,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Update(math::Real delta);
+		void Update(math::Real delta) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -35,6 +33,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LookAtComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_LOOK_AT_COMPONENT_H__ */

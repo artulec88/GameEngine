@@ -26,6 +26,7 @@ namespace engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		GameStateManager();
+		
 		/// <summary>
 		/// Destroys the game state manager, leaving and dropping any active game state.
 		/// </summary>
@@ -51,6 +52,10 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
+		using IActionHandler::Handle;
+		using IStateHandler::Handle;
+		using IRangeHandler::Handle;
+
 		/// <summary> Replaces the lastmost game state on the stack. </summary>
 		/// <param name="state"> State the lastmost state on the stack will be replaced with. </param>
 		/// <param name="modality"> Whether the state completely obscures the state below it. </param>
@@ -60,7 +65,7 @@ namespace engine
 		/// except that it will also work if the game state stack is currently empty, in which
 		/// case it will equal the Push() method and return an empty smart pointer.
 		/// </remarks>
-		virtual GameState* Switch(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE);
+		virtual GameState* Switch(GameState* gameState, game_state_modality::ModalityType modality = game_state_modality::EXCLUSIVE);
 
 		/// <summary> Removes the lastmost game state from the stack </summary>
 		/// <returns> The state that has been removed from the stack </returns>
@@ -69,7 +74,7 @@ namespace engine
 		/// <summary> Appends a new game state to the stack </summary>
 		/// <param name="gameState"> Game state that will be pushed onto the stack </param>
 		/// <param name="modality"> Indicates whether the state completely obscures the state below it </param>
-		virtual void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE) = 0;
+		virtual void Push(GameState* gameState, game_state_modality::ModalityType modality = game_state_modality::EXCLUSIVE) = 0;
 
 		/// <summary>
 		/// Returns the currently active game state
@@ -87,41 +92,18 @@ namespace engine
 
 		virtual void MousePosEvent(double xPos, double yPos) = 0;
 
-		/// <summary> Advances the time of the active game states </summary>
-		/// <param name="deltaTime"> Elapsed simulation time </param>
-		virtual void Update(math::Real deltaTime) = 0;
-
 		/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 		/// <param name="renderer"> The rendering engine. </param>
 		virtual void Render(rendering::Renderer* renderer) const = 0;
 
-		/// <summary>
-		/// Handles the incoming action appropriately.
-		/// </summary>
-		/// <param name="action"> The action that must be handled. </param>
-		ENGINE_API virtual void Handle(Actions::Action action) = 0;
-
-		/// <summary>
-		/// Handles the incoming state appropriately.
-		/// </summary>
-		/// <param name="state"> The state that must be handled. </param>
-		ENGINE_API virtual void Handle(States::State state) = 0;
-
-		/// <summary>
-		/// Handles the incoming range appropriately.
-		/// </summary>
-		/// <param name="range"> The range that must be handled. </param>
-		/// <param name="value"> The value associated with the range. </param>
-		ENGINE_API virtual void Handle(Ranges::Range range, math::Real value) = 0;
-
-		void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
+		void SetTransition(game_state_transitioning::GameStateTransition* gameStateTransition);
 		void PerformStateTransition();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		/// <summary> The variable holding the game state to which the game state manager will transition </summary>
-		GameStateTransitioning::GameStateTransition* m_gameStateTransition;
+		game_state_transitioning::GameStateTransition* m_gameStateTransition;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameStateManager */
 
@@ -139,7 +121,7 @@ namespace engine
 	/// </remarks>
 	class DefaultGameStateManager : public GameStateManager
 	{
-		typedef std::pair<GameState*, GameStateModality::ModalityType> GameStateModalityTypePair;
+		using GameStateModalityTypePair = std::pair<GameState*, game_state_modality::ModalityType>;
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Initializes a new game state manager </summary>
@@ -157,7 +139,7 @@ namespace engine
 		/// <summary> Appends a new game state to the stack </summary>
 		/// <param name="gameState"> Game state that will be pushed onto the stack </param>
 		/// <param name="modality"> Indicates whether the state completely obscures the state below it </param>
-		void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE) override;
+		void Push(GameState* gameState, game_state_modality::ModalityType modality = game_state_modality::EXCLUSIVE) override;
 
 		/// <summary>
 		/// Returns the currently active game state
@@ -182,20 +164,20 @@ namespace engine
 		/// Handles the incoming action appropriately.
 		/// </summary>
 		/// <param name="action"> The action that must be handled by active game state. </param>
-		void Handle(engine::Actions::Action action) override;
+		void Handle(actions::Action action) override;
 
 		/// <summary>
 		/// Handles the incoming state appropriately.
 		/// </summary>
 		/// <param name="state"> The state that must be handled by active game states. </param>
-		void Handle(engine::States::State state) override;
+		void Handle(states::State state) override;
 
 		/// <summary>
 		/// Handles the incoming range appropriately.
 		/// </summary>
 		/// <param name="range"> The range that must be handled by active game states. </param>
 		/// <param name="value"> The value associated with the specified range. </param>
-		void Handle(engine::Ranges::Range range, math::Real value) override;
+		void Handle(ranges::Range range, math::Real value) override;
 	private:
 		/// <summary>
 		///   Adds the specified game state to the exposed Drawables or Updateables if it
@@ -233,7 +215,7 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 		std::vector<GameStateModalityTypePair> m_activeStates;
-		std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
+		std::vector<input::IInputableMouse*> m_exposedInputablesMouse;
 		std::vector<IUpdateable*> m_exposedUpdateables;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class DefaultGameStateManager */

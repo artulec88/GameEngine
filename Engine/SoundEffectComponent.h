@@ -19,8 +19,8 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API SoundEffectComponent(const std::string& soundEffectPath);
-		ENGINE_API virtual ~SoundEffectComponent(void);
+		ENGINE_API explicit SoundEffectComponent(const std::string& soundEffectPath);
+		ENGINE_API virtual ~SoundEffectComponent();
 		SoundEffectComponent(const SoundEffectComponent& soundEffectComponent) = delete;
 		SoundEffectComponent(SoundEffectComponent&& soundEffectComponent) = default;
 		SoundEffectComponent& operator=(const SoundEffectComponent& soundEffectComponent) = delete;
@@ -28,7 +28,6 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		//ENGINE_API virtual void Update(math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
@@ -36,8 +35,8 @@ namespace engine
 	protected:
 		std::string m_soundEffectPath;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class AABBColliderComponent */
+	}; /* end class SoundEffectComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_SOUND_EFFECT_COMPONENT_H__ */

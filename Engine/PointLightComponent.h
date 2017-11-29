@@ -15,16 +15,15 @@ namespace engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PointLightComponent(rendering::lighting::PointLight* pointLight);
+		explicit PointLightComponent(rendering::lighting::PointLight* pointLight);
 		virtual ~PointLightComponent();
 		PointLightComponent(const PointLightComponent& pointLightComponent) = delete;
-		PointLightComponent(PointLightComponent&& pointLightComponent);
+		PointLightComponent(PointLightComponent&& pointLightComponent) noexcept;
 		PointLightComponent& operator=(const PointLightComponent& pointLightComponent) = delete;
-		PointLightComponent& operator=(PointLightComponent&& pointLightComponent);
+		PointLightComponent& operator=(PointLightComponent&& pointLightComponent) noexcept;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
 		//virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
 		//virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
@@ -34,7 +33,7 @@ namespace engine
 		rendering::lighting::PointLight* m_pointLight;
 	/* ==================== Non-static member variables end ==================== */
 	}; // end class PointLightComponent
-} // end namespace Engine
+} // end namespace engine
 
 #endif // __ENGINE_POINT_LIGHT_COMPONENT_H__
 

@@ -5,7 +5,7 @@
 #include "GameComponent.h"
 
 #include "Rendering/DirectionalLight.h"
-#include "Rendering\Color.h"
+#include "Rendering/Color.h"
 
 #define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
 
@@ -23,7 +23,6 @@ namespace engine
 #endif
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		static constexpr math::Real TROPIC_OF_CANCER_SINUS = 0.39794863131f;
 		/* ==================== Static variables and functions end ==================== */
 
@@ -32,20 +31,24 @@ namespace engine
 		DirectionalLightComponent(rendering::lighting::DirectionalLight* directionalLight, math::Real maxIntensity, const rendering::Color& sunDaytimeColor,
 			const rendering::Color& sunNearHorizonColor, const rendering::Color& sunNighttimeColor, const math::Angle& latitude, const math::Angle& longitude,
 			const math::Angle& firstElevationLevel, const math::Angle& secondElevationLevel, const math::Angle& thirdElevationLevel);
+
 		virtual ~DirectionalLightComponent();
+
 		DirectionalLightComponent(const DirectionalLightComponent& directionalLightComponent) = delete;
-		DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent);
+
+		DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) noexcept;
+
 		DirectionalLightComponent& operator=(const DirectionalLightComponent& directionalLightComponent) = delete;
-		DirectionalLightComponent& operator=(DirectionalLightComponent&& directionalLightComponent);
+
+		DirectionalLightComponent& operator=(DirectionalLightComponent&& directionalLightComponent) noexcept;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		//virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
 		//virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
-		virtual void Update(math::Real delta);
+		void Update(math::Real delta) override;
 #endif
 	private:
 		/// <summary>
@@ -58,7 +61,6 @@ namespace engine
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		rendering::lighting::DirectionalLight* m_directionalLight;
 
 		///<summary>The maximum intensity of the directional light.</summary>
@@ -84,7 +86,7 @@ namespace engine
 		CONST_IF_TWEAK_BAR_DISABLED math::Angle m_thirdElevationLevel;
 		/* ==================== Non-static member variables end ==================== */
 	}; // end class DirectionalLightComponent
-} // end namespace Engine
+} // end namespace engine
 
 #endif // __ENGINE_DIRECTIONAL_LIGHT_COMPONENT_H__
 

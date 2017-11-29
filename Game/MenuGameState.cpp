@@ -130,16 +130,16 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	mainMenuOptionsMenuEntry->AddChild(new engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.6f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new engine::ActionMenuEntry(engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
+	mainMenuOptionsMenuEntry->AddChild(new engine::ActionMenuEntry(engine::actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
 		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.8f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::START_GAME, "New game", mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::actions::START_GAME, "New game", mainMenuFont,
 		mainMenuFontSize, nullptr /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, math::Vector2D(0.25f, 0.17f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f),
 		0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuLoadMenuEntry);
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::actions::SHOW_INTRO, "Intro", mainMenuFont,
 		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.68f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new engine::ActionMenuEntry(engine::actions::QUIT_GAME, "Quit", mainMenuFont,
 		mainMenuFontSize, nullptr, math::Vector2D(0.25f, 0.85f), math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 0.5f, rendering::Color(rendering::color_ids::RED), rendering::Color(rendering::color_ids::GREEN), math::Vector2D(0.005f, 0.005f), true));
 
 	m_gameManager->LoadSoundEffect("bounce.wav");
@@ -188,23 +188,23 @@ void Game::MenuGameState::Revealed()
 	INFO_LOG_GAME("Menu game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::MenuGameState::Handle(engine::Actions::Action action)
+void Game::MenuGameState::Handle(engine::actions::Action action)
 {
 	switch (action)
 	{
-	case engine::Actions::SELECT_PREVIOUS_MENU_ENTRY:
+	case engine::actions::SELECT_PREVIOUS_MENU_ENTRY:
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectPrevChild(); // TODO: Is it possible that GetParent() == nullptr?
 		break;
-	case engine::Actions::SELECT_NEXT_MENU_ENTRY:
+	case engine::actions::SELECT_NEXT_MENU_ENTRY:
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == nullptr?
 		break;
-	case engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
+	case engine::actions::CHOOSE_CURRENT_MENU_ENTRY:
 		m_currentMenuEntry->Dispatch();
 		break;
-	case engine::Actions::GO_TO_CHILD_MENU_ENTRY:
+	case engine::actions::GO_TO_CHILD_MENU_ENTRY:
 		m_currentMenuEntry = m_currentMenuEntry->GoTo();
 		break;
-	case engine::Actions::RETURN_TO_PARENT_MENU_ENTRY:
+	case engine::actions::RETURN_TO_PARENT_MENU_ENTRY:
 		if (m_currentMenuEntry->GetParent()->HasParent())
 		{
 			m_currentMenuEntry = m_currentMenuEntry->GetParent();
@@ -220,12 +220,12 @@ void Game::MenuGameState::Handle(engine::Actions::Action action)
 	}
 }
 
-void Game::MenuGameState::Handle(engine::States::State state)
+void Game::MenuGameState::Handle(engine::states::State state)
 {
 	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
 	{
-	case engine::States::MOUSE_KEY_LEFT_PRESSED:
+	case engine::states::MOUSE_KEY_LEFT_PRESSED:
 		if (m_currentMenuEntry->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
 		{
 			m_currentMenuEntry->Dispatch();
@@ -237,14 +237,14 @@ void Game::MenuGameState::Handle(engine::States::State state)
 	}
 }
 
-void Game::MenuGameState::Handle(engine::Ranges::Range range, math::Real value)
+void Game::MenuGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
-	case engine::Ranges::AXIS_X:
+	case engine::ranges::AXIS_X:
 		m_mousePosX = value;
 		break;
-	case engine::Ranges::AXIS_Y:
+	case engine::ranges::AXIS_Y:
 		m_mousePosY = value;
 		break;
 	default:

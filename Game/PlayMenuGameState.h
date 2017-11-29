@@ -4,9 +4,9 @@
 #include "Def.h"
 #include "Rendering/Renderer.h"
 #include "Engine/GameState.h"
-#include "Engine\IRenderable.h"
+#include "Engine/IRenderable.h"
 #include "Math/Math.h"
-#include "Engine\GameNode.h"
+#include "Engine/GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 
@@ -39,9 +39,9 @@ namespace Game
 		void Leaving() override;
 		void Obscuring() override;
 		void Revealed() override;
-		void Handle(engine::Actions::Action action) override;
-		void Handle(engine::States::State state) override;
-		void Handle(engine::Ranges::Range range, math::Real value) override;
+		void Handle(engine::actions::Action action) override;
+		void Handle(engine::states::State state) override;
+		void Handle(engine::ranges::Range range, math::Real value) override;
 
 		void Render(rendering::Renderer* renderer) const override;
 

@@ -119,7 +119,7 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+		ENGINE_API ActionMenuEntry(engine::actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
 			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry();
@@ -132,7 +132,7 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Actions::Action m_actionID;
+		actions::Action m_actionID;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ActionMenuEntry */
 

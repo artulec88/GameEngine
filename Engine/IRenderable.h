@@ -51,6 +51,6 @@ namespace engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class IRenderable */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_IRENDERABLE_H__ */

@@ -13,24 +13,23 @@
 namespace engine
 {
 
-	class AABBColliderComponent : public GameComponent
+	class AabbColliderComponent : public GameComponent
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API AABBColliderComponent(const math::Vector3D& bottomLeftPos, const math::Vector3D& topRightPos);
-		ENGINE_API virtual ~AABBColliderComponent(void);
-		AABBColliderComponent(const AABBColliderComponent& aabbColliderComponent) = delete;
-		ENGINE_API AABBColliderComponent(AABBColliderComponent&& aabbColliderComponent) = default;
-		AABBColliderComponent& operator=(const AABBColliderComponent& aabbColliderComponent) = delete;
-		ENGINE_API AABBColliderComponent& operator=(AABBColliderComponent&& aabbColliderComponent) = default;
+		ENGINE_API AabbColliderComponent(const math::Vector3D& bottomLeftPos, const math::Vector3D& topRightPos);
+		ENGINE_API virtual ~AabbColliderComponent();
+		AabbColliderComponent(const AabbColliderComponent& aabbColliderComponent) = delete;
+		ENGINE_API AabbColliderComponent(AabbColliderComponent&& aabbColliderComponent) = default;
+		AabbColliderComponent& operator=(const AabbColliderComponent& aabbColliderComponent) = delete;
+		ENGINE_API AabbColliderComponent& operator=(AabbColliderComponent&& aabbColliderComponent) = default;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
-		//ENGINE_API virtual void Update(math::Real deltaTime);
+		//ENGINE_API void Update(math::Real deltaTime) override;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -39,6 +38,6 @@ namespace engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABBColliderComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_AABB_COLLIDER_COMPONENT_H__ */

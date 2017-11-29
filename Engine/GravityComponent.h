@@ -16,7 +16,6 @@ namespace engine
 	class GravityComponent : public GameComponent, public IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		// TODO: Don't hard-code any value! Ever!
 		// TODO: This variable should be moved into the Physics engine and be accessible from anywhere (similarily as stdlog is accessible).
 		static constexpr math::Vector3D GRAVITY_ACCELERATION{ 0.0f, -9.8f, 0.0f };
@@ -24,17 +23,16 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GravityComponent(const rendering::Terrain* terrain);
-		ENGINE_API virtual ~GravityComponent(void);
+		ENGINE_API explicit GravityComponent(const rendering::Terrain* terrain);
+		ENGINE_API virtual ~GravityComponent();
 		GravityComponent(const GravityComponent& gravityComponent) = delete;
-		GravityComponent(GravityComponent&& gravityComponent);
+		GravityComponent(GravityComponent&& gravityComponent) noexcept;
 		GravityComponent& operator=(const GravityComponent& gravityComponent) = delete;
-		GravityComponent& operator=(GravityComponent&& gravityComponent);
+		GravityComponent& operator=(GravityComponent&& gravityComponent) noexcept;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Update(math::Real deltaTime);
+		ENGINE_API void Update(math::Real deltaTime) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -45,6 +43,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GravityComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_GRAVITY_COMPONENT_H__ */

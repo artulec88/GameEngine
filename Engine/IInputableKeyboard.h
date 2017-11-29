@@ -5,7 +5,7 @@
 
 namespace engine {
 	
-	namespace Input
+	namespace input
 	{
 
 		/// <summary>
@@ -40,8 +40,8 @@ namespace engine {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class IInputableKeyboard */
 
-	} /* end namespace Input */
+	} /* end namespace input */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_IINPUTABLE_KEYBOARD_H__ */

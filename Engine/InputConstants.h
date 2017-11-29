@@ -5,7 +5,7 @@
 
 namespace engine
 {
-	namespace Input
+	namespace input
 	{
 		namespace raw_input_keys
 		{
@@ -122,7 +122,7 @@ namespace engine
 			}; /* end enum RawInputAxis */
 		} /* end namespace RawInputAxes */
 
-	} /* end namespace Input */
+	} /* end namespace input */
 } /* end namspace Engine */
 
 #endif /* __ENGINE_INPUT_CONSTANTS_H__ */

@@ -3,41 +3,41 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Renderer.h"
 
-engine::MeshRendererComponent::MeshRendererComponent(int meshID, const rendering::Material* material) :
+engine::MeshRendererComponent::MeshRendererComponent(int meshId, const rendering::Material* material) :
 	GameComponent(),
 	IRenderable(),
-	m_meshID(meshID),
+	m_meshId(meshId),
 	m_material(material)
 {
-	CHECK_CONDITION_ENGINE(m_material != NULL, Utility::Logging::WARNING, "The material given to the mesh renderer component is NULL.");
+	CHECK_CONDITION_ENGINE(m_material != nullptr, Utility::Logging::WARNING, "The material given to the mesh renderer component is NULL.");
 }
 
 
-engine::MeshRendererComponent::~MeshRendererComponent(void)
+engine::MeshRendererComponent::~MeshRendererComponent()
 {
 	SAFE_DELETE(m_material);
 }
 
-engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& meshRendererComponent) :
+engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& meshRendererComponent) noexcept:
 	GameComponent(std::move(meshRendererComponent)),
 	IRenderable(std::move(meshRendererComponent)),
-	m_meshID(std::move(meshRendererComponent.m_meshID)),
+	m_meshId(std::move(meshRendererComponent.m_meshId)),
 	m_material(std::move(meshRendererComponent.m_material))
 {
-	meshRendererComponent.m_material = NULL;
+	meshRendererComponent.m_material = nullptr;
 }
 
-engine::MeshRendererComponent& engine::MeshRendererComponent::operator=(MeshRendererComponent&& meshRendererComponent)
+engine::MeshRendererComponent& engine::MeshRendererComponent::operator=(MeshRendererComponent&& meshRendererComponent) noexcept
 {
 	GameComponent::operator=(std::move(meshRendererComponent));
 	IRenderable::operator=(std::move(meshRendererComponent));
-	m_meshID = std::move(meshRendererComponent.m_meshID);
+	m_meshId = std::move(meshRendererComponent.m_meshId);
 	m_material = std::move(meshRendererComponent.m_material);
-	meshRendererComponent.m_material = NULL;
+	meshRendererComponent.m_material = nullptr;
 	return *this;
 }
 
-void engine::MeshRendererComponent::Render(int shaderID, rendering::Renderer* renderer) const
+void engine::MeshRendererComponent::Render(int shaderId, rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering mesh started");
 	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");
@@ -46,5 +46,5 @@ void engine::MeshRendererComponent::Render(int shaderID, rendering::Renderer* re
 
 	//const math::Transform& transform = GetTransform();
 	//renderer->AddRenderCommand(shader, m_mesh, m_material, &transform);
-	renderer->Render(m_meshID, m_material, GetTransform(), shaderID);
+	renderer->Render(m_meshId, m_material, GetTransform(), shaderId);
 }

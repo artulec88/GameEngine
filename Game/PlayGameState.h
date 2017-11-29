@@ -31,7 +31,7 @@
 namespace Game
 {
 
-	class PlayGameState : public engine::GameState, public engine::Input::IInputableMouse, public engine::IUpdateable
+	class PlayGameState : public engine::GameState, public engine::input::IInputableMouse, public engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		static constexpr math::Real TROPIC_OF_CANCER_SINUS = static_cast<math::Real>(0.39794863131);
@@ -48,9 +48,9 @@ namespace Game
 		void Leaving() override;
 		void Obscuring() override;
 		void Revealed() override;
-		void Handle(engine::Actions::Action action) override;
-		void Handle(engine::States::State state) override;
-		void Handle(engine::Ranges::Range range, math::Real value) override;
+		void Handle(engine::actions::Action action) override;
+		void Handle(engine::states::State state) override;
+		void Handle(engine::ranges::Range range, math::Real value) override;
 
 		void MouseButtonEvent(int button, int action, int mods) override;
 		void MousePosEvent(double xPos, double yPos) override;

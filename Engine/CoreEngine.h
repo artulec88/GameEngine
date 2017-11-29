@@ -53,6 +53,9 @@ namespace engine
 		ENGINE_API static CoreEngine* s_coreEngine;
 	public:
 		ENGINE_API static CoreEngine* GetCoreEngine();
+
+		static void InitGlew();
+
 		static void ErrorCallback(int errorCode, const char* description);
 		static void WindowCloseEventCallback(GLFWwindow* window);
 		static void WindowResizeCallback(GLFWwindow* window, int width, int height);
@@ -61,9 +64,29 @@ namespace engine
 		static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
 		static void MousePosCallback(GLFWwindow* window, double xPos, double yPos);
 		static void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset);
+
+		static void PollEvents();
+
+		static math::Real GetTime();
+
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
+	private:
+		static void StopTimer(utility::timing::Timer& timer, long& countStats, math::statistics::UtmostSamples<long long>& minMaxTime, double& timeSum)
+		{
+			if (timer.IsRunning())
+			{
+				timer.Stop();
+			}
+			++countStats;
+			const auto elapsedTime = timer.GetDuration(utility::timing::MICROSECOND);
+			minMaxTime.ProcessSample(elapsedTime);
+			timeSum += elapsedTime;
+		}
+#endif
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
+	public:
 		/// <summary> Core engine constructor. </summary>
 		/// <param name="fullscreensEnabled">
 		/// Fullscreen mode flag. If <code>true</code> is specified then the engine will run in fullscreen mode.
@@ -112,19 +135,19 @@ namespace engine
 		{
 			glfwSetWindowShouldClose(m_window, GL_TRUE);
 		}
-		void InitGlew();
 		//ENGINE_API void MakeMainWindowCurrentContext() const { glfwMakeContextCurrent(m_window); }
 		GLFWwindow* GetThreadWindow() const { return m_threadWindow; }
 
 
-		void WindowResizeEvent(GLFWwindow* window, int width, int height);
+		void WindowResizeEvent(GLFWwindow* window, int width, int height) const;
+
 		/// <summary>
 		/// Error callback.
 		/// </summary>
 		/// <param name="errorCode"> The error code. See http://www.glfw.org/docs/latest/group__errors.html. </param>
 		/// <param name="description"> The description of the error. </param>
 		void ErrorCallbackEvent(int errorCode, const char* description);
-		void CloseWindowEvent(GLFWwindow* window);
+		void CloseWindowEvent(GLFWwindow* window) const;
 
 		/// <summary>
 		/// Main entry for the key event handling.
@@ -136,15 +159,14 @@ namespace engine
 		void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
 		void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
-		void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
+		void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset) const;
 
 		int GetWindowWidth() const { return m_windowWidth; };
 		int GetWindowHeight() const { return m_windowHeight; };
 
-		void SetCursorPos(math::Real xPos, math::Real yPos);
+		void SetCursorPos(math::Real xPos, math::Real yPos) const;
 		ENGINE_API void CentralizeCursor();
 
-		math::Real GetTime() const;
 		void ClearScreen() const;
 		//void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 		//void ConvertTimeOfDay(math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
@@ -158,42 +180,46 @@ namespace engine
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
 		ENGINE_API void AddBillboardNode(GameNode* billboardNode);
-		ENGINE_API void AddPhysicsObject(physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
+		ENGINE_API void AddPhysicsObject(physics::PhysicsObject* physicsObject) const; // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
 		
-		ENGINE_API const rendering::Mesh* GetMesh(int meshID) const { return m_renderer->GetMesh(meshID); }
-		ENGINE_API const rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) { return m_renderer->CreateMesh(meshID, meshFileName); }
+		ENGINE_API const rendering::Mesh* GetMesh(int meshId) const { return m_renderer->GetMesh(meshId); }
+		ENGINE_API const rendering::Mesh* AddMesh(int meshId, const std::string& meshFileName) const
+		{
+			return m_renderer->CreateMesh(meshId, meshFileName);
+		}
 
-		ENGINE_API const rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) const
+		ENGINE_API const rendering::Texture* AddTexture(int textureId, const std::string& textureFileName) const
 		{
-			return m_renderer->CreateTexture(textureID, textureFileName);
+			return m_renderer->CreateTexture(textureId, textureFileName);
 		}
-		ENGINE_API const rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+		ENGINE_API const rendering::Texture* AddCubeTexture(int textureId, const std::string& cubeMapTextureDirectory) const
 		{
-			return m_renderer->CreateCubeTexture(textureID, cubeMapTextureDirectory);
+			return m_renderer->CreateCubeTexture(textureId, cubeMapTextureDirectory);
 		}
-		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
 		{
-			return m_renderer->CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+			return m_renderer->CreateParticleTexture(textureId, particleTextureFileName, rowsCount, isAdditive);
 		}
-		ENGINE_API const rendering::Texture* GetTexture(int textureID) const
+		ENGINE_API const rendering::Texture* GetTexture(int textureId) const
 		{
-			return m_renderer->GetTexture(textureID);
+			return m_renderer->GetTexture(textureId);
 		}
-		ENGINE_API const rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const
+		ENGINE_API const rendering::Shader* AddShader(int shaderId, const std::string& shaderFileName) const
 		{
-			return m_renderer->CreateShader(shaderID, shaderFileName);
+			return m_renderer->CreateShader(shaderId, shaderFileName);
 		}
-		ENGINE_API const rendering::Shader* GetShader(int shaderID) const
+		ENGINE_API const rendering::Shader* GetShader(int shaderId) const
 		{
-			return m_renderer->GetShader(shaderID);
+			return m_renderer->GetShader(shaderId);
 		}
-		ENGINE_API const rendering::text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
+		ENGINE_API const rendering::text::Font* CreateFont(int fontId, const std::string& fontTextureFileName,
+			const std::string& fontMetaDataFileName) const
 		{
-			return m_renderer->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
+			return m_renderer->CreateFont(fontId, fontTextureFileName, fontMetaDataFileName);
 		}
-		ENGINE_API const rendering::text::Font* GetFont(int fontID) const
+		ENGINE_API const rendering::text::Font* GetFont(int fontId) const
 		{
-			return m_renderer->GetFont(fontID);
+			return m_renderer->GetFont(fontId);
 		}
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);
@@ -204,7 +230,6 @@ namespace engine
 		void CreatePhysicsEngine();
 		void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
 		void Run();
-		void PollEvents();
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	public:
@@ -213,24 +238,13 @@ namespace engine
 	private:
 		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
 		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod);
-		void SetCallbacks();
-		void StopTimer(utility::timing::Timer& timer, long& countStats, math::statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
-		{
-			if (timer.IsRunning())
-			{
-				timer.Stop();
-			}
-			++countStats;
-			long long elapsedTime = timer.GetDuration(utility::timing::MICROSECOND);
-			minMaxTime.ProcessSample(elapsedTime);
-			timeSum += elapsedTime;
-		}
+		void SetCallbacks() const;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		void InitializeTweakBars();
 	public:
-		ENGINE_API void InitializeGameTweakBars();
+		ENGINE_API void InitializeGameTweakBars() const;
 #endif
 		/* ==================== Non-static member functions end ==================== */
 
@@ -261,8 +275,8 @@ namespace engine
 		/// <summary> Specifies where to look for the audio files. </summary>
 		const std::string m_audioDirectory;
 
-		const std::map<int, Input::raw_input_keys::RawInputKey> m_glfwKeysToRawInputKeysMap;
-		Input::InputMapping m_inputMapping;
+		const std::map<int, input::raw_input_keys::RawInputKey> m_glfwKeysToRawInputKeysMap;
+		input::InputMapping m_inputMapping;
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 		long m_countStats1;

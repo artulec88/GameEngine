@@ -464,36 +464,36 @@ void Game::PlayGameState::AddSpotLights()
 	}
 }
 
-void Game::PlayGameState::Handle(engine::Actions::Action action)
+void Game::PlayGameState::Handle(engine::actions::Action action)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Handling action: ", action);
 	switch (action)
 	{
-	case engine::Actions::SHOW_PLAY_MENU:
-		m_gameManager->SetTransition(new engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), engine::GameStateTransitioning::PUSH, engine::GameStateModality::EXCLUSIVE));
+	case engine::actions::SHOW_PLAY_MENU:
+		m_gameManager->SetTransition(new engine::game_state_transitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), engine::game_state_transitioning::PUSH, engine::game_state_modality::EXCLUSIVE));
 		break;
-	case engine::Actions::MOVE_CAMERA_UP:
+	case engine::actions::MOVE_CAMERA_UP:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.15f);
 		CRITICAL_LOG_GAME("Moving up... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case engine::Actions::MOVE_CAMERA_DOWN:
+	case engine::actions::MOVE_CAMERA_DOWN:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.15f);
 		CRITICAL_LOG_GAME("Moving down... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case engine::Actions::MOVE_CAMERA_LEFT:
+	case engine::actions::MOVE_CAMERA_LEFT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.15f);
 		CRITICAL_LOG_GAME("Moving left... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case engine::Actions::MOVE_CAMERA_RIGHT:
+	case engine::actions::MOVE_CAMERA_RIGHT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.15f);
 		CRITICAL_LOG_GAME("Moving right... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case engine::Actions::MOVE_CAMERA_FORWARD:
+	case engine::actions::MOVE_CAMERA_FORWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.15f);
 		CRITICAL_LOG_GAME("Moving forward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
-	case engine::Actions::MOVE_CAMERA_BACKWARD:
+	case engine::actions::MOVE_CAMERA_BACKWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.15f);
 		CRITICAL_LOG_GAME("Moving backward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
 		break;
@@ -503,39 +503,39 @@ void Game::PlayGameState::Handle(engine::Actions::Action action)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Handle(engine::States::State state)
+void Game::PlayGameState::Handle(engine::states::State state)
 {
 	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
 	{
-	case engine::States::MOUSE_KEY_LEFT_PRESSED:
+	case engine::states::MOUSE_KEY_LEFT_PRESSED:
 		m_isMouseLocked = true;
 		DEBUG_LOG_GAME("Mouse left key pressed");
 		break;
-	case engine::States::MOUSE_KEY_MIDDLE_PRESSED:
+	case engine::states::MOUSE_KEY_MIDDLE_PRESSED:
 		DEBUG_LOG_GAME("Mouse middle key pressed");
 		break;
-	case engine::States::MOUSE_KEY_RIGHT_PRESSED:
+	case engine::states::MOUSE_KEY_RIGHT_PRESSED:
 		DEBUG_LOG_GAME("Mouse right key pressed");
 		break;
-	case engine::States::MOVE_CAMERA_UP:
+	case engine::states::MOVE_CAMERA_UP:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.01f);
 		//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
-	case engine::States::MOVE_CAMERA_DOWN:
+	case engine::states::MOVE_CAMERA_DOWN:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.01f);
 		//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
-	case engine::States::MOVE_CAMERA_LEFT:
+	case engine::states::MOVE_CAMERA_LEFT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.01f);
 		break;
-	case engine::States::MOVE_CAMERA_RIGHT:
+	case engine::states::MOVE_CAMERA_RIGHT:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.01f);
 		break;
-	case engine::States::MOVE_CAMERA_FORWARD:
+	case engine::states::MOVE_CAMERA_FORWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.01f);
 		break;
-	case engine::States::MOVE_CAMERA_BACKWARD:
+	case engine::states::MOVE_CAMERA_BACKWARD:
 		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.01f);
 		break;
 	default:
@@ -544,11 +544,11 @@ void Game::PlayGameState::Handle(engine::States::State state)
 	}
 }
 
-void Game::PlayGameState::Handle(engine::Ranges::Range range, math::Real value)
+void Game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
-	case engine::Ranges::AXIS_X:
+	case engine::ranges::AXIS_X:
 		m_previousMousePos.x = m_mousePos.x;
 		m_mousePos.x = value;
 		m_mousePosChanged = true;
@@ -561,7 +561,7 @@ void Game::PlayGameState::Handle(engine::Ranges::Range range, math::Real value)
 		}
 		DEBUG_LOG_GAME("Mouse pos = ", m_mousePos);
 		break;
-	case engine::Ranges::AXIS_Y:
+	case engine::ranges::AXIS_Y:
 		m_previousMousePos.y = m_mousePos.y;
 		m_mousePos.y = value;
 		m_mousePosChanged = true;

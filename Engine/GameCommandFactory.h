@@ -11,7 +11,7 @@
 //
 //#include <map>
 //
-//namespace Engine
+//namespace engine
 //{
 //	class GameCommandFactory
 //	{
@@ -65,6 +65,6 @@
 //	/* ==================== Non-static member variables end ==================== */
 //	}; /* end class GameCommandFactory */
 //
-//} /* end namespace Engine */
+//} /* end namespace engine */
 
 #endif /* __ENGINE_GAME_COMMAND_FACTORY_H__ */

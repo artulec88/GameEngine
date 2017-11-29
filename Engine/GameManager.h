@@ -28,12 +28,12 @@ namespace engine
 {
 	class GameManager : public IUpdateable
 	{
-		typedef std::map<const rendering::text::Font*, std::vector<rendering::controls::GuiButtonControl>, rendering::text::FontComparator> FontMap;
-		typedef std::map<Actions::Action, std::list<GameNode*>> ActionsToGameNodesMap;
-		typedef std::map<Actions::Action, std::vector<IActionHandler*>> ActionsToHandlersMap;
-		typedef std::map<Actions::Action, const GameCommand*> ActionsToGameCommandsMap;
-		typedef std::map<States::State, std::list<GameNode*>> StatesToGameNodesMap;
-		typedef std::map<States::State, const GameCommand*> StatesToGameCommandsMap;
+		using FontMap = std::map<const rendering::text::Font*, std::vector<rendering::controls::GuiButtonControl>, rendering::text::FontComparator>;
+		using ActionsToGameNodesMap = std::map<actions::Action, std::list<GameNode*>>;
+		using ActionsToHandlersMap = std::map<actions::Action, std::vector<IActionHandler*>>;
+		using ActionsToGameCommandsMap = std::map<actions::Action, const GameCommand*>;
+		using StatesToGameNodesMap = std::map<states::State, std::list<GameNode*>>;
+		using StatesToGameCommandsMap = std::map<states::State, const GameCommand*>;
 		/* ==================== Static variables and functions begin ==================== */
 	protected:
 		static GameManager* s_gameManager;
@@ -78,30 +78,30 @@ namespace engine
 	public:
 		/// <summary> Loads the game. Performs the loading of all necessary models, textures, etc. </summary>
 		ENGINE_API virtual void Load() = 0;
-		ENGINE_API void Input(Actions::Action actionID);
-		ENGINE_API virtual void Input(const engine::Input::MappedInput& input);
+		ENGINE_API void Input(actions::Action actionId);
+		ENGINE_API virtual void Input(const engine::input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(rendering::Renderer* renderer) const;
 
-		ENGINE_API inline const std::vector<rendering::particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
+		ENGINE_API const std::vector<rendering::particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 		ENGINE_API virtual math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
-		ENGINE_API const rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) const;
-		ENGINE_API inline const rendering::Mesh* GetMesh(int meshID) const;
+		ENGINE_API const rendering::Mesh* AddMesh(int meshId, const std::string& meshFileName) const;
+		ENGINE_API inline const rendering::Mesh* GetMesh(int meshId) const;
 
-		ENGINE_API const rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) const;
-		ENGINE_API const rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const;
-		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
-		ENGINE_API inline const rendering::Texture* GetTexture(int textureID) const;
+		ENGINE_API const rendering::Texture* AddTexture(int textureId, const std::string& textureFileName) const;
+		ENGINE_API const rendering::Texture* AddCubeTexture(int textureId, const std::string& cubeMapTextureDirectory) const;
+		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
+		ENGINE_API inline const rendering::Texture* GetTexture(int textureId) const;
 
-		ENGINE_API const rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const;
-		ENGINE_API const rendering::Shader* GetShader(int shaderID) const;
+		ENGINE_API const rendering::Shader* AddShader(int shaderId, const std::string& shaderFileName) const;
+		ENGINE_API const rendering::Shader* GetShader(int shaderId) const;
 
-		ENGINE_API const rendering::text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
-		ENGINE_API const rendering::text::Font* GetFont(int fontID) const;
+		ENGINE_API const rendering::text::Font* CreateFont(int fontId, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		ENGINE_API const rendering::text::Font* GetFont(int fontId) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
@@ -122,11 +122,11 @@ namespace engine
 		/// <summary> Sets the game state transition object. The transition itself is not performed.
 		/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>
 		/// <see cref="PerformStateTransition"/>
-		ENGINE_API void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
-		void PerformStateTransition();
-		ENGINE_API void PopState();
+		ENGINE_API void SetTransition(game_state_transitioning::GameStateTransition* gameStateTransition) const;
+		void PerformStateTransition() const;
+		ENGINE_API void PopState() const;
 		ENGINE_API void RequestGameQuit() const;
-		ENGINE_API const GameCommand& GetCommand(Actions::Action action) const
+		ENGINE_API const GameCommand& GetCommand(actions::Action action) const
 		{
 			const auto actionToGameCommandItr = m_actionsToGameCommandsMap.find(action);
 			CHECK_CONDITION_RETURN_ALWAYS_ENGINE(actionToGameCommandItr != m_actionsToGameCommandsMap.end(), m_emptyGameCommand, utility::logging::WARNING, "No game command registered for the action ID : ", action);
@@ -190,6 +190,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameManager */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_GAME_MANAGER_H__

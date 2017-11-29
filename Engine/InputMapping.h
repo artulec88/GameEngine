@@ -14,11 +14,11 @@
 
 namespace engine
 {
-	namespace Input
+	namespace input
 	{
-		typedef std::set<Actions::Action> ActionsContainer;
-		typedef std::set<States::State> StatesContainer;
-		typedef std::map<Ranges::Range, math::Real> RangesContainer;
+		typedef std::set<actions::Action> ActionsContainer;
+		typedef std::set<states::State> StatesContainer;
+		typedef std::map<ranges::Range, math::Real> RangesContainer;
 
 		class InputContext;
 		/// <summary>
@@ -26,9 +26,9 @@ namespace engine
 		/// </summary>
 		struct MappedInput
 		{
-			ENGINE_API void ConsumeAction(Actions::Action action) { m_actions.erase(action); }
-			ENGINE_API void ConsumeState(States::State state) { m_states.erase(state); }
-			ENGINE_API void ConsumeRange(Ranges::Range range)
+			ENGINE_API void ConsumeAction(actions::Action action) { m_actions.erase(action); }
+			ENGINE_API void ConsumeState(states::State state) { m_states.erase(state); }
+			ENGINE_API void ConsumeRange(ranges::Range range)
 			{
 				RangesContainer::iterator rangeItr = m_ranges.find(range);
 				if (rangeItr != m_ranges.end())
@@ -89,8 +89,8 @@ namespace engine
 			ENGINE_API void PopContext();
 			ENGINE_API const MappedInput& GetMappedInput() const { return m_currentMappedInput; }
 		private:
-			Actions::Action MapButtonToAction(raw_input_keys::RawInputKey button) const;
-			States::State MapButtonToState(raw_input_keys::RawInputKey button) const;
+			actions::Action MapButtonToAction(raw_input_keys::RawInputKey button) const;
+			states::State MapButtonToState(raw_input_keys::RawInputKey button) const;
 			/// <summary>
 			/// Helper method. It consumes all input mapped to a given button.
 			/// </summary>
@@ -106,8 +106,8 @@ namespace engine
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class InputMapping */
 	
-	} /* end namespace Input */
+	} /* end namespace input */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_INPUT_MAPPING_H__

@@ -3,7 +3,7 @@
 
 #include "Engine.h"
 #include "ActionConstants.h"
-#include "Rendering\BaseCamera.h"
+#include "Rendering/BaseCamera.h"
 
 namespace engine
 {
@@ -35,14 +35,12 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Handle(rendering::BaseCamera* camera, Actions::Action action) = 0;
-		virtual void Handle(rendering::BaseCamera* camera, States::State state) = 0;
-		virtual void Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value) = 0;
+		virtual void Handle(rendering::BaseCamera* camera, actions::Action action) = 0;
+		virtual void Handle(rendering::BaseCamera* camera, states::State state) = 0;
+		virtual void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBehavior */
 
@@ -62,14 +60,12 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Handle(rendering::BaseCamera* camera, Actions::Action action);
-		virtual void Handle(rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
+		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
+		void Handle(rendering::BaseCamera* camera, states::State state) override;
+		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class StaticCameraBehavior */
 
@@ -89,14 +85,12 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Handle(rendering::BaseCamera* camera, Actions::Action action);
-		virtual void Handle(rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
+		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
+		void Handle(rendering::BaseCamera* camera, states::State state) override;
+		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class RotationCameraBehavior */
 
@@ -116,14 +110,12 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Handle(rendering::BaseCamera* camera, Actions::Action action);
-		virtual void Handle(rendering::BaseCamera* camera, States::State state);
-		virtual void Handle(rendering::BaseCamera* camera, Ranges::Range range, math::Real value);
+		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
+		void Handle(rendering::BaseCamera* camera, states::State state) override;
+		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MovementCameraBehavior */
 } /* end namespace engine */

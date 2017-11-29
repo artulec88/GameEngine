@@ -18,14 +18,13 @@ namespace engine
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Execute(GameManager* gameManager) const;
+		ENGINE_API void Execute(GameManager* gameManager) const override;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class QuitGameCommand */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_QUIT_GAME_COMMAND_H__ */

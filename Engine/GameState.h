@@ -2,43 +2,66 @@
 #define __ENGINE_GAME_STATE_H__
 
 #include "Engine.h"
-#include "GameCommand.h"
-#include "ActionConstants.h"
-#include "InputConstants.h"
 #include "IActionHandler.h"
 #include "IStateHandler.h"
 #include "IRangeHandler.h"
 
-#include "Math/Math.h"
-
 #include "Rendering/Renderer.h"
 
-#include "Utility\Utility.h"
+#include "Utility/Utility.h"
 
 #include <string>
-#include <map>
+
+//namespace rendering
+//{
+//	class Renderer;
+//} /* end namespace rendering */
 
 namespace engine
 {
-	///<summary>
+	/// <summary>
 	/// The base class for each game state. It provides functionality for game states lifecycles.
 	/// </summary>
 	class GameState : public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GameState(const std::string& inputMappingContextName) :
+		/// <summary> Game state constructor. </summary>
+		/// <param name="inputMappingContextName"> The name of the input mapping context the game state should use. </param>
+		ENGINE_API explicit GameState(const std::string& inputMappingContextName) :
 			m_inputMappingContextName(inputMappingContextName)
 		{
 		}
 
-		ENGINE_API virtual ~GameState(void)
+		/// <summary> Game state destructor. </summary>
+		ENGINE_API virtual ~GameState()
 		{
 		}
+
+		/// <summary> Game state copy constructor. </summary>
+		/// <param name="gameState"> The reference to game state to copy construct from. </param>
+		GameState(const GameState& gameState) = delete;
+
+		/// <summary> Game state move constructor. </summary>
+		/// <param name="gameState"> The r-value reference to game state to move construct from. </param>
+		GameState(GameState&& gameState) = delete;
+
+		/// <summary> Game state copy assignment operator. </summary>
+		/// <param name="gameState"> The reference to game state to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned game state. </returns>
+		GameState& operator=(const GameState& gameState) = delete;
+
+		/// <summary> Game state move assignment operator. </summary>
+		/// <param name="gameState"> The r-value reference to game state to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned game state. </returns>
+		GameState& operator=(GameState&& gameState) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
+		using IActionHandler::Handle;
+		using IStateHandler::Handle;
+		using IRangeHandler::Handle;
+
 		/// <summary>
 		/// The function invoked after the current game state has been placed in the game state manager.
 		/// </summary>
@@ -63,25 +86,6 @@ namespace engine
 		/// Renders the game state.
 		/// </summary>
 		ENGINE_API virtual void Render(rendering::Renderer* renderer) const = 0;
-
-		/// <summary>
-		/// Handles the incoming action appropriately.
-		/// </summary>
-		/// <param name="action"> The action that must be handled. </param>
-		ENGINE_API virtual void Handle(Actions::Action action) = 0;
-
-		/// <summary>
-		/// Handles the incoming state appropriately.
-		/// </summary>
-		/// <param name="state"> The state that must be handled. </param>
-		ENGINE_API virtual void Handle(States::State state) = 0;
-
-		/// <summary>
-		/// Handles the incoming range appropriately.
-		/// </summary>
-		/// <param name="range"> The range that must be handled. </param>
-		/// <param name="value"> The value associated with the range. </param>
-		ENGINE_API virtual void Handle(Ranges::Range range, math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -97,7 +101,7 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameState */
 
-	namespace GameStateModality
+	namespace game_state_modality
 	{
 		/// <summary>
 		/// Possible behaviors of a game state in respect to the states below it on the stack
@@ -116,9 +120,9 @@ namespace engine
 			/// </summary>
 			POPUP
 		}; /* end enum ModalityType */
-	} /* end namespace GameStateModality */
+	} /* end namespace game_state_modality */
 
-	namespace GameStateTransitioning
+	namespace game_state_transitioning
 	{
 		enum TransitionType
 		{
@@ -130,9 +134,9 @@ namespace engine
 		{
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
-			ENGINE_API GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
-				m_transitionType(transitionType),
+			ENGINE_API GameStateTransition(GameState* gameState, TransitionType transitionType, game_state_modality::ModalityType modalityType) :
 				m_gameState(gameState),
+				m_transitionType(transitionType),
 				m_modalityType(modalityType)
 			{
 			}
@@ -144,21 +148,20 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		public:
 			ENGINE_API GameState* GetGameState() const { return m_gameState; }
 			ENGINE_API TransitionType GetTransitionType() const { return m_transitionType; }
-			ENGINE_API GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
+			ENGINE_API game_state_modality::ModalityType GetModalityType() const { return m_modalityType; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		private:
 			GameState* m_gameState;
 			TransitionType m_transitionType;
-			GameStateModality::ModalityType m_modalityType;
+			game_state_modality::ModalityType m_modalityType;
 		/* ==================== Non-static member functions begin ==================== */
 		}; /* end class GameStateTransition */
-	} /* end namespace GameStateTransitioning */
+	} /* end namespace game_state_transitioning */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_GAME_STATE_H__ */

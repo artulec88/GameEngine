@@ -52,15 +52,15 @@ void Game::LoadGameState::Revealed()
 	INFO_LOG_GAME("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::LoadGameState::Handle(engine::Actions::Action action)
+void Game::LoadGameState::Handle(engine::actions::Action action)
 {
 }
 
-void Game::LoadGameState::Handle(engine::States::State state)
+void Game::LoadGameState::Handle(engine::states::State state)
 {
 }
 
-void Game::LoadGameState::Handle(engine::Ranges::Range range, math::Real value)
+void Game::LoadGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 }
 
@@ -89,7 +89,7 @@ void Game::LoadGameState::Update(math::Real elapsedTime)
 	{
 		NOTICE_LOG_GAME("The game is loaded");
 		m_loadingThread->join();
-		gameManager->SetTransition(new engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), engine::GameStateTransitioning::SWITCH, engine::GameStateModality::EXCLUSIVE));
+		gameManager->SetTransition(new engine::game_state_transitioning::GameStateTransition(gameManager->GetPlayGameState(), engine::game_state_transitioning::SWITCH, engine::game_state_modality::EXCLUSIVE));
 	}
 	STOP_PROFILING_GAME("");
 }

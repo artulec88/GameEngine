@@ -9,13 +9,13 @@
 
 #include <fstream>
 
-engine::Input::InputMapping::InputMapping() //:
+engine::input::InputMapping::InputMapping() //:
 	//m_inputContexts({ {"mainMenuInputContext", } })
 {
 	m_inputContexts.insert(make_pair("mainMenuInputContext", std::make_unique<InputContext>("mainMenuInputContext")));
 }
 
-engine::Input::InputMapping::InputMapping(const std::string& configDirectory, const std::string& contextListFileName)
+engine::input::InputMapping::InputMapping(const std::string& configDirectory, const std::string& contextListFileName)
 {
 	unsigned count;
 	std::ifstream inFile(configDirectory + contextListFileName);
@@ -37,36 +37,36 @@ engine::Input::InputMapping::InputMapping(const std::string& configDirectory, co
 }
 
 
-engine::Input::InputMapping::~InputMapping()
+engine::input::InputMapping::~InputMapping()
 {
 }
 
-void engine::Input::InputMapping::ClearActions()
+void engine::input::InputMapping::ClearActions()
 {
 	m_currentMappedInput.m_actions.clear();
 }
 
-void engine::Input::InputMapping::ClearRanges()
+void engine::input::InputMapping::ClearRanges()
 {
 	m_currentMappedInput.m_ranges.clear();
 }
 
-void engine::Input::InputMapping::SetRawButtonState(raw_input_keys::RawInputKey button, bool pressed, bool previouslyPressed)
+void engine::input::InputMapping::SetRawButtonState(raw_input_keys::RawInputKey button, bool pressed, bool previouslyPressed)
 {
 	DEBUG_LOG_ENGINE("Key = ", button, ", pressed = ", pressed, ", previously pressed = ", previouslyPressed);
 	if (pressed)
 	{
 		if (!previouslyPressed) // action
 		{
-			Actions::Action action = MapButtonToAction(button);
-			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != Actions::INVALID, utility::logging::WARNING,
+			actions::Action action = MapButtonToAction(button);
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != actions::INVALID, utility::logging::WARNING,
 				"Invalid action for button ", button, "(pressed = ", pressed, ", previouslyPressed = ", previouslyPressed, ")");
 			m_currentMappedInput.m_actions.insert(action);
 		}
 		else // state
 		{
-			States::State state = MapButtonToState(button);
-			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != States::INVALID, utility::logging::WARNING,
+			states::State state = MapButtonToState(button);
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != states::INVALID, utility::logging::WARNING,
 				"Invalid state for button ", button, "(pressed = ", pressed, ", previouslyPressed = ", previouslyPressed, ")");
 			m_currentMappedInput.m_states.insert(state);
 		}
@@ -77,13 +77,13 @@ void engine::Input::InputMapping::SetRawButtonState(raw_input_keys::RawInputKey 
 	}
 }
 
-void engine::Input::InputMapping::SetRawAxisValue(RawInputAxes::RawInputAxis axis, math::Real value)
+void engine::input::InputMapping::SetRawAxisValue(RawInputAxes::RawInputAxis axis, math::Real value)
 {
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
 	{
 		const InputContext* inputContext = *iter;
-		Ranges::Range range = inputContext->MapAxisToRange(axis);
-		if (range != Ranges::INVALID)
+		ranges::Range range = inputContext->MapAxisToRange(axis);
+		if (range != ranges::INVALID)
 		{
 			m_currentMappedInput.m_ranges[range] = inputContext->GetConverter().Convert(range, value * inputContext->GetSensitivity(range));
 			break;
@@ -91,7 +91,7 @@ void engine::Input::InputMapping::SetRawAxisValue(RawInputAxes::RawInputAxis axi
 	}
 }
 
-void engine::Input::InputMapping::Dispatch() const
+void engine::input::InputMapping::Dispatch() const
 {
 	//MappedInput input = m_currentMappedInput;
 	//for (std::multimap<int, InputCallback>::const_iterator iter = m_callbackTable.begin(); iter != m_callbackTable.end(); ++iter)
@@ -102,19 +102,19 @@ void engine::Input::InputMapping::Dispatch() const
 	//GameManager::GetGameManager()->Input(m_currentMappedInput.m_actions);
 }
 
-void engine::Input::InputMapping::RegisterCallback(InputCallback callback, int priority)
+void engine::input::InputMapping::RegisterCallback(InputCallback callback, int priority)
 {
 	m_callbackTable.insert(std::make_pair(priority, callback));
 }
 
-void engine::Input::InputMapping::PushContext(const std::string& name)
+void engine::input::InputMapping::PushContext(const std::string& name)
 {
 	std::map<std::string, std::unique_ptr<InputContext>>::iterator iter = m_inputContexts.find(name);
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(iter != m_inputContexts.end(), utility::logging::EMERGENCY, "Cannot push input context with name \"", name, "\". The input context cannot be found.");
 	m_activeContexts.push_front(iter->second.get());
 }
 
-void engine::Input::InputMapping::PopContext()
+void engine::input::InputMapping::PopContext()
 {
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeContexts.empty(), utility::logging::ERR, "Cannot pop input context. No context is currently active.");
 	m_activeContexts.pop_front();
@@ -124,15 +124,15 @@ void engine::Input::InputMapping::PopContext()
 //
 // Helper: map a button to an action in the active context(s)
 //
-engine::Actions::Action engine::Input::InputMapping::MapButtonToAction(raw_input_keys::RawInputKey button) const
+engine::actions::Action engine::input::InputMapping::MapButtonToAction(raw_input_keys::RawInputKey button) const
 {
-	Actions::Action action = Actions::INVALID;
+	actions::Action action = actions::INVALID;
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
 	{
 		const InputContext* context = *iter;
 
 		action = context->MapButtonToAction(button);
-		if (action != Actions::INVALID)
+		if (action != actions::INVALID)
 		{
 			break;
 		}
@@ -143,14 +143,14 @@ engine::Actions::Action engine::Input::InputMapping::MapButtonToAction(raw_input
 //
 // Helper: map a button to a state in the active context(s)
 //
-engine::States::State engine::Input::InputMapping::MapButtonToState(raw_input_keys::RawInputKey button) const
+engine::states::State engine::input::InputMapping::MapButtonToState(raw_input_keys::RawInputKey button) const
 {
-	States::State state = States::INVALID;
+	states::State state = states::INVALID;
 	for (std::list<InputContext*>::const_iterator iter = m_activeContexts.begin(); iter != m_activeContexts.end(); ++iter)
 	{
 		const InputContext* inputContext = *iter;
 		state = inputContext->MapButtonToState(button);
-		if (state != States::INVALID)
+		if (state != states::INVALID)
 		{
 			break;
 		}
@@ -158,15 +158,15 @@ engine::States::State engine::Input::InputMapping::MapButtonToState(raw_input_ke
 	return state;
 }
 
-void engine::Input::InputMapping::MapAndConsumeButton(raw_input_keys::RawInputKey button)
+void engine::input::InputMapping::MapAndConsumeButton(raw_input_keys::RawInputKey button)
 {
-	Actions::Action action = MapButtonToAction(button);
-	if (action != Actions::INVALID)
+	actions::Action action = MapButtonToAction(button);
+	if (action != actions::INVALID)
 	{
 		m_currentMappedInput.ConsumeAction(action);
 	}
-	States::State state = MapButtonToState(button);
-	if (state != States::INVALID)
+	states::State state = MapButtonToState(button);
+	if (state != states::INVALID)
 	{
 		m_currentMappedInput.ConsumeState(state);
 	}

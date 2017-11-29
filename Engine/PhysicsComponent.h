@@ -7,7 +7,6 @@
 //#include "IInputableMouse.h"
 
 #include "Math/Math.h"
-#include "Math/Angle.h"
 #include "Math/Vector.h"
 
 namespace engine
@@ -17,14 +16,13 @@ namespace engine
 	class PhysicsComponent : public GameComponent, public IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		//static const math::Real GRAVITY; // TODO: Decide whether this value should be stored here or somewhere else.
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API PhysicsComponent(math::Real movementSpeed, math::Real jumpForce);
-		ENGINE_API virtual ~PhysicsComponent(void);
+		ENGINE_API virtual ~PhysicsComponent();
 		PhysicsComponent(const PhysicsComponent& physicsComponent) = delete;
 		PhysicsComponent(PhysicsComponent&& physicsComponent) = default;
 		PhysicsComponent& operator=(const PhysicsComponent& physicsComponent) = delete;
@@ -32,8 +30,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Update(math::Real deltaTime);
+		ENGINE_API void Update(math::Real deltaTime) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -44,6 +41,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayerComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_PHYSICS_COMPONENT_H__ */

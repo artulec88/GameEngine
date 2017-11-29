@@ -3,7 +3,7 @@
 
 namespace engine
 {
-	namespace Actions
+	namespace actions
 	{
 		enum Action
 		{
@@ -30,9 +30,9 @@ namespace engine
 			MOVE_CAMERA_FORWARD,
 			MOVE_CAMERA_BACKWARD
 		}; /* end enum Action */
-	} /* end namespace Actions */
+	} /* end namespace actions */
 
-	namespace States
+	namespace states
 	{
 		enum State
 		{
@@ -47,9 +47,9 @@ namespace engine
 			MOVE_CAMERA_FORWARD,
 			MOVE_CAMERA_BACKWARD
 		}; /* end enum State */
-	} /* end namespace States */
+	} /* end namespace states */
 
-	namespace Ranges
+	namespace ranges
 	{
 		enum Range
 		{
@@ -57,7 +57,7 @@ namespace engine
 			AXIS_X,
 			AXIS_Y
 		}; /* end enum Range */
-	} /* end namespace Ranges */
-} /* end namespace Engine */
+	} /* end namespace ranges */
+} /* end namespace engine */
 
 #endif /* __ENGINE_ACTION_CONSTANTS_H__ */

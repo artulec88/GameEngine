@@ -55,7 +55,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		const rendering::lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
 		ENGINE_API const rendering::lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
 		{
 			// TODO: Check if lightId is a correct value.
@@ -73,9 +73,9 @@ namespace engine
 			}
 		}
 	private:
-		const rendering::lighting::DirectionalLight* AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		const rendering::lighting::PointLight* AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		const rendering::lighting::SpotLight* AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::DirectionalLight* AddDirectionalLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::PointLight* AddPointLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		const rendering::lighting::SpotLight* AddSpotLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

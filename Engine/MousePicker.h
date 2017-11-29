@@ -47,6 +47,6 @@ namespace engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class MousePicker */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif // __ENGINE_MOUSE_PICKER_H__

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "GravityComponent.h"
 
-#include "Math\FloatingPoint.h"
+#include "Math/FloatingPoint.h"
 
-#include "Physics\PhysicsObject.h"
+#include "Physics/PhysicsObject.h"
 
 #include "Utility/IConfig.h"
 
@@ -24,7 +24,7 @@ engine::GravityComponent::~GravityComponent()
 {
 }
 
-engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) :
+engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) noexcept:
 	GameComponent(std::move(gravityComponent)),
 	IUpdateable(std::move(gravityComponent)),
 	m_terrain(std::move(gravityComponent.m_terrain)),
@@ -35,7 +35,7 @@ engine::GravityComponent::GravityComponent(GravityComponent&& gravityComponent) 
 {
 }
 
-engine::GravityComponent& engine::GravityComponent::operator=(GravityComponent&& gravityComponent)
+engine::GravityComponent& engine::GravityComponent::operator=(GravityComponent&& gravityComponent) noexcept
 {
 	GameComponent::operator=(std::move(gravityComponent));
 	IUpdateable::operator=(std::move(gravityComponent));

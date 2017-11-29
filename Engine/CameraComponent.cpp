@@ -2,12 +2,9 @@
 #include "CameraComponent.h"
 #include "GameNode.h"
 #include "CoreEngine.h"
-#include "GameNodeMoveCommand.h"
-
-#include "Math\FloatingPoint.h"
 
 /* ==================== CameraComponent class implementation begin ==================== */
-engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
+engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior /* = nullptr */) :
 	GameComponent(),
 	rendering::BaseCamera(projectionMatrix, sensitivity),
 	IActionHandler(),
@@ -17,9 +14,9 @@ engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix,
 {
 }
 
-engine::CameraComponent::CameraComponent(const math::Angle& FoV, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
+engine::CameraComponent::CameraComponent(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior /* = nullptr */) :
 	GameComponent(),
-	rendering::BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+	rendering::BaseCamera(fieldOfView, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	IActionHandler(),
 	IStateHandler(),
 	IRangeHandler(),
@@ -27,12 +24,12 @@ engine::CameraComponent::CameraComponent(const math::Angle& FoV, math::Real aspe
 {
 }
 
-engine::CameraComponent::~CameraComponent(void)
+engine::CameraComponent::~CameraComponent()
 {
 	SAFE_DELETE(m_cameraBehavior);
 }
 
-engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
+engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) noexcept:
 	GameComponent(std::move(cameraComponent)),
 	rendering::BaseCamera(std::move(cameraComponent)),
 	IActionHandler(std::move(cameraComponent)),
@@ -40,11 +37,11 @@ engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
 	IRangeHandler(std::move(cameraComponent)),
 	m_cameraBehavior(std::move(cameraComponent.m_cameraBehavior))
 {
-	cameraComponent.m_cameraBehavior = NULL;
+	cameraComponent.m_cameraBehavior = nullptr;
 }
 
 
-engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& cameraComponent)
+engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& cameraComponent) noexcept
 {
 	GameComponent::operator=(std::move(cameraComponent));
 	rendering::BaseCamera::operator=(std::move(cameraComponent));
@@ -52,7 +49,8 @@ engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& ca
 	IStateHandler::operator=(std::move(cameraComponent));
 	IRangeHandler::operator=(std::move(cameraComponent));
 	m_cameraBehavior = std::move(cameraComponent.m_cameraBehavior);
-	cameraComponent.m_cameraBehavior = NULL;
+	cameraComponent.m_cameraBehavior = nullptr;
+	return *this;
 }
 /* ==================== CameraComponent class implementation end ==================== */
 

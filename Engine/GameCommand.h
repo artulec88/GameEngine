@@ -81,6 +81,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class EmptyGameCommand */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_GAME_COMMAND_H__ */

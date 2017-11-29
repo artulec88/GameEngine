@@ -8,20 +8,20 @@
 
 #include "Utility/ILogger.h"
 
-/* static */ int engine::GameNode::gameNodeCount = 0;
+/* static */ int engine::GameNode::s_gameNodeCount = 0;
 
 engine::GameNode::GameNode() :
-	m_ID(++GameNode::gameNodeCount),
+	m_id(++GameNode::s_gameNodeCount),
 	m_transform(),
 	m_physicsObject(nullptr)
 {
-	DEBUG_LOG_ENGINE("Game node with ID ", m_ID, " has been created.");
+	DEBUG_LOG_ENGINE("Game node with ID ", m_id, " has been created.");
 }
 
 
 engine::GameNode::~GameNode()
 {
-	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction started");
+	DEBUG_LOG_ENGINE("Game node (ID=", m_id, ") destruction started");
 	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=", m_ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
@@ -51,7 +51,7 @@ engine::GameNode::~GameNode()
 	{
 		m_components.clear();
 	}
-	DELOCUST_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
+	DELOCUST_LOG_ENGINE("Game node (ID=", m_id, ") destruction finished");
 }
 
 //Engine::GameNode::GameNode(const GameNode& gameNode) :
@@ -68,8 +68,8 @@ engine::GameNode::~GameNode()
 //{
 //}
 
-engine::GameNode::GameNode(GameNode&& gameNode) :
-	m_ID(std::move(gameNode.m_ID)),
+engine::GameNode::GameNode(GameNode&& gameNode) noexcept:
+	m_id(std::move(gameNode.m_id)),
 	m_childrenGameNodes(std::move(gameNode.m_childrenGameNodes)),
 	m_components(std::move(gameNode.m_components)),
 	m_renderableComponents(std::move(gameNode.m_renderableComponents)),
@@ -87,9 +87,9 @@ engine::GameNode::GameNode(GameNode&& gameNode) :
 	}
 }
 
-engine::GameNode& engine::GameNode::operator=(GameNode&& gameNode)
+engine::GameNode& engine::GameNode::operator=(GameNode&& gameNode) noexcept
 {
-	m_ID = std::move(gameNode.m_ID);
+	m_id = std::move(gameNode.m_id);
 	m_childrenGameNodes = std::move(gameNode.m_childrenGameNodes);
 	m_components = std::move(gameNode.m_components);
 	m_renderableComponents = std::move(gameNode.m_renderableComponents);
@@ -137,7 +137,7 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 	{
 		m_renderableComponents.push_back(renderableComponent);
 	}
-	Input::IInputableMouse* inputableMouseComponent = dynamic_cast<Input::IInputableMouse*>(child);
+	input::IInputableMouse* inputableMouseComponent = dynamic_cast<input::IInputableMouse*>(child);
 	if (inputableMouseComponent != nullptr)
 	{
 		m_inputableMouseComponents.push_back(inputableMouseComponent);
@@ -167,7 +167,7 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 
 void engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 {
-	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->MouseButtonEvent(button, action, mods);
 	}
@@ -180,7 +180,7 @@ void engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 
 void engine::GameNode::MousePosEvent(double xPos, double yPos)
 {
-	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->MousePosEvent(xPos, yPos);
 	}
@@ -193,7 +193,7 @@ void engine::GameNode::MousePosEvent(double xPos, double yPos)
 
 void engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 {
-	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->ScrollEvent(xOffset, yOffset);
 	}
@@ -217,16 +217,16 @@ void engine::GameNode::Update(math::Real delta)
 	}
 }
 
-void engine::GameNode::Render(int shaderID, rendering::Renderer* renderer) const
+void engine::GameNode::Render(int shaderId, rendering::Renderer* renderer) const
 {
-	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
+	for (auto gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{
-		(*gameComponentItr)->Render(shaderID, renderer);
+		(*gameComponentItr)->Render(shaderId, renderer);
 	}
 
-	for (std::vector<GameNode*>::const_iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (auto gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Render(shaderID, renderer);
+		(*gameNodeItr)->Render(shaderId, renderer);
 	}
 }
 
@@ -234,7 +234,7 @@ std::vector<engine::GameNode*> engine::GameNode::GetAllDescendants() const
 {
 	std::vector<GameNode*> descendants;
 
-	for (std::vector<GameNode*>::const_iterator itr = m_childrenGameNodes.begin(); itr != m_childrenGameNodes.end(); ++itr)
+	for (auto itr = m_childrenGameNodes.begin(); itr != m_childrenGameNodes.end(); ++itr)
 	{
 		descendants.push_back(*itr);
 		std::vector<GameNode*> itrDescendants = (*itr)->GetAllDescendants();

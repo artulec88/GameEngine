@@ -10,7 +10,7 @@
 
 #include "Engine\QuitGameCommand.h"
 #include "Engine/GameManager.h"
-#include "Engine\GameNode.h"
+#include "Engine/GameNode.h"
 #include "Rendering/DirectionalLight.h"
 #include "Rendering\PointLight.h"
 #include "Rendering/SpotLight.h"

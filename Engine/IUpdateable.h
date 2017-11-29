@@ -47,6 +47,6 @@ namespace engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IUpdateable */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_IUPDATEABLE_H__ */

@@ -19,19 +19,17 @@ namespace engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API AiComponent();
-		ENGINE_API virtual ~AiComponent(void);
+		ENGINE_API virtual ~AiComponent();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Update(math::Real deltaTime);
+		ENGINE_API void Update(math::Real deltaTime) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AiComponent */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_AI_COMPONENT_H__ */

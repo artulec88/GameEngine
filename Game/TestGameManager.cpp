@@ -71,8 +71,8 @@ Game::TestGameManager::TestGameManager() :
 	//AddSmoothEffects();
 	//AddBlinkEffects();
 
-	m_actionsToGameCommandsMap.insert(std::make_pair(engine::Actions::START_GAME, &m_startGameCommand));
-	m_actionsToGameCommandsMap.insert(std::make_pair(engine::Actions::QUIT_GAME, &m_quitGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(engine::actions::START_GAME, &m_startGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(engine::actions::QUIT_GAME, &m_quitGameCommand));
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());

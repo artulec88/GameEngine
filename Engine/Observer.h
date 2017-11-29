@@ -23,13 +23,13 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const = 0;
+		ENGINE_API virtual void Notify(GameNode* gameNode, actions::Action action /*const GameEvent& gameEvent*/) const = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Observer */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_OBSERVER_H__ */

@@ -3,7 +3,6 @@
 
 #include "Engine.h"
 #include "GameNodeCommand.h"
-#include "Math/Math.h"
 
 namespace engine
 {
@@ -20,14 +19,13 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		ENGINE_API virtual void Execute(GameNode* gameNode) const;
+		ENGINE_API void Execute(GameNode* gameNode) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNodeMoveCommand */
 
-} /* end namespace Engine */
+} /* end namespace engine */
 
 #endif /* __ENGINE_GAME_NODE_MOVE_COMMAND_H__ */

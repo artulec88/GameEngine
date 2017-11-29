@@ -3,17 +3,16 @@
 #include "GameNode.h"
 
 #include "Rendering/Renderer.h"
-#include "Rendering/Shader.h"
 
 #include "Utility/ILogger.h"
 
-engine::GameComponent::GameComponent(void) :
-	m_parentGameNode(NULL)
+engine::GameComponent::GameComponent() :
+	m_parentGameNode(nullptr)
 {
 }
 
 
-engine::GameComponent::~GameComponent(void)
+engine::GameComponent::~GameComponent()
 {
 }
 
@@ -30,18 +29,21 @@ engine::GameComponent::~GameComponent(void)
 
 void engine::GameComponent::SetParent(GameNode* parentGameNode)
 {
-	CHECK_CONDITION_EXIT_ENGINE(parentGameNode != NULL, Utility::Logging::ERR, "Cannot assign a parent to the game component. Parent game node is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(parentGameNode != nullptr, Utility::Logging::ERR,
+		"Cannot assign a parent to the game component. Parent game node is NULL.");
 	m_parentGameNode = parentGameNode;
 }
 
 math::Transform& engine::GameComponent::GetTransform()
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != NULL, Utility::Logging::CRITICAL, "Cannot get transformation for a given component. Parent game node is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, Utility::Logging::CRITICAL,
+		"Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
 }
 
 const math::Transform& engine::GameComponent::GetTransform() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != NULL, Utility::Logging::CRITICAL, "Cannot get transformation for a given component. Parent game node is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, Utility::Logging::CRITICAL,
+		"Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
 }

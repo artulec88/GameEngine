@@ -15,7 +15,7 @@
 
 namespace engine
 {
-	namespace Input
+	namespace input
 	{
 		/// <summary>
 		/// The input range converter.
@@ -73,7 +73,7 @@ namespace engine
 
 			/* ==================== Non-static member functions begin ==================== */
 			template <typename RangeType>
-			RangeType Convert(Ranges::Range rangeId, RangeType inputValue) const
+			RangeType Convert(ranges::Range rangeId, RangeType inputValue) const
 			{
 				const auto itr = m_convertersMap.find(rangeId);
 				CHECK_CONDITION_RETURN_ALWAYS_ENGINE(itr != m_convertersMap.end(), inputValue, utility::logging::WARNING,
@@ -84,11 +84,11 @@ namespace engine
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			std::map<Ranges::Range, Converter> m_convertersMap;
+			std::map<ranges::Range, Converter> m_convertersMap;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class InputRangeConverter */
 
-	} /* end namespace Input */
+	} /* end namespace input */
 
 } /* end namespace engine */
 

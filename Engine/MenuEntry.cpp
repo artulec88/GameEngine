@@ -136,7 +136,7 @@ void engine::CompositeMenuEntry::AddChild(MenuEntry* menuEntry)
 
 void engine::CompositeMenuEntry::Dispatch()
 {
-	GameManager::GetGameManager()->Input(engine::Actions::GO_TO_CHILD_MENU_ENTRY);
+	GameManager::GetGameManager()->Input(engine::actions::GO_TO_CHILD_MENU_ENTRY);
 }
 
 void engine::CompositeMenuEntry::ApplyColorEffectToAll(const math::effects::Effect<rendering::Color>& effect)
@@ -217,7 +217,7 @@ engine::MenuEntry* engine::CompositeMenuEntry::SelectChild(size_t index)
 /* ==================== CompositeMenuEntry class end ==================== */
 
 /* ==================== ActionMenuEntry class begin ==================== */
-engine::ActionMenuEntry::ActionMenuEntry(engine::Actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+engine::ActionMenuEntry::ActionMenuEntry(engine::actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
 	const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 	bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
 	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
