@@ -105,7 +105,7 @@ engine::CompositeMenuEntry::~CompositeMenuEntry()
 
 void engine::CompositeMenuEntry::RenderAll(int guiControlShaderID, rendering::Renderer* renderer) const
 {
-	for (std::vector<MenuEntry*>::const_iterator menuEntryItr = m_childrenMenuEntries.begin(); menuEntryItr != m_childrenMenuEntries.end(); ++menuEntryItr)
+	for (auto menuEntryItr = m_childrenMenuEntries.begin(); menuEntryItr != m_childrenMenuEntries.end(); ++menuEntryItr)
 	{
 		(*menuEntryItr)->Render(guiControlShaderID, renderer);
 	}
@@ -117,9 +117,9 @@ size_t engine::CompositeMenuEntry::GetSelectedChildIndex(math::Real xPos, math::
 	if (!m_childrenMenuEntries[m_selectedMenuEntryIndex]->DoesMouseHoverOver(xPos, yPos))
 	{
 		size_t index = 0;
-		for (std::vector<MenuEntry*>::const_iterator menuEntryItr = m_childrenMenuEntries.begin(); menuEntryItr != m_childrenMenuEntries.end(); ++menuEntryItr, ++index)
+		for (auto menuEntryItr = m_childrenMenuEntries.begin(); menuEntryItr != m_childrenMenuEntries.end(); ++menuEntryItr, ++index)
 		{
-			if ((index != m_selectedMenuEntryIndex) && ((*menuEntryItr)->DoesMouseHoverOver(xPos, yPos)))
+			if (index != m_selectedMenuEntryIndex && (*menuEntryItr)->DoesMouseHoverOver(xPos, yPos))
 			{
 				return index;
 			}
@@ -136,7 +136,7 @@ void engine::CompositeMenuEntry::AddChild(MenuEntry* menuEntry)
 
 void engine::CompositeMenuEntry::Dispatch()
 {
-	GameManager::GetGameManager()->Input(engine::actions::GO_TO_CHILD_MENU_ENTRY);
+	GameManager::GetGameManager()->Input(actions::GO_TO_CHILD_MENU_ENTRY);
 }
 
 void engine::CompositeMenuEntry::ApplyColorEffectToAll(const math::effects::Effect<rendering::Color>& effect)
@@ -217,12 +217,12 @@ engine::MenuEntry* engine::CompositeMenuEntry::SelectChild(size_t index)
 /* ==================== CompositeMenuEntry class end ==================== */
 
 /* ==================== ActionMenuEntry class begin ==================== */
-engine::ActionMenuEntry::ActionMenuEntry(engine::actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+engine::ActionMenuEntry::ActionMenuEntry(actions::Action actionId, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
 	const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 	bool isCentered /* = false */, math::Real characterWidth /* = 0.5f */, math::Real characterEdgeTransitionWidth /* = 0.1f */, math::Real borderWidth /* = 0.4f */,
 	math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	MenuEntry(text, font, fontSize, iconTexture, screenPosition, screenRotation, scale, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
-	m_actionID(actionID)
+	m_actionId(actionId)
 {
 }
 
@@ -237,7 +237,7 @@ engine::ActionMenuEntry::~ActionMenuEntry()
 
 void engine::ActionMenuEntry::Dispatch()
 {
-	GameManager::GetGameManager()->Input(m_actionID);
+	GameManager::GetGameManager()->Input(m_actionId);
 }
 /* ==================== ActionMenuEntry class end ==================== */
 

@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "GameComponent.h"
 
-#include "Rendering\PointLight.h"
+#include "Rendering/PointLight.h"
 
 namespace engine
 {

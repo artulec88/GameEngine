@@ -16,9 +16,9 @@ namespace engine
 {
 	namespace input
 	{
-		typedef std::set<actions::Action> ActionsContainer;
-		typedef std::set<states::State> StatesContainer;
-		typedef std::map<ranges::Range, math::Real> RangesContainer;
+		using ActionsContainer = std::set<actions::Action>;
+		using StatesContainer = std::set<states::State>;
+		using RangesContainer = std::map<ranges::Range, math::Real>;
 
 		class InputContext;
 		/// <summary>
@@ -26,20 +26,20 @@ namespace engine
 		/// </summary>
 		struct MappedInput
 		{
-			ENGINE_API void ConsumeAction(actions::Action action) { m_actions.erase(action); }
-			ENGINE_API void ConsumeState(states::State state) { m_states.erase(state); }
+			ENGINE_API void ConsumeAction(actions::Action action) { actions.erase(action); }
+			ENGINE_API void ConsumeState(states::State state) { states.erase(state); }
 			ENGINE_API void ConsumeRange(ranges::Range range)
 			{
-				RangesContainer::iterator rangeItr = m_ranges.find(range);
-				if (rangeItr != m_ranges.end())
+				const auto rangeItr = ranges.find(range);
+				if (rangeItr != ranges.end())
 				{
-					m_ranges.erase(rangeItr);
+					ranges.erase(rangeItr);
 				}
 			}
 
-			ActionsContainer m_actions;
-			StatesContainer m_states;
-			RangesContainer m_ranges;
+			ActionsContainer actions;
+			StatesContainer states;
+			RangesContainer ranges;
 		}; /* end struct MappedInput */
 
 		typedef void(*InputCallback)(MappedInput& mappedInputs);
@@ -60,29 +60,34 @@ namespace engine
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Clears the actions collection.
 			/// </summary>
 			ENGINE_API void ClearActions();
+
 			/// <summary>
 			/// Clears the ranges collection.
 			/// </summary>
 			ENGINE_API void ClearRanges();
+
 			ENGINE_API void SetRawButtonState(raw_input_keys::RawInputKey button, bool pressed, bool previouslyPressed);
-			ENGINE_API void SetRawAxisValue(RawInputAxes::RawInputAxis axis, math::Real value);
+			ENGINE_API void SetRawAxisValue(raw_input_axes::RawInputAxis axis, math::Real value);
+			
 			/// <summary>
 			/// Input dispatching.
 			/// </summary>
 			ENGINE_API void Dispatch() const;
+			
 			/// <summary>
 			/// Input callback registration. Add a callback to the dispatch table.
 			/// </summary>
 			ENGINE_API void RegisterCallback(InputCallback inputCallback, int priority);
+			
 			/// <summary>
 			/// Context management interface. Pushes an active input context onto the stack.
 			/// </summary>
 			ENGINE_API void PushContext(const std::string& contextName);
+			
 			/// <summary>
 			/// Context management interface. Pops the current input context off the stack.
 			/// </summary>
@@ -98,7 +103,6 @@ namespace engine
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			std::map<std::string, std::unique_ptr<InputContext>> m_inputContexts;
 			std::list<InputContext*> m_activeContexts;
 			std::multimap<int, InputCallback> m_callbackTable;

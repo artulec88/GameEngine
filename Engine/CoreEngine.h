@@ -161,8 +161,13 @@ namespace engine
 		void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 		void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset) const;
 
-		int GetWindowWidth() const { return m_windowWidth; };
-		int GetWindowHeight() const { return m_windowHeight; };
+		/// <summary> Returns the width of the window used by the core and rendering engines. </summary>
+		/// <returns> The width of the window used by the core and rendering engines. </returns>
+		int GetWindowWidth() const { return m_windowWidth; }
+
+		/// <summary> Returns the height of the window used by the core and rendering engines. </summary>
+		/// <returns> The height of the window used by the core and rendering engines. </returns>
+		int GetWindowHeight() const { return m_windowHeight; }
 
 		void SetCursorPos(math::Real xPos, math::Real yPos) const;
 		ENGINE_API void CentralizeCursor();

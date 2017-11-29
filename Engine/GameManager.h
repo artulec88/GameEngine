@@ -75,11 +75,10 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Loads the game. Performs the loading of all necessary models, textures, etc. </summary>
 		ENGINE_API virtual void Load() = 0;
 		ENGINE_API void Input(actions::Action actionId);
-		ENGINE_API virtual void Input(const engine::input::MappedInput& input);
+		ENGINE_API virtual void Input(const input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(rendering::Renderer* renderer) const;
 

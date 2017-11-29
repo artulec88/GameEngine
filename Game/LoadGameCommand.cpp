@@ -2,17 +2,17 @@
 #include "Def.h"
 #include "Engine/GameManager.h"
 
-Game::LoadGameCommand::LoadGameCommand() :
+game::LoadGameCommand::LoadGameCommand() :
 	engine::GameCommand()
 {
 }
 
 
-Game::LoadGameCommand::~LoadGameCommand()
+game::LoadGameCommand::~LoadGameCommand()
 {
 }
 
-void Game::LoadGameCommand::Execute(engine::GameManager* gameManager) const
+void game::LoadGameCommand::Execute(engine::GameManager* gameManager) const
 {
 	// TODO: Game saving
 	WARNING_LOG_GAME("The loading game functionality is not supported yet.");

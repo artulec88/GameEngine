@@ -5,7 +5,7 @@
 #include "Utility/ILogger.h"
 #include "PlayGameState.h"
 
-Game::LoadGameState::LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+game::LoadGameState::LoadGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_loadingProgress(REAL_ZERO),
@@ -16,12 +16,12 @@ Game::LoadGameState::LoadGameState(engine::GameManager* gameManager, const std::
 {
 }
 
-Game::LoadGameState::~LoadGameState()
+game::LoadGameState::~LoadGameState()
 {
 	SAFE_DELETE(m_loadingThread);
 }
 
-void Game::LoadGameState::Entered()
+void game::LoadGameState::Entered()
 {
 	START_PROFILING_GAME(true, "");
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
@@ -34,37 +34,37 @@ void Game::LoadGameState::Entered()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::LoadGameState::Leaving()
+void game::LoadGameState::Leaving()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("LOAD game state is about to be removed from the game state manager");
 }
 
-void Game::LoadGameState::Obscuring()
+void game::LoadGameState::Obscuring()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of LOAD game state");
 }
 
-void Game::LoadGameState::Revealed()
+void game::LoadGameState::Revealed()
 {
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::LoadGameState::Handle(engine::actions::Action action)
+void game::LoadGameState::Handle(engine::actions::Action action)
 {
 }
 
-void Game::LoadGameState::Handle(engine::states::State state)
+void game::LoadGameState::Handle(engine::states::State state)
 {
 }
 
-void Game::LoadGameState::Handle(engine::ranges::Range range, math::Real value)
+void game::LoadGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 }
 
-void Game::LoadGameState::Render(rendering::Renderer* renderer) const
+void game::LoadGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state rendering");
@@ -73,7 +73,7 @@ void Game::LoadGameState::Render(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::LoadGameState::Update(math::Real elapsedTime)
+void game::LoadGameState::Update(math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state updating");

@@ -4,7 +4,6 @@
 #include "Engine.h"
 //#include "GameManager.h"
 #include "GameNode.h"
-#include "InputConstants.h"
 //#include "GameEvent.h"
 
 namespace engine
@@ -22,7 +21,6 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		ENGINE_API virtual void Notify(GameNode* gameNode, actions::Action action /*const GameEvent& gameEvent*/) const = 0;
 		/* ==================== Non-static member functions end ==================== */
 

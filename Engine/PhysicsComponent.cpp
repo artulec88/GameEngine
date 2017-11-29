@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "PhysicsComponent.h"
-#include "Math/Transform.h"
-#include "Math/Quaternion.h"
 #include "CoreEngine.h"
 
 ///* static */ const math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!

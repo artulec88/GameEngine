@@ -5,8 +5,8 @@
 #include "ActionConstants.h"
 
 #include "Math/Math.h"
-#include "Math\Interpolation.h"
-//#include "Math\Interpolation_impl.h"
+#include "Math/Interpolation.h"
+//#include "Math/Interpolation_impl.h"
 
 #include "Utility/ILogger.h"
 
@@ -25,41 +25,41 @@ namespace engine
 			struct Converter
 			{
 				Converter() :
-					m_minInput(REAL_ZERO),
-					m_maxInput(REAL_ONE),
-					m_minOutput(REAL_ZERO),
-					m_maxOutput(REAL_ONE)
+					minInput(REAL_ZERO),
+					maxInput(REAL_ONE),
+					minOutput(REAL_ZERO),
+					maxOutput(REAL_ONE)
 				{
 				}
 
 				Converter(math::Real minInput, math::Real maxInput, math::Real minOutput, math::Real maxOutput) :
-					m_minInput(minInput),
-					m_maxInput(maxInput),
-					m_minOutput(minOutput),
-					m_maxOutput(maxOutput)
+					minInput(minInput),
+					maxInput(maxInput),
+					minOutput(minOutput),
+					maxOutput(maxOutput)
 				{
 				}
 
 				template <typename RangeType>
 				RangeType Convert(RangeType inputValue) const
 				{
-					math::Real v = static_cast<math::Real>(inputValue);
-					DELOCUST_LOG_ENGINE("v = ", v, "; minInput = ", m_minInput, "; maxInput = ", m_maxInput, "; minOutput = ", m_minOutput, "; maxOutput = ", m_maxOutput);
-					if (v < m_minInput)
+					auto v = static_cast<math::Real>(inputValue);
+					DELOCUST_LOG_ENGINE("v = ", v, "; minInput = ", minInput, "; maxInput = ", maxInput, "; minOutput = ", minOutput, "; maxOutput = ", maxOutput);
+					if (v < minInput)
 					{
-						v = m_minInput;
+						v = minInput;
 					}
-					else if (v > m_maxInput)
+					else if (v > maxInput)
 					{
-						v = m_maxInput;
+						v = maxInput;
 					}
-					return math::interpolation::InterpolateLinear<RangeType>(m_minOutput, m_maxOutput, (v - m_minInput) / (m_maxInput - m_minInput));
+					return math::interpolation::InterpolateLinear<RangeType>(minOutput, maxOutput, (v - minInput) / (maxInput - minInput));
 				}
 
-				math::Real m_minInput;
-				math::Real m_maxInput;
-				math::Real m_minOutput;
-				math::Real m_maxOutput;
+				math::Real minInput;
+				math::Real maxInput;
+				math::Real minOutput;
+				math::Real maxOutput;
 			}; /* end struct Converter */
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */

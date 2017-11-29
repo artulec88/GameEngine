@@ -8,7 +8,7 @@
 #include "Math/Math.h"
 #include "Engine/GameNode.h"
 #include "Engine\MenuEntry.h"
-#include "Engine\GameCommand.h"
+#include "Engine/GameCommand.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"
@@ -18,7 +18,7 @@
 #include <vector>
 #include <string>
 
-namespace Game
+namespace game
 {
 
 	class rendering::Shader;

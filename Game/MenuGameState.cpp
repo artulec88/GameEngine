@@ -18,7 +18,7 @@
 #include "Utility/IConfig.h"
 #include "Utility/BuilderDirector.h"
 
-Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* mainMenuFont, math::Real mainMenuFontSize) :
+game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* mainMenuFont, math::Real mainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	//m_particlesSystem(nullptr),
@@ -153,12 +153,12 @@ Game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 	//Engine::CoreEngine::GetCoreEngine()->RegisterHandlerForAction(Engine::Input::Actions::ACTION_QUIT_GAME, m_quitGameCommand);
 }
 
-Game::MenuGameState::~MenuGameState(void)
+game::MenuGameState::~MenuGameState(void)
 {
 	//SAFE_DELETE(m_particlesSystem);
 }
 
-void Game::MenuGameState::Entered()
+void game::MenuGameState::Entered()
 {
 	//ParticlesSystemBuilder particlesSystemBuilder(m_gameManager, Particleeffects::FOUNTAIN);
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
@@ -170,25 +170,25 @@ void Game::MenuGameState::Entered()
 	INFO_LOG_GAME("Menu game state has been placed in the game state manager");
 }
 
-void Game::MenuGameState::Leaving()
+void game::MenuGameState::Leaving()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Menu game state is about to be removed from the game state manager");
 }
 
-void Game::MenuGameState::Obscuring()
+void game::MenuGameState::Obscuring()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of menu game state");
 }
 
-void Game::MenuGameState::Revealed()
+void game::MenuGameState::Revealed()
 {
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("Menu game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::MenuGameState::Handle(engine::actions::Action action)
+void game::MenuGameState::Handle(engine::actions::Action action)
 {
 	switch (action)
 	{
@@ -220,7 +220,7 @@ void Game::MenuGameState::Handle(engine::actions::Action action)
 	}
 }
 
-void Game::MenuGameState::Handle(engine::states::State state)
+void game::MenuGameState::Handle(engine::states::State state)
 {
 	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
@@ -237,7 +237,7 @@ void Game::MenuGameState::Handle(engine::states::State state)
 	}
 }
 
-void Game::MenuGameState::Handle(engine::ranges::Range range, math::Real value)
+void game::MenuGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
@@ -254,7 +254,7 @@ void Game::MenuGameState::Handle(engine::ranges::Range range, math::Real value)
 	SelectChild(m_currentMenuEntry->GetParent()->GetSelectedChildIndex(m_mousePosX, m_mousePosY));
 }
 
-void Game::MenuGameState::DeselectAll()
+void game::MenuGameState::DeselectAll()
 {
 	START_PROFILING_GAME(true, "");
 	// This function is supposed to apply the "non-selected" effects to all non-selected menu entries. However Effect class can only handle one attribute at a time.
@@ -273,7 +273,7 @@ void Game::MenuGameState::DeselectAll()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::MenuGameState::SelectChild(size_t childIndex)
+void game::MenuGameState::SelectChild(size_t childIndex)
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, utility::logging::DELOCUST,
 		"Trying to select the child which is already selected (", childIndex, ").");
@@ -282,7 +282,7 @@ void Game::MenuGameState::SelectChild(size_t childIndex)
 	ERROR_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void Game::MenuGameState::Render(rendering::Renderer* renderer) const
+void game::MenuGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("MAIN MENU game state rendering");
@@ -296,7 +296,7 @@ void Game::MenuGameState::Render(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::MenuGameState::RenderParticles(rendering::Renderer* renderer) const
+void game::MenuGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	//DEBUG_LOG_GAME("Rendering particles started");
@@ -350,7 +350,7 @@ void Game::MenuGameState::RenderParticles(rendering::Renderer* renderer) const
 //{
 //}
 
-void Game::MenuGameState::Update(math::Real deltaTime)
+void game::MenuGameState::Update(math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
 	if (m_notSelectedMenuEntryColorEffect != nullptr)

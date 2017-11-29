@@ -1,16 +1,16 @@
 #include "ResumeGameCommand.h"
 
-Game::ResumeGameCommand::ResumeGameCommand() :
+game::ResumeGameCommand::ResumeGameCommand() :
 	engine::GameCommand()
 {
 }
 
 
-Game::ResumeGameCommand::~ResumeGameCommand()
+game::ResumeGameCommand::~ResumeGameCommand()
 {
 }
 
-void Game::ResumeGameCommand::Execute(engine::GameManager* gameManager) const
+void game::ResumeGameCommand::Execute(engine::GameManager* gameManager) const
 {
 	gameManager->PopState();
 }

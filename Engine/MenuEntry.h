@@ -42,7 +42,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		ENGINE_API void Render(int guiControlShaderID, rendering::Renderer* renderer) const override;
+		ENGINE_API void Render(int guiControlShaderId, rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual void Dispatch() = 0;
 		ENGINE_API virtual MenuEntry* GoTo() { return this; }
@@ -97,7 +97,7 @@ namespace engine
 		ENGINE_API void ApplyBorderWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 		ENGINE_API void ApplyBorderEdgeTransitionWidthEffectToAll(const math::effects::Effect<math::Real>& effect);
 
-		ENGINE_API void RenderAll(int guiControlShaderID, rendering::Renderer* renderer) const;
+		ENGINE_API void RenderAll(int guiControlShaderId, rendering::Renderer* renderer) const;
 		ENGINE_API size_t GetSelectedChildIndex() const { return m_selectedMenuEntryIndex; }
 		ENGINE_API size_t GetSelectedChildIndex(math::Real xPos, math::Real yPos) const;
 		ENGINE_API MenuEntry* SelectPrevChild();
@@ -119,7 +119,7 @@ namespace engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ActionMenuEntry(engine::actions::Action actionID, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
+		ENGINE_API ActionMenuEntry(actions::Action actionId, const std::string& text, const rendering::text::Font* font, math::Real fontSize, const rendering::Texture* iconTexture,
 			const math::Vector2D& screenPosition, const math::Angle& screenRotation, const math::Vector2D& scale, math::Real maxLineLength, const rendering::Color& textColor, const rendering::Color& outlineColor, const math::Vector2D& offset,
 			bool isCentered = false, math::Real characterWidth = 0.5f, math::Real characterEdgeTransitionWidth = 0.1f, math::Real borderWidth = 0.4f, math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry();
@@ -132,7 +132,7 @@ namespace engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		actions::Action m_actionID;
+		actions::Action m_actionId;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ActionMenuEntry */
 
@@ -154,7 +154,7 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		ENGINE_API void Render(int guiControlShaderID, rendering::Renderer* renderer) const override;
+		ENGINE_API void Render(int guiControlShaderId, rendering::Renderer* renderer) const override;
 		ENGINE_API void Dispatch() override;
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)

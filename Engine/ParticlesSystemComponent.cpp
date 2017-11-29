@@ -30,6 +30,7 @@ engine::ParticlesSystemComponent& engine::ParticlesSystemComponent::operator=(Pa
 	IUpdateable::operator=(std::move(particlesSystemComponent));
 	m_particlesSystem = std::move(particlesSystemComponent.m_particlesSystem);
 	particlesSystemComponent.m_particlesSystem = nullptr;
+	return *this;
 }
 
 void engine::ParticlesSystemComponent::Update(math::Real deltaTime)

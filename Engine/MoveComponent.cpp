@@ -26,10 +26,9 @@ engine::MoveComponent::~MoveComponent()
 
 void engine::MoveComponent::Update(math::Real deltaTime)
 {
-	math::Transform& transform = GetTransform();
-	transform.SetRot(transform.GetRot() * math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
-	const auto distanceToMove = transform.GetRot().GetForward() * m_currentMovementSpeed * deltaTime;
-	transform.SetPos(transform.GetPos() + distanceToMove);
+	GetTransform().SetRot(GetTransform().GetRot() * math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
+	const auto distanceToMove = GetTransform().GetRot().GetForward() * m_currentMovementSpeed * deltaTime;
+	GetTransform().SetPos(GetTransform().GetPos() + distanceToMove);
 
 	if (m_isJumping)
 	{

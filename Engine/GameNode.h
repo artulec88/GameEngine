@@ -64,7 +64,7 @@ namespace engine
 
 		/* ==================== Non-static member functions begin ==================== */
 		ENGINE_API GameNode Clone() const;
-		ENGINE_API int GetId() const { return m_id; }; // just for easier debugging purposes
+		ENGINE_API int GetId() const { return m_id; } // just for easier debugging purposes
 		ENGINE_API GameNode* AddChild(GameNode* child);
 		ENGINE_API GameNode* AddComponent(GameComponent* component);
 
@@ -98,7 +98,7 @@ namespace engine
 			}
 		}
 
-		ENGINE_API math::Transform& GetTransform() { return m_transform; };
+		ENGINE_API math::Transform& GetTransform() { return m_transform; }
 		ENGINE_API const math::Transform& GetTransform() const { return m_transform; }
 
 		ENGINE_API physics::PhysicsObject* GetPhysicsObject() const { return m_physicsObject.get(); }
@@ -116,7 +116,7 @@ namespace engine
 		std::vector<GameNode*> m_childrenGameNodes;
 		std::vector<GameComponent*> m_components;
 		std::vector<IRenderable*> m_renderableComponents;
-		std::vector<input::IInputableMouse*> m_inputableMouseComponents;
+		std::vector<IInputableMouse*> m_inputableMouseComponents;
 		std::vector<IUpdateable*> m_updateableComponents;
 		math::Transform m_transform;
 		std::unique_ptr<physics::PhysicsObject> m_physicsObject;

@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "MeshRendererComponent.h"
-#include "Rendering/Shader.h"
 #include "Rendering/Renderer.h"
 
 engine::MeshRendererComponent::MeshRendererComponent(int meshId, const rendering::Material* material) :

@@ -45,7 +45,7 @@ namespace engine
 	protected:
 		int FindDeadParticleIndex() const
 		{
-			for (int i = m_lastRevivedParticleIndex; i < MAX_PARTICLES_COUNT; ++i)
+			for (auto i = m_lastRevivedParticleIndex; i < MAX_PARTICLES_COUNT; ++i)
 			{
 				if (!m_particles[i].IsAlive())
 				{
@@ -54,7 +54,7 @@ namespace engine
 					return i;
 				}
 			}
-			for (int i = 0; i < m_lastRevivedParticleIndex; ++i)
+			for (auto i = 0; i < m_lastRevivedParticleIndex; ++i)
 			{
 				if (!m_particles[i].IsAlive())
 				{
@@ -137,9 +137,9 @@ namespace engine
 		ENGINE_API void EmitParticle(const math::Vector3D& initialPosition) override
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
-			math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
-			math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			const auto dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			const auto dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			const auto dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
 			math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;

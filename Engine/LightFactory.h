@@ -10,7 +10,7 @@
 
 namespace engine
 {
-	namespace LightTypes
+	namespace light_types
 	{
 		enum LightType
 		{
@@ -20,7 +20,7 @@ namespace engine
 			SPOT,
 			COUNT
 		}; /* end enum LightType */
-	} /* end namespace LightTypes */
+	} /* end namespace light_types */
 
 	class LightFactory
 	{
@@ -55,17 +55,17 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		const rendering::lighting::BaseLight* CreateLight(LightTypes::LightType lightType, int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
-		ENGINE_API const rendering::lighting::BaseLight& GetLight(LightTypes::LightType lightType, int lightId) const
+		const rendering::lighting::BaseLight* CreateLight(light_types::LightType lightType, int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */);
+		ENGINE_API const rendering::lighting::BaseLight& GetLight(light_types::LightType lightType, int lightId) const
 		{
 			// TODO: Check if lightId is a correct value.
 			switch (lightType)
 			{
-			case LightTypes::DIRECTIONAL:
+			case light_types::DIRECTIONAL:
 				return m_directionalLights[lightId];
-			case LightTypes::POINT:
+			case light_types::POINT:
 				return m_pointLights[lightId];
-			case LightTypes::SPOT:
+			case light_types::SPOT:
 				return m_spotLights[lightId];
 			default:
 				ERROR_LOG_ENGINE("Cannot return the light. Incorrect light type (", lightType, ") has been specified.");

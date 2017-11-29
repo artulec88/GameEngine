@@ -26,4 +26,5 @@ engine::SpotLightComponent& engine::SpotLightComponent::operator=(SpotLightCompo
 	GameComponent::operator=(std::move(spotLightComponent));
 	m_spotLight = std::move(spotLightComponent.m_spotLight);
 	spotLightComponent.m_spotLight = nullptr;
+	return *this;
 }

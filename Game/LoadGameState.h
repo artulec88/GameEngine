@@ -20,7 +20,7 @@
 #include <thread>
 #include <string>
 
-namespace Game
+namespace game
 {
 	/* TODO: Consider inheriting from Rendering::IUpdateable class */
 	class LoadGameState : public engine::GameState, public virtual engine::IUpdateable

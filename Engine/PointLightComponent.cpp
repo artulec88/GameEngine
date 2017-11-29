@@ -26,4 +26,5 @@ engine::PointLightComponent& engine::PointLightComponent::operator=(PointLightCo
 	GameComponent::operator=(std::move(pointLightComponent));
 	m_pointLight = std::move(pointLightComponent.m_pointLight);
 	pointLightComponent.m_pointLight = nullptr;
+	return *this;
 }

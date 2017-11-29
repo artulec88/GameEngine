@@ -15,15 +15,15 @@ engine::LightFactory::~LightFactory()
 {
 }
 
-const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(LightTypes::LightType lightType, int lightId)
+const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(light_types::LightType lightType, int lightId)
 {
 	switch (lightType)
 	{
-	case LightTypes::DIRECTIONAL:
+	case light_types::DIRECTIONAL:
 		return AddDirectionalLight(lightId);
-	case LightTypes::POINT:
+	case light_types::POINT:
 		return AddPointLight(lightId);
-	case LightTypes::SPOT:
+	case light_types::SPOT:
 		return AddSpotLight(lightId);
 	default:
 		ERROR_LOG_ENGINE("Cannot create the light. Incorrect light type (", lightType, ") has been specified.");
@@ -31,7 +31,7 @@ const rendering::lighting::BaseLight* engine::LightFactory::CreateLight(LightTyp
 	return nullptr;
 }
 
-const rendering::lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
+const rendering::lighting::DirectionalLight* engine::LightFactory::AddDirectionalLight(int lightId /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
 	// TODO: This code needs to be fixed.
 

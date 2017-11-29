@@ -34,7 +34,7 @@
 
 #include <sstream>
 
-Game::TestGameManager::TestGameManager() :
+game::TestGameManager::TestGameManager() :
 	GameManager(),
 	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("defaultCameraHeightUpdateInterval", 0.01f)),
@@ -80,7 +80,7 @@ Game::TestGameManager::TestGameManager() :
 }
 
 
-Game::TestGameManager::~TestGameManager()
+game::TestGameManager::~TestGameManager()
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 }
@@ -261,7 +261,7 @@ Game::TestGameManager::~TestGameManager()
 //	}
 //}
 
-math::Real Game::TestGameManager::GetLoadingProgress() const
+math::Real game::TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
@@ -271,7 +271,7 @@ math::Real Game::TestGameManager::GetLoadingProgress() const
 	return static_cast<math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
 }
 
-engine::GameState* Game::TestGameManager::GetLoadGameState()
+engine::GameState* game::TestGameManager::GetLoadGameState()
 {
 	if (m_loadGameState == nullptr)
 	{
@@ -280,7 +280,7 @@ engine::GameState* Game::TestGameManager::GetLoadGameState()
 	return m_loadGameState.get();
 }
 
-engine::GameState* Game::TestGameManager::GetIntroGameState()
+engine::GameState* game::TestGameManager::GetIntroGameState()
 {
 	if (m_introGameState == nullptr)
 	{
@@ -289,7 +289,7 @@ engine::GameState* Game::TestGameManager::GetIntroGameState()
 	return m_introGameState.get();
 }
 
-engine::GameState* Game::TestGameManager::GetMainMenuGameState()
+engine::GameState* game::TestGameManager::GetMainMenuGameState()
 {
 	if (m_menuGameState == nullptr)
 	{
@@ -300,7 +300,7 @@ engine::GameState* Game::TestGameManager::GetMainMenuGameState()
 	return m_menuGameState.get();
 }
 
-engine::GameState* Game::TestGameManager::GetPlayGameState()
+engine::GameState* game::TestGameManager::GetPlayGameState()
 {
 	if (m_playGameState == nullptr)
 	{
@@ -311,7 +311,7 @@ engine::GameState* Game::TestGameManager::GetPlayGameState()
 	return m_playGameState.get();
 }
 
-engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
+engine::GameState* game::TestGameManager::GetPlayMainMenuGameState()
 {
 	if (m_playMainMenuGameState == nullptr)
 	{
@@ -321,7 +321,7 @@ engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 	return m_playMainMenuGameState.get();
 }
 
-void Game::TestGameManager::Load()
+void game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING_GAME(true, "");
@@ -422,7 +422,7 @@ void Game::TestGameManager::Load()
 //	stdlog(INFO, LOGPLACE, "The game is being cleaned up");
 //}
 
-void Game::TestGameManager::Update(math::Real delta)
+void game::TestGameManager::Update(math::Real delta)
 {
 	START_PROFILING_GAME(true, "");
 	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
@@ -433,24 +433,24 @@ void Game::TestGameManager::Update(math::Real delta)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::TestGameManager::WindowResizeEvent(int width, int height)
+void game::TestGameManager::WindowResizeEvent(int width, int height)
 {
 	GameManager::WindowResizeEvent(width, height);
 }
 
-void Game::TestGameManager::ScrollEvent(double xOffset, double yOffset)
+void game::TestGameManager::ScrollEvent(double xOffset, double yOffset)
 {
 	GameManager::ScrollEvent(xOffset, yOffset);
 	m_gameStateManager->ScrollEvent(xOffset, yOffset);
 }
 
-void Game::TestGameManager::MousePosEvent(double xPos, double yPos)
+void game::TestGameManager::MousePosEvent(double xPos, double yPos)
 {
 	m_gameStateManager->MousePosEvent(xPos, yPos);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Game::TestGameManager::InitializeTweakBars()
+void game::TestGameManager::InitializeTweakBars()
 {
 #ifdef GAME_PROPERTIES_TWEAK_BAR
 	if (!m_isGameLoaded)

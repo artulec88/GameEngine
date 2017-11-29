@@ -9,7 +9,7 @@
 #include "PlayGameState.h"
 #include "ResumeGameCommand.h"
 
-Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* playMainMenuFont, math::Real playMainMenuFontSize) :
+game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* playMainMenuFont, math::Real playMainMenuFontSize) :
 	engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f,
@@ -51,35 +51,35 @@ Game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, con
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
 }
 
-Game::PlayMenuGameState::~PlayMenuGameState()
+game::PlayMenuGameState::~PlayMenuGameState()
 {
 }
 
-void Game::PlayMenuGameState::Entered()
+void game::PlayMenuGameState::Entered()
 {
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has been placed in the game state manager");
 }
 
-void Game::PlayMenuGameState::Leaving()
+void game::PlayMenuGameState::Leaving()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PlayMenu game state is about to be removed from the game state manager");
 }
 
-void Game::PlayMenuGameState::Obscuring()
+void game::PlayMenuGameState::Obscuring()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PlayMenu game state");
 }
 
-void Game::PlayMenuGameState::Revealed()
+void game::PlayMenuGameState::Revealed()
 {
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::PlayMenuGameState::Handle(engine::actions::Action action)
+void game::PlayMenuGameState::Handle(engine::actions::Action action)
 {
 	switch (action)
 	{
@@ -108,15 +108,15 @@ void Game::PlayMenuGameState::Handle(engine::actions::Action action)
 	}
 }
 
-void Game::PlayMenuGameState::Handle(engine::states::State state)
+void game::PlayMenuGameState::Handle(engine::states::State state)
 {
 }
 
-void Game::PlayMenuGameState::Handle(engine::ranges::Range range, math::Real value)
+void game::PlayMenuGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 }
 
-void Game::PlayMenuGameState::DeselectAll()
+void game::PlayMenuGameState::DeselectAll()
 {
 	START_PROFILING_GAME(true, "");
 	//// This function is supposed to apply the "non-selected" effects to all non-selected menu entries. However Effect class can only handle one attribute at a time.
@@ -135,7 +135,7 @@ void Game::PlayMenuGameState::DeselectAll()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayMenuGameState::SelectChild(int childIndex)
+void game::PlayMenuGameState::SelectChild(int childIndex)
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::DEBUG, "Trying to select the child which is already selected (", childIndex, ").");
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
@@ -152,7 +152,7 @@ void Game::PlayMenuGameState::SelectChild(int childIndex)
 	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void Game::PlayMenuGameState::Render(rendering::Renderer* renderer) const
+void game::PlayMenuGameState::Render(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("PLAY MAIN MENU game state rendering");

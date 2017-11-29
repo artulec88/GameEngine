@@ -3,7 +3,7 @@
 
 #include "Rendering\TextureIDs.h"
 
-namespace Game
+namespace game
 {
 	namespace texture_ids
 	{

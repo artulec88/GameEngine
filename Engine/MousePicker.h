@@ -18,33 +18,50 @@ namespace engine
 	/// </remarks>
 	class MousePicker
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Mouse picker constructor. </summary>
 		ENGINE_API MousePicker();
-		ENGINE_API ~MousePicker(void);
-	private:
-		MousePicker(MousePicker& mousePicker);
-		void operator=(MousePicker& mousePicker);
-	/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		/// <summary>
-		/// </summary>
-		/// <param name="xPos">The X component of the 2D viewport coordinates.</param>
-		/// <param name="yPos">The Y component of the 2D viewport coordinates.</param>
-		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
-		/// <param name="viewMatrix">The view matrix of the camera.</param>
+		/// <summary> Mouse picker destructor. </summary>
+		ENGINE_API ~MousePicker();
+
+		/// <summary> Mouse picker copy constructor. </summary>
+		/// <param name="mousePicker"> The reference to mouse picker to copy construct from. </param>
+		MousePicker(const MousePicker& mousePicker) = delete;
+
+		/// <summary> Mouse picker move constructor. </summary>
+		/// <param name="mousePicker"> The r-value reference to mouse picker to move construct from. </param>
+		MousePicker(MousePicker&& mousePicker) = delete;
+
+		/// <summary> Mouse picker copy assignment operator. </summary>
+		/// <param name="mousePicker"> The reference to mouse picker to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned mouse picker. </returns>
+		MousePicker& operator=(const MousePicker& mousePicker) = delete;
+
+		/// <summary> Mouse picker move assignment operator. </summary>
+		/// <param name="mousePicker"> The r-value reference to mouse picker to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned mouse picker. </returns>
+		MousePicker& operator=(MousePicker&& mousePicker) = delete;
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+			/// <summary>
+			/// </summary>
+			/// <param name="xPos">The X component of the 2D viewport coordinates.</param>
+			/// <param name="yPos">The Y component of the 2D viewport coordinates.</param>
+			/// <param name="projectionMatrix">The projection matrix of the camera.</param>
+			/// <param name="viewMatrix">The view matrix of the camera.</param>
 		ENGINE_API void CalculateCurrentRay(double xPos, double yPos, const math::Matrix4D& projectionMatrix, const math::Matrix4D& viewMatrix);
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		math::Vector3D m_currentRay;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MousePicker */
 
 } /* end namespace engine */

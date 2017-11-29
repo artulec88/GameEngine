@@ -8,7 +8,6 @@
 #include <string>
 #include <map>
 #include <memory>
-#include <fstream>
 
 namespace engine
 {
@@ -30,7 +29,6 @@ namespace engine
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// Attempts to map a raw button to an action. If it fails <code>Actions::INVALID</code> is returned.
 			/// </summary>
@@ -39,6 +37,7 @@ namespace engine
 			/// An action that is associated with the specified <paramref name="button"/>. If no such action is found then <code>Actions::INVALID</code> is returned.
 			/// </returns>
 			actions::Action MapButtonToAction(raw_input_keys::RawInputKey button) const;
+
 			/// <summary>
 			/// Attempts to map a raw button to a state. If it fails <code>States::STATE_INVALID</code> is returned.
 			/// </summary>
@@ -47,6 +46,7 @@ namespace engine
 			/// A state that is associated with the specified <paramref name="button"/>. If no such state is found then <code>States::STATE_INVALID</code> is returned.
 			/// </returns>
 			states::State MapButtonToState(raw_input_keys::RawInputKey button) const;
+
 			/// <summary>
 			/// Attempts to map a raw axis to a range. If it fails <code>Ranges::RANGE_INVALID</code> is returned.
 			/// </summary>
@@ -54,7 +54,7 @@ namespace engine
 			/// <returns>
 			/// A range that is associated with the specified <paramref name="axis"/>. If no such range is found then <code>Ranges::RANGE_INVALID</code> is returned.
 			/// </returns>
-			ranges::Range MapAxisToRange(RawInputAxes::RawInputAxis axis) const;
+			ranges::Range MapAxisToRange(raw_input_axes::RawInputAxis axis) const;
 
 			/// <summary>
 			/// Retrieves the sensitivity associated with a given <paramref name="range"/>.
@@ -72,7 +72,7 @@ namespace engine
 		private:
 			std::map<raw_input_keys::RawInputKey, actions::Action> m_actionsMap;
 			std::map<raw_input_keys::RawInputKey, states::State> m_statesMap;
-			std::map<RawInputAxes::RawInputAxis, ranges::Range> m_rangesMap;
+			std::map<raw_input_axes::RawInputAxis, ranges::Range> m_rangesMap;
 
 			std::map<ranges::Range, math::Real> m_sensitivitiesMap;
 			std::unique_ptr<InputRangeConverter> m_converter;

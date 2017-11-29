@@ -20,7 +20,7 @@
 
 #include <string>
 
-namespace Game
+namespace game
 {
 
 	class IntroGameState : public engine::GameState

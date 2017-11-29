@@ -11,14 +11,14 @@ engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 }
 
 
-engine::LookAtComponent::~LookAtComponent(void)
+engine::LookAtComponent::~LookAtComponent()
 {
 }
 
 void engine::LookAtComponent::Update(math::Real delta)
 {
 	//math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
-	math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
+	const auto currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
 
 	//GetTransform().LookAt(currentCameraPos, math::Vector3D(0, 1, 0));
 

@@ -3,7 +3,7 @@
 
 #include "Rendering\MeshIDs.h"
 
-namespace Game
+namespace game
 {
 	namespace mesh_ids
 	{

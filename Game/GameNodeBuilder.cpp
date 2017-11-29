@@ -2,26 +2,27 @@
 #include "TextureIDs.h"
 #include "MeshIDs.h"
 
-#include "Engine\CameraComponent.h"
-#include "Engine\CameraBehavior.h"
+#include "Engine/CameraComponent.h"
+#include "Engine/CameraBehavior.h"
+#include "Engine/MeshRendererComponent.h"
 
 #include "Utility/IConfig.h"
 
 /* ==================== GameNodeBuilder implementation begin ==================== */
-Game::GameNodeBuilder::GameNodeBuilder(engine::GameManager* gameManager) :
-	utility::Builder<engine::GameNode>(),
+game::GameNodeBuilder::GameNodeBuilder(engine::GameManager* gameManager) :
+	Builder<engine::GameNode>(),
 	m_gameManager(gameManager),
 	m_gameNode()
 {
 }
 
-Game::GameNodeBuilder::~GameNodeBuilder()
+game::GameNodeBuilder::~GameNodeBuilder()
 {
 }
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera) :
+game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera) :
 	GameNodeBuilder(gameManager),
 	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
 		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(engine::camera_behavior_types::STATIC)))),
@@ -35,11 +36,11 @@ Game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, ren
 {
 }
 
-Game::CameraNodeBuilder::~CameraNodeBuilder()
+game::CameraNodeBuilder::~CameraNodeBuilder()
 {
 }
 
-void Game::CameraNodeBuilder::BuildTransform()
+void game::CameraNodeBuilder::BuildTransform()
 {
 	//for (std::size_t i = 0; i < m_camerasCount; ++i)
 	//{
@@ -93,7 +94,7 @@ void Game::CameraNodeBuilder::BuildTransform()
 	////m_object->GetTransform().SetRot(m_camera->GetRot());
 }
 
-void Game::CameraNodeBuilder::BuildComponents()
+void game::CameraNodeBuilder::BuildComponents()
 {
 	//math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_GAME("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f));
 	//math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_GAME("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f));
@@ -118,27 +119,27 @@ void Game::CameraNodeBuilder::BuildComponents()
 /* ==================== CameraNodeBuilder implementation end ==================== */
 
 /* ==================== SkyboxBuilder implementation begin ==================== */
-Game::SkyboxBuilder::SkyboxBuilder(engine::GameManager* gameManager) :
+game::SkyboxBuilder::SkyboxBuilder(engine::GameManager* gameManager) :
 	GameNodeBuilder(gameManager),
 	m_gameManager(gameManager),
 	m_scale(GET_CONFIG_VALUE_GAME("skyboxScale", 5.0f))
 {
 }
 
-Game::SkyboxBuilder::~SkyboxBuilder()
+game::SkyboxBuilder::~SkyboxBuilder()
 {
 }
 
-void Game::SkyboxBuilder::BuildTransform()
+void game::SkyboxBuilder::BuildTransform()
 {
 	m_gameNode.GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_gameNode.GetTransform().SetScale(m_scale);
 }
 
-void Game::SkyboxBuilder::BuildComponents()
+void game::SkyboxBuilder::BuildComponents()
 {
-	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
-	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
+	const auto cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
+	const auto cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
 	const rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
 	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
 	const rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);

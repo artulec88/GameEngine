@@ -114,7 +114,7 @@ int main(const int argc, char* argv[])
 	/* ==================== Create game instance and run ==================== */
 	engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("fullscreenEnabled", false), GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
 		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), configDirectory, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
-	Game::TestGameManager game;
+	game::TestGameManager game;
 	engine.Start(&game);
 	return EXIT_SUCCESS;
 }

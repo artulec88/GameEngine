@@ -21,7 +21,7 @@
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 
-Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_rootGameNode(),
 	m_terrainNode(),
@@ -74,7 +74,7 @@ Game::PlayGameState::PlayGameState(engine::GameManager* gameManager, const std::
 	DEBUG_LOG_GAME("Play game state created");
 }
 
-Game::PlayGameState::~PlayGameState()
+game::PlayGameState::~PlayGameState()
 {
 	for (auto cameraItr = m_cameras.begin(); cameraItr != m_cameras.end(); ++cameraItr)
 	{
@@ -82,7 +82,7 @@ Game::PlayGameState::~PlayGameState()
 	}
 }
 
-void Game::PlayGameState::Entered()
+void game::PlayGameState::Entered()
 {
 	START_PROFILING_GAME(true, "");
 
@@ -177,7 +177,7 @@ void Game::PlayGameState::Entered()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Leaving()
+void game::PlayGameState::Leaving()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PLAY game state is about to be removed from the game state manager");
@@ -186,19 +186,19 @@ void Game::PlayGameState::Leaving()
 #endif
 }
 
-void Game::PlayGameState::Obscuring()
+void game::PlayGameState::Obscuring()
 {
 	engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PLAY game state");
 }
 
-void Game::PlayGameState::Revealed()
+void game::PlayGameState::Revealed()
 {
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has become the topmost game state in the game state manager's stack");
 }
 
-void Game::PlayGameState::AddShaders()
+void game::PlayGameState::AddShaders()
 {
 	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("ambientLightTerrainShader", "forward-ambient-terrain.glsl"));
 	//m_gameManager->AddShader(Rendering::shader_ids::AMBIENT_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl"));
@@ -230,7 +230,7 @@ void Game::PlayGameState::AddShaders()
 	//m_gameManager->AddShader(Rendering::shader_ids::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
 }
 
-void Game::PlayGameState::AddTerrainNode()
+void game::PlayGameState::AddTerrainNode()
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Adding terrain node");
@@ -255,7 +255,7 @@ void Game::PlayGameState::AddTerrainNode()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::AddWaterNodes()
+void game::PlayGameState::AddWaterNodes()
 {
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
@@ -266,7 +266,7 @@ void Game::PlayGameState::AddWaterNodes()
 	m_waterNode.GetTransform().SetScale(0.2f);
 }
 
-void Game::PlayGameState::AddSkyboxNode()
+void game::PlayGameState::AddSkyboxNode()
 {
 	START_PROFILING_GAME(true, "");
 
@@ -279,7 +279,7 @@ void Game::PlayGameState::AddSkyboxNode()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::AddPlayerNode()
+void game::PlayGameState::AddPlayerNode()
 {
 	const math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
 	const math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
@@ -297,7 +297,7 @@ void Game::PlayGameState::AddPlayerNode()
 	m_rootGameNode.AddChild(&m_playerNode);
 }
 
-void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering::Material* billboardsMaterial)
+void game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering::Material* billboardsMaterial)
 {
 	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 	const auto angle = REAL_ZERO;
@@ -336,7 +336,7 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering:
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
 
-void Game::PlayGameState::AddCameras()
+void game::PlayGameState::AddCameras()
 {
 	START_PROFILING_GAME(true, "");
 
@@ -391,7 +391,7 @@ void Game::PlayGameState::AddCameras()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::AddLights()
+void game::PlayGameState::AddLights()
 {
 	START_PROFILING_GAME(true, "");
 	AddDirectionalLight(); // Adding directional light (if enabled)
@@ -400,7 +400,7 @@ void Game::PlayGameState::AddLights()
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::AddDirectionalLight()
+void game::PlayGameState::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
@@ -421,7 +421,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	//m_lights.push_back(directionalLight);
 }
 
-void Game::PlayGameState::AddPointLights()
+void game::PlayGameState::AddPointLights()
 {
 	const int pointLightsCount = GET_CONFIG_VALUE_GAME("pointLightsCount", 1);
 	if (pointLightsCount > 0)
@@ -443,7 +443,7 @@ void Game::PlayGameState::AddPointLights()
 	}
 }
 
-void Game::PlayGameState::AddSpotLights()
+void game::PlayGameState::AddSpotLights()
 {
 	const int spotLightsCount = GET_CONFIG_VALUE_GAME("spotLightsCount", 1);
 	if (spotLightsCount > 0)
@@ -464,7 +464,7 @@ void Game::PlayGameState::AddSpotLights()
 	}
 }
 
-void Game::PlayGameState::Handle(engine::actions::Action action)
+void game::PlayGameState::Handle(engine::actions::Action action)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Handling action: ", action);
@@ -503,7 +503,7 @@ void Game::PlayGameState::Handle(engine::actions::Action action)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Handle(engine::states::State state)
+void game::PlayGameState::Handle(engine::states::State state)
 {
 	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
@@ -544,7 +544,7 @@ void Game::PlayGameState::Handle(engine::states::State state)
 	}
 }
 
-void Game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
+void game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
 {
 	switch (range)
 	{
@@ -580,7 +580,7 @@ void Game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
 	}
 }
 
-void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
+void game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
 	START_PROFILING_GAME(true, "");
 	m_rootGameNode.MouseButtonEvent(button, action, mods);
@@ -603,7 +603,7 @@ void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
+void game::PlayGameState::MousePosEvent(double xPos, double yPos)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Cursor position = (", xPos, ", ", yPos, ")");
@@ -646,14 +646,14 @@ void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
+void game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
 	START_PROFILING_GAME(true, "");
 	m_rootGameNode.ScrollEvent(xOffset, yOffset);
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Render(rendering::Renderer* renderer) const
+void game::PlayGameState::Render(rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
@@ -696,7 +696,7 @@ void Game::PlayGameState::Render(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* renderer) const
 {
 	int ambientShaderID = GetAmbientShaderID(renderer->GetFogInfo());
 	renderer->BindShader(ambientShaderID);
@@ -709,7 +709,7 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* rende
 	m_terrainNode.Render(ambientTerrainShaderID, renderer);
 }
 
-void Game::PlayGameState::RenderSceneWithPointLights(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderSceneWithPointLights(rendering::Renderer* renderer) const
 {
 	for (size_t i = 0; i < m_pointLights.size(); ++i)
 	{
@@ -724,7 +724,7 @@ void Game::PlayGameState::RenderSceneWithPointLights(rendering::Renderer* render
 	}
 }
 
-void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	for (auto lightItr = m_directionalLights.begin(); lightItr != m_directionalLights.end(); ++lightItr)
@@ -784,7 +784,7 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Ren
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Skybox rendering started");
@@ -816,7 +816,7 @@ void Game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -829,7 +829,7 @@ void Game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) con
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -885,7 +885,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* rend
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
@@ -927,7 +927,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* rend
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	// TODO: Add some condition here that will prevent any water nodes rendering if there are no water nodes available.
@@ -953,7 +953,7 @@ void Game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderBillboardNodes(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderBillboardNodes(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering billboards started");
@@ -976,7 +976,7 @@ void Game::PlayGameState::RenderBillboardNodes(rendering::Renderer* renderer) co
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
+void game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
@@ -994,7 +994,7 @@ void Game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::Update(math::Real elapsedTime)
+void game::PlayGameState::Update(math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
@@ -1013,7 +1013,7 @@ void Game::PlayGameState::Update(math::Real elapsedTime)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::PlayGameState::CalculateSunElevationAndAzimuth()
+void game::PlayGameState::CalculateSunElevationAndAzimuth()
 {
 	//const int timeGMTdifference = 1;
 
@@ -1081,7 +1081,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	STOP_PROFILING_GAME("");
 //}
 
-int Game::PlayGameState::GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
+int game::PlayGameState::GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled()) // if (fogInfo != nullptr)
@@ -1120,7 +1120,7 @@ int Game::PlayGameState::GetAmbientShaderID(const rendering::fog_effect::FogInfo
 	return rendering::shader_ids::AMBIENT;
 }
 
-int Game::PlayGameState::GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
+int game::PlayGameState::GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled())
@@ -1158,7 +1158,7 @@ int Game::PlayGameState::GetAmbientTerrainShaderID(const rendering::fog_effect::
 	return rendering::shader_ids::AMBIENT_TERRAIN;
 	}
 
-unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
+unsigned int game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 {
 	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
 		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
@@ -1173,7 +1173,7 @@ unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 	return 0;
 }
 
-unsigned int Game::PlayGameState::NextCamera()
+unsigned int game::PlayGameState::NextCamera()
 {
 	//if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
 	//{
@@ -1183,7 +1183,7 @@ unsigned int Game::PlayGameState::NextCamera()
 	return 0;
 }
 
-unsigned int Game::PlayGameState::PrevCamera()
+unsigned int game::PlayGameState::PrevCamera()
 {
 	//if (m_currentCameraIndex == 0)
 	//{

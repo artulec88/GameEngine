@@ -49,7 +49,7 @@ engine::GravityComponent& engine::GravityComponent::operator=(GravityComponent&&
 
 void engine::GravityComponent::Update(math::Real deltaTime)
 {
-	math::Real terrainHeight = (math::AlmostEqual(GetTransform().GetPos().x, m_lastX) && math::AlmostEqual(GetTransform().GetPos().z, m_lastZ)) ? m_lastHeight :
+	const auto terrainHeight = math::AlmostEqual(GetTransform().GetPos().x, m_lastX) && math::AlmostEqual(GetTransform().GetPos().z, m_lastZ) ? m_lastHeight :
 		m_terrain->GetHeightAt(GetTransform().GetPos().x, GetTransform().GetPos().z) + m_heightAdjustment;
 	m_lastX = GetTransform().GetPos().x;
 	m_lastZ = GetTransform().GetPos().z;

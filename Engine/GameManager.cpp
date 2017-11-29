@@ -28,14 +28,14 @@ engine::GameManager* engine::GameManager::s_gameManager = nullptr;
 {
 	CHECK_CONDITION_EXIT_ENGINE(gameManager != NULL, Utility::Logging::CRITICAL, "Cannot load the game. Specified game manager is NULL.");
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
-	engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
+	CoreEngine::GetCoreEngine()->InitGlew(); // glew init
 	gameManager->Load();
 }
 
 engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
-	m_gameStateManager(std::make_unique<engine::DefaultGameStateManager>()),
+	m_gameStateManager(std::make_unique<DefaultGameStateManager>()),
 	m_isGameLoaded(false),
 	m_emptyGameCommand(),
 	m_actionsToGameCommandsMap(),
@@ -51,7 +51,7 @@ engine::GameManager::GameManager() :
 {
 	INFO_LOG_ENGINE("Game manager construction started");
 
-	if (engine::GameManager::s_gameManager != nullptr)
+	if (s_gameManager != nullptr)
 	{
 		ERROR_LOG_ENGINE("Constructor called when a singleton instance of CoreEngine class has already been created");
 		SAFE_DELETE(engine::GameManager::s_gameManager);
@@ -60,7 +60,7 @@ engine::GameManager::GameManager() :
 	m_actionsToGameCommandsMap.insert(std::make_pair(actions::EMPTY, &m_emptyGameCommand));
 	//m_actionsToGameCommandsMap.insert(make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
 
-	engine::GameManager::s_gameManager = this;
+	s_gameManager = this;
 	DEBUG_LOG_ENGINE("Game manager construction finished");
 }
 
@@ -181,7 +181,7 @@ void engine::GameManager::Input(actions::Action actionId)
 		//	}
 		//}
 		m_gameStateManager->Handle(actionId);
-		for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[actionId].begin(); gameNodeItr != m_actionsToGameNodesMap[actionId].end(); ++gameNodeItr)
+		for (auto gameNodeItr = m_actionsToGameNodesMap[actionId].begin(); gameNodeItr != m_actionsToGameNodesMap[actionId].end(); ++gameNodeItr)
 		{
 			(*gameNodeItr)->Handle(actionId);
 		}
@@ -190,13 +190,13 @@ void engine::GameManager::Input(actions::Action actionId)
 
 void engine::GameManager::Input(const input::MappedInput& input)
 {
-	for (input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
+	for (auto actionItr = input.actions.begin(); actionItr != input.actions.end(); ++actionItr)
 	{
 		Input(*actionItr);
 	}
-	for (input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
+	for (auto stateItr = input.states.begin(); stateItr != input.states.end(); ++stateItr)
 	{
-		const states::State state = *stateItr;
+		const auto state = *stateItr;
 		DEBUG_LOG_ENGINE("Handling the state ", state);
 		const auto gameCommandItr = m_statesToGameCommandsMap.find(state);
 		if (gameCommandItr != m_statesToGameCommandsMap.end())
@@ -206,18 +206,16 @@ void engine::GameManager::Input(const input::MappedInput& input)
 		else
 		{
 			m_gameStateManager->Handle(state);
-			for (std::list<GameNode*>::iterator gameNodeItr = m_statesToGameNodesMap[state].begin(); gameNodeItr != m_statesToGameNodesMap[state].end(); ++gameNodeItr)
+			for (auto gameNodeItr = m_statesToGameNodesMap[state].begin(); gameNodeItr != m_statesToGameNodesMap[state].end(); ++gameNodeItr)
 			{
 				(*gameNodeItr)->Handle(state);
 			}
 		}
 	}
-	for (input::RangesContainer::const_iterator rangeItr = input.m_ranges.begin(); rangeItr != input.m_ranges.end(); ++rangeItr)
+	for (auto rangeItr = input.ranges.begin(); rangeItr != input.ranges.end(); ++rangeItr)
 	{
 		// TODO: Ranges processing.
-		const ranges::Range range = rangeItr->first;
-		const math::Real value = rangeItr->second;
-		m_gameStateManager->Handle(range, value);
+		m_gameStateManager->Handle(rangeItr->first /* range */, rangeItr->second /* value */);
 	}
 }
 

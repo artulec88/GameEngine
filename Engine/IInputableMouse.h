@@ -19,18 +19,30 @@ namespace engine {
 			}
 
 			/// <summary> Destroys the mouse inputable object. </summary>
-			ENGINE_API virtual ~IInputableMouse(void)
+			ENGINE_API virtual ~IInputableMouse()
 			{
 			}
 
-			IInputableMouse(const IInputableMouse& iInputableMouse) = delete;
-			IInputableMouse(IInputableMouse&& iInputableMouse) = default;
-			IInputableMouse& operator=(const IInputableMouse& iInputableMouse) = delete;
-			IInputableMouse& operator=(IInputableMouse&& iInputableMouse) = default;
+			/// <summary> Mouse inputable copy constructor. </summary>
+			/// <param name="inputableMouse"> The reference to inputable mouse to copy construct from. </param>
+			IInputableMouse(const IInputableMouse& inputableMouse) = delete;
+
+			/// <summary> Mouse inputable move constructor. </summary>
+			/// <param name="inputableMouse"> The r-value reference to inputable mouse to move construct from. </param>
+			IInputableMouse(IInputableMouse&& inputableMouse) = default;
+
+			/// <summary> Mouse inputable copy assignment operator. </summary>
+			/// <param name="inputableMouse"> The reference to inputable mouse to copy assign from. </param>
+			/// <returns> The reference to newly copy-assigned mouse inputable object. </returns>
+			IInputableMouse& operator=(const IInputableMouse& inputableMouse) = delete;
+
+			/// <summary> Mouse inputable move assignment operator. </summary>
+			/// <param name="inputableMouse"> The r-value reference to inputable mouse to move assign from. </param>
+			/// <returns> The reference to newly move-assigned mouse inputable object. </returns>
+			IInputableMouse& operator=(IInputableMouse&& inputableMouse) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary>
 			/// The function handling the mouse button callback.
 			/// </summary>

@@ -1,9 +1,9 @@
 #ifndef __GAME_SAVE_GAME_COMMAND_H__
 #define __GAME_SAVE_GAME_COMMAND_H__
 
-#include "Engine\GameCommand.h"
+#include "Engine/GameCommand.h"
 
-namespace Game
+namespace game
 {
 
 	class SaveGameCommand : public engine::GameCommand

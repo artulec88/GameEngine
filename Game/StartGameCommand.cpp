@@ -5,17 +5,17 @@
 #include "Engine\GameStateManager.h"
 #include "Engine/GameManager.h"
 
-Game::StartGameCommand::StartGameCommand() :
+game::StartGameCommand::StartGameCommand() :
 	engine::GameCommand()
 {
 }
 
 
-Game::StartGameCommand::~StartGameCommand()
+game::StartGameCommand::~StartGameCommand()
 {
 }
 
-void Game::StartGameCommand::Execute(engine::GameManager* gameManager) const
+void game::StartGameCommand::Execute(engine::GameManager* gameManager) const
 {
 	DEBUG_LOG_GAME("Start game command started");
 	// We load here instead of going into the LoadGameState, because of the multi-threading problems we faced. VAOs cannot be shared across different graphics context,

@@ -39,14 +39,14 @@ void engine::ParticlesSystem::SortParticles(const math::Vector3D& originPosition
 	//}
 	/* ==================== Small test whether sorting particles work fine end ==================== */
 
-	std::sort(m_particles.begin(), m_particles.end(), rendering::particles::ParticleComparator(originPosition));
+	sort(m_particles.begin(), m_particles.end(), rendering::particles::ParticleComparator(originPosition));
 }
 
 void engine::ParticlesSystem::Update(math::Real deltaTime)
 {
 	m_currentTimer += deltaTime;
 	m_aliveParticlesCount = 0;
-	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
+	for (auto i = 0; i < MAX_PARTICLES_COUNT; ++i)
 	{
 		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
 		{
@@ -102,9 +102,9 @@ void engine::FreeFallParticlesSystem::GenerateParticles(const math::Vector3D& in
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
-		const auto x = initialPosition.x - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
+		const auto x = initialPosition.x - m_randomGenerator.NextFloat(-3.0f, 3.0f);
 		const auto y = initialPosition.y + 0.5f;
-		const auto z = initialPosition.z - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
+		const auto z = initialPosition.z - m_randomGenerator.NextFloat(-3.0f, 3.0f);
 		EmitParticle(math::Vector3D(x, y, z));
 		m_currentTimer -= m_timeForGeneratingOneParticle;
 	}

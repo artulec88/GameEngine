@@ -19,22 +19,30 @@ namespace engine
 		}
 
 		/// <summary> Destroys the updateable object. </summary>
-		ENGINE_API virtual ~IUpdateable(void)
+		ENGINE_API virtual ~IUpdateable()
 		{
 		}
 
 		/// <summary> Updateable object copy constructor. </summary>
+		/// <param name="iUpdateable"> The reference to updatable object to copy construct from. </param>
 		IUpdateable(const IUpdateable& iUpdateable) = delete;
+
 		/// <summary> Updateable object move constructor. </summary>
+		/// <param name="iUpdateable"> The r-value reference to updatable object to move construct from. </param>
 		IUpdateable(IUpdateable&& iUpdateable) = default;
+
 		/// <summary> Updateable object copy assignment operator. </summary>
+		/// <param name="iUpdateable"> The reference to updatable object to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned updateable object. </returns>
 		IUpdateable& operator=(const IUpdateable& iUpdateable) = delete;
+
 		/// <summary> Updateable object move assignment operator. </summary>
+		/// <param name="iUpdateable"> The r-value reference to updatable object to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned updateable object. </returns>
 		IUpdateable& operator=(IUpdateable&& iUpdateable) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/// <summary> Called when the updateable objects should advance its simulation state. </summary>
 		/// <param name="elapsedTime"> Time by which to advance the simulation. </param>
 		/// <remarks>

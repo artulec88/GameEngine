@@ -21,13 +21,30 @@ namespace engine {
 			}
 
 			/// <summary> Destroys the keyboard inputable object. </summary>
-			ENGINE_API virtual ~IInputableKeyboard(void)
+			ENGINE_API virtual ~IInputableKeyboard()
 			{
 			}
+
+			/// <summary> Keyboard inputable copy constructor. </summary>
+			/// <param name="inputableKeyboard"> The reference to inputable keyboard to copy construct from. </param>
+			IInputableKeyboard(const IInputableKeyboard& inputableKeyboard) = delete;
+
+			/// <summary> Keyboard inputable move constructor. </summary>
+			/// <param name="inputableKeyboard"> The r-value reference to inputable keyboard to move construct from. </param>
+			IInputableKeyboard(IInputableKeyboard&& inputableKeyboard) = delete;
+
+			/// <summary> Keyboard inputable copy assignment operator. </summary>
+			/// <param name="inputableKeyboard"> The reference to inputable keyboard to copy assign from. </param>
+			/// <returns> The reference to newly copy-assigned keyboard inputable object. </returns>
+			IInputableKeyboard& operator=(const IInputableKeyboard& inputableKeyboard) = delete;
+
+			/// <summary> Keyboard inputable move assignment operator. </summary>
+			/// <param name="inputableKeyboard"> The r-value reference to inputable keyboard to move assign from. </param>
+			/// <returns> The reference to newly move-assigned keyboard inputable object. </returns>
+			IInputableKeyboard& operator=(IInputableKeyboard&& inputableKeyboard) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-		public:
 			/// <summary> Collects keyboard key input according to current game state. </summary>
 			/// <param name="key"> The key that triggered the event. </param>
 			/// <param name="scancode"> The system-specific scancode of the key. </param>

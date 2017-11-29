@@ -11,7 +11,7 @@
 /* static */ int engine::GameNode::s_gameNodeCount = 0;
 
 engine::GameNode::GameNode() :
-	m_id(++GameNode::s_gameNodeCount),
+	m_id(++s_gameNodeCount),
 	m_transform(),
 	m_physicsObject(nullptr)
 {
@@ -70,15 +70,15 @@ engine::GameNode::~GameNode()
 
 engine::GameNode::GameNode(GameNode&& gameNode) noexcept:
 	m_id(std::move(gameNode.m_id)),
-	m_childrenGameNodes(std::move(gameNode.m_childrenGameNodes)),
-	m_components(std::move(gameNode.m_components)),
-	m_renderableComponents(std::move(gameNode.m_renderableComponents)),
-	m_inputableMouseComponents(std::move(gameNode.m_inputableMouseComponents)),
-	m_updateableComponents(std::move(gameNode.m_updateableComponents)),
+	m_childrenGameNodes(move(gameNode.m_childrenGameNodes)),
+	m_components(move(gameNode.m_components)),
+	m_renderableComponents(move(gameNode.m_renderableComponents)),
+	m_inputableMouseComponents(move(gameNode.m_inputableMouseComponents)),
+	m_updateableComponents(move(gameNode.m_updateableComponents)),
 	m_transform(std::move(gameNode.m_transform)),
-	m_physicsObject(std::move(gameNode.m_physicsObject)),
-	m_actionsToCommands(std::move(gameNode.m_actionsToCommands)),
-	m_statesToCommands(std::move(gameNode.m_statesToCommands))
+	m_physicsObject(move(gameNode.m_physicsObject)),
+	m_actionsToCommands(move(gameNode.m_actionsToCommands)),
+	m_statesToCommands(move(gameNode.m_statesToCommands))
 {
 	gameNode.m_components.clear();
 	for (auto componentItr = m_components.begin(); componentItr != m_components.end(); ++componentItr)
@@ -90,15 +90,15 @@ engine::GameNode::GameNode(GameNode&& gameNode) noexcept:
 engine::GameNode& engine::GameNode::operator=(GameNode&& gameNode) noexcept
 {
 	m_id = std::move(gameNode.m_id);
-	m_childrenGameNodes = std::move(gameNode.m_childrenGameNodes);
-	m_components = std::move(gameNode.m_components);
-	m_renderableComponents = std::move(gameNode.m_renderableComponents);
-	m_inputableMouseComponents = std::move(gameNode.m_inputableMouseComponents);
-	m_updateableComponents = std::move(gameNode.m_updateableComponents);
+	m_childrenGameNodes = move(gameNode.m_childrenGameNodes);
+	m_components = move(gameNode.m_components);
+	m_renderableComponents = move(gameNode.m_renderableComponents);
+	m_inputableMouseComponents = move(gameNode.m_inputableMouseComponents);
+	m_updateableComponents = move(gameNode.m_updateableComponents);
 	m_transform = std::move(gameNode.m_transform);
-	m_physicsObject = std::move(gameNode.m_physicsObject);
-	m_actionsToCommands = std::move(gameNode.m_actionsToCommands);
-	m_statesToCommands = std::move(gameNode.m_statesToCommands);
+	m_physicsObject = move(gameNode.m_physicsObject);
+	m_actionsToCommands = move(gameNode.m_actionsToCommands);
+	m_statesToCommands = move(gameNode.m_statesToCommands);
 
 	gameNode.m_components.clear();
 	for (auto componentItr = m_components.begin(); componentItr != m_components.end(); ++componentItr)
@@ -118,7 +118,7 @@ engine::GameNode engine::GameNode::Clone() const
 void engine::GameNode::CreatePhysicsObject(math::Real mass, const math::Vector3D& linearVelocity)
 {
 	m_physicsObject = std::make_unique<physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
-	engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
+	CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
 }
 
 engine::GameNode* engine::GameNode::AddChild(GameNode* child)
@@ -132,17 +132,17 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 {
 	m_components.push_back(child);
 	child->SetParent(this);
-	IRenderable* renderableComponent = dynamic_cast<IRenderable*>(child);
+	const auto renderableComponent = dynamic_cast<IRenderable*>(child);
 	if (renderableComponent != nullptr)
 	{
 		m_renderableComponents.push_back(renderableComponent);
 	}
-	input::IInputableMouse* inputableMouseComponent = dynamic_cast<input::IInputableMouse*>(child);
+	const auto inputableMouseComponent = dynamic_cast<IInputableMouse*>(child);
 	if (inputableMouseComponent != nullptr)
 	{
 		m_inputableMouseComponents.push_back(inputableMouseComponent);
 	}
-	IUpdateable* updateableComponent = dynamic_cast<IUpdateable*>(child);
+	const auto updateableComponent = dynamic_cast<IUpdateable*>(child);
 	if (updateableComponent != nullptr)
 	{
 		m_updateableComponents.push_back(updateableComponent);
@@ -167,12 +167,12 @@ engine::GameNode* engine::GameNode::AddComponent(GameComponent* child)
 
 void engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 {
-	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (auto gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->MouseButtonEvent(button, action, mods);
 	}
 
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (auto gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->MouseButtonEvent(button, action, mods);
 	}
@@ -180,12 +180,12 @@ void engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 
 void engine::GameNode::MousePosEvent(double xPos, double yPos)
 {
-	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (auto gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->MousePosEvent(xPos, yPos);
 	}
 
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (auto gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->MousePosEvent(xPos, yPos);
 	}
@@ -193,12 +193,12 @@ void engine::GameNode::MousePosEvent(double xPos, double yPos)
 
 void engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 {
-	for (std::vector<input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	for (auto gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->ScrollEvent(xOffset, yOffset);
 	}
 
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (auto gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->ScrollEvent(xOffset, yOffset);
 	}
@@ -206,12 +206,12 @@ void engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 
 void engine::GameNode::Update(math::Real delta)
 {
-	for (std::vector<IUpdateable*>::iterator gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
+	for (auto gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Update(delta);
 	}
 
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (auto gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->Update(delta);
 	}
@@ -237,7 +237,7 @@ std::vector<engine::GameNode*> engine::GameNode::GetAllDescendants() const
 	for (auto itr = m_childrenGameNodes.begin(); itr != m_childrenGameNodes.end(); ++itr)
 	{
 		descendants.push_back(*itr);
-		std::vector<GameNode*> itrDescendants = (*itr)->GetAllDescendants();
+		const auto itrDescendants = (*itr)->GetAllDescendants();
 		descendants.insert(descendants.end(), itrDescendants.begin(), itrDescendants.end());
 	}
 

@@ -4,19 +4,15 @@
 #include "Def.h"
 #include "Engine/GameNode.h"
 #include "Engine/GameManager.h"
-#include "Engine\MeshRendererComponent.h"
-#include "Engine\ConstantRotationComponent.h"
-#include "Engine\CameraBehavior.h"
-
-#include "Rendering\Camera.h"
-#include "Rendering/Texture.h"
+#include "Engine/ConstantRotationComponent.h"
+#include "Engine/CameraBehavior.h"
 
 #include "Utility/Builder.h"
 #include "Utility\StringUtility.h"
 
 #include <string>
 
-namespace Game
+namespace game
 {
 	class GameNodeBuilder : public utility::Builder<engine::GameNode>
 	{
@@ -25,8 +21,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		GameNodeBuilder(engine::GameManager* gameManager);
-		virtual ~GameNodeBuilder(void);
+		explicit GameNodeBuilder(engine::GameManager* gameManager);
+		virtual ~GameNodeBuilder();
 		GameNodeBuilder(GameNodeBuilder& gameNodeBuilder) = delete;
 		GameNodeBuilder(GameNodeBuilder&& gameNodeBuilder) = delete;
 		GameNodeBuilder& operator=(const GameNodeBuilder& gameNodeBuilder) = delete;
@@ -35,13 +31,13 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
-		virtual engine::GameNode Get() override
+		engine::GameNode Get() override
 		{
 			return m_gameNode.Clone();
 			//return std::move(m_gameNode);
 		}
 
-		virtual void Build() override
+		void Build() override
 		{
 			BuildTransform();
 			BuildComponents();
@@ -57,7 +53,6 @@ namespace Game
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		engine::GameManager* m_gameManager;
 		engine::GameNode m_gameNode;
 		/* ==================== Non-static member variables end ==================== */
@@ -68,7 +63,6 @@ namespace Game
 	class CameraNodeBuilder : public GameNodeBuilder
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
 		static /* constexpr */ engine::camera_behavior_types::CameraBehaviorType ConvertToCameraBehaviorType(const std::string& cameraBehaviorTypeStr)
 		{
 			const std::string cameraBehaviorTypeLowercaseStr = utility::string_utility::MakeLowercase(cameraBehaviorTypeStr);
@@ -76,19 +70,19 @@ namespace Game
 			{
 				return engine::camera_behavior_types::STATIC;
 			}
-			else if (cameraBehaviorTypeLowercaseStr == "rotation")
+			if (cameraBehaviorTypeLowercaseStr == "rotation")
 			{
 				return engine::camera_behavior_types::ROTATION_ONLY;
 			}
-			else if (cameraBehaviorTypeLowercaseStr == "movement")
+			if (cameraBehaviorTypeLowercaseStr == "movement")
 			{
 				return engine::camera_behavior_types::MOVEMENT_ONLY;
 			}
-			else if (cameraBehaviorTypeLowercaseStr == "follow_entity")
+			if (cameraBehaviorTypeLowercaseStr == "follow_entity")
 			{
 				return engine::camera_behavior_types::FOLLOW_ENTITY;
 			}
-			else if (cameraBehaviorTypeLowercaseStr == "follow_entity_with_rotation")
+			if (cameraBehaviorTypeLowercaseStr == "follow_entity_with_rotation")
 			{
 				return engine::camera_behavior_types::FOLLOW_ENTITY_WITH_ROTATION;
 			}
@@ -100,7 +94,7 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera);
-		virtual ~CameraNodeBuilder(void);
+		virtual ~CameraNodeBuilder();
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
 		CameraNodeBuilder& operator=(const CameraNodeBuilder& cameraNodeBuilder) = delete;
@@ -108,9 +102,8 @@ namespace Game
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void BuildTransform() override;
-		virtual void BuildComponents() override;
+		void BuildTransform() override;
+		void BuildComponents() override;
 		void SetGameNodeToFollow(const engine::GameNode* gameNodeToFollow)
 		{
 			m_gameNodeToFollow = gameNodeToFollow;
@@ -140,7 +133,7 @@ namespace Game
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		explicit SkyboxBuilder(engine::GameManager* gameManager);
-		virtual ~SkyboxBuilder(void);
+		virtual ~SkyboxBuilder();
 		SkyboxBuilder(SkyboxBuilder& skyboxBuilder) = delete;
 		SkyboxBuilder(SkyboxBuilder&& skyboxBuilder) = delete;
 		SkyboxBuilder& operator=(const SkyboxBuilder& skyboxBuilder) = delete;
@@ -149,8 +142,8 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
-		virtual void BuildTransform();
-		virtual void BuildComponents();
+		void BuildTransform() override;
+		void BuildComponents() override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

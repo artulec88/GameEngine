@@ -34,38 +34,38 @@ int numberOfAllocs2 = 0; int numberOfDeallocs2 = 0;
 int numberOfAllocs3 = 0; int numberOfDeallocs3 = 0;
 int numberOfAllocs4 = 0; int numberOfDeallocs4 = 0;
 
-void* operator new(std::size_t size) throw(std::bad_alloc)
+void* operator new(size_t size) throw(std::bad_alloc)
 {
 	++numberOfAllocs1;
-void* p = malloc(size);
-if (!p)
-{
-	throw std::bad_alloc();
-}
-return p;
-}
-
-void* operator new[](std::size_t size) throw(std::bad_alloc)
-{
-	++numberOfAllocs2;
-	void *p = malloc(size);
-	if (!p)
+	const auto p = malloc(size);
+	if (p == nullptr)
 	{
 		throw std::bad_alloc();
 	}
 	return p;
 }
 
-void* operator new[](std::size_t size, const std::nothrow_t&) throw()
+void* operator new[](size_t size) throw(std::bad_alloc)
+{
+	++numberOfAllocs2;
+	const auto p = malloc(size);
+	if (p == nullptr)
+	{
+		throw std::bad_alloc();
+	}
+	return p;
+}
+
+void* operator new[](size_t size, const std::nothrow_t&) throw()
 {
 	++numberOfAllocs3;
 	return malloc(size);
 }
 
-void* operator new(std::size_t size, const std::nothrow_t&) throw()
+void* operator new(size_t size, const std::nothrow_t&) throw()
 {
 	++numberOfAllocs4;
-return malloc(size);
+	return malloc(size);
 }
 
 
@@ -281,8 +281,8 @@ engine::CoreEngine::~CoreEngine()
 	STATS_STORAGE.PrintReport();
 
 	//math::Real minSpf, maxSpf, stdDevSpf;
-	math::Real meanSpf = m_stats.CalculateMean(math::statistics::SPF);
-	math::Real medianSpf = m_stats.CalculateMedian(math::statistics::SPF);
+	const auto meanSpf = m_stats.CalculateMean(math::statistics::SPF);
+	const auto medianSpf = m_stats.CalculateMedian(math::statistics::SPF);
 	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]\nMedian SPF =\t", medianSpf, " [ms]");
 	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]");
 #endif
@@ -343,7 +343,7 @@ void engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
 
-	const int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
+	const auto antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
 	case rendering::aliasing::NONE:
@@ -460,7 +460,7 @@ void engine::CoreEngine::Stop()
 void engine::CoreEngine::Run()
 {
 	START_PROFILING_ENGINE(true, "");
-	const int threadSleepTime = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
+	const auto threadSleepTime = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
 	//math::Vector3D fpsColors[] = { math::Vector3D(1.0f, 0.0f, 0.0f), math::Vector3D(0.0f, 1.0f, 0.0f), math::Vector3D(0.0f, 0.0f, 1.0f) };
@@ -489,18 +489,18 @@ void engine::CoreEngine::Run()
 
 #ifdef COUNT_FPS
 	const auto fpsSample = static_cast<math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
-	int framesCount = 0;
-	math::Real frameTimeCounter = REAL_ZERO;
-	int fps = 0;
-	math::Real spf = REAL_ZERO;
+	auto framesCount = 0;
+	auto frameTimeCounter = REAL_ZERO;
+	auto fps = 0;
+	auto spf = REAL_ZERO;
 #endif
 
 	m_audioEngine->LoadSong("520387_Horizon_short.mp3");
 	m_audioEngine->PlaySong("520387_Horizon_short.mp3");
 	//m_audioEngine->play2D("520387_Horizon_short.mp3".c_str(), true);
 
-	math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
-	math::Real previousTime = GetTime();
+	auto unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	auto previousTime = GetTime();
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	//LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
@@ -510,7 +510,7 @@ void engine::CoreEngine::Run()
 		//CRITICAL_LOG_ENGINE("START");
 		/* ==================== REGION #1 begin ====================*/
 		START_TIMER(timer);
-		bool isRenderRequired = false;
+		auto isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
 		const auto currentTime = GetTime();
@@ -699,7 +699,7 @@ void engine::CoreEngine::CloseWindowEvent(GLFWwindow* window) const
 
 void engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	std::map<int, input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
+	const auto rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Key ", key, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
@@ -710,7 +710,7 @@ void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
 	DELOCUST_LOG_ENGINE("Mouse button event: button=", button, "\t action=", action, "\t mods=", mods);
 
-	std::map<int, input::raw_input_keys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
+	const auto rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), utility::logging::ERR, "Button ", button, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
@@ -722,8 +722,8 @@ void engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 void engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	DEBUG_LOG_ENGINE("Mouse position = (", xPos, ", ", yPos, ")");
-	m_inputMapping.SetRawAxisValue(engine::input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
-	m_inputMapping.SetRawAxisValue(engine::input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
+	m_inputMapping.SetRawAxisValue(input::raw_input_axes::RAW_INPUT_AXIS_MOUSE_X, xPos);
+	m_inputMapping.SetRawAxisValue(input::raw_input_axes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
 	//lastXPos = xPos;
 	//lastYPos = yPos;
 	//m_game->MousePosEvent(xPos, yPos);

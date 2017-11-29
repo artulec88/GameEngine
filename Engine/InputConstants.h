@@ -113,14 +113,14 @@ namespace engine
 			}; /* end enum RawInputKey */
 		} /* end namespace raw_input_keys */
 
-		namespace RawInputAxes
+		namespace raw_input_axes
 		{
 			enum RawInputAxis
 			{
 				RAW_INPUT_AXIS_MOUSE_X = 0,
 				RAW_INPUT_AXIS_MOUSE_Y
 			}; /* end enum RawInputAxis */
-		} /* end namespace RawInputAxes */
+		} /* end namespace raw_input_axes */
 
 	} /* end namespace input */
 } /* end namspace Engine */

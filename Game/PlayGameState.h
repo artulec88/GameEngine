@@ -28,7 +28,7 @@
 #define DRAW_GAME_TIME
 #define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
 
-namespace Game
+namespace game
 {
 
 	class PlayGameState : public engine::GameState, public engine::input::IInputableMouse, public engine::IUpdateable

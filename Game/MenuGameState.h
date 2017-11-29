@@ -23,7 +23,7 @@
 
 #include <string>
 
-namespace Game
+namespace game
 {
 	class MenuGameState : public engine::GameState, public engine::IUpdateable
 	{

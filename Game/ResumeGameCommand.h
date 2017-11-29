@@ -1,10 +1,10 @@
 #ifndef __GAME_RESUME_GAME_COMMAND_H__
 #define __GAME_RESUME_GAME_COMMAND_H__
 
-#include "Engine\GameCommand.h"
+#include "Engine/GameCommand.h"
 #include "Engine/GameManager.h"
 
-namespace Game
+namespace game
 {
 
 	class ResumeGameCommand : public engine::GameCommand
