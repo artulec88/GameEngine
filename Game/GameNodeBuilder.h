@@ -8,7 +8,7 @@
 #include "Engine/CameraBehavior.h"
 
 #include "Utility/Builder.h"
-#include "Utility\StringUtility.h"
+#include "Utility/StringUtility.h"
 
 #include <string>
 
@@ -65,7 +65,7 @@ namespace game
 		/* ==================== Static variables and functions begin ==================== */
 		static /* constexpr */ engine::camera_behavior_types::CameraBehaviorType ConvertToCameraBehaviorType(const std::string& cameraBehaviorTypeStr)
 		{
-			const std::string cameraBehaviorTypeLowercaseStr = utility::string_utility::MakeLowercase(cameraBehaviorTypeStr);
+			const auto cameraBehaviorTypeLowercaseStr = utility::string_utility::MakeLowercase(cameraBehaviorTypeStr);
 			if (cameraBehaviorTypeLowercaseStr == "static")
 			{
 				return engine::camera_behavior_types::STATIC;
@@ -112,11 +112,11 @@ namespace game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const engine::camera_behavior_types::CameraBehaviorType M_DEFAULT_CAMERA_BEHAVIOR_TYPE;
-		const math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
-		const math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
-		const math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
-		const math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
+		const engine::camera_behavior_types::CameraBehaviorType m_defaultCameraBehaviorType;
+		const math::Real m_defaultCameraFollowInitialDistanceFromEntity;
+		const math::Real m_defaultCameraFollowAngleAroundEntitySpeed;
+		const math::Real m_defaultCameraFollowPitchRotationSpeed;
+		const math::Angle m_defaultCameraFollowInitialPitchAngle;
 
 		rendering::BaseCamera* m_camera;
 		engine::camera_behavior_types::CameraBehaviorType m_cameraBehaviorType;
@@ -153,6 +153,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SkyboxBuilder */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif // __GAME_GAME_NODE_BUILDER_H__

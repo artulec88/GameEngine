@@ -1,7 +1,7 @@
 #ifndef __GAME_TEXTURE_IDS_H__
 #define __GAME_TEXTURE_IDS_H__
 
-#include "Rendering\TextureIDs.h"
+#include "Rendering/TextureIDs.h"
 
 namespace game
 {
@@ -36,6 +36,6 @@ namespace game
 			PARTICLE_SMOKE
 		}; /* end enum TextureId */
 	} /* end namespace texture_ids */
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __GAME_TEXTURE_IDS_H__ */

@@ -1,7 +1,8 @@
 #include "ResumeGameCommand.h"
+#include "Engine/GameManager.h"
 
 game::ResumeGameCommand::ResumeGameCommand() :
-	engine::GameCommand()
+	GameCommand()
 {
 }
 

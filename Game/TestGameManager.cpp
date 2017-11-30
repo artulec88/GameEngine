@@ -1,43 +1,24 @@
 #include "TestGameManager.h"
 #include "Def.h"
-#include "TextureIDs.h"
 #include "MenuGameState.h"
 #include "IntroGameState.h"
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
 #include "LoadGameState.h"
-#include "GameNodeBuilder.h"
 
 #include "Engine/CoreEngine.h"
-#include "Engine/BillboardRendererComponent.h"
-#include "Engine/MeshRendererComponent.h"
-#include "Engine/PhysicsComponent.h"
-#include "Engine/LookAtComponent.h"
-#include "Engine/GravityComponent.h"
-#include "Engine/ParticlesSystemComponent.h"
 
-#include "Rendering/Color.h"
-#include "Rendering/Camera.h"
-
-#include "Math/FloatingPoint.h"
-#include "Math/Quaternion.h"
-#include "Math/HeightsGenerator.h"
 #include "Math/RandomGeneratorFactory.h"
-//#include "Math/Vector.h"
-
-#include "Physics/PhysicsObject.h"
 
 //#include "Utility/FileNotFoundException.h" // TODO: Remove in the future when not needed
 #include "Utility/BuilderDirector.h"
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 
-#include <sstream>
-
 game::TestGameManager::TestGameManager() :
 	GameManager(),
-	RESOURCES_TO_LOAD(26),
-	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("defaultCameraHeightUpdateInterval", 0.01f)),
+	m_resourcesToLoadCount(26),
+	m_cameraHeightUpdateInterval(GET_CONFIG_VALUE_GAME("defaultCameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_introGameState(nullptr),
 	m_menuGameState(nullptr),
@@ -51,8 +32,8 @@ game::TestGameManager::TestGameManager() :
 	m_loadGameCommand(),
 	m_timeToUpdateCameraHeight(REAL_ZERO),
 	m_boxNode(nullptr),
-	HUMAN_NODES_COUNT(2),
-	humanNodes(nullptr),
+	m_humanNodesCount(2),
+	m_humanNodes(nullptr),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
@@ -75,6 +56,7 @@ game::TestGameManager::TestGameManager() :
 	m_actionsToGameCommandsMap.insert(std::make_pair(engine::actions::QUIT_GAME, &m_quitGameCommand));
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
+	// TODO: Call to a virtual function inside a constructor.
 	//m_gameStateManager->Push(GetIntroGameState());
 	m_gameStateManager->Push(GetMainMenuGameState());
 }
@@ -82,7 +64,7 @@ game::TestGameManager::TestGameManager() :
 
 game::TestGameManager::~TestGameManager()
 {
-	SAFE_DELETE_JUST_TABLE(humanNodes);
+	SAFE_DELETE_JUST_TABLE(m_humanNodes);
 }
 
 //void Game::TestGameManager::AddStaticEffects()
@@ -263,12 +245,12 @@ game::TestGameManager::~TestGameManager()
 
 math::Real game::TestGameManager::GetLoadingProgress() const
 {
-	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
+	if (m_resourcesLoaded > m_resourcesToLoadCount)
 	{
-		WARNING_LOG_GAME("Resources loaded (", m_resourcesLoaded, ") exceeds the total number of expected resources (", RESOURCES_TO_LOAD, ")");
+		WARNING_LOG_GAME("Resources loaded (", m_resourcesLoaded, ") exceeds the total number of expected resources (", m_resourcesToLoadCount, ")");
 		return REAL_ONE;
 	}
-	return static_cast<math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
+	return static_cast<math::Real>(m_resourcesLoaded) / m_resourcesToLoadCount;
 }
 
 engine::GameState* game::TestGameManager::GetLoadGameState()
@@ -348,7 +330,7 @@ void game::TestGameManager::Load()
 	//testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
 	//AddToSceneRoot(testMesh3);
 
-	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
+	const auto& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 
 	//Engine::GameNode* monkeyNode1 = new Engine::GameNode();
 	//monkeyNode1->AddComponent(new Engine::MeshRendererComponent(

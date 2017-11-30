@@ -1,16 +1,14 @@
 #include "PlayMenuGameState.h"
 #include "Def.h"
 #include "Engine/GameManager.h"
-#include "Engine/GameCommand.h"
 #include "Engine/CoreEngine.h"
 #include "Rendering/ShaderIDs.h"
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 #include "PlayGameState.h"
-#include "ResumeGameCommand.h"
 
 game::PlayMenuGameState::PlayMenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* playMainMenuFont, math::Real playMainMenuFontSize) :
-	engine::GameState(inputMappingContextName),
+	GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f,
 		rendering::Color(rendering::color_ids::BLACK), rendering::Color(rendering::color_ids::BLACK), math::Vector2D(REAL_ZERO, REAL_ZERO)),

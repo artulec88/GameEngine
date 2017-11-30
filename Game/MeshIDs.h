@@ -1,7 +1,7 @@
 #ifndef __GAME_MESH_IDS_H__
 #define __GAME_MESH_IDS_H__
 
-#include "Rendering\MeshIDs.h"
+#include "Rendering/MeshIDs.h"
 
 namespace game
 {
@@ -15,6 +15,6 @@ namespace game
 			SKYBOX
 		}; /* end enum MeshId */
 	} /* end namespace mesh_ids */
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __GAME_MESH_IDS_H__ */

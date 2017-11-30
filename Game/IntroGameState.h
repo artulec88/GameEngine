@@ -3,13 +3,9 @@
 
 #include "Def.h"
 
-#include "Engine/IRenderable.h"
 #include "Engine/GameState.h"
 #include "Engine/GameManager.h"
 #include "Engine/GameNode.h"
-
-#include "Rendering/Renderer.h"
-//#include "Rendering/GameCommand.h"
 
 #include "Math/Math.h"
 
@@ -27,8 +23,31 @@ namespace game
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Intro game state constructor. </summary>
+		/// <param name="gameManager"> The pointer to game manager this game state will operate on. </param>
+		/// <param name="inputMappingContextName"> The <code>string</code> representing the name of the input mapping context. </param>
 		IntroGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName);
+
+		/// <summary> Intro game state destructor. </summary>
 		virtual ~IntroGameState();
+
+		/// <summary> Intro game state copy constructor. </summary>
+		/// <param name="introGameState"> The reference to intro game state to copy construct from. </param>
+		IntroGameState(const IntroGameState& introGameState) = delete;
+
+		/// <summary> Intro game state move constructor. </summary>
+		/// <param name="introGameState"> The r-value reference to intro game state to move construct from. </param>
+		IntroGameState(IntroGameState&& introGameState) = delete;
+
+		/// <summary> Intro game state copy assignment operator. </summary>
+		/// <param name="introGameState"> The reference to intro game state to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned intro game state. </returns>
+		IntroGameState& operator=(const IntroGameState& introGameState) = delete;
+
+		/// <summary> Intro game state move assignment operator. </summary>
+		/// <param name="introGameState"> The r-value reference to intro game state to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned intro game state. </returns>
+		IntroGameState& operator=(IntroGameState&& introGameState) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -52,6 +71,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IntroGameState */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __INTRO_GAME_STATE_H__ */

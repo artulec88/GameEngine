@@ -74,11 +74,11 @@ namespace game
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 
-		int GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const;
-		int GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const;
-		int GetWaterShaderID(rendering::Renderer* renderer) const
+		int GetAmbientShaderId(const rendering::fog_effect::FogInfo& fogInfo) const;
+		int GetAmbientTerrainShaderId(const rendering::fog_effect::FogInfo& fogInfo) const;
+		int GetWaterShaderId(rendering::Renderer* renderer) const
 		{
-			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
+			return m_directionalLightsCount > 0 && renderer->IsWaterLightReflectionEnabled() ?
 				rendering::shader_ids::WATER : rendering::shader_ids::WATER_NO_DIRECTIONAL_LIGHT;
 		}
 
@@ -117,7 +117,6 @@ namespace game
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
 		engine::GameNode m_rootGameNode;
 		engine::GameNode m_terrainNode;
 		rendering::Terrain* m_terrain;
@@ -173,6 +172,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayGameState */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __PLAY_GAME_STATE_H__ */

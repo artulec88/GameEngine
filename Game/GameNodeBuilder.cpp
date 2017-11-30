@@ -24,14 +24,14 @@ game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== CameraNodeBuilder implementation begin ==================== */
 game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera) :
 	GameNodeBuilder(gameManager),
-	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
+	m_defaultCameraBehaviorType(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
 		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(engine::camera_behavior_types::STATIC)))),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f)),
-	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
-	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f)),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)),
+	m_defaultCameraFollowInitialDistanceFromEntity(GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f)),
+	m_defaultCameraFollowAngleAroundEntitySpeed(GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
+	m_defaultCameraFollowPitchRotationSpeed(GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f)),
+	m_defaultCameraFollowInitialPitchAngle(GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)),
 	m_camera(camera),
-	m_cameraBehaviorType(M_DEFAULT_CAMERA_BEHAVIOR_TYPE),
+	m_cameraBehaviorType(m_defaultCameraBehaviorType),
 	m_gameNodeToFollow(nullptr)
 {
 }
@@ -140,15 +140,15 @@ void game::SkyboxBuilder::BuildComponents()
 {
 	const auto cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	const auto cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
-	const rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
+	const auto skyboxTextureDay = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
 	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
-	const rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);
+	const auto skyboxTextureNight = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);
 	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != nullptr, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
 
 	//SetTexture("cubeMapDay", m_skyboxTextureDay);
 	//SetTexture("cubeMapNight", m_skyboxTextureNight);
 
-	rendering::Material* skyboxMaterial = new rendering::Material(skyboxTextureDay, "cubeMapDay");
+	const auto skyboxMaterial = new rendering::Material(skyboxTextureDay, "cubeMapDay");
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
 	m_gameManager->AddMesh(mesh_ids::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));

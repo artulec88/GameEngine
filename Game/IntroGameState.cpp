@@ -6,7 +6,7 @@
 #include "MenuGameState.h"
 
 game::IntroGameState::IntroGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName) :
-	engine::GameState(inputMappingContextName),
+	GameState(inputMappingContextName),
 	m_gameManager(gameManager)
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
@@ -44,7 +44,7 @@ void game::IntroGameState::Revealed()
 
 void game::IntroGameState::Handle(engine::actions::Action action)
 {
-	engine::GameManager* gameManager = engine::GameManager::GetGameManager();
+	const auto gameManager = engine::GameManager::GetGameManager();
 	switch (action)
 	{
 	case engine::actions::QUIT_INTRO:

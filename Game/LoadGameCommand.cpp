@@ -3,7 +3,7 @@
 #include "Engine/GameManager.h"
 
 game::LoadGameCommand::LoadGameCommand() :
-	engine::GameCommand()
+	GameCommand()
 {
 }
 

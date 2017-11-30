@@ -224,6 +224,6 @@ namespace rendering
 		math::Real m_aspectRatio;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PerspectiveCameraBuilder */
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __RENDERING_CAMERA_BUILDER_H__ */

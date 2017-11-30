@@ -56,35 +56,35 @@ void ReadSettingsAndParameters(const int argc, char* argv[], std::string* config
 	utility::IConfig::CreateConfig("Math", *configDirectory + commandLineMapper->Get("-configMath", "ConfigMath.cfg"));
 	utility::IConfig::CreateConfig("Utility", *configDirectory + commandLineMapper->Get("-configUtility", "ConfigUtility.cfg"));
 
-	utility::logging::ILogger::GetLogger("Audio").Fill((commandLineMapper->IsPresent("-logAudio")) ? commandLineMapper->Get("-logAudio", "Info") :
+	utility::logging::ILogger::GetLogger("Audio").Fill(commandLineMapper->IsPresent("-logAudio") ? commandLineMapper->Get("-logAudio", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelAudio", "Info"), utility::logging::INFO); // Initializing audio logger
-	utility::logging::ILogger::GetLogger("Physics").Fill((commandLineMapper->IsPresent("-logPhysics")) ? commandLineMapper->Get("-logPhysics", "Info") :
+	utility::logging::ILogger::GetLogger("Physics").Fill(commandLineMapper->IsPresent("-logPhysics") ? commandLineMapper->Get("-logPhysics", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelPhysics", "Info"), utility::logging::INFO); // Initializing physics logger
-	utility::logging::ILogger::GetLogger("Rendering").Fill((commandLineMapper->IsPresent("-logRendering")) ? commandLineMapper->Get("-logRendering", "Info") :
+	utility::logging::ILogger::GetLogger("Rendering").Fill(commandLineMapper->IsPresent("-logRendering") ? commandLineMapper->Get("-logRendering", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelRendering", "Info"), utility::logging::INFO); // Initializing rendering logger
-	utility::logging::ILogger::GetLogger("Engine").Fill((commandLineMapper->IsPresent("-logEngine")) ? commandLineMapper->Get("-logEngine", "Info") :
+	utility::logging::ILogger::GetLogger("Engine").Fill(commandLineMapper->IsPresent("-logEngine") ? commandLineMapper->Get("-logEngine", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelEngine", "Info"), utility::logging::INFO); // Initializing engine logger
-	utility::logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-logGame")) ? commandLineMapper->Get("-logGame", "Info") :
+	utility::logging::ILogger::GetLogger("Game").Fill(commandLineMapper->IsPresent("-logGame") ? commandLineMapper->Get("-logGame", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelGame", "Info"), utility::logging::INFO); // Initializing game logger
-	utility::logging::ILogger::GetLogger("Math").Fill((commandLineMapper->IsPresent("-logMath")) ? commandLineMapper->Get("-logMath", "Info") :
+	utility::logging::ILogger::GetLogger("Math").Fill(commandLineMapper->IsPresent("-logMath") ? commandLineMapper->Get("-logMath", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelMath", "Info"), utility::logging::INFO); // Initializing math logger
-	utility::logging::ILogger::GetLogger("Utility").Fill((commandLineMapper->IsPresent("-logUtility")) ? commandLineMapper->Get("-logUtility", "Info") :
+	utility::logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->IsPresent("-logUtility") ? commandLineMapper->Get("-logUtility", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelUtility", "Info"), utility::logging::INFO); // Initializing utility logger
 
 	// Initializing shader directory
-	*shaderDirectory = (commandLineMapper->IsPresent("-shaders")) ? commandLineMapper->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
+	*shaderDirectory = commandLineMapper->IsPresent("-shaders") ? commandLineMapper->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
 
 	// Initializing mesh / models directory
-	*modelsDirectory = (commandLineMapper->IsPresent("-models")) ? commandLineMapper->Get("-models", "..\\Models\\") : GET_CONFIG_VALUE_STR_GAME("modelsDirectory", "..\\Models\\");
+	*modelsDirectory = commandLineMapper->IsPresent("-models") ? commandLineMapper->Get("-models", "..\\Models\\") : GET_CONFIG_VALUE_STR_GAME("modelsDirectory", "..\\Models\\");
 
 	// Initializing textures directory
-	*texturesDirectory = (commandLineMapper->IsPresent("-textures")) ? commandLineMapper->Get("-textures", "..\\Textures\\") : GET_CONFIG_VALUE_STR_GAME("texturesDirectory", "..\\Textures\\");
+	*texturesDirectory = commandLineMapper->IsPresent("-textures") ? commandLineMapper->Get("-textures", "..\\Textures\\") : GET_CONFIG_VALUE_STR_GAME("texturesDirectory", "..\\Textures\\");
 
 	// Initializing fonts directory end
-	*fontsDirectory = (commandLineMapper->IsPresent("-fonts")) ? commandLineMapper->Get("-fonts", "..\\Fonts\\") : GET_CONFIG_VALUE_STR_GAME("fontsDirectory", "..\\Fonts\\");
+	*fontsDirectory = commandLineMapper->IsPresent("-fonts") ? commandLineMapper->Get("-fonts", "..\\Fonts\\") : GET_CONFIG_VALUE_STR_GAME("fontsDirectory", "..\\Fonts\\");
 
 	// Initializing audio directory
-	*audioDirectory = (commandLineMapper->IsPresent("-audio")) ? commandLineMapper->Get("-audio", "..\\Sounds\\") : GET_CONFIG_VALUE_STR_GAME("audioDirectory", "..\\Sounds\\");
+	*audioDirectory = commandLineMapper->IsPresent("-audio") ? commandLineMapper->Get("-audio", "..\\Sounds\\") : GET_CONFIG_VALUE_STR_GAME("audioDirectory", "..\\Sounds\\");
 }
 
 // One has to remember that if we call some method foo(const std::string& text) as follows:

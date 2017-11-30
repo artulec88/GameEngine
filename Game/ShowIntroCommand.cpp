@@ -3,7 +3,7 @@
 #include "Engine/GameManager.h"
 
 game::ShowIntroCommand::ShowIntroCommand() :
-	engine::GameCommand()
+	GameCommand()
 {
 }
 

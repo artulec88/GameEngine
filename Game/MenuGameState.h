@@ -10,11 +10,7 @@
 #include "Engine/MousePicker.h"
 
 #include "Rendering/Renderer.h"
-#include "Rendering/ParticlesSystem.h"
-
-#include "Math/EffectFactory.h"
 #include "Math/Effect.h"
-//#include "Math/Effect_impl.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"
@@ -32,8 +28,33 @@ namespace game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Main menu game state constructor. </summary>
+		/// <param name="gameManager"> The pointer to game manager this game state will operate on. </param>
+		/// <param name="inputMappingContextName"> The <code>string</code> representing the name of the input mapping context. </param>
+		/// <param name="mainMenuFont"> The pointer to the font main menu game state is supposed to use. </param>
+		/// <param name="mainMenuFontSize"> The font size that main menu game state is supposed to use. </param>
 		MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* mainMenuFont, math::Real mainMenuFontSize);
+
+		/// <summary> Main menu game state destructor. </summary>
 		virtual ~MenuGameState();
+
+		/// <summary> Main menu game state copy constructor. </summary>
+		/// <param name="menuGameState"> The reference to main menu game state to copy construct from. </param>
+		MenuGameState(const MenuGameState& menuGameState) = delete;
+
+		/// <summary> Main menu game state move constructor. </summary>
+		/// <param name="menuGameState"> The r-value reference to main menu game state to move construct from. </param>
+		MenuGameState(MenuGameState&& menuGameState) = delete;
+
+		/// <summary> Main menu game state copy assignment operator. </summary>
+		/// <param name="menuGameState"> The reference to main menu game state to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned main menu game state. </returns>
+		MenuGameState& operator=(const MenuGameState& menuGameState) = delete;
+
+		/// <summary> Main menu game state move assignment operator. </summary>
+		/// <param name="menuGameState"> The r-value reference to main menu game state to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned main menu game state. </returns>
+		MenuGameState& operator=(MenuGameState&& menuGameState) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -87,6 +108,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MenuGameState */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __MENU_GAME_STATE_H__ */

@@ -48,6 +48,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LoadGameCommand */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __GAME_LOAD_GAME_COMMAND_H__ */

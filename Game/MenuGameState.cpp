@@ -2,24 +2,17 @@
 #include "Def.h"
 #include "PlayGameState.h"
 #include "LoadGameState.h"
-#include "StartGameCommand.h"
 
 #include "Engine/CoreEngine.h"
 #include "Engine/GameManager.h"
-#include "Engine/GameCommand.h"
-#include "Engine/ParticlesSystemComponent.h"
-
-#include "Rendering/ParticlesSystemBuilder.h"
-#include "Rendering/Shader.h"
 
 #include "Math/Effect_impl.h"
 
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
-#include "Utility/BuilderDirector.h"
 
 game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::string& inputMappingContextName, const rendering::text::Font* mainMenuFont, math::Real mainMenuFontSize) :
-	engine::GameState(inputMappingContextName),
+	GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	//m_particlesSystem(nullptr),
 	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, nullptr, math::ZERO_VECTOR_2D, math::Angle(0.0f), math::Vector2D(1.0f, 1.0f), 1.0f, rendering::Color(rendering::color_ids::BLACK),
@@ -153,7 +146,7 @@ game::MenuGameState::MenuGameState(engine::GameManager* gameManager, const std::
 	//Engine::CoreEngine::GetCoreEngine()->RegisterHandlerForAction(Engine::Input::Actions::ACTION_QUIT_GAME, m_quitGameCommand);
 }
 
-game::MenuGameState::~MenuGameState(void)
+game::MenuGameState::~MenuGameState()
 {
 	//SAFE_DELETE(m_particlesSystem);
 }

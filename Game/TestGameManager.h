@@ -8,20 +8,15 @@
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
 
-#include "Engine\QuitGameCommand.h"
+#include "Engine/QuitGameCommand.h"
 #include "Engine/GameManager.h"
 #include "Engine/GameNode.h"
 #include "Rendering/DirectionalLight.h"
-#include "Rendering/PointLight.h"
-#include "Rendering/SpotLight.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math/StatisticsStorage.h"
 #include "Math/Statistics.h"
 #endif
-
-#include <vector>
-#include <map>
 
 namespace game
 {
@@ -64,8 +59,8 @@ namespace game
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const int RESOURCES_TO_LOAD;
-		const math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
+		const int m_resourcesToLoadCount;
+		const math::Real m_cameraHeightUpdateInterval;
 		int m_resourcesLoaded;
 
 		std::unique_ptr<engine::GameState> m_introGameState;
@@ -95,8 +90,8 @@ namespace game
 
 		engine::GameNode* m_boxNode;
 
-		const int HUMAN_NODES_COUNT;
-		engine::GameNode** humanNodes;
+		const int m_humanNodesCount;
+		engine::GameNode** m_humanNodes;
 		bool m_heightMapCalculationEnabled;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
@@ -106,6 +101,6 @@ namespace game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TestGameManager */
 
-} /* end namespace Game */
+} /* end namespace game */
 
 #endif /* __GAME_TEST_GAME_MANAGER_H__ */

@@ -14,7 +14,6 @@
 
 #include "Rendering/CameraBuilder.h"
 #include "Rendering/LightBuilder.h"
-#include "Rendering/ParticlesSystemBuilder.h"
 #include "Rendering/MeshIDs.h"
 
 #include "Utility/BuilderDirector.h"
@@ -281,9 +280,9 @@ void game::PlayGameState::AddSkyboxNode()
 
 void game::PlayGameState::AddPlayerNode()
 {
-	const math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
-	const math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
-	const math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(math::Vector2D(playerPositionX, playerPositionZ));
+	const auto playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
+	const auto playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
+	const auto playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(math::Vector2D(playerPositionX, playerPositionZ));
 	m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	m_playerNode.GetTransform().SetScale(0.0005f);
 	m_playerNode.CreatePhysicsObject(122.0f, math::Vector3D(0.0f, 0.0f, 0.0f));
@@ -299,19 +298,19 @@ void game::PlayGameState::AddPlayerNode()
 
 void game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering::Material* billboardsMaterial)
 {
-	const math::random::RandomGenerator& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
+	const auto& randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
 	const auto angle = REAL_ZERO;
 	std::vector<math::Real> billboardsModelMatrices;
 	billboardsModelMatrices.reserve(billboardsCount * math::Matrix4D::SIZE * math::Matrix4D::SIZE);
-	for (int i = 0; i < billboardsCount; ++i)
+	for (auto i = 0; i < billboardsCount; ++i)
 	{
-		math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
-		math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
-		math::Real y = 0.0f;
+		const auto x = randomGenerator.NextFloat(0.0f, 150.0f);
+		const auto z = randomGenerator.NextFloat(0.0f, 150.0f);
+		const auto y = 0.0f;
 
 		math::Transform billboardTransform(math::Vector3D(x, y, z), math::Quaternion(math::Vector3D(0.0f, 1.0f, 0.0f), math::Angle(angle)), 0.5f);
 		//angle += 15.0f;
-		math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
+		const auto billboardModelMatrix = billboardTransform.GetTransformation();
 
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 0));
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 1));
@@ -347,10 +346,10 @@ void game::PlayGameState::AddCameras()
 
 	rendering::PerspectiveCameraBuilder cameraBuilder;
 	utility::BuilderDirector<rendering::Camera> cameraBuilderDirector(&cameraBuilder);
-	int camerasCount = GET_CONFIG_VALUE_GAME("camerasCount", 3);
-	for (int i = 0; i < camerasCount; ++i)
+	const auto camerasCount = GET_CONFIG_VALUE_GAME("camerasCount", 3);
+	for (auto i = 0; i < camerasCount; ++i)
 	{
-		const std::string indexStr = std::to_string(i + 1);
+		const auto indexStr = std::to_string(i + 1);
 		if (HAS_CONFIG_VALUE_GAME("cameraPosX_" + indexStr))
 		{
 			cameraBuilder.SetPosX(GET_CONFIG_VALUE_GAME("cameraPosX_" + indexStr, 0.0f));
@@ -404,7 +403,7 @@ void game::PlayGameState::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
-	int directionalLightsCount = GET_CONFIG_VALUE_GAME("directionalLightsCount", 1);
+	const auto directionalLightsCount = GET_CONFIG_VALUE_GAME("directionalLightsCount", 1);
 	if (directionalLightsCount == 0)
 	{
 		NOTICE_LOG_GAME("Directional lights disabled");
@@ -414,7 +413,7 @@ void game::PlayGameState::AddDirectionalLight()
 
 	rendering::lighting::DirectionalLightBuilder directionalLightBuilder;
 	utility::BuilderDirector<rendering::lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
-	rendering::lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
+	auto directionalLight = lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
 	++m_directionalLightsCount;
 	m_directionalLights.push_back(std::move(directionalLight));
@@ -423,15 +422,15 @@ void game::PlayGameState::AddDirectionalLight()
 
 void game::PlayGameState::AddPointLights()
 {
-	const int pointLightsCount = GET_CONFIG_VALUE_GAME("pointLightsCount", 1);
+	const auto pointLightsCount = GET_CONFIG_VALUE_GAME("pointLightsCount", 1);
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
 		rendering::lighting::PointLightBuilder pointLightBuilder;
 		utility::BuilderDirector<rendering::lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
-		for (int i = 0; i < pointLightsCount; ++i)
+		for (auto i = 0; i < pointLightsCount; ++i)
 		{
-			rendering::lighting::PointLight pointLight = lightBuilderDirector.Construct();
+			auto pointLight = lightBuilderDirector.Construct();
 			m_pointLights.push_back(std::move(pointLight));
 			//m_lights.push_back(pointLight);
 		}
@@ -445,13 +444,13 @@ void game::PlayGameState::AddPointLights()
 
 void game::PlayGameState::AddSpotLights()
 {
-	const int spotLightsCount = GET_CONFIG_VALUE_GAME("spotLightsCount", 1);
+	const auto spotLightsCount = GET_CONFIG_VALUE_GAME("spotLightsCount", 1);
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
 		rendering::lighting::SpotLightBuilder spotLightBuilder;
 		utility::BuilderDirector<rendering::lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
-		for (int i = 0; i < spotLightsCount; ++i)
+		for (auto i = 0; i < spotLightsCount; ++i)
 		{
 			m_spotLights.push_back(std::move(lightBuilderDirector.Construct()));
 			//m_lights.push_back(spotLight);
@@ -686,7 +685,7 @@ void game::PlayGameState::Render(rendering::Renderer* renderer) const
 	renderer->RenderDebugGuiControls(m_gameManager->GetShader(rendering::shader_ids::GUI));
 #endif
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA) ? rendering::shader_ids::FILTER_FXAA : rendering::shader_ids::FILTER_NULL);
+	renderer->FinalizeRenderScene(renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA ? rendering::shader_ids::FILTER_FXAA : rendering::shader_ids::FILTER_NULL);
 
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
@@ -698,22 +697,22 @@ void game::PlayGameState::Render(rendering::Renderer* renderer) const
 
 void game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* renderer) const
 {
-	int ambientShaderID = GetAmbientShaderID(renderer->GetFogInfo());
-	renderer->BindShader(ambientShaderID);
-	renderer->UpdateRendererUniforms(ambientShaderID);
-	m_rootGameNode.Render(ambientShaderID, renderer);
+	const auto ambientShaderId = GetAmbientShaderId(renderer->GetFogInfo());
+	renderer->BindShader(ambientShaderId);
+	renderer->UpdateRendererUniforms(ambientShaderId);
+	m_rootGameNode.Render(ambientShaderId, renderer);
 	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != nullptr, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
-	int ambientTerrainShaderID = GetAmbientTerrainShaderID(renderer->GetFogInfo());
-	renderer->BindShader(ambientTerrainShaderID);
-	renderer->UpdateRendererUniforms(ambientTerrainShaderID);
-	m_terrainNode.Render(ambientTerrainShaderID, renderer);
+	const auto ambientTerrainShaderId = GetAmbientTerrainShaderId(renderer->GetFogInfo());
+	renderer->BindShader(ambientTerrainShaderId);
+	renderer->UpdateRendererUniforms(ambientTerrainShaderId);
+	m_terrainNode.Render(ambientTerrainShaderId, renderer);
 }
 
 void game::PlayGameState::RenderSceneWithPointLights(rendering::Renderer* renderer) const
 {
 	for (size_t i = 0; i < m_pointLights.size(); ++i)
 	{
-		const rendering::lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(&(m_pointLights[i]));
+		const auto currentPointLight = renderer->SetCurrentPointLight(&m_pointLights[i]);
 		if (currentPointLight->IsEnabled())
 		{
 			DEBUG_LOG_GAME("Point light at index ", i, " is disabled");
@@ -731,15 +730,15 @@ void game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Ren
 	{
 		if (lightItr->IsEnabled())
 		{
-			const rendering::lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
+			const auto currentLight = renderer->SetCurrentLight(&*lightItr);
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const int shadowMapShaderID = rendering::shader_ids::SHADOW_MAP;
-				renderer->BindShader(shadowMapShaderID);
-				renderer->UpdateRendererUniforms(shadowMapShaderID);
-				m_rootGameNode.Render(shadowMapShaderID, renderer);
-				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
+				const auto shadowMapShaderId = rendering::shader_ids::SHADOW_MAP;
+				renderer->BindShader(shadowMapShaderId);
+				renderer->UpdateRendererUniforms(shadowMapShaderId);
+				m_rootGameNode.Render(shadowMapShaderId, renderer);
+				m_terrainNode.Render(shadowMapShaderId, renderer); // TODO: Probably unnecessary
 				renderer->FinalizeShadowMapRendering(rendering::shader_ids::FILTER_GAUSSIAN_BLUR);
 			}
 
@@ -758,15 +757,15 @@ void game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(rendering::Ren
 	{
 		if (lightItr->IsEnabled())
 		{
-			const rendering::lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
+			const auto currentLight = renderer->SetCurrentLight(&*lightItr);
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const int shadowMapShaderID = rendering::shader_ids::SHADOW_MAP;
-				renderer->BindShader(shadowMapShaderID);
-				renderer->UpdateRendererUniforms(shadowMapShaderID);
-				m_rootGameNode.Render(shadowMapShaderID, renderer);
-				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
+				const auto shadowMapShaderId = rendering::shader_ids::SHADOW_MAP;
+				renderer->BindShader(shadowMapShaderId);
+				renderer->UpdateRendererUniforms(shadowMapShaderId);
+				m_rootGameNode.Render(shadowMapShaderId, renderer);
+				m_terrainNode.Render(shadowMapShaderId, renderer); // TODO: Probably unnecessary
 				renderer->FinalizeShadowMapRendering(rendering::shader_ids::FILTER_GAUSSIAN_BLUR);
 			}
 
@@ -803,10 +802,10 @@ void game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	renderer->SetDepthFuncLessOrEqual();
-	const int skyboxShaderID = rendering::shader_ids::SKYBOX;
-	renderer->BindShader(skyboxShaderID);
-	renderer->UpdateRendererUniforms(skyboxShaderID);
-	m_skyboxNode.Render(skyboxShaderID, renderer);
+	const auto skyboxShaderId = rendering::shader_ids::SKYBOX;
+	renderer->BindShader(skyboxShaderId);
+	renderer->UpdateRendererUniforms(skyboxShaderId);
+	m_skyboxNode.Render(skyboxShaderId, renderer);
 	renderer->SetDepthFuncDefault();
 	renderer->SetCullFaceDefault();
 	//glEnable(GL_DEPTH_TEST);
@@ -837,7 +836,7 @@ void game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* rend
 	return;
 
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
-	const rendering::BaseCamera& currentCameraCopy(renderer->GetCurrentCamera());
+	const auto& currentCameraCopy(renderer->GetCurrentCamera());
 	//Rendering::BaseCamera reflectionCamera(currentCameraCopy);
 	//const math::Real cameraHeight = reflectionCamera.GetPos().GetY();
 	//math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
@@ -946,10 +945,10 @@ void game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
 	//		(*waterNodeItr)->Render(waterNoDirectionalLightShader, this);
 	//	}
 	//}
-	const int waterShaderID = GetWaterShaderID(renderer);
-	renderer->BindShader(waterShaderID);
-	renderer->UpdateRendererUniforms(waterShaderID);
-	m_waterNode.Render(waterShaderID, renderer);
+	const auto waterShaderId = GetWaterShaderId(renderer);
+	renderer->BindShader(waterShaderId);
+	renderer->UpdateRendererUniforms(waterShaderId);
+	m_waterNode.Render(waterShaderId, renderer);
 	STOP_PROFILING_GAME("");
 }
 
@@ -963,12 +962,12 @@ void game::PlayGameState::RenderBillboardNodes(rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	const int billboardShaderID = rendering::shader_ids::BILLBOARD;
-	renderer->BindShader(billboardShaderID);
-	renderer->UpdateRendererUniforms(billboardShaderID);
+	const auto billboardShaderId = rendering::shader_ids::BILLBOARD;
+	renderer->BindShader(billboardShaderId);
+	renderer->UpdateRendererUniforms(billboardShaderId);
 	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
 	{
-		billboardsNodeItr->Render(billboardShaderID, renderer);
+		billboardsNodeItr->Render(billboardShaderId, renderer);
 	}
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);
@@ -980,16 +979,16 @@ void game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
-	const int particlesShaderID = rendering::shader_ids::PARTICLES;
-	renderer->BindShader(particlesShaderID);
-	renderer->UpdateRendererUniforms(particlesShaderID);
+	const auto particlesShaderId = rendering::shader_ids::PARTICLES;
+	renderer->BindShader(particlesShaderId);
+	renderer->UpdateRendererUniforms(particlesShaderId);
 	for (auto particleSystemItr = m_gameManager->GetParticlesSystems().begin(); particleSystemItr != m_gameManager->GetParticlesSystems().end(); ++particleSystemItr)
 	{
 		//if (!(*particleSystemItr)->GetTexture()->IsAdditive())
 		//{
 			//(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(particlesShaderID, *(*particleSystemItr));
+		renderer->RenderParticles(particlesShaderId, **particleSystemItr);
 	}
 	STOP_PROFILING_GAME("");
 }
@@ -1081,82 +1080,91 @@ void game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	STOP_PROFILING_GAME("");
 //}
 
-int game::PlayGameState::GetAmbientShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
+int game::PlayGameState::GetAmbientShaderId(const rendering::fog_effect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
-	if (fogInfo.IsEnabled()) // if (fogInfo != nullptr)
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == rendering::fog_effect::LINEAR)
-		{
-			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_FOG_LINEAR_PLANE_BASED;
-			}
-			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_FOG_LINEAR_RANGE_BASED;
-			}
-		}
-		else if (fogInfo.GetFallOffType() == rendering::fog_effect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED;
-			}
-			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED;
-			}
-		}
-	}
-	STOP_PROFILING_ENGINE("");
-	return rendering::shader_ids::AMBIENT;
-}
-
-int game::PlayGameState::GetAmbientTerrainShaderID(const rendering::fog_effect::FogInfo& fogInfo) const
-{
-	START_PROFILING_ENGINE(true, "");
+	auto shaderId = rendering::shader_ids::AMBIENT;
 	if (fogInfo.IsEnabled())
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == rendering::fog_effect::LINEAR)
+		switch (fogInfo.GetFallOffType())
 		{
-			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
+		case rendering::fog_effect::LINEAR:
+			switch (fogInfo.GetCalculationType())
 			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED;
+			case rendering::fog_effect::PLANE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_FOG_LINEAR_PLANE_BASED;
+				break;
+			case rendering::fog_effect::RANGE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_FOG_LINEAR_RANGE_BASED;
+				break;
+			default:
+				ERROR_LOG_GAME("Unknown fog calculation type specified: ", fogInfo.GetCalculationType());
 			}
-			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
+			break;
+		case rendering::fog_effect::EXPONENTIAL:
+			switch (fogInfo.GetCalculationType())
 			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED;
+			case rendering::fog_effect::PLANE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED;
+				break;
+			case rendering::fog_effect::RANGE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED;
+			default:
+				ERROR_LOG_GAME("Unknown fog calculation type specified: ", fogInfo.GetCalculationType());
 			}
+			break;
+		default:
+			ERROR_LOG_GAME("Unknown fog fall-off type specified: ", fogInfo.GetFallOffType());
 		}
-		else if (fogInfo.GetFallOffType() == rendering::fog_effect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == rendering::fog_effect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED;
-			}
-			else if (fogInfo.GetCalculationType() == rendering::fog_effect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED;
-			}
-			}
-		}
-	STOP_PROFILING_ENGINE("");
-	return rendering::shader_ids::AMBIENT_TERRAIN;
 	}
+	STOP_PROFILING_ENGINE("");
+	return shaderId;
+}
+
+int game::PlayGameState::GetAmbientTerrainShaderId(const rendering::fog_effect::FogInfo& fogInfo) const
+{
+	START_PROFILING_ENGINE(true, "");
+	auto shaderId = rendering::shader_ids::AMBIENT_TERRAIN;
+	if (fogInfo.IsEnabled())
+	{
+		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
+		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
+		switch (fogInfo.GetFallOffType())
+		{
+		case rendering::fog_effect::LINEAR:
+			switch (fogInfo.GetCalculationType())
+			{
+			case rendering::fog_effect::PLANE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED;
+				break;
+			case rendering::fog_effect::RANGE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED;
+				break;
+			default:
+				ERROR_LOG_GAME("Unknown fog calculation type specified: ", fogInfo.GetCalculationType());
+			}
+			break;
+		case rendering::fog_effect::EXPONENTIAL:
+			switch (fogInfo.GetCalculationType())
+			{
+			case rendering::fog_effect::PLANE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED;
+				break;
+			case rendering::fog_effect::RANGE_BASED:
+				shaderId = rendering::shader_ids::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED;
+			default:
+				ERROR_LOG_GAME("Unknown fog calculation type specified: ", fogInfo.GetCalculationType());
+			}
+			break;
+		default:
+			ERROR_LOG_GAME("Unknown fog fall-off type specified: ", fogInfo.GetFallOffType());
+		}
+	}
+	STOP_PROFILING_ENGINE("");
+	return shaderId;
+}
 
 unsigned int game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 {

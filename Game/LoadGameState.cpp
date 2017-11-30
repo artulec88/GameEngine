@@ -1,7 +1,6 @@
 #include "LoadGameState.h"
 #include "Engine/GameManager.h"
 #include "Engine/CoreEngine.h"
-#include "Rendering/Shader.h"
 #include "Utility/ILogger.h"
 #include "PlayGameState.h"
 
@@ -77,7 +76,7 @@ void game::LoadGameState::Update(math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state updating");
-	engine::GameManager* gameManager = engine::GameManager::GetGameManager();
+	const auto gameManager = engine::GameManager::GetGameManager();
 	m_loadingProgress = gameManager->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)

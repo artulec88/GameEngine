@@ -1,12 +1,11 @@
 #include "StartGameCommand.h"
 #include "Def.h"
 #include "LoadGameState.h"
-#include "Engine\CoreEngine.h"
-#include "Engine\GameStateManager.h"
+#include "Engine/GameStateManager.h"
 #include "Engine/GameManager.h"
 
 game::StartGameCommand::StartGameCommand() :
-	engine::GameCommand()
+	GameCommand()
 {
 }
 
