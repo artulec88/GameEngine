@@ -3,7 +3,6 @@
 #include "Rendering/AntTweakBarTypes.h"
 #include "Rendering/CameraBuilder.h"
 #include "Rendering/LightBuilder.h"
-#include "Rendering/ShaderFactory.h"
 #include "Rendering/ParticlesSystemBuilder.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/GuiButtonControl.h"
@@ -17,7 +16,6 @@
 #include "Rendering/stb_image.h"
 
 #include "Math/Transform.h"
-#include "Math/HeightsGenerator.h"
 #include "Math/StatisticsStorage.h"
 #include "Math/RandomGeneratorFactory.h"
 
@@ -130,7 +128,6 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	Real runModeSpeed = (mods == GLFW_MOD_SHIFT) ? 10.0f : 1.0f;
 	const Quaternion rotation = camera.GetTransform().GetRot();
 	Vector3D dirVector;
 	switch (key)
@@ -156,7 +153,7 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 	default:
 		break;
 	}
-	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * runModeSpeed);
+	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * (mods == GLFW_MOD_SHIFT ? 10.0f : 1.0f));
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
 	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXz()) + 0.02f);
@@ -208,12 +205,12 @@ void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	if (cameraRotationEnabled)
 	{
-		math::Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
-		math::Vector2D deltaPosition(static_cast<math::Real>(xPos), static_cast<math::Real>(yPos));
+		const Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
+		Vector2D deltaPosition(static_cast<math::Real>(xPos), static_cast<math::Real>(yPos));
 		deltaPosition -= centerPosition;
 
-		bool rotX = !math::AlmostEqual(deltaPosition.x, REAL_ZERO);
-		bool rotY = !math::AlmostEqual(deltaPosition.y, REAL_ZERO);
+		const auto rotX = !math::AlmostEqual(deltaPosition.x, REAL_ZERO);
+		const auto rotY = !math::AlmostEqual(deltaPosition.y, REAL_ZERO);
 
 		if (rotX || rotY)
 		{
@@ -310,7 +307,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 	const int antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
-	case rendering::aliasing::NONE:
+	case aliasing::NONE:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -318,7 +315,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("No anti-aliasing algorithm chosen");
 		break;
-	case rendering::aliasing::FXAA:
+	case aliasing::FXAA:
 		/**
 		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -326,7 +323,7 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG_RENDERING_TEST("FXAA anti-aliasing algorithm chosen");
 		break;
-	case rendering::aliasing::MSAA:
+	case aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG_RENDERING_TEST(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
@@ -346,21 +343,21 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& 
 	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-	GLFWmonitor* monitor = NULL;
+	GLFWmonitor* monitor = nullptr;
 	if (fullscreenEnabled)
 	{
 		monitor = glfwGetPrimaryMonitor();
 	}
-	window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
-	if (window == NULL)
+	window = glfwCreateWindow(width, height, title.c_str(), monitor, nullptr); // Open a window and create its OpenGL context
+	if (window == nullptr)
 	{
 		CRITICAL_LOG_RENDERING_TEST("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, window);
-	if (threadWindow == NULL)
+	threadWindow = glfwCreateWindow(1, 1, "Thread Window", nullptr, window);
+	if (threadWindow == nullptr)
 	{
 		CRITICAL_LOG_RENDERING_TEST("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
@@ -415,7 +412,7 @@ void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::st
 	InitGlew();
 	SetCallbacks();
 
-	rendering::InitGraphics(width, height, antiAliasingMethod);
+	InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
@@ -649,6 +646,9 @@ void CreateScene()
 
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
 	particlesSystemBuilder.SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).SetMaxCount(10).SetShaderId(shader_ids::PARTICLES_COLORS);
+	//particles::ParticlesEmitter particlesEmitter(0.5f);
+	//particlesEmitter.AddGenerator()
+	//particlesSystemBuilder.AddEmitter(particlesEmitter);
 	//particlesSystemBuilder.
 	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
@@ -667,7 +667,7 @@ void UpdateScene(math::Real frameTime)
 void RenderParticles()
 {
 	DEBUG_LOG_RENDERING_TEST("Rendering particles started");
-	const int particlesShaderID = shader_ids::PARTICLES;
+	const auto particlesShaderID = particlesSystem.GetShaderId();
 	renderer->BindShader(particlesShaderID);
 	renderer->UpdateRendererUniforms(particlesShaderID);
 	//if (!particlesSystem.GetTexture()->IsAdditive())
@@ -698,35 +698,35 @@ void RenderScene()
 	RenderParticles();
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA) ?
-		rendering::shader_ids::FILTER_FXAA :
-		rendering::shader_ids::FILTER_NULL);
+		shader_ids::FILTER_FXAA :
+		shader_ids::FILTER_NULL);
 }
 
 void Run()
 {
-	constexpr int THREAD_SLEEP_TIME = 10;
-	constexpr math::Real MAX_FPS = 500.0f;
-	constexpr math::Real FRAME_TIME = 1.0f / MAX_FPS;
+	constexpr auto THREAD_SLEEP_TIME = 10;
+	constexpr auto MAX_FPS = 500.0f;
+	constexpr auto FRAME_TIME = 1.0f / MAX_FPS;
 
 	CreateScene();
 
-	rendering::controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(text::font_ids::CANDARA), 1.25f, NULL,
-		ZERO_VECTOR_2D, math::Angle(45.0f), math::Vector2D(1.0f, 1.0f), 0.25f, Color(color_ids::RED),
-		Color(color_ids::GREEN), math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+	controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(text::font_ids::CANDARA), 1.25f, nullptr,
+		ZERO_VECTOR_2D, Angle(45.0f), Vector2D(1.0f, 1.0f), 0.25f, Color(color_ids::RED),
+		Color(color_ids::GREEN), Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	rendering::InitializeTweakBars();
 	InitializeTestTweakBars();
 #endif
 
-	math::Real fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
+	const auto fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
-	math::Real frameTimeCounter = REAL_ZERO;
+	Real frameTimeCounter = REAL_ZERO;
 	int fps = 0;
-	math::Real spf = REAL_ZERO;
+	Real spf = REAL_ZERO;
 
-	math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
-	math::Real previousTime = GetTime();
+	Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	Real previousTime = GetTime();
 
 	while (true)
 	{

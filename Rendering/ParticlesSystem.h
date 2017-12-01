@@ -132,7 +132,7 @@ namespace rendering
 			std::vector<ParticlesUpdater*> m_updaters;
 
 			/// <summary>
-			/// The ID of the particle texture. May be <code>TextureIDs::INVALID</code> if no texture is used in the system.
+			/// The ID of the particle texture. May be <code>texture_ids::INVALID</code> if no texture is used in the system.
 			/// </summary>
 			int m_textureId;
 

@@ -148,7 +148,6 @@ namespace rendering
 			//const ParticleTexture* m_particleTexture;
 			//Particleeffects::ParticleEffect m_particleEffect;
 			//std::string m_configurationSuffix;
-			//Rendering::Particles::Attributes::AttributesMask m_attributesMask;
 			//unsigned int m_particleEmittersCount;
 			//unsigned int m_particleUpdatersCount;
 			//std::vector<Rendering::Particles::ParticlesUpdater*> m_updaters;
