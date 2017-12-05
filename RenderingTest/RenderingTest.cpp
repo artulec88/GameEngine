@@ -137,7 +137,7 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	const Quaternion rotation = camera->GetRot();
+	const auto& rotation = camera->GetRot();
 	Vector3D dirVector;
 	switch (key)
 	{
@@ -187,10 +187,10 @@ void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT)
 	{
-		cameraRotationEnabled = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		cameraRotationEnabled = action == GLFW_PRESS || action == GLFW_REPEAT;
 		if (cameraRotationEnabled)
 		{
-			math::Vector2D centerPosition(static_cast<Real>(WINDOW_WIDTH) / 2, static_cast<Real>(WINDOW_HEIGHT) / 2);
+			const Vector2D centerPosition(static_cast<Real>(WINDOW_WIDTH) / 2, static_cast<Real>(WINDOW_HEIGHT) / 2);
 			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
 		}
 	}
@@ -308,12 +308,12 @@ void ErrorCallback(int errorCode, const char* description)
 	exit(EXIT_FAILURE);
 }
 
-void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
+void InitGlfw(bool fullscreenEnabled, int width, int height, const string& title, aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_RENDERING_TEST("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(glfwInit(), utility::logging::CRITICAL, "Failed to initialize GLFW.");
 
-	const int antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
+	const auto antiAliasingSamples = 4; // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
 	case aliasing::NONE:
@@ -415,7 +415,7 @@ void SetCallbacks()
 	glfwSetScrollCallback(window, &ScrollEventCallback);
 }
 
-void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
+void CreateRenderer(bool fullscreenEnabled, int width, int height, const string& title, aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
@@ -426,18 +426,18 @@ void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::st
 	glfwSetErrorCallback(&ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance started");
-	renderer = std::make_unique<rendering::Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
+	renderer = std::make_unique<Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
 }
 
-void ReportError(const std::string& reportStr)
+void ReportError(const string& reportStr)
 {
 	ERROR_LOG_RENDERING_TEST("Test #", testNumber, " FAILED. ", reportStr);
 }
 
-void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
+void TestReport(bool statusCode /* false if error */, const string& reportErrorStr)
 {
 	testNumber++;
 	if (statusCode == false)
@@ -447,11 +447,10 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	INFO_LOG_RENDERING_TEST("Test #", testNumber, " passed");
 }
 
-void TimeReport(const std::string& reportStr, timing::Timer& timer, timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const string& reportStr, timing::Timer& timer, timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
 {
 	//CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
-	double elapsedTime = static_cast<double>(timer.GetDuration(timeUnit));
-	elapsedTime /= NUMBER_OF_ITERATIONS;
+	const auto elapsedTime = static_cast<double>(timer.GetDuration(timeUnit)) / NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
 	NOTICE_LOG_RENDERING_TEST(reportStr, ":\t", elapsedTime, " ", timing::DateTime::ConvertTimeUnitToString(timeUnit));
 }
@@ -471,7 +470,7 @@ void CameraBuilderTest()
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
-	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(math::Angle(110.0f)).
+	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(Angle(110.0f)).
 		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f);
 	cameraBuilderDirector.SetBuilder(&perspectiveCameraBuilder);
 	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
@@ -487,7 +486,7 @@ void LightBuilderTest()
 
 	lighting::DirectionalLightBuilder directionalLightBuilder;
 	BuilderDirector<lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
-	lighting::DirectionalLight directionalLight = directionalLightBuilderDirector.Construct();
+	const auto directionalLight = directionalLightBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(directionalLight);
 }
 
@@ -509,9 +508,9 @@ void ParticlesSystemBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
 
-math::Real GetTime()
+Real GetTime()
 {
-	return static_cast<math::Real>(glfwGetTime());
+	return static_cast<Real>(glfwGetTime());
 	//return Time(glfwGetTime());
 
 	//return Time::Now();
@@ -520,7 +519,7 @@ math::Real GetTime()
 #ifdef ANT_TWEAK_BAR_ENABLED
 void InitializeTestTweakBars()
 {
-	rendering::AntTweakBarTypes::InitializeTweakBarTypes();
+	AntTweakBarTypes::InitializeTweakBarTypes();
 
 	TwWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -571,13 +570,13 @@ void CreateTerrain()
 
 	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
 	const Real heightMapMaxHeight = (heightMapImage.GetWidth() + heightMapImage.GetHeight()) / 40.0f;
-	std::vector<Real> heights;
+	vector<Real> heights;
 	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
-	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
+	for (auto z = heightMapImage.GetHeight() - 1; z >= 0; --z)
 	{
-		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
+		for (auto x = 0; x < heightMapImage.GetWidth(); ++x)
 		{
-			Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
+			const auto terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			heights.push_back(terrainHeight);
 		}
@@ -623,10 +622,10 @@ void CreateCamera()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
 	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
-		SetRot(math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+		SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
-	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(math::Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Angle(70.0f)).
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
@@ -640,13 +639,13 @@ void CreateCubes()
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(test_texture_ids::CUBE_DIFFUSE), 8.0f, 1.0f,
 		renderer->GetTexture(texture_ids::DEFAULT_NORMAL_MAP), renderer->GetTexture(texture_ids::DEFAULT_DISPLACEMENT_MAP));
 	cubeMesh = renderer->CreateMesh(test_mesh_ids::CUBE, "cube.obj");
-	for (int i = 0; i < CUBE_MESHES_ROWS; ++i)
+	for (auto i = 0; i < CUBE_MESHES_ROWS; ++i)
 	{
-		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
+		for (auto j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<math::Real>(j), 0.0f, 0.1f * static_cast<math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<Real>(j), 0.0f, 0.1f * static_cast<Real>(i));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPosY(terrain->GetHeightAt(cubeTransforms[i * CUBE_MESHES_ROWS + j].GetPos().GetXz()));
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
 				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
@@ -683,7 +682,7 @@ void CreateScene()
 
 //math::Angle angleStep(1.0f);
 
-void UpdateScene(math::Real frameTime)
+void UpdateScene(Real frameTime)
 {
 	//camera.GetTransform().Rotate(math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
@@ -745,7 +744,7 @@ void RenderScene()
 
 	renderer->BindShader(shader_ids::AMBIENT);
 	renderer->UpdateRendererUniforms(shader_ids::AMBIENT);
-	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
+	for (auto i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
 	{
 		renderer->Render(test_mesh_ids::CUBE, cubeMaterial.get(), cubeTransforms[i], shader_ids::AMBIENT);
 	}
@@ -757,7 +756,7 @@ void RenderScene()
 
 	//RenderSkybox();
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == aliasing::FXAA) ?
+	renderer->FinalizeRenderScene(renderer->GetAntiAliasingMethod() == aliasing::FXAA ?
 		shader_ids::FILTER_FXAA :
 		shader_ids::FILTER_NULL);
 }
@@ -775,27 +774,27 @@ void Run()
 		Color(color_ids::GREEN), Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	rendering::InitializeTweakBars();
+	InitializeTweakBars();
 	InitializeTestTweakBars();
 #endif
 
 	const auto fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
-	int framesCount = 0;
-	Real frameTimeCounter = REAL_ZERO;
-	int fps = 0;
-	Real spf = REAL_ZERO;
+	auto framesCount = 0;
+	auto frameTimeCounter = REAL_ZERO;
+	auto fps = 0;
+	auto spf = REAL_ZERO;
 
-	Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
-	Real previousTime = GetTime();
+	auto unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	auto previousTime = GetTime();
 
 	while (true)
 	{
 		/* ==================== REGION #1 begin ====================*/
-		bool isRenderRequired = false;
+		auto isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		math::Real currentTime = GetTime();
-		math::Real passedTime = currentTime - previousTime;
+		const auto currentTime = GetTime();
+		const auto passedTime = currentTime - previousTime;
 		DELOCUST_LOG_RENDERING_TEST("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;
@@ -833,7 +832,7 @@ void Run()
 			fpsGuiButton.Update(FRAME_TIME);
 			/* ==================== REGION #2_2 end ====================*/
 #ifdef ANT_TWEAK_BAR_ENABLED
-			rendering::CheckChangesAndUpdateGLState();
+			CheckChangesAndUpdateGLState();
 #endif
 			unprocessingTime -= FRAME_TIME;
 		}
@@ -847,12 +846,12 @@ void Run()
 			RenderScene();
 
 			++framesCount;
-			std::stringstream ss;
-			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
+			stringstream ss;
+			ss << "FPS = " << fps << " SPF[ms] = " << setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
 			fpsGuiButton.SetText(ss.str());
-			renderer->RenderGuiControl(fpsGuiButton, rendering::shader_ids::GUI);
+			renderer->RenderGuiControl(fpsGuiButton, shader_ids::GUI);
 #ifdef ANT_TWEAK_BAR_ENABLED
-			int resultCode = TwDraw();
+			const auto resultCode = TwDraw();
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, utility::logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
 #endif
 			glfwSwapBuffers(window);
@@ -860,7 +859,7 @@ void Run()
 		else
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
-			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME)); // Sleep for some time to prevent the thread from constant looping
+			this_thread::sleep_for(chrono::milliseconds(THREAD_SLEEP_TIME)); // Sleep for some time to prevent the thread from constant looping
 		}
 		/* ==================== REGION #3 end ====================*/
 		//CRITICAL_LOG_ENGINE("STOP");
@@ -869,8 +868,8 @@ void Run()
 
 int main(int argc, char* argv[])
 {
-	srand((unsigned int)time(NULL));
-	std::unique_ptr<ICommandLineMapper> commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
+	srand(static_cast<unsigned int>(time(nullptr)));
+	const auto commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
 	//if (commandLineMapper.IsPresent("-help"))
 	//{
 	//	PrintHelp();
@@ -886,7 +885,7 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", rendering::aliasing::NONE);
+	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", aliasing::NONE);
 	Run();
 
 	//MeshTest();
@@ -900,7 +899,7 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.PrintReport();
 
 	logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
-	std::cout << "Bye!" << std::endl;
+	cout << "Bye!" << endl;
 
 	glfwTerminate(); // Terminate GLFW
 
