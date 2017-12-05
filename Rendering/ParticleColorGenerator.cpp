@@ -46,7 +46,7 @@ void rendering::particles::generators::FromSetColorGenerator::Generate(math::Rea
 {
 	for (auto i = startId; i < endId; ++i)
 	{
-		const size_t colorIndex = m_randomGenerator.NextInt(0, m_colors.size() - 1);
+		const size_t colorIndex = m_randomGenerator.NextInt(0, m_colors.size());
 		Set(particleContainer, i, m_colors[colorIndex]);
 	}
 }

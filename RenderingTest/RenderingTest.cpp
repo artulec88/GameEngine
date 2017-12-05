@@ -15,6 +15,8 @@
 #include "Rendering/Image.h"
 #include "Rendering/stb_image.h"
 #include "Rendering/ShaderIDs.h"
+#include "Rendering/ParticlePositionGenerator.h"
+#include "Rendering/ParticleColorGenerator.h"
 
 #include "Math/Transform.h"
 #include "Math/StatisticsStorage.h"
@@ -54,7 +56,7 @@ unique_ptr<Renderer> renderer = nullptr;
 bool cameraRotationEnabled = false;
 unique_ptr<Camera> camera;
 
-particles::ParticlesSystem particlesSystem;
+unique_ptr<particles::ParticlesSystem> particlesSystem;
 
 namespace test_mesh_ids
 {
@@ -490,6 +492,14 @@ void LightBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(directionalLight);
 }
 
+Real GetTime()
+{
+	return static_cast<Real>(glfwGetTime());
+	//return Time(glfwGetTime());
+
+	//return timing::DateTime::Now();
+}
+
 void ParticlesSystemBuilderTest()
 {
 	if (!particlesSystemBuilderTestEnabled)
@@ -499,21 +509,33 @@ void ParticlesSystemBuilderTest()
 
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
 	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
-	particlesSystem = particlesSystemBuilderDirector.Construct();
-	NOTICE_LOG_RENDERING_TEST(particlesSystem);
+	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
+	NOTICE_LOG_RENDERING_TEST(*particlesSystem);
 
 	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
 		SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
-	particlesSystem = particlesSystemBuilderDirector.Construct();
-	NOTICE_LOG_RENDERING_TEST(particlesSystem);
-}
 
-Real GetTime()
-{
-	return static_cast<Real>(glfwGetTime());
-	//return Time(glfwGetTime());
+	particles::ParticlesEmitter particlesEmitter(2.0f);
+	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN) };
+	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
+	particlesSystemBuilder.AddEmitter(particlesEmitter);
 
-	//return Time::Now();
+	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
+
+	NOTICE_LOG_RENDERING_TEST(*particlesSystem);
+
+	auto previousTime = GetTime();
+	for (auto i = 0; i < 10; ++i)
+	{
+		this_thread::sleep_for(chrono::milliseconds(400)); // Sleep for some time to prevent the thread from constant looping
+		const auto currentTime = GetTime();
+		const auto passedTime = currentTime - previousTime;
+		previousTime = currentTime;
+		CRITICAL_LOG_RENDERING_TEST("Passed time = ", passedTime);
+		particlesSystem->Update(passedTime);
+		NOTICE_LOG_RENDERING_TEST(*particlesSystem);
+	}
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -677,7 +699,7 @@ void CreateScene()
 	//particlesSystemBuilder.AddEmitter(particlesEmitter);
 	//particlesSystemBuilder.
 	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
-	particlesSystem = particlesSystemBuilderDirector.Construct();
+	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
 }
 
 //math::Angle angleStep(1.0f);
@@ -690,20 +712,20 @@ void UpdateScene(Real frameTime)
 
 	//skyboxTransform.SetPos(camera->GetPos());
 
-	particlesSystem.Update(frameTime);
+	particlesSystem->Update(frameTime);
 }
 
 void RenderParticles()
 {
 	DEBUG_LOG_RENDERING_TEST("Rendering particles started");
-	const auto particlesShaderID = particlesSystem.GetShaderId();
+	const auto particlesShaderID = particlesSystem->GetShaderId();
 	renderer->BindShader(particlesShaderID);
 	renderer->UpdateRendererUniforms(particlesShaderID);
 	//if (!particlesSystem.GetTexture()->IsAdditive())
 	//{
 	//particlesSystem.SortParticles(renderer->GetCurrentCamera().GetPos());
 	//}
-	renderer->RenderParticles(particlesShaderID, particlesSystem);
+	renderer->RenderParticles(particlesShaderID, *particlesSystem);
 }
 
 void RenderSkybox()
@@ -886,7 +908,7 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StartTimer();
 
 	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", aliasing::NONE);
-	Run();
+	//Run();
 
 	//MeshTest();
 	CameraBuilderTest();

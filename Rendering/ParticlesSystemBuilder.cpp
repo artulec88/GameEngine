@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ParticlesSystemBuilder.h"
-
+#include "ParticlesSystem.h"
 #include "ParticlePositionGenerator.h"
 #include "ParticleVelocityGenerator.h"
 #include "ParticleAccelerationGenerator.h"
@@ -21,7 +21,8 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_maxCount(m_defaultMaxParticlesCount),
 	m_attributesMask(m_defaultAttributesMask),
 	m_textureId(texture_ids::INVALID),
-	m_shaderId(shader_ids::INVALID)
+	m_shaderId(shader_ids::INVALID),
+	m_emitters()
 	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
@@ -70,6 +71,10 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 	//m_particleUpdatersCount(1)
 }
 
+rendering::particles::ParticlesSystem rendering::particles::ParticlesSystemBuilder::Build()
+{
+	return ParticlesSystem(*this);
+}
 
 //void rendering::particles::ParticlesSystemBuilder::Build()
 //{

@@ -3,7 +3,6 @@
 
 #include "Rendering.h"
 //#include "ParticleEffects.h"
-#include "ParticlesSystem.h"
 #include "ParticlesEmitter.h"
 //#include "TextureIDs.h"
 
@@ -15,6 +14,8 @@ namespace rendering
 {
 	namespace particles
 	{
+		class ParticlesSystem;
+
 		/// <summary>
 		/// The particles system builder.
 		/// </summary>
@@ -45,10 +46,7 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			ParticlesSystem Build() override
-			{
-				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureId, m_shaderId);
-			}
+			ParticlesSystem Build() override;
 
 			void SetDefault() override;
 			
@@ -117,6 +115,31 @@ namespace rendering
 			/// <param name="particlesUpdater"> The particles updater to be used by the particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
 			//RENDERING_API ParticlesSystemBuilder& AddUpdater(const ParticlesUpdater& particlesUpdater);
+
+			RENDERING_API size_t GetMaxCount() const
+			{
+				return m_maxCount;
+			}
+
+			RENDERING_API attributes::AttributesMask GetAttributesMask() const
+			{
+				return m_attributesMask;
+			}
+
+			RENDERING_API int GetTextureId() const
+			{
+				return m_textureId;
+			}
+
+			RENDERING_API int GetShaderId() const
+			{
+				return m_shaderId;
+			}
+
+			RENDERING_API const std::vector<ParticlesEmitter>& GetEmitters() const
+			{
+				return m_emitters;
+			}
 		private:
 			void AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
 			void AddVelocityGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
@@ -139,11 +162,22 @@ namespace rendering
 
 			//ParticlesSystem m_particlesSystem;
 
+			/// <summary> The maximum number of particles the system may store. </summary>
 			size_t m_maxCount;
+			
+			/// <summary>
+			/// The mask representing which attributes each particle in the final system will have.
+			/// The mask of attributes defines which shader will be used by the final particles system.
+			/// </summary>
 			attributes::AttributesMask m_attributesMask;
+
+			/// <summary> The ID of the texture final particles system will use. </summary>
 			int m_textureId;
+			
+			/// <summary> The ID of the shader final particles system will use. </summary>
 			int m_shaderId;
 
+			/// <summary> The emitters to be used by the final particles system. </summary>
 			std::vector<ParticlesEmitter> m_emitters;
 
 			//const ParticleTexture* m_particleTexture;

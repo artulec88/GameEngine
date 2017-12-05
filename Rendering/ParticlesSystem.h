@@ -2,6 +2,7 @@
 #define __RENDERING_PARTICLES_SYSTEM_H__
 
 #include "Rendering.h"
+#include "ParticlesSystemBuilder.h"
 #include "ParticlesContainer.h"
 #include "ParticlesEmitter.h"
 #include "ParticlesUpdater.h"
@@ -25,17 +26,10 @@ namespace rendering
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary> Particles system default constructor. </summary>
-			RENDERING_API ParticlesSystem();
-
-			/// <summary> Particles system constructor. </summary>
-			/// <param name="maxCount"> The maximum number of particles the system may store. </param>
-			/// <param name="attributesMask">
-			/// The mask representing which attributes each particle in the system will have.
-			/// The mask of attributes defines which shader will be used by the particles system.
+			/// <param name="particlesSystemBuilder">
+			/// The particles system builder holding all the necessary information to create a fully-functional particles system.
 			/// </param>
-			/// <param name="particlesTextureID"> The ID of the texture the particles system will use. </param>
-			/// <param name=""> The ID of the shader the particles system will use. </param>
-			RENDERING_API ParticlesSystem(size_t maxCount, attributes::AttributesMask attributesMask, int particlesTextureId, int particlesShaderId);
+			RENDERING_API ParticlesSystem(const ParticlesSystemBuilder& particlesSystemBuilder);
 
 			/// <summary> Particles system destructor. </summary>
 			RENDERING_API ~ParticlesSystem();

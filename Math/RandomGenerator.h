@@ -50,7 +50,7 @@ namespace math
 			MATH_API virtual int NextInt() const = 0;
 
 			/// <summary>
-			/// Returns a pseudo-random integral number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>].
+			/// Returns a pseudo-random integral number in the range [<paramref name="lowerBound"/>; <paramref name="upperBound"/>].
 			/// For example, for <paramref name="lowerBound"/> equal to <code>5</code> and <paramref name="upperBound"/>
 			/// equal to <code>10</code> the result may be one of the following integers: 5, 6, 7, 8, 9, 10.
 			/// </summary>
@@ -64,7 +64,7 @@ namespace math
 			MATH_API virtual Real NextFloat() const = 0;
 
 			/// <summary>
-			/// Returns a pseudo-random floating-point number in the range [<paramref name="lowerBound/>; <paramref name="upperBound"/>].
+			/// Returns a pseudo-random floating-point number in the range [<paramref name="lowerBound"/>; <paramref name="upperBound"/>].
 			/// </summary>
 			/// <param name="lowerBound">Specifies the lower bound (inclusive) of the random floating-point result. </param>
 			/// <param name="upperBound">Specifies the upper bound (inclusive) of the random floating-point result. </param>

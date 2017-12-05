@@ -147,6 +147,17 @@ namespace rendering
 			{
 				out << "Particles container: " << std::endl << "Attributes mask: " << particlesContainer.m_attributesMask <<
 					"; max count: " << particlesContainer.m_maxCount << "; alive: " << particlesContainer.m_countAlive;
+				for (auto i = 0; i < particlesContainer.m_countAlive; ++i)
+				{
+					if (particlesContainer.IsAttributeEnabled(attributes::POSITION))
+					{
+						out << std::endl << "Pos[" << i << "] = " << particlesContainer.m_positions[i];
+					}
+					if (particlesContainer.IsAttributeEnabled(attributes::COLOR))
+					{
+						out << " Color[" << i << "] = " << particlesContainer.m_colors[i];
+					}
+				}
 				return out;
 			}
 			/* ==================== Non-static member functions end ==================== */

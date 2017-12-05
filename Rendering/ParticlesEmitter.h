@@ -83,7 +83,10 @@ namespace rendering
 			/// The generator will be used when new particles are emitted by this specific particles emitter.
 			/// </summary>
 			/// <param name="particleAttributeGenerator"> The specific particle attribute generator. </param>
-			RENDERING_API void AddGenerator(generators::ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
+			RENDERING_API void AddGenerator(std::shared_ptr<generators::ParticleAttributeGenerator> particleAttributeGenerator)
+			{
+				m_generators.push_back(particleAttributeGenerator);
+			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -101,7 +104,7 @@ namespace rendering
 			/// <summary>
 			/// The generators that particles emitter uses.
 			/// </summary>
-			std::vector<generators::ParticleAttributeGenerator*> m_generators;
+			std::vector<std::shared_ptr<generators::ParticleAttributeGenerator>> m_generators;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesEmitter */
 	} /* end namespace particles */

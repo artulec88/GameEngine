@@ -1445,6 +1445,33 @@ void OtherTests()
 		TestReport(math::AlmostEqual(anglesInDegrees[i], math::ToDeg(anglesInRadians[i])), ss.str());
 		TestReport(math::AlmostEqual(math::ToRad(anglesInDegrees[i]), anglesInRadians[i]), ss.str());
 	}
+
+	const random::RandomGenerator& randomGenerator = random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(random::generator_ids::SIMPLE);
+	constexpr auto randomIntTestsCount = 100000;
+	constexpr auto minRandomValue = 0;
+	constexpr auto maxRandomValue = 8;
+	array<int, maxRandomValue - minRandomValue> randomValuesCounter;
+	randomValuesCounter.fill(0);
+	for (auto i = 0; i < randomIntTestsCount; ++i)
+	{
+		const auto value = randomGenerator.NextInt(minRandomValue, maxRandomValue);
+		if (value < minRandomValue)
+		{
+			ERROR_LOG_MATH_TEST("Random value ", value, " is less than minimum ", minRandomValue);
+		}
+		else if (value >= maxRandomValue)
+		{
+			ERROR_LOG_MATH_TEST("Random value ", value, " is greater or equal than maximum ", maxRandomValue);
+		}
+		++randomValuesCounter[value - minRandomValue];
+	}
+	for (auto index = 0; index < randomValuesCounter.size(); ++index)
+	{
+		INFO_LOG_MATH_TEST("Value ", index - minRandomValue, " drawn ", randomValuesCounter[ index ], " times (",
+			100.0f * static_cast<float>(randomValuesCounter[index]) / randomIntTestsCount, "%)");
+	}
+	TestReport(randomValuesCounter.front() > 0, "Min value hasn't been found.");
+	TestReport(randomValuesCounter.back() > 0, "Max value hasn't been found.");
 }
 
 int main(int argc, char* argv[])
@@ -1484,7 +1511,7 @@ int main(int argc, char* argv[])
 	//StatsTest();
 
 	//HeightsGeneratorTests();
-	//OtherTests();
+	OtherTests();
 
 	STATS_STORAGE.StopTimer();
 	STATS_STORAGE.PrintReport();
