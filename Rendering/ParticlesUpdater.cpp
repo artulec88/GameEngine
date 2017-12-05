@@ -42,6 +42,26 @@ void rendering::particles::EulerParticlesUpdater::Update(math::Real deltaTime, P
 }
 /* ==================== class EulerParticlesUpdater end ==================== */
 
+/* ==================== class ColorParticlesUpdater begin ==================== */
+rendering::particles::ColorParticlesUpdater::ColorParticlesUpdater(const Color& color) :
+	ParticlesUpdater(),
+	m_color(color)
+{
+}
+
+rendering::particles::ColorParticlesUpdater::~ColorParticlesUpdater()
+{
+}
+
+void rendering::particles::ColorParticlesUpdater::Update(math::Real deltaTime, ParticlesContainer* particlesContainer)
+{
+	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	{
+		particlesContainer->SetColor(i, m_color);
+	}
+}
+/* ==================== class ColorParticlesUpdater end ==================== */
+
 /* ==================== class LifeSpanParticlesUpdater begin ==================== */
 rendering::particles::LifeSpanParticlesUpdater::LifeSpanParticlesUpdater() :
 	ParticlesUpdater()

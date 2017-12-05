@@ -521,6 +521,8 @@ void ParticlesSystemBuilderTest()
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);
 
+	particlesSystemBuilder.AddUpdater(make_shared<particles::ColorParticlesUpdater>(Color(color_ids::WHITE)));
+
 	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
 
 	NOTICE_LOG_RENDERING_TEST(*particlesSystem);

@@ -14,6 +14,7 @@ namespace rendering
 {
 	namespace particles
 	{
+		class ParticlesUpdater;
 		class ParticlesSystem;
 
 		/// <summary>
@@ -114,7 +115,7 @@ namespace rendering
 			/// </summary>
 			/// <param name="particlesUpdater"> The particles updater to be used by the particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			//RENDERING_API ParticlesSystemBuilder& AddUpdater(const ParticlesUpdater& particlesUpdater);
+			RENDERING_API ParticlesSystemBuilder& AddUpdater(std::shared_ptr<ParticlesUpdater> particlesUpdater);
 
 			RENDERING_API size_t GetMaxCount() const
 			{
@@ -139,6 +140,11 @@ namespace rendering
 			RENDERING_API const std::vector<ParticlesEmitter>& GetEmitters() const
 			{
 				return m_emitters;
+			}
+
+			RENDERING_API const std::vector<std::shared_ptr<ParticlesUpdater>>& GetUpdaters() const
+			{
+				return m_updaters;
 			}
 		private:
 			void AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
@@ -185,7 +191,8 @@ namespace rendering
 			//std::string m_configurationSuffix;
 			//unsigned int m_particleEmittersCount;
 			//unsigned int m_particleUpdatersCount;
-			//std::vector<Rendering::Particles::ParticlesUpdater*> m_updaters;
+			
+			std::vector<std::shared_ptr<ParticlesUpdater>> m_updaters;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystemBuilder */
 	} /* end namespace particles */

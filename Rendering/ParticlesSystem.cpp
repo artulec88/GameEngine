@@ -9,7 +9,7 @@ rendering::particles::ParticlesSystem::ParticlesSystem(const ParticlesSystemBuil
 	m_maxCount(particlesSystemBuilder.GetMaxCount()),
 	m_particles(particlesSystemBuilder.GetMaxCount(), particlesSystemBuilder.GetAttributesMask()),
 	m_emitters(particlesSystemBuilder.GetEmitters()),
-	m_updaters(),
+	m_updaters(particlesSystemBuilder.GetUpdaters()),
 	m_textureId(particlesSystemBuilder.GetTextureId()),
 	m_shaderId(particlesSystemBuilder.GetShaderId())
 {
@@ -22,6 +22,16 @@ rendering::particles::ParticlesSystem::~ParticlesSystem()
 
 void rendering::particles::ParticlesSystem::Update(math::Real deltaTime)
 {
+	DEBUG_LOG_RENDERING("Updating particles started. Delta time = ", deltaTime);
+	//CRITICAL_LOG_RENDERING("Particles after emission, before update = ");
+	//ERROR_LOG_RENDERING(m_particles);
+	for (auto& updater : m_updaters)
+	{
+		updater->Update(deltaTime, &m_particles);
+	}
+	//CRITICAL_LOG_RENDERING("Particles after update = ");
+	//ERROR_LOG_RENDERING(m_particles);
+
 	DEBUG_LOG_RENDERING("Emitting new particles started. Delta time = ", deltaTime);
 	//CRITICAL_LOG_RENDERING("Particles before emission = ");
 	//ERROR_LOG_RENDERING(m_particles);
@@ -35,16 +45,6 @@ void rendering::particles::ParticlesSystem::Update(math::Real deltaTime)
 	//{
 	//	m_particles.SetAcceleration(i, zeroVector);
 	//}
-
-	DEBUG_LOG_RENDERING("Updating particles started. Delta time = ", deltaTime);
-	//CRITICAL_LOG_RENDERING("Particles after emission, before update = ");
-	//ERROR_LOG_RENDERING(m_particles);
-	for (auto& updater : m_updaters)
-	{
-		updater->Update(deltaTime, &m_particles);
-	}
-	//CRITICAL_LOG_RENDERING("Particles after update = ");
-	//ERROR_LOG_RENDERING(m_particles);
 }
 
 void rendering::particles::ParticlesSystem::Reset()

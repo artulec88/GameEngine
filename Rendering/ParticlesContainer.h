@@ -117,7 +117,10 @@ namespace rendering
 			void SetId(size_t i, int id) const { m_ids[i] = id; }
 			void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) const { m_positions[i] += positionIncrease; }
 			void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) const { m_velocities[i] += velocityIncrease; }
-			void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) const { m_accelerations[i] += accelerationIncrease; }
+			void IncreaseAcceleration(size_t i, const math::Vector3D& accelerationIncrease) const
+			{
+				m_accelerations[i] += accelerationIncrease;
+			}
 			void IncreaseGravityEffectFactor(size_t i, math::Real gravityEffectFactorIncrease) const { m_gravityEffectFactors[i] += gravityEffectFactorIncrease; }
 			void IncreaseLifeSpanLimit(size_t i, math::Real lifeSpanLimitIncrease) const { m_lifeSpanLimits[i] += lifeSpanLimitIncrease; }
 			void IncreaseLifeSpan(size_t i, math::Real lifeSpanIncrease) const { m_lifeSpans[i] += lifeSpanIncrease; }

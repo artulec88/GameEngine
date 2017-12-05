@@ -84,6 +84,27 @@ namespace rendering
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class EulerParticlesUpdater */
 
+		class ColorParticlesUpdater : public ParticlesUpdater
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API explicit ColorParticlesUpdater(const Color& color);
+			RENDERING_API virtual ~ColorParticlesUpdater();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+			RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) override;
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Color m_color;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ColorParticlesUpdater */
+
 		class LifeSpanParticlesUpdater : public ParticlesUpdater
 		{
 			/* ==================== Static variables and functions begin ==================== */

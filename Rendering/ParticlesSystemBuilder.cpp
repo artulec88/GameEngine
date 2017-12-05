@@ -22,7 +22,8 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_attributesMask(m_defaultAttributesMask),
 	m_textureId(texture_ids::INVALID),
 	m_shaderId(shader_ids::INVALID),
-	m_emitters()
+	m_emitters(),
+	m_updaters()
 	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
@@ -63,6 +64,8 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 	m_attributesMask = m_defaultAttributesMask;
 	m_textureId = texture_ids::INVALID;
 	m_shaderId = shader_ids::INVALID;
+	m_emitters.clear();
+	m_updaters.clear();
 	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
@@ -187,6 +190,12 @@ rendering::particles::ParticlesSystem rendering::particles::ParticlesSystemBuild
 rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::AddEmitter(const ParticlesEmitter& particlesEmitter)
 {
 	m_emitters.push_back(particlesEmitter);
+	return *this;
+}
+
+rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::AddUpdater(std::shared_ptr<ParticlesUpdater> particlesUpdater)
+{
+	m_updaters.push_back(particlesUpdater);
 	return *this;
 }
 
