@@ -46,8 +46,8 @@ rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_meshFactory(modelsDirectory, texturesDirectory),
 	m_textureFactory(texturesDirectory),
 	m_displayTexture(windowWidth, windowHeight, nullptr, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
-	m_filterCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(180.0f)), math::Matrix4D::IDENTITY_MATRIX, 0.005f),
-	m_altCamera(math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), math::Matrix4D(), 0.005f),
+	m_filterCamera(OrthoCameraBuilder().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO).SetRot(math::Quaternion(math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), math::Angle(180.0f))).SetProjectionMatrix(math::Matrix4D::IDENTITY_MATRIX).Build()),
+	m_altCamera(OrthoCameraBuilder().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO).SetRot(math::NO_ROTATION_QUATERNION).SetProjectionMatrix(math::Matrix4D::IDENTITY_MATRIX).Build()),
 	m_filterTransform(math::Vector3D(), math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(m_meshFactory.GetMesh(mesh_ids::SIMPLE_PLANE)),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
@@ -511,9 +511,9 @@ bool rendering::Renderer::InitShadowMap()
 	if ( /* (m_shadowEnabled) && */ shadowInfo != nullptr)
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
-		const auto shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
-		m_altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
-		m_altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
+		const auto shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetPos(), m_currentCamera->GetRot());
+		m_altCamera.GetPos() = shadowCameraTransform.pos;
+		m_altCamera.GetRot() = shadowCameraTransform.rot;
 
 		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
@@ -612,7 +612,7 @@ void rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 	STOP_PROFILING_RENDERING("");
 }
 
-void rendering::Renderer::SetCurrentCamera(const BaseCamera* camera)
+void rendering::Renderer::SetCurrentCamera(const Camera* camera)
 {
 	CHECK_CONDITION_RENDERING(camera != nullptr, Utility::Logging::ERROR, "Cannot set current camera. Given camera is nullptr.");
 	//if (camera == nullptr)

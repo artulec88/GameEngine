@@ -22,7 +22,7 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_attributesMask(m_defaultAttributesMask),
 	m_textureId(texture_ids::INVALID),
 	m_shaderId(shader_ids::INVALID)
-	//m_particleTexture(NULL),
+	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
 	//m_attributesMask(0),
@@ -56,65 +56,79 @@ rendering::particles::ParticlesSystemBuilder::~ParticlesSystemBuilder()
 {
 }
 
-void rendering::particles::ParticlesSystemBuilder::Build()
+void rendering::particles::ParticlesSystemBuilder::SetDefault()
 {
-
-	//m_particleTexture = m_gameManager->AddParticleTexture(m_textureID,
-	//	GET_CONFIG_VALUE_STR_GAME("particleTexture" + m_configurationSuffix, "particleRain.png"),
-	//	GET_CONFIG_VALUE_RENDERING("particleTextureRowsCount" + m_configurationSuffix, 4),
-	//	GET_CONFIG_VALUE_RENDERING("particleTextureIsAdditive" + m_configurationSuffix, true));
-	//CHECK_CONDITION_GAME(m_particleTexture != NULL, Utility::Logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
-
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributePositionEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::POSITION;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeVelocityEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::VELOCITY;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeAccelerationEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::ACCELERATION;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeGravityEffectFactorEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::GRAVITY_EFFECT_FACTOR;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeLifeSpanEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::LIFE_SPAN;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeRotationEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::ROTATION;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeScaleEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::SCALE;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeTextureOffsetEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::TEXTURE_OFFSET;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeColorEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::COLOR;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeMassEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::MASS;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeAliveEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::ALIVE;
-	//}
-	//if (GET_CONFIG_VALUE_RENDERING("particleAttributeIdEnabled" + m_configurationSuffix, true))
-	//{
-	//	m_attributesMask |= Attributes::ID;
-	//}
-	//DEBUG_LOG_GAME("Attributes mask = ", m_attributesMask.m_attributesMask);
+	m_maxCount = m_defaultMaxParticlesCount;
+	m_attributesMask = m_defaultAttributesMask;
+	m_textureId = texture_ids::INVALID;
+	m_shaderId = shader_ids::INVALID;
+	//m_particleTexture(nullptr),
+	//m_particleEffect(particleEffect),
+	//m_configurationSuffix(""),
+	//m_attributesMask(0),
+	//m_particleEmittersCount(1),
+	//m_particleUpdatersCount(1)
 }
+
+
+//void rendering::particles::ParticlesSystemBuilder::Build()
+//{
+	////m_particleTexture = m_gameManager->AddParticleTexture(m_textureID,
+	////	GET_CONFIG_VALUE_STR_GAME("particleTexture" + m_configurationSuffix, "particleRain.png"),
+	////	GET_CONFIG_VALUE_RENDERING("particleTextureRowsCount" + m_configurationSuffix, 4),
+	////	GET_CONFIG_VALUE_RENDERING("particleTextureIsAdditive" + m_configurationSuffix, true));
+	////CHECK_CONDITION_GAME(m_particleTexture != NULL, Utility::Logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
+
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributePositionEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::POSITION;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeVelocityEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::VELOCITY;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeAccelerationEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::ACCELERATION;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeGravityEffectFactorEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::GRAVITY_EFFECT_FACTOR;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeLifeSpanEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::LIFE_SPAN;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeRotationEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::ROTATION;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeScaleEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::SCALE;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeTextureOffsetEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::TEXTURE_OFFSET;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeColorEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::COLOR;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeMassEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::MASS;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeAliveEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::ALIVE;
+	////}
+	////if (GET_CONFIG_VALUE_RENDERING("particleAttributeIdEnabled" + m_configurationSuffix, true))
+	////{
+	////	m_attributesMask |= Attributes::ID;
+	////}
+	////DEBUG_LOG_GAME("Attributes mask = ", m_attributesMask.m_attributesMask);
+//}
 
 //void ParticlesSystemBuilder::BuildPart2()
 //{

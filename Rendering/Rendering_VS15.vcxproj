@@ -175,7 +175,6 @@
   <ItemGroup>
     <ClInclude Include="AntTweakBarTypes.h" />
     <ClInclude Include="Attenuation.h" />
-    <ClInclude Include="BaseCamera.h" />
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraBuilder.h" />
@@ -235,7 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AntTweakBarTypes.cpp" />
-    <ClCompile Include="BaseCamera.cpp" />
     <ClCompile Include="BaseLight.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraBuilder.cpp" />

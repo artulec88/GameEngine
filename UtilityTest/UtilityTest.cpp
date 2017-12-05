@@ -1,4 +1,5 @@
 #include "PizzaBuilder.h"
+#include "Pizza.h"
 
 #include "Utility/BuilderDirector.h"
 #include "Utility/ICommandLineMapper.h"

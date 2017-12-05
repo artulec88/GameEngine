@@ -191,7 +191,7 @@ void rendering::uniforms::Vector3DUniform::Update(const Renderer* renderer, cons
 	}
 	else if (GetName() == "C_eyePos")
 	{
-		const auto& vector = renderer->GetCurrentCamera().GetTransform().GetPos();
+		const auto& vector = renderer->GetCurrentCamera().GetPos();
 		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 	else

@@ -8,11 +8,11 @@
 #include "IRangeHandler.h"
 #include "CameraBehavior.h"
 
-#include "Rendering/BaseCamera.h"
+#include "Rendering/Camera.h"
 
 namespace engine
 {
-	class CameraComponent : public GameComponent, rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
+	class CameraComponent : public GameComponent, public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -22,21 +22,9 @@ namespace engine
 		/// <summary>
 		/// The constructor of the camera component object.
 		/// </summary>
-		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
-		/// <param name="sensitivity"> The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
+		/// <param name="camera">The camera to be used by the component.</param>
 		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior = nullptr);
-
-		/// <summary>
-		/// The constructor of the base camera object.
-		/// </summary>
-		/// <param name="fieldOfView">The field of view of the camera.</param>
-		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
-		/// <param name="zNearPlane">The near plane of the camera.</param>
-		/// <param name="zFarPlane">The far plane of the camera.</param>
-		/// <param name="sensitivity">The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
-		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior = nullptr);
+		ENGINE_API CameraComponent(rendering::Camera* camera, CameraBehavior* cameraBehavior = nullptr);
 
 		ENGINE_API virtual ~CameraComponent();
 		
@@ -60,34 +48,34 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		ENGINE_API virtual math::Transform& GetTransform() { return GameComponent::GetTransform(); }
-		ENGINE_API virtual const math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 		ENGINE_API void SetCameraBehavior(CameraBehavior* cameraBehavior) { m_cameraBehavior = cameraBehavior; }
 		ENGINE_API void Handle(actions::Action action) override
 		{
-			if (m_cameraBehavior != nullptr && IsActive())
+			if (m_cameraBehavior != nullptr && m_camera->IsActive())
 			{
-				m_cameraBehavior->Handle(this, action);
+				m_cameraBehavior->Handle(m_camera, action);
 			}
 		}
 		ENGINE_API void Handle(states::State state) override
 		{
-			if (m_cameraBehavior != nullptr && IsActive())
+			if (m_cameraBehavior != nullptr && m_camera->IsActive())
 			{
-				m_cameraBehavior->Handle(this, state);
+				m_cameraBehavior->Handle(m_camera, state);
 			}
 		}
 		ENGINE_API void Handle(ranges::Range range, math::Real value) override
 		{
-			if (m_cameraBehavior != nullptr && IsActive())
+			if (m_cameraBehavior != nullptr && m_camera->IsActive())
 			{
-				m_cameraBehavior->Handle(this, range, value);
+				m_cameraBehavior->Handle(m_camera, range, value);
 			}
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
+		rendering::Camera* m_camera;
+
 		/// <summary>
 		/// The type of behavior of the camera. By modifying this member variable one can change the way the camera reacts to player's input.
 		/// </summary>

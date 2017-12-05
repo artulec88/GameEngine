@@ -1,40 +1,30 @@
 #include "stdafx.h"
 #include "CameraComponent.h"
-#include "GameNode.h"
 #include "CoreEngine.h"
 
 /* ==================== CameraComponent class implementation begin ==================== */
-engine::CameraComponent::CameraComponent(const math::Matrix4D& projectionMatrix, math::Real sensitivity, CameraBehavior* cameraBehavior /* = nullptr */) :
+engine::CameraComponent::CameraComponent(rendering::Camera* camera, CameraBehavior* cameraBehavior /* = nullptr */) :
 	GameComponent(),
-	BaseCamera(projectionMatrix, sensitivity),
 	IActionHandler(),
 	IStateHandler(),
 	IRangeHandler(),
-	m_cameraBehavior(cameraBehavior)
-{
-}
-
-engine::CameraComponent::CameraComponent(const math::Angle& fieldOfView, math::Real aspectRatio, math::Real zNearPlane, math::Real zFarPlane, math::Real sensitivity, CameraBehavior* cameraBehavior /* = nullptr */) :
-	GameComponent(),
-	BaseCamera(fieldOfView, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	IActionHandler(),
-	IStateHandler(),
-	IRangeHandler(),
+	m_camera(camera),
 	m_cameraBehavior(cameraBehavior)
 {
 }
 
 engine::CameraComponent::~CameraComponent()
 {
+	SAFE_DELETE(m_camera);
 	SAFE_DELETE(m_cameraBehavior);
 }
 
 engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) noexcept:
 	GameComponent(std::move(cameraComponent)),
-	BaseCamera(std::move(cameraComponent)),
 	IActionHandler(std::move(cameraComponent)),
 	IStateHandler(std::move(cameraComponent)),
 	IRangeHandler(std::move(cameraComponent)),
+	m_camera(std::move(cameraComponent.m_camera)),
 	m_cameraBehavior(std::move(cameraComponent.m_cameraBehavior))
 {
 	cameraComponent.m_cameraBehavior = nullptr;
@@ -44,11 +34,12 @@ engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) noex
 engine::CameraComponent& engine::CameraComponent::operator=(CameraComponent&& cameraComponent) noexcept
 {
 	GameComponent::operator=(std::move(cameraComponent));
-	BaseCamera::operator=(std::move(cameraComponent));
 	IActionHandler::operator=(std::move(cameraComponent));
 	IStateHandler::operator=(std::move(cameraComponent));
 	IRangeHandler::operator=(std::move(cameraComponent));
+	m_camera = std::move(cameraComponent.m_camera);
 	m_cameraBehavior = std::move(cameraComponent.m_cameraBehavior);
+	cameraComponent.m_camera = nullptr;
 	cameraComponent.m_cameraBehavior = nullptr;
 	return *this;
 }

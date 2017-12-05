@@ -222,14 +222,14 @@ namespace rendering
 
 		const fog_effect::FogInfo& GetFogInfo() const { return m_fogInfo; }
 
-		const BaseCamera& GetCurrentCamera() const
+		const Camera& GetCurrentCamera() const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != nullptr, Utility::Logging::CRITICAL, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
 
 		//RENDERING_API void SetMenuCameraAsCurrent();
-		RENDERING_API void SetCurrentCamera(const BaseCamera* camera);
+		RENDERING_API void SetCurrentCamera(const Camera* camera);
 
 		RENDERING_API void BindAsRenderTarget() const;
 		RENDERING_API void InitLightRendering() const;
@@ -364,8 +364,8 @@ namespace rendering
 		const lighting::PointLight* m_currentPointLight;
 		//Lighting::SpotLight* m_currentSpotLight; // current spot light
 
-		const BaseCamera* m_currentCamera;
-		const BaseCamera* m_tempCamera;
+		const Camera* m_currentCamera;
+		const Camera* m_tempCamera;
 
 		ShaderFactory m_shaderFactory;
 		text::FontFactory m_fontFactory;

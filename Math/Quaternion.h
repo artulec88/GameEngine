@@ -99,6 +99,10 @@ namespace math
 		/// <returns> The value of the real W component of the quaternion. </returns>
 		constexpr Real GetW() const noexcept { return m_w; }
 
+		/// <summary> A simple setter for the quaternion's components. </summary>
+		/// <param name="rot"> The rotation to set the components from. </param>
+		void Set(const Quaternion& rot) { Set(rot.m_x, rot.m_y, rot.m_z, rot.m_w); }
+
 		/// <summary>
 		/// A simple setter for the quaternion's components.
 		/// </summary>

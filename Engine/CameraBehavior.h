@@ -3,7 +3,7 @@
 
 #include "Engine.h"
 #include "ActionConstants.h"
-#include "Rendering/BaseCamera.h"
+#include "Rendering/Camera.h"
 
 namespace engine
 {
@@ -35,9 +35,9 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		virtual void Handle(rendering::BaseCamera* camera, actions::Action action) = 0;
-		virtual void Handle(rendering::BaseCamera* camera, states::State state) = 0;
-		virtual void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) = 0;
+		virtual void Handle(rendering::Camera* camera, actions::Action action) = 0;
+		virtual void Handle(rendering::Camera* camera, states::State state) = 0;
+		virtual void Handle(rendering::Camera* camera, ranges::Range range, math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -60,9 +60,9 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
-		void Handle(rendering::BaseCamera* camera, states::State state) override;
-		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
+		void Handle(rendering::Camera* camera, actions::Action action) override;
+		void Handle(rendering::Camera* camera, states::State state) override;
+		void Handle(rendering::Camera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -85,9 +85,9 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
-		void Handle(rendering::BaseCamera* camera, states::State state) override;
-		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
+		void Handle(rendering::Camera* camera, actions::Action action) override;
+		void Handle(rendering::Camera* camera, states::State state) override;
+		void Handle(rendering::Camera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -110,9 +110,9 @@ namespace engine
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		void Handle(rendering::BaseCamera* camera, actions::Action action) override;
-		void Handle(rendering::BaseCamera* camera, states::State state) override;
-		void Handle(rendering::BaseCamera* camera, ranges::Range range, math::Real value) override;
+		void Handle(rendering::Camera* camera, actions::Action action) override;
+		void Handle(rendering::Camera* camera, states::State state) override;
+		void Handle(rendering::Camera* camera, ranges::Range range, math::Real value) override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

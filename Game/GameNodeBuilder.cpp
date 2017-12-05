@@ -22,7 +22,7 @@ game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera) :
+game::CameraNodeBuilder::CameraNodeBuilder(engine::GameManager* gameManager, rendering::Camera* camera) :
 	GameNodeBuilder(gameManager),
 	m_defaultCameraBehaviorType(static_cast<engine::camera_behavior_types::CameraBehaviorType>(
 		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(engine::camera_behavior_types::STATIC)))),

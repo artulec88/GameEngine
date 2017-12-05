@@ -1,14 +1,11 @@
 #ifndef __UTILITY_TEST_PIZZA_BUILDER_H__
 #define __UTILITY_TEST_PIZZA_BUILDER_H__
 
-#include "Pizza.h"
-
 #include "Utility/Builder.h"
-
-#include <vector>
 
 namespace utility_test
 {
+	class Pizza;
 
 	class PizzaBuilder : public utility::Builder<Pizza>
 	{
@@ -17,7 +14,7 @@ namespace utility_test
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PizzaBuilder();
+		PizzaBuilder(const std::string& defaultDough, const std::string& defaultSauce, const std::string& defaultTopping);
 		virtual ~PizzaBuilder();
 		PizzaBuilder(PizzaBuilder& pizzaBuilder) = delete;
 		PizzaBuilder(PizzaBuilder&& pizzaBuilder) = delete;
@@ -26,24 +23,29 @@ namespace utility_test
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	protected:
-		virtual Pizza Get() override
+		void SetDefault() override
 		{
-			return Pizza(m_dough, m_sauce, m_topping);
+			m_dough = m_defaultDough;
+			m_sauce = m_defaultSauce;
+			m_topping = m_defaultTopping;
 		}
 
-		virtual void Build() override
-		{
-			BuildDough();
-			BuildSauce();
-			BuildTopping();
-		}
+	protected:
+		Pizza Build() override;
 	public:
-		virtual void SetDefault()
+		std::string GetDough() const
 		{
-			m_dough = M_DEFAULT_PIZZA_DOUGH;
-			m_sauce = M_DEFAULT_PIZZA_SAUCE;
-			m_topping = M_DEFAULT_PIZZA_TOPPING;
+			return m_dough;
+		}
+
+		std::string GetSauce() const
+		{
+			return m_sauce;
+		}
+
+		std::string GetTopping() const
+		{
+			return m_topping;
 		}
 
 		PizzaBuilder& SetDough(const std::string& dough)
@@ -51,37 +53,23 @@ namespace utility_test
 			m_dough = dough;
 			return *this;
 		}
-		PizzaBuilder& SetTopping(const std::string& topping)
-		{
-			m_topping = topping;
-			return *this;
-		}
-	protected:
-		virtual void BuildDough()
-		{
-			SetDough(M_DEFAULT_PIZZA_DOUGH);
-		}
-		virtual void BuildSauce()
-		{
-			SetSauce(M_DEFAULT_PIZZA_SAUCE);
-		}
-		virtual void BuildTopping()
-		{
-			SetTopping(M_DEFAULT_PIZZA_TOPPING);
-		}
-
 		PizzaBuilder& SetSauce(const std::string& sauce)
 		{
 			m_sauce = sauce;
+			return *this;
+		}
+		PizzaBuilder& SetTopping(const std::string& topping)
+		{
+			m_topping = topping;
 			return *this;
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const std::string M_DEFAULT_PIZZA_DOUGH; // TODO: Make it a static constexpr in the future.
-		const std::string M_DEFAULT_PIZZA_SAUCE; // TODO: Make it a static constexpr in the future.
-		const std::string M_DEFAULT_PIZZA_TOPPING; // TODO: Make it a static constexpr in the future.
+		const std::string m_defaultDough; // TODO: Make it a static constexpr in the future.
+		const std::string m_defaultSauce; // TODO: Make it a static constexpr in the future.
+		const std::string m_defaultTopping; // TODO: Make it a static constexpr in the future.
 
 		std::string m_dough;
 		std::string m_sauce;
@@ -105,28 +93,21 @@ namespace utility_test
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		HawaiianPizzaBuilder& AddSauceIngredient(const std::string& ingredient)
 		{
-			if (!m_ingredients.empty())
+			if (m_sauce.empty())
 			{
-				m_ingredients.push_back("; " + ingredient);
+				m_sauce = ingredient;
 			}
 			else
 			{
-				m_ingredients.push_back(ingredient);
+				m_sauce += "+" + ingredient;
 			}
 			return *this;
 		}
-	protected:
-		virtual void BuildDough() override;
-		virtual void BuildSauce() override;
-		virtual void BuildTopping() override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		std::vector<std::string> m_ingredients;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class HawaiianPizzaBuilder */
 
@@ -146,28 +127,21 @@ namespace utility_test
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		SpicyPizzaBuilder& AddSauceIngredient(const std::string& ingredient)
 		{
-			if (!m_ingredients.empty())
+			if (m_sauce.empty())
 			{
-				m_ingredients.push_back("; " + ingredient);
+				m_sauce = ingredient;
 			}
 			else
 			{
-				m_ingredients.push_back(ingredient);
+				m_sauce += "+" + ingredient;
 			}
 			return *this;
 		}
-	protected:
-		virtual void BuildDough() override;
-		virtual void BuildSauce() override;
-		virtual void BuildTopping() override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		std::vector<std::string> m_ingredients;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SpicyPizzaBuilder */
 } /* end namespace UtilityTest */

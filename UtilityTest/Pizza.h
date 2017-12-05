@@ -2,8 +2,10 @@
 #define __UTILITY_TEST_PIZZA_H__
 
 #include <string>
+#include "PizzaBuilder.h"
 
 namespace utility_test {
+
 	class Pizza
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -12,28 +14,33 @@ namespace utility_test {
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Pizza constructor. </summary>
-		Pizza(const std::string& dough, const std::string& sauce, const std::string& topping) :
-			m_dough(dough),
-			m_sauce(sauce),
-			m_topping(topping)
+		/// <param name="pizzaBuilder"> The reference to pizza builder object. </param>
+		explicit Pizza(const PizzaBuilder* const pizzaBuilder) :
+			m_dough(pizzaBuilder->GetDough()),
+			m_sauce(pizzaBuilder->GetSauce()),
+			m_topping(pizzaBuilder->GetTopping())
 		{
 		}
+
 		/// <summary> Pizza destructor. </summary>
-		virtual ~Pizza()
+		~Pizza()
 		{
 		}
+
 		/// <summary> Pizza copy constructor. </summary>
 		Pizza(Pizza& pizza) = delete;
+
 		/// <summary> Pizza move constructor. </summary>
 		Pizza(Pizza&& pizza) = default;
+
 		/// <summary> Pizza copy assignment operator. </summary>
 		Pizza& operator=(const Pizza& pizza) = delete;
+
 		/// <summary> Pizza move assignment operator. </summary>
 		Pizza& operator=(Pizza&& pizza) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		friend std::ostream& operator<<(std::ostream& out, const Pizza& pizza)
 		{
 			out << "Pizza dough = \"" << pizza.m_dough << "\"; sauce = \"" << pizza.m_sauce << "\"; topping = \"" << pizza.m_topping << "\".";

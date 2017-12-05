@@ -14,6 +14,7 @@
 #include "Rendering/Terrain.h"
 #include "Rendering/Image.h"
 #include "Rendering/stb_image.h"
+#include "Rendering/ShaderIDs.h"
 
 #include "Math/Transform.h"
 #include "Math/StatisticsStorage.h"
@@ -45,13 +46,13 @@ const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\
 const string FONTS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\";
 constexpr int WINDOW_WIDTH = 1600;
 constexpr int WINDOW_HEIGHT = 900;
-const random::RandomGenerator& g_randomGenerator = math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE);
+const random::RandomGenerator& g_randomGenerator = random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(random::generator_ids::SIMPLE);
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 unique_ptr<Renderer> renderer = nullptr;
 
 bool cameraRotationEnabled = false;
-Camera camera;
+unique_ptr<Camera> camera;
 
 particles::ParticlesSystem particlesSystem;
 
@@ -60,6 +61,7 @@ namespace test_mesh_ids
 	enum TestMeshId
 	{
 		TERRAIN = mesh_ids::COUNT,
+		SKYBOX,
 		CUBE
 	};
 }
@@ -75,24 +77,31 @@ namespace test_texture_ids
 		TERRAIN_NORMAL_MAP,
 		TERRAIN_DISPLACEMENT_MAP,
 		TERRAIN_BLEND_MAP,
+		SKYBOX_DAY,
+		SKYBOX_NIGHT,
 		CUBE_DIFFUSE
 	};
 }
 
 constexpr int TERRAIN_VERTEX_COUNT = 128;
-constexpr math::Real TERRAIN_HEIGHT_GENERATOR_AMPLITUDE = 70.0f;
+constexpr Real TERRAIN_HEIGHT_GENERATOR_AMPLITUDE = 70.0f;
 constexpr int TERRAIN_HEIGHT_GENERATOR_OCTAVES_COUNT = 3;
-constexpr math::Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
+constexpr Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
+
 Transform terrainTransform;
-std::unique_ptr<Material> terrainMaterial = nullptr;
+unique_ptr<Material> terrainMaterial = nullptr;
 const Mesh* terrainMesh = nullptr;
-std::unique_ptr<Terrain> terrain;
+unique_ptr<Terrain> terrain;
+
+Transform skyboxTransform;
+unique_ptr<Material> skyboxMaterial = nullptr;
+const Mesh* skyboxMesh = nullptr;
 
 constexpr int CUBE_MESHES_ROWS = 20;
 constexpr int CUBE_MESHES_COLS = 20;
-std::array<Transform, CUBE_MESHES_ROWS * CUBE_MESHES_COLS> cubeTransforms;
+array<Transform, CUBE_MESHES_ROWS * CUBE_MESHES_COLS> cubeTransforms;
 const Mesh* cubeMesh = nullptr;
-std::unique_ptr<Material> cubeMaterial = nullptr;
+unique_ptr<Material> cubeMaterial = nullptr;
 
 unsigned int testNumber = 0;
 bool meshTestEnabled = true;
@@ -128,7 +137,7 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	const Quaternion rotation = camera.GetTransform().GetRot();
+	const Quaternion rotation = camera->GetRot();
 	Vector3D dirVector;
 	switch (key)
 	{
@@ -153,10 +162,10 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 	default:
 		break;
 	}
-	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * (mods == GLFW_MOD_SHIFT ? 10.0f : 1.0f));
+	camera->GetPos().Increase(dirVector * camera->GetSensitivity() * (mods == GLFW_MOD_SHIFT ? 10.0f : 1.0f));
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXz()) + 0.02f);
+	camera->GetPos().y = terrain->GetHeightAt(camera->GetPos().GetXz()) + 0.02f;
 	//NOTICE_LOG_RENDERING_TEST(camera);
 }
 
@@ -181,7 +190,7 @@ void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 		cameraRotationEnabled = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		if (cameraRotationEnabled)
 		{
-			math::Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
+			math::Vector2D centerPosition(static_cast<Real>(WINDOW_WIDTH) / 2, static_cast<Real>(WINDOW_HEIGHT) / 2);
 			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
 		}
 	}
@@ -205,22 +214,22 @@ void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	if (cameraRotationEnabled)
 	{
-		const Vector2D centerPosition(static_cast<math::Real>(WINDOW_WIDTH) / 2, static_cast<math::Real>(WINDOW_HEIGHT) / 2);
-		Vector2D deltaPosition(static_cast<math::Real>(xPos), static_cast<math::Real>(yPos));
+		const Vector2D centerPosition(static_cast<Real>(WINDOW_WIDTH) / 2, static_cast<Real>(WINDOW_HEIGHT) / 2);
+		Vector2D deltaPosition(static_cast<Real>(xPos), static_cast<Real>(yPos));
 		deltaPosition -= centerPosition;
 
-		const auto rotX = !math::AlmostEqual(deltaPosition.x, REAL_ZERO);
-		const auto rotY = !math::AlmostEqual(deltaPosition.y, REAL_ZERO);
+		const auto rotX = !AlmostEqual(deltaPosition.x, REAL_ZERO);
+		const auto rotY = !AlmostEqual(deltaPosition.y, REAL_ZERO);
 
 		if (rotX || rotY)
 		{
 			if (rotX)
 			{
-				camera.GetTransform().Rotate(math::Vector3D(0, 1, 0), math::Angle(deltaPosition.x * camera.GetSensitivity()));
+				camera->Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.x * camera->GetSensitivity()));
 			}
 			if (rotY)
 			{
-				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), math::Angle(deltaPosition.y * camera.GetSensitivity()));
+				camera->Rotate(camera->GetRot().GetRight(), Angle(deltaPosition.y * camera->GetSensitivity()));
 			}
 			//NOTICE_LOG_RENDERING_TEST("Camera's rotation: ", camera.GetTransform().GetRot());
 			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
@@ -456,17 +465,17 @@ void CameraBuilderTest()
 
 	OrthoCameraBuilder orthoCameraBuilder;
 	BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
-	camera = cameraBuilderDirector.Construct();
-	NOTICE_LOG_RENDERING_TEST(camera);
-	camera = orthoCameraBuilder.SetPos(4.0f, 4.0f, 0.0f).SetNearPlane(0.1f).SetFarPlane(10000.0f).Get();
+	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
+	NOTICE_LOG_RENDERING_TEST(*camera);
+	camera = std::make_unique<Camera>(orthoCameraBuilder.SetPos(4.0f, 4.0f, 0.0f).SetNearPlane(0.1f).SetFarPlane(10000.0f));
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(math::Angle(110.0f)).
 		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f);
 	cameraBuilderDirector.SetBuilder(&perspectiveCameraBuilder);
-	camera = cameraBuilderDirector.Construct();
-	NOTICE_LOG_RENDERING_TEST(camera);
+	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
+	NOTICE_LOG_RENDERING_TEST(*camera);
 }
 
 void LightBuilderTest()
@@ -593,6 +602,23 @@ void CreateTerrain()
 	//}
 }
 
+void CreateSkybox()
+{
+	const auto cubeMapDayDirectory = "Skyboxes\\Skybox12";
+	const auto cubeMapNightDirectory = "Skyboxes\\Skybox13";
+	const auto skyboxTextureDay = renderer->CreateCubeTexture(test_texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(skyboxTextureDay != nullptr, utility::logging::ERR, "Skybox day texture \"", cubeMapDayDirectory, "\" is NULL");
+	const auto skyboxTextureNight = renderer->CreateCubeTexture(test_texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(skyboxTextureNight != nullptr, utility::logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
+
+	//SetTexture("cubeMapDay", m_skyboxTextureDay);
+	//SetTexture("cubeMapNight", m_skyboxTextureNight);
+
+	skyboxMaterial = std::make_unique<Material>(skyboxTextureDay, "cubeMapDay");
+	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
+	skyboxMesh = renderer->CreateMesh(test_mesh_ids::SKYBOX, "cube.obj");
+}
+
 void CreateCamera()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
@@ -603,9 +629,9 @@ void CreateCamera()
 		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
-	camera = cameraBuilderDirector.Construct();
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXz()) + 0.02f);
-	NOTICE_LOG_RENDERING_TEST(camera);
+	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
+	camera->GetPos().y = terrain->GetHeightAt(camera->GetPos().GetXz()) + 0.02f;
+	NOTICE_LOG_RENDERING_TEST(*camera);
 }
 
 void CreateCubes()
@@ -632,6 +658,7 @@ void CreateCubes()
 void CreateScene()
 {
 	CreateTerrain();
+	//CreateSkybox();
 	CreateCamera();
 	CreateCubes();
 
@@ -661,6 +688,9 @@ void UpdateScene(math::Real frameTime)
 	//camera.GetTransform().Rotate(math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
+
+	//skyboxTransform.SetPos(camera->GetPos());
+
 	particlesSystem.Update(frameTime);
 }
 
@@ -677,10 +707,38 @@ void RenderParticles()
 	renderer->RenderParticles(particlesShaderID, particlesSystem);
 }
 
+void RenderSkybox()
+{
+	//if (m_fogEnabled)
+	//{
+	//	STOP_PROFILING_GAME("");
+	//	return;
+	//}
+
+	//glDisable(GL_DEPTH_TEST);
+	renderer->SetCullFaceFront();
+	/**
+	* By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
+	* However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
+	* To make it part of the scene we change the depth function to "less than or equal".
+	*/
+	renderer->SetDepthFuncLessOrEqual();
+	const auto skyboxShaderId = shader_ids::SKYBOX;
+	renderer->BindShader(skyboxShaderId);
+	renderer->UpdateRendererUniforms(skyboxShaderId);
+
+	renderer->Render(test_mesh_ids::SKYBOX, skyboxMaterial.get(), skyboxTransform, skyboxShaderId);
+
+	renderer->SetDepthFuncDefault();
+	renderer->SetCullFaceDefault();
+	//glEnable(GL_DEPTH_TEST);
+	//Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
+}
+
 void RenderScene()
 {
 	renderer->InitRenderScene(Color(color_ids::GREY), 0.5f);
-	renderer->SetCurrentCamera(&camera);
+	renderer->SetCurrentCamera(camera.get());
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
@@ -697,7 +755,9 @@ void RenderScene()
 
 	RenderParticles();
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == rendering::aliasing::FXAA) ?
+	//RenderSkybox();
+
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == aliasing::FXAA) ?
 		shader_ids::FILTER_FXAA :
 		shader_ids::FILTER_NULL);
 }

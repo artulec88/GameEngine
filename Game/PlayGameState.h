@@ -128,7 +128,7 @@ namespace game
 		std::vector<engine::GameNode> m_nodes;
 		std::vector<engine::GameNode> m_billboardsNodes;
 		
-		std::vector<rendering::BaseCamera*> m_cameras;
+		std::vector<rendering::Camera*> m_cameras;
 		unsigned int m_currentCameraIndex;
 		//std::vector<Engine::GameNode> m_cameraNodes;
 		engine::GameNode m_camerasNode;

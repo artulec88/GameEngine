@@ -28,13 +28,23 @@ namespace utility
 		~BuilderDirector()
 		{
 		}
+		
 		/// <summary> Builder director copy constructor. </summary>
+		/// <param name="builderDirector"> The reference to builder director to copy construct from. </param>
 		BuilderDirector(const BuilderDirector& builderDirector) = delete;
+
 		/// <summary> Builder director move constructor. </summary>
+		/// <param name="builderDirector"> The r-value reference to builder director to move construct from. </param>
 		BuilderDirector(BuilderDirector&& builderDirector) = delete;
+
 		/// <summary> Builder director copy assignment operator. </summary>
+		/// <param name="builderDirector"> The reference to builder director to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned builder director. </returns>
 		BuilderDirector& operator=(const BuilderDirector& builderDirector) = delete;
+
 		/// <summary> Builder director move assignment operator. </summary>
+		/// <param name="builderDirector"> The r-value reference to builder director to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned builder director. </returns>
 		BuilderDirector& operator=(BuilderDirector&& builderDirector) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -52,8 +62,7 @@ namespace utility
 		/// <returns> The object of type <code>T</code> built using the current builder. </returns>
 		T Construct() const
 		{
-			m_builder->Build();
-			return m_builder->Get();
+			return m_builder->Build();
 		}
 		/* ==================== Non-static member functions end ==================== */
 

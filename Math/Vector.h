@@ -351,6 +351,7 @@ namespace math
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
+		void Set(const Vector3D& v) noexcept { Set(v.x, v.y, v.z); }
 		void Set(Real _x, Real _y, Real _z) noexcept { x = _x; y = _y; z = _z; }
 		void Increase(Real _x, Real _y, Real _z) noexcept { x += _x; y += _y; z += _z; }
 		void Increase(const Vector3D& translation) noexcept { operator+=(translation); }

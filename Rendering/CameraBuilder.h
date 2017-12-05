@@ -2,13 +2,15 @@
 #define __RENDERING_CAMERA_BUILDER_H__
 
 #include "Rendering.h"
-#include "Camera.h"
-#include "Texture.h"
+
+#include "Math/Quaternion.h"
 
 #include "Utility/Builder.h"
 
 namespace rendering
 {
+	class Camera;
+
 	/// <summary>
 	/// The camera builder.
 	/// </summary>
@@ -45,19 +47,7 @@ namespace rendering
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-		RENDERING_API Camera Get() override
-		{
-			return Camera(m_pos, m_rot, m_projectionMatrix, m_sensitivity);
-		}
-
-		RENDERING_API void Build() override
-		{
-			BuildTransform();
-			BuildProjectionMatrix();
-			BuildSensitivity();
-		}
-
-		RENDERING_API virtual void SetDefault()
+		RENDERING_API void SetDefault() override
 		{
 			m_pos.x = m_defaultCameraPosX;
 			m_pos.y = m_defaultCameraPosY;
@@ -68,6 +58,8 @@ namespace rendering
 			// m_projectionMatrix is built from other member variables so there is no need to set default value to it.
 			m_sensitivity = m_defaultCameraSensitivity;
 		}
+
+		RENDERING_API Camera Build() override;
 
 		RENDERING_API CameraBuilder& SetPos(math::Real posX, math::Real posY, math::Real posZ)
 		{
@@ -101,21 +93,34 @@ namespace rendering
 			m_rot = rotation;
 			return *this;
 		}
-		RENDERING_API CameraBuilder& SetNearPlane(math::Real nearPlane) { m_nearPlane = nearPlane; return *this; }
-		RENDERING_API CameraBuilder& SetFarPlane(math::Real farPlane) { m_farPlane = farPlane; return *this; }
+		RENDERING_API CameraBuilder& SetNearPlane(math::Real nearPlane)
+		{
+			m_nearPlane = nearPlane;
+			BuildProjectionMatrix();
+			return *this;
+		}
+		RENDERING_API CameraBuilder& SetFarPlane(math::Real farPlane)
+		{
+			m_farPlane = farPlane;
+			BuildProjectionMatrix();
+			return *this;
+		}
 		RENDERING_API CameraBuilder& SetSensitivity(math::Real sensitivity)
 		{
 			m_sensitivity = sensitivity;
 			return *this;
 		}
+		RENDERING_API CameraBuilder& SetProjectionMatrix(const math::Matrix4D& projectionMatrix)
+		{
+			m_projectionMatrix = projectionMatrix;
+			return *this;
+		}
+		math::Matrix4D GetProjectionMatrix() const { return m_projectionMatrix; }
+		math::Real GetSensitivity() const { return m_sensitivity; }
+		math::Vector3D GetPos() const { return m_pos; }
+		math::Quaternion GetRot() const { return m_rot; }
 	protected:
-		virtual void BuildTransform()
-		{
-		}
 		virtual void BuildProjectionMatrix() = 0;
-		virtual void BuildSensitivity()
-		{
-		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -175,10 +180,30 @@ namespace rendering
 		/* ==================== Non-static member functions begin ==================== */
 		RENDERING_API void BuildProjectionMatrix() override;
 
-		RENDERING_API OrthoCameraBuilder& SetLeft(math::Real left) { m_left = left; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetRight(math::Real right) { m_right = right; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetBottom(math::Real bottom) { m_bottom = bottom; return *this; }
-		RENDERING_API OrthoCameraBuilder& SetTop(math::Real top) { m_top = top; return *this; }
+		RENDERING_API OrthoCameraBuilder& SetLeft(math::Real left)
+		{
+			m_left = left;
+			BuildProjectionMatrix();
+			return *this;
+		}
+		RENDERING_API OrthoCameraBuilder& SetRight(math::Real right)
+		{
+			m_right = right;
+			BuildProjectionMatrix();
+			return *this;
+		}
+		RENDERING_API OrthoCameraBuilder& SetBottom(math::Real bottom)
+		{
+			m_bottom = bottom;
+			BuildProjectionMatrix();
+			return *this;
+		}
+		RENDERING_API OrthoCameraBuilder& SetTop(math::Real top)
+		{
+			m_top = top;
+			BuildProjectionMatrix();
+			return *this;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -211,8 +236,18 @@ namespace rendering
 		/* ==================== Non-static member functions begin ==================== */
 		RENDERING_API void BuildProjectionMatrix() override;
 
-		RENDERING_API PerspectiveCameraBuilder& SetFieldOfView(const math::Angle& fieldOfView) { m_fov = fieldOfView; return *this; }
-		RENDERING_API PerspectiveCameraBuilder& SetAspectRatio(math::Real aspectRatio) { m_aspectRatio = aspectRatio; return *this; }
+		RENDERING_API PerspectiveCameraBuilder& SetFieldOfView(const math::Angle& fieldOfView)
+		{
+			m_fov = fieldOfView;
+			BuildProjectionMatrix();
+			return *this;
+		}
+		RENDERING_API PerspectiveCameraBuilder& SetAspectRatio(math::Real aspectRatio)
+		{
+			m_aspectRatio = aspectRatio;
+			BuildProjectionMatrix();
+			return *this;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

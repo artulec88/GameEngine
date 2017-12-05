@@ -47,13 +47,14 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 	constexpr char* expectedNegZFaceFilename = "back";
 
 	utility::FileManager fileManager;
-	auto filenames = fileManager.ListAllFilesInDirectory(m_texturesDirectory + cubeTextureDirectory);
-	auto cubeMapPosXFaceFileFound = false; auto cubeMapPosXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
-	auto cubeMapNegXFaceFileFound = false; auto cubeMapNegXFaceFileName = cubeTextureDirectory + directoryPathSeparator;
-	auto cubeMapPosYFaceFileFound = false; auto cubeMapPosYFaceFileName = cubeTextureDirectory + directoryPathSeparator;
-	auto cubeMapNegYFaceFileFound = false; auto cubeMapNegYFaceFileName = cubeTextureDirectory + directoryPathSeparator;
-	auto cubeMapPosZFaceFileFound = false; auto cubeMapPosZFaceFileName = cubeTextureDirectory + directoryPathSeparator;
-	auto cubeMapNegZFaceFileFound = false; auto cubeMapNegZFaceFileName = cubeTextureDirectory + directoryPathSeparator;
+	const auto cubeTextureFullDir = m_texturesDirectory + cubeTextureDirectory;
+	auto filenames = fileManager.ListAllFilesInDirectory(cubeTextureFullDir);
+	auto cubeMapPosXFaceFileFound = false; auto cubeMapPosXFaceFileName = cubeTextureFullDir + directoryPathSeparator;
+	auto cubeMapNegXFaceFileFound = false; auto cubeMapNegXFaceFileName = cubeTextureFullDir + directoryPathSeparator;
+	auto cubeMapPosYFaceFileFound = false; auto cubeMapPosYFaceFileName = cubeTextureFullDir + directoryPathSeparator;
+	auto cubeMapNegYFaceFileFound = false; auto cubeMapNegYFaceFileName = cubeTextureFullDir + directoryPathSeparator;
+	auto cubeMapPosZFaceFileFound = false; auto cubeMapPosZFaceFileName = cubeTextureFullDir + directoryPathSeparator;
+	auto cubeMapNegZFaceFileFound = false; auto cubeMapNegZFaceFileName = cubeTextureFullDir + directoryPathSeparator;
 	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
 	{
 		if (!cubeMapPosXFaceFileFound && (*filenameItr).find(expectedPosXFaceFilename) != std::string::npos)

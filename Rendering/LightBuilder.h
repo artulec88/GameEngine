@@ -3,7 +3,6 @@
 
 #include "Rendering.h"
 
-#include "ShaderIDs.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -49,7 +48,7 @@ namespace rendering
 			/// </param>
 			LightBuilder(const math::Vector3D& defaultPosition, const math::Quaternion& defaultRotation, const Color& defaultColor, math::Real defaultIntensity,
 				bool defaultShadowInfoFlipFacesEnabled, int defaultShadowInfoShadowMapSizeAsPowerOf2, math::Real defaultShadowInfoShadowSoftness, math::Real defaultShadowInfoLightBleedingReductionFactor,
-				math::Real defaultShadowInfoMinVariance) :
+				math::Real defaultShadowInfoMinVariance, int shaderId, int terrainShaderId, int noShadowShaderId, int noShadowTerrainShaderId) :
 				utility::Builder<T>(),
 				m_defaultPos(defaultPosition),
 				m_defaultRot(defaultRotation),
@@ -69,10 +68,10 @@ namespace rendering
 				m_shadowInfoShadowSoftness(m_defaultShadowInfoShadowSoftness),
 				m_shadowInfoLightBleedingReductionFactor(m_defaultShadowInfoLightBleedingReductionFactor),
 				m_shadowInfoMinVariance(m_defaultShadowInfoMinVariance),
-				m_shaderId(shader_ids::INVALID),
-				m_terrainShaderId(shader_ids::INVALID),
-				m_noShadowShaderId(shader_ids::INVALID),
-				m_noShadowTerrainShaderId(shader_ids::INVALID)
+				m_shaderId(shaderId),
+				m_terrainShaderId(terrainShaderId),
+				m_noShadowShaderId(noShadowShaderId),
+				m_noShadowTerrainShaderId(noShadowTerrainShaderId)
 			{
 			}
 
@@ -101,12 +100,7 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			void Build() override
-			{
-				BuildShaders();
-			}
-
-			virtual void SetDefault()
+			void SetDefault() override
 			{
 				m_pos = m_defaultPos;
 				m_rot = m_defaultRot;
@@ -174,7 +168,6 @@ namespace rendering
 				return *this;
 			}
 		protected:
-			virtual void BuildShaders() = 0;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -243,9 +236,8 @@ namespace rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		protected:
-			void BuildShaders() override;
 			void SetDefault() override;
-			DirectionalLight Get() override
+			DirectionalLight Build() override
 			{
 				return DirectionalLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderId, m_terrainShaderId, m_noShadowShaderId, m_noShadowTerrainShaderId,
 					m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness, m_shadowInfoLightBleedingReductionFactor,
@@ -300,9 +292,8 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			void BuildShaders() override;
 			void SetDefault() override;
-			PointLight Get() override
+			PointLight Build() override
 			{
 				return PointLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderId, m_terrainShaderId, m_noShadowShaderId, m_noShadowTerrainShaderId,
 					m_attenuation);
@@ -356,9 +347,8 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			void BuildShaders() override;
 			void SetDefault() override;
-			SpotLight Get() override
+			SpotLight Build() override
 			{
 				return SpotLight(math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderId, m_terrainShaderId, m_noShadowShaderId, m_noShadowTerrainShaderId,
 					m_attenuation, m_shadowInfoProjectionNearPlane, m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness,

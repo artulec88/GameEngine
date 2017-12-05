@@ -48,13 +48,13 @@ namespace utility {
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	protected:
-		/// <summary> Retrieves the built object. </summary>
-		/// <returns> The built object of type <code>T</code>. </returns>
-		virtual T Get() = 0;
+		/// <summary> Sets the default values for all fields. </summary>
+		virtual void SetDefault() = 0;
 
+	protected:
 		/// <summary> Builds the object. </summary>
-		virtual void Build() = 0;
+		/// <returns> The built object of type <code>T</code>. </returns>
+		virtual T Build() = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

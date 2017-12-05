@@ -45,11 +45,12 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			ParticlesSystem Get() override
+			ParticlesSystem Build() override
 			{
 				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureId, m_shaderId);
 			}
-			void Build() override;
+
+			void SetDefault() override;
 			
 			/// <summary> Sets the maximum number of particles that final particles system will be able to maintain. </summary>
 			/// <param name="maxCount"> The maximum number of particles that final particles system will be able to maintain. </param>

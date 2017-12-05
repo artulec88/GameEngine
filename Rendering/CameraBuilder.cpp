@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CameraBuilder.h"
+#include "Camera.h"
 
 #include "Utility/IConfig.h"
 
@@ -26,6 +27,11 @@ rendering::CameraBuilder::CameraBuilder() :
 
 rendering::CameraBuilder::~CameraBuilder()
 {
+}
+
+rendering::Camera rendering::CameraBuilder::Build()
+{
+	return Camera(*this);
 }
 
 //void Rendering::CameraBuilder::BuildPart1()

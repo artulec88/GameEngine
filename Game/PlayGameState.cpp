@@ -340,8 +340,8 @@ void game::PlayGameState::AddCameras()
 	START_PROFILING_GAME(true, "");
 
 	// TODO: temporary code begin.
-	m_cameras.push_back(new rendering::Camera(math::Vector3D(50.0f, 0.5f, 49.95f), math::NO_ROTATION_QUATERNION, math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
-	m_currentCameraIndex = 0;
+	//m_cameras.push_back(new rendering::Camera(math::Vector3D(50.0f, 0.5f, 49.95f), math::NO_ROTATION_QUATERNION, math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
+	//m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 
 	rendering::PerspectiveCameraBuilder cameraBuilder;
@@ -473,28 +473,28 @@ void game::PlayGameState::Handle(engine::actions::Action action)
 		m_gameManager->SetTransition(new engine::game_state_transitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), engine::game_state_transitioning::PUSH, engine::game_state_modality::EXCLUSIVE));
 		break;
 	case engine::actions::MOVE_CAMERA_UP:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.15f);
-		CRITICAL_LOG_GAME("Moving up... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().y += 0.15f;
+		CRITICAL_LOG_GAME("Moving up... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	case engine::actions::MOVE_CAMERA_DOWN:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.15f);
-		CRITICAL_LOG_GAME("Moving down... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().y -= 0.15f;
+		CRITICAL_LOG_GAME("Moving down... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	case engine::actions::MOVE_CAMERA_LEFT:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.15f);
-		CRITICAL_LOG_GAME("Moving left... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().x -= 0.15f;
+		CRITICAL_LOG_GAME("Moving left... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	case engine::actions::MOVE_CAMERA_RIGHT:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.15f);
-		CRITICAL_LOG_GAME("Moving right... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().x += 0.15f;
+		CRITICAL_LOG_GAME("Moving right... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	case engine::actions::MOVE_CAMERA_FORWARD:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.15f);
-		CRITICAL_LOG_GAME("Moving forward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().z += 0.15f;
+		CRITICAL_LOG_GAME("Moving forward... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	case engine::actions::MOVE_CAMERA_BACKWARD:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.15f);
-		CRITICAL_LOG_GAME("Moving backward... Current position: ", m_cameras[m_currentCameraIndex]->GetTransform().GetPos());
+		m_cameras[m_currentCameraIndex]->GetPos().z -= 0.15f;
+		CRITICAL_LOG_GAME("Moving backward... Current position: ", m_cameras[m_currentCameraIndex]->GetPos());
 		break;
 	default:
 		WARNING_LOG_GAME("Action ", action, " is not supported by the PLAY game state.");
@@ -518,24 +518,24 @@ void game::PlayGameState::Handle(engine::states::State state)
 		DEBUG_LOG_GAME("Mouse right key pressed");
 		break;
 	case engine::states::MOVE_CAMERA_UP:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().y += 0.01f;
 		//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
 	case engine::states::MOVE_CAMERA_DOWN:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosY(-0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().y -= 0.01f;
 		//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
 		break;
 	case engine::states::MOVE_CAMERA_LEFT:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(-0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().x -= 0.01f;
 		break;
 	case engine::states::MOVE_CAMERA_RIGHT:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosX(0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().x += 0.01f;
 		break;
 	case engine::states::MOVE_CAMERA_FORWARD:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().z += 0.01f;
 		break;
 	case engine::states::MOVE_CAMERA_BACKWARD:
-		m_cameras[m_currentCameraIndex]->GetTransform().IncreasePosZ(-0.01f);
+		m_cameras[m_currentCameraIndex]->GetPos().z -= 0.01f;
 		break;
 	default:
 		DEBUG_LOG_GAME("The state ", state, " is not supported by the MenuGameState");
@@ -553,7 +553,7 @@ void game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
 		m_mousePosChanged = true;
 		if (m_isMouseLocked)
 		{
-			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(math::Vector3D(0, 1, 0),
+			m_cameras[m_currentCameraIndex]->Rotate(math::Vector3D(0, 1, 0),
 				math::Angle(500.0f * (m_mousePos.x - m_previousMousePos.x) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
@@ -566,7 +566,7 @@ void game::PlayGameState::Handle(engine::ranges::Range range, math::Real value)
 		m_mousePosChanged = true;
 		if (m_isMouseLocked)
 		{
-			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(m_cameras[m_currentCameraIndex]->GetTransform().GetRot().GetRight(),
+			m_cameras[m_currentCameraIndex]->Rotate(m_cameras[m_currentCameraIndex]->GetRot().GetRight(),
 				math::Angle((m_mousePos.y - m_previousMousePos.y) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
@@ -999,7 +999,7 @@ void game::PlayGameState::Update(math::Real elapsedTime)
 	DEBUG_LOG_GAME("PLAY game state updating");
 	m_rootGameNode.Update(elapsedTime);
 	m_skyboxNode.Update(elapsedTime);
-	m_skyboxNode.GetTransform().SetPos(m_cameras[m_currentCameraIndex]->GetTransform().GetPos()); // TODO: Instead, skyboxNode should have a simple component that does exactly that!
+	m_skyboxNode.GetTransform().SetPos(m_cameras[m_currentCameraIndex]->GetPos()); // TODO: Instead, skyboxNode should have a simple component that does exactly that!
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
 	m_inGameDateTime += utility::timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, utility::timing::MICROSECOND);

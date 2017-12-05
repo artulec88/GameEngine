@@ -31,13 +31,14 @@ namespace game
 
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
-		engine::GameNode Get() override
+		engine::GameNode Build() override
 		{
+			BuildTransform();
+			BuildComponents();
 			return m_gameNode.Clone();
-			//return std::move(m_gameNode);
 		}
 
-		void Build() override
+		void SetDefault() override
 		{
 			BuildTransform();
 			BuildComponents();
@@ -93,7 +94,7 @@ namespace game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraNodeBuilder(engine::GameManager* gameManager, rendering::BaseCamera* camera);
+		CameraNodeBuilder(engine::GameManager* gameManager, rendering::Camera* camera);
 		virtual ~CameraNodeBuilder();
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
@@ -118,7 +119,7 @@ namespace game
 		const math::Real m_defaultCameraFollowPitchRotationSpeed;
 		const math::Angle m_defaultCameraFollowInitialPitchAngle;
 
-		rendering::BaseCamera* m_camera;
+		rendering::Camera* m_camera;
 		engine::camera_behavior_types::CameraBehaviorType m_cameraBehaviorType;
 
 		const engine::GameNode* m_gameNodeToFollow;
