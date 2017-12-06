@@ -200,7 +200,7 @@ rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSys
 	return *this;
 }
 
-rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::SetKiller(const ParticlesKiller* const particlesKiller)
+rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::SetKiller(ParticlesKiller* particlesKiller)
 {
 	m_particlesKiller = particlesKiller;
 	return *this;

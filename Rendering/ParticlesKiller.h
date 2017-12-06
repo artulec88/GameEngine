@@ -51,26 +51,13 @@ namespace rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 			/// <summary>
-			/// The function checks the particle under given index <paramref name="i"/> in the specified
-			/// particles container <paramref name="particlesContainer"/> and returns the simple <code>bool</code>
-			/// flag indicating whether it is alive or dead.
-			/// </summary>
-			/// <param name="particlesContainer"> The container of particles. </param>
-			/// <param name="i"> The index of the specific particle in the given particles container. </param>
-			/// <returns>
-			/// <code>True</code> when the particle <paramref name="i"/> in the <paramref name="particlesContainer"/> is alive
-			/// and <code>false</code> otherwise.
-			/// </returns>
-			RENDERING_API virtual bool IsAlive(ParticlesContainer* particlesContainer, size_t i) const = 0;
-
-			/// <summary>
 			/// Simulates the killer by the specified <paramref name="deltaTime"/> time.
 			/// The function simply iterates through the particles in the specified particles container <paramref name="particlesContainer"/>
 			/// and kill the ones that are no longer alive, i.e. the function <code>IsAlive(/*...*/)</code> returns <code>false</code>.
 			/// </summary>
 			/// <param name="deltaTime"> The time that has passed since the last killing procedure took place. </param>
 			/// <param name="particleContainer"> The container of particles that will be cleansed of dead particles. </param>
-			RENDERING_API void Kill(math::Real deltaTime, ParticlesContainer* particleContainer) const;
+			RENDERING_API virtual void Kill(math::Real deltaTime, ParticlesContainer* particleContainer) = 0;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -112,58 +99,60 @@ namespace rendering
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			RENDERING_API inline bool IsAlive(ParticlesContainer* particlesContainer, size_t i) const override;
+			RENDERING_API void Kill(math::Real deltaTime, ParticlesContainer* particleContainer) override;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class LifeSpanParticlesKiller */
 
-		//class TimerParticlesKiller : public ParticlesKiller
-		//{
-		//	/* ==================== Static variables and functions begin ==================== */
-		//	/* ==================== Static variables and functions end ==================== */
+		class TimerParticlesKiller : public ParticlesKiller
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
 
-		//	/* ==================== Constructors and destructors begin ==================== */
-		//public:
-		//	/// <summary>
-		//	/// The constructor of the particles killer based on the particles life span.
-		//	/// </summary>
-		//	RENDERING_API TimerParticlesKiller();
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			/// <summary>
+			/// The constructor of the particles killer based on the particles life span.
+			/// </summary>
+			/// <param name="particlesToKillPerSecond">
+			/// The number of particles to be killed every passing second.
+			/// </param>
+			RENDERING_API TimerParticlesKiller(math::Real particlesToKillPerSecond);
 
-		//	/// <summary> Life-span particles killer destructor. </summary>
-		//	RENDERING_API virtual ~TimerParticlesKiller();
+			/// <summary> Life-span particles killer destructor. </summary>
+			RENDERING_API virtual ~TimerParticlesKiller();
 
-		//	/// <summary> Timer particles killer copy constructor. </summary>
-		//	/// <param name="timerParticlesKiller"> The reference to timer particles killer to copy-construct from. </param>
-		//	TimerParticlesKiller(const TimerParticlesKiller& timerParticlesKiller) = default;
+			/// <summary> Timer particles killer copy constructor. </summary>
+			/// <param name="timerParticlesKiller"> The reference to timer particles killer to copy-construct from. </param>
+			TimerParticlesKiller(const TimerParticlesKiller& timerParticlesKiller) = default;
 
-		//	/// <summary> Timer particles killer move constructor. </summary>
-		//	/// <param name="timerParticlesKiller"> The r-value reference to timer particles killer to move-construct from. </param>
-		//	TimerParticlesKiller(TimerParticlesKiller&& timerParticlesKiller) = default;
+			/// <summary> Timer particles killer move constructor. </summary>
+			/// <param name="timerParticlesKiller"> The r-value reference to timer particles killer to move-construct from. </param>
+			TimerParticlesKiller(TimerParticlesKiller&& timerParticlesKiller) = default;
 
-		//	/// <summary> Timer particles killer copy assignment operator. </summary>
-		//	/// <param name="timerParticlesKiller"> The reference to timer particles killer to copy-assign from. </param>
-		//	/// <returns> The reference to the newly copy-assigned timer particles killer. </returns>
-		//	TimerParticlesKiller& operator=(const TimerParticlesKiller& timerParticlesKiller) = delete;
+			/// <summary> Timer particles killer copy assignment operator. </summary>
+			/// <param name="timerParticlesKiller"> The reference to timer particles killer to copy-assign from. </param>
+			/// <returns> The reference to the newly copy-assigned timer particles killer. </returns>
+			TimerParticlesKiller& operator=(const TimerParticlesKiller& timerParticlesKiller) = delete;
 
-		//	/// <summary> Timer particles killer move assignment operator. </summary>
-		//	/// <param name="timerParticlesKiller"> The r-value reference to timer particles killer to move-assign from. </param>
-		//	/// <returns> The reference to the newly move-assigned timer particles killer. </returns>
-		//	TimerParticlesKiller& operator=(TimerParticlesKiller&& timerParticlesKiller) = default;
-		//	/* ==================== Constructors and destructors end ==================== */
+			/// <summary> Timer particles killer move assignment operator. </summary>
+			/// <param name="timerParticlesKiller"> The r-value reference to timer particles killer to move-assign from. </param>
+			/// <returns> The reference to the newly move-assigned timer particles killer. </returns>
+			TimerParticlesKiller& operator=(TimerParticlesKiller&& timerParticlesKiller) = default;
+			/* ==================== Constructors and destructors end ==================== */
 
-		//	/* ==================== Non-static member functions begin ==================== */
-		//	RENDERING_API bool IsAlive(ParticlesContainer* particlesContainer, size_t i) const override
-		//	{
-		//		// TODO: Improve the implementation.
-		//		return false;
-		//	}
-		//	/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions begin ==================== */
+			RENDERING_API void Kill(math::Real deltaTime, ParticlesContainer* particleContainer) override;
+			/* ==================== Non-static member functions end ==================== */
 
-		//	/* ==================== Non-static member variables begin ==================== */
-		//	/* ==================== Non-static member variables end ==================== */
-		//}; /* end class TimerParticlesKiller */
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			math::Real m_timeToKillOneParticle;
+			math::Real m_currentTimer;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class TimerParticlesKiller */
 	} /* end namespace particles */
 } /* end namespace rendering */
 

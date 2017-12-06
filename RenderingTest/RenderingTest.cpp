@@ -525,15 +525,15 @@ void ParticlesSystemBuilderTest()
 
 	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
 
-	//particlesKiller = make_unique<particles::TimerParticlesKiller>();
-	//particlesSystemBuilder.SetKiller(particlesKiller.get());
+	particlesKiller = make_unique<particles::TimerParticlesKiller>(1.2f);
+	particlesSystemBuilder.SetKiller(particlesKiller.get());
 
 	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
 
 	NOTICE_LOG_RENDERING_TEST(*particlesSystem);
 
 	auto previousTime = GetTime();
-	for (auto i = 0; i < 10; ++i)
+	for (auto i = 0; i < 6; ++i)
 	{
 		this_thread::sleep_for(chrono::milliseconds(400)); // Sleep for some time to prevent the thread from constant looping
 		const auto currentTime = GetTime();
@@ -683,6 +683,29 @@ void CreateCubes()
 	}
 }
 
+void CreateParticlesSystem()
+{
+	particles::ParticlesSystemBuilder particlesSystemBuilder;
+	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
+		SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
+
+	particles::ParticlesEmitter particlesEmitter(2.0f);
+	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN) };
+	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
+	particlesSystemBuilder.AddEmitter(particlesEmitter);
+
+	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
+
+	particlesKiller = make_unique<particles::TimerParticlesKiller>(1.2f);
+	particlesSystemBuilder.SetKiller(particlesKiller.get());
+
+	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
+
+	NOTICE_LOG_RENDERING_TEST(*particlesSystem);
+}
+
 void CreateScene()
 {
 	CreateTerrain();
@@ -699,14 +722,7 @@ void CreateScene()
 	//	ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
 	//}
 
-	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).SetMaxCount(10).SetShaderId(shader_ids::PARTICLES_COLORS);
-	//particles::ParticlesEmitter particlesEmitter(0.5f);
-	//particlesEmitter.AddGenerator()
-	//particlesSystemBuilder.AddEmitter(particlesEmitter);
-	//particlesSystemBuilder.
-	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
-	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
+	CreateParticlesSystem();
 }
 
 //math::Angle angleStep(1.0f);
@@ -781,7 +797,7 @@ void RenderScene()
 	renderer->UpdateRendererUniforms(shader_ids::AMBIENT_TERRAIN);
 	renderer->Render(test_mesh_ids::TERRAIN, terrainMaterial.get(), terrainTransform, shader_ids::AMBIENT_TERRAIN);
 
-	RenderParticles();
+	//RenderParticles();
 
 	//RenderSkybox();
 
@@ -915,7 +931,7 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StartTimer();
 
 	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", aliasing::NONE);
-	//Run();
+	Run();
 
 	//MeshTest();
 	CameraBuilderTest();

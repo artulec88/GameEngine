@@ -124,7 +124,7 @@ namespace rendering
 			/// </summary>
 			/// <param name="particlesKiller"> The particles killer to be used by the particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			RENDERING_API ParticlesSystemBuilder& SetKiller(const ParticlesKiller* const particlesKiller);
+			RENDERING_API ParticlesSystemBuilder& SetKiller(ParticlesKiller* particlesKiller);
 
 			RENDERING_API size_t GetMaxCount() const
 			{
@@ -156,7 +156,7 @@ namespace rendering
 				return m_updaters;
 			}
 
-			RENDERING_API const ParticlesKiller* GetKiller() const
+			RENDERING_API ParticlesKiller* GetKiller() const
 			{
 				return m_particlesKiller;
 			}
@@ -208,7 +208,7 @@ namespace rendering
 			
 			std::vector<std::shared_ptr<updaters::ParticleAttributeUpdater>> m_updaters;
 
-			const ParticlesKiller* m_particlesKiller;
+			ParticlesKiller* m_particlesKiller;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystemBuilder */
 	} /* end namespace particles */
