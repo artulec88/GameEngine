@@ -5,6 +5,8 @@
 //#include "ParticleEffects.h"
 #include "ParticlesEmitter.h"
 //#include "TextureIDs.h"
+#include "ParticleAttributeUpdater.h"
+#include "ParticlesKiller.h"
 
 #include "Utility/Builder.h"
 
@@ -14,7 +16,7 @@ namespace rendering
 {
 	namespace particles
 	{
-		class ParticlesUpdater;
+		class ParticleAttributeUpdater;
 		class ParticlesSystem;
 
 		/// <summary>
@@ -115,7 +117,14 @@ namespace rendering
 			/// </summary>
 			/// <param name="particlesUpdater"> The particles updater to be used by the particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
-			RENDERING_API ParticlesSystemBuilder& AddUpdater(std::shared_ptr<ParticlesUpdater> particlesUpdater);
+			RENDERING_API ParticlesSystemBuilder& AddUpdater(std::shared_ptr<updaters::ParticleAttributeUpdater> particlesUpdater);
+
+			/// <summary>
+			/// Sets particles killer to be used by the final particles system.
+			/// </summary>
+			/// <param name="particlesKiller"> The particles killer to be used by the particles system. </param>
+			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
+			RENDERING_API ParticlesSystemBuilder& SetKiller(const ParticlesKiller* const particlesKiller);
 
 			RENDERING_API size_t GetMaxCount() const
 			{
@@ -142,9 +151,14 @@ namespace rendering
 				return m_emitters;
 			}
 
-			RENDERING_API const std::vector<std::shared_ptr<ParticlesUpdater>>& GetUpdaters() const
+			RENDERING_API const std::vector<std::shared_ptr<updaters::ParticleAttributeUpdater>>& GetUpdaters() const
 			{
 				return m_updaters;
+			}
+
+			RENDERING_API const ParticlesKiller* GetKiller() const
+			{
+				return m_particlesKiller;
 			}
 		private:
 			void AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const;
@@ -192,7 +206,9 @@ namespace rendering
 			//unsigned int m_particleEmittersCount;
 			//unsigned int m_particleUpdatersCount;
 			
-			std::vector<std::shared_ptr<ParticlesUpdater>> m_updaters;
+			std::vector<std::shared_ptr<updaters::ParticleAttributeUpdater>> m_updaters;
+
+			const ParticlesKiller* m_particlesKiller;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystemBuilder */
 	} /* end namespace particles */

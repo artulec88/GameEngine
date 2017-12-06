@@ -17,6 +17,7 @@
 #include "Rendering/ShaderIDs.h"
 #include "Rendering/ParticlePositionGenerator.h"
 #include "Rendering/ParticleColorGenerator.h"
+#include "Rendering/ParticleColorUpdater.h"
 
 #include "Math/Transform.h"
 #include "Math/StatisticsStorage.h"
@@ -56,7 +57,8 @@ unique_ptr<Renderer> renderer = nullptr;
 bool cameraRotationEnabled = false;
 unique_ptr<Camera> camera;
 
-unique_ptr<particles::ParticlesSystem> particlesSystem;
+unique_ptr<particles::ParticlesSystem> particlesSystem = nullptr;
+unique_ptr<particles::ParticlesKiller> particlesKiller = nullptr;
 
 namespace test_mesh_ids
 {
@@ -521,7 +523,10 @@ void ParticlesSystemBuilderTest()
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);
 
-	particlesSystemBuilder.AddUpdater(make_shared<particles::ColorParticlesUpdater>(Color(color_ids::WHITE)));
+	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
+
+	//particlesKiller = make_unique<particles::TimerParticlesKiller>();
+	//particlesSystemBuilder.SetKiller(particlesKiller.get());
 
 	particlesSystem = make_unique<particles::ParticlesSystem>(particlesSystemBuilderDirector.Construct());
 

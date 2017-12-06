@@ -5,9 +5,10 @@
 #include "ParticlesSystemBuilder.h"
 #include "ParticlesContainer.h"
 #include "ParticlesEmitter.h"
-#include "ParticlesUpdater.h"
+#include "ParticleAttributeUpdater.h"
 
 #include <vector>
+#include "ParticlesKiller.h"
 
 namespace rendering
 {
@@ -65,7 +66,8 @@ namespace rendering
 			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetMaxCount(); }
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
-			RENDERING_API void AddUpdater(std::shared_ptr<ParticlesUpdater> updater) { m_updaters.push_back(updater); }
+			RENDERING_API void AddUpdater(std::shared_ptr<updaters::ParticleAttributeUpdater> updater) { m_updaters.push_back(updater); }
+			RENDERING_API void SetKiller(const ParticlesKiller* const killer) { m_killer = killer; }
 			RENDERING_API const math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
 			RENDERING_API const math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
 			RENDERING_API math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
@@ -123,7 +125,10 @@ namespace rendering
 			/// <summary>
 			/// The vector of particles updaters.
 			/// </summary>
-			std::vector<std::shared_ptr<ParticlesUpdater>> m_updaters;
+			std::vector<std::shared_ptr<updaters::ParticleAttributeUpdater>> m_updaters;
+
+			/// <summary> The killer of particles in the system. </summary>
+			const ParticlesKiller* m_killer;
 
 			/// <summary>
 			/// The ID of the particle texture. May be <code>texture_ids::INVALID</code> if no texture is used in the system.

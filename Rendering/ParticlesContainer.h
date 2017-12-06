@@ -75,7 +75,6 @@ namespace rendering
 			/// <returns> The number of alive particles currently maintained by the container. </returns>
 			size_t GetAliveCount() const { return m_countAlive; }
 
-			bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
 			const math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
 			const math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
 			const math::Vector3D& GetAcceleration(size_t i) const { return m_accelerations[i]; }
@@ -114,6 +113,7 @@ namespace rendering
 			void SetScale(size_t i, math::Real newScale) const { m_scales[i] = newScale; }
 			void SetTextureOffset(size_t i, const math::Vector2D& newTextureOffset) const { m_textureOffsets[i] = newTextureOffset; }
 			void SetColor(size_t i, const Color& newColor) const { m_colors[i] = newColor; }
+			void SetColor(size_t i, math::Real red, math::Real green, math::Real blue, math::Real alpha) const { m_colors[i].Set(red, green, blue, alpha); }
 			void SetId(size_t i, int id) const { m_ids[i] = id; }
 			void IncreasePosition(size_t i, const math::Vector3D& positionIncrease) const { m_positions[i] += positionIncrease; }
 			void IncreaseVelocity(size_t i, const math::Vector3D& velocityIncrease) const { m_velocities[i] += velocityIncrease; }

@@ -7,7 +7,6 @@
 #include "ParticleRotationGenerator.h"
 #include "ParticleScaleGenerator.h"
 #include "ParticleLifeSpanGenerator.h"
-#include "ParticlesUpdater.h"
 #include "TextureIDs.h"
 #include "ShaderIDs.h"
 
@@ -23,7 +22,8 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_textureId(texture_ids::INVALID),
 	m_shaderId(shader_ids::INVALID),
 	m_emitters(),
-	m_updaters()
+	m_updaters(),
+	m_particlesKiller(nullptr)
 	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
@@ -66,6 +66,7 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 	m_shaderId = shader_ids::INVALID;
 	m_emitters.clear();
 	m_updaters.clear();
+	m_particlesKiller = nullptr;
 	//m_particleTexture(nullptr),
 	//m_particleEffect(particleEffect),
 	//m_configurationSuffix(""),
@@ -193,11 +194,18 @@ rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSys
 	return *this;
 }
 
-rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::AddUpdater(std::shared_ptr<ParticlesUpdater> particlesUpdater)
+rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::AddUpdater(std::shared_ptr<updaters::ParticleAttributeUpdater> particlesUpdater)
 {
 	m_updaters.push_back(particlesUpdater);
 	return *this;
 }
+
+rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSystemBuilder::SetKiller(const ParticlesKiller* const particlesKiller)
+{
+	m_particlesKiller = particlesKiller;
+	return *this;
+}
+
 
 void rendering::particles::ParticlesSystemBuilder::AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {

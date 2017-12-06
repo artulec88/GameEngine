@@ -10,6 +10,7 @@ rendering::particles::ParticlesSystem::ParticlesSystem(const ParticlesSystemBuil
 	m_particles(particlesSystemBuilder.GetMaxCount(), particlesSystemBuilder.GetAttributesMask()),
 	m_emitters(particlesSystemBuilder.GetEmitters()),
 	m_updaters(particlesSystemBuilder.GetUpdaters()),
+	m_killer(particlesSystemBuilder.GetKiller()),
 	m_textureId(particlesSystemBuilder.GetTextureId()),
 	m_shaderId(particlesSystemBuilder.GetShaderId())
 {
@@ -22,6 +23,12 @@ rendering::particles::ParticlesSystem::~ParticlesSystem()
 
 void rendering::particles::ParticlesSystem::Update(math::Real deltaTime)
 {
+	DEBUG_LOG_RENDERING("Killing particles started. Delta time = ", deltaTime);
+	if (m_killer != nullptr)
+	{
+		m_killer->Kill(deltaTime, &m_particles);
+	}
+
 	DEBUG_LOG_RENDERING("Updating particles started. Delta time = ", deltaTime);
 	//CRITICAL_LOG_RENDERING("Particles after emission, before update = ");
 	//ERROR_LOG_RENDERING(m_particles);
