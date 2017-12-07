@@ -154,6 +154,6 @@ namespace math
 		number |= number >> 16;
 		return number + 1;
 	}
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_MATH_H__ */

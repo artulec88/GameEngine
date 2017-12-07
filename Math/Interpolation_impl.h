@@ -5,6 +5,8 @@
 #include "Interpolation.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
+#include "Angle.h"
+
 #include "Utility/ILogger.h"
 
 /* ==================== class Interpolator begin ==================== */

@@ -86,3 +86,8 @@ math::Real math::Aabr::CalcDistanceToNearestFaceY(const Real y) const noexcept
 	}
 	return distanceY;
 }
+
+math::IntersectInfo math::Aabr::DoesContainPoint(const Vector2D& point) const noexcept
+{
+	return DoesContainPoint(point.x, point.y);
+}

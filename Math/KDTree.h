@@ -8,6 +8,9 @@
 #include "StatisticsStorage.h"
 #endif
 
+#include <vector>
+#include <memory>
+
 namespace math
 {
 	/// <summary>

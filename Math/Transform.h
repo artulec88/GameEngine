@@ -167,11 +167,7 @@ namespace math
 		MATH_API void Rotate(const Quaternion& rot);
 		//void SetRotation(Real x, Real y, Real z, Real w);
 
-		void CalculateParentTransformation() const
-		{
-			CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != nullptr, Utility::Logging::ERR, "Parent transform is NULL.");
-			m_parentTransformation = m_parentTransform->GetTransformation();
-		}
+		MATH_API inline void CalculateParentTransformation() const;
 
 		/**
 		 * @brief returns true if the transformation itself or any parent transformation is changed

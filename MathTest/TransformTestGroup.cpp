@@ -1,6 +1,8 @@
 #include "TransformTestGroup.h"
 #include "Def.h"
 
+#include "Utility/ILogger.h"
+
 using namespace math_test;
 
 /* ==================== class TransformTestGroup begin ==================== */

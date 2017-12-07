@@ -3,10 +3,10 @@
 
 #include "Math.h"
 #include "Vector.h"
-#include "IntersectInfo.h"
 
 namespace math
 {
+	class IntersectInfo;
 
 	/// <summary>
 	/// The mathematical representation of the axis-aligned bounding rectangle for 2D objects.
@@ -87,7 +87,7 @@ namespace math
 		/// The 2D point for which we want to know whether it is inside or outside the AABR and what distance it is from the nearest edge of the AABR.
 		/// </param>
 		/// <returns> The intersection info. </returns>
-		MATH_API IntersectInfo DoesContainPoint(const Vector2D& point) const noexcept { return DoesContainPoint(point.x, point.y); }
+		MATH_API inline IntersectInfo DoesContainPoint(const Vector2D& point) const noexcept;
 
 		/// <summary>
 		/// Gives information about the potential intersection between the current axis-aligned bounding rectangle and given <paramref name="aabr"/>.

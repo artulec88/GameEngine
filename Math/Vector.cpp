@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Vector.h"
+#include "Angle.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
+
+#include "Utility/ILogger.h"
 
 math::Vector2D& math::Vector2D::operator+=(const Vector2D& v) noexcept
 {

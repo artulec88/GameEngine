@@ -27,6 +27,7 @@
 #include "Utility/ILogger.h"
 #include "Utility/IConfig.h"
 #include "Utility/Time.h"
+#include "Utility/BuilderDirector.h"
 
 #include <GLFW/glfw3.h>
 #include <ctime>
@@ -797,7 +798,7 @@ void RenderScene()
 	renderer->UpdateRendererUniforms(shader_ids::AMBIENT_TERRAIN);
 	renderer->Render(test_mesh_ids::TERRAIN, terrainMaterial.get(), terrainTransform, shader_ids::AMBIENT_TERRAIN);
 
-	//RenderParticles();
+	RenderParticles();
 
 	//RenderSkybox();
 

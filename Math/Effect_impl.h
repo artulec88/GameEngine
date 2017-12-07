@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "Effect.h"
+#include "Interpolation.h"
+#include "Interpolation_impl.h"
 
 /* ==================== Effect<T> class begin ==================== */
 template <class T>

@@ -4,8 +4,9 @@
 #include "Math.h"
 #include "Vector.h"
 #include "FloatingPoint.h"
-#include "Utility/ILogger.h"
 #include "SortingParameters.h"
+
+#include "Utility/ILogger.h"
 
 namespace math {
 	namespace sorting

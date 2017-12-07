@@ -2,21 +2,26 @@
 #define __MATH_MATRIX_H__
 
 #include "Math.h"
-#include "Angle.h"
-#include "Vector.h"
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "StatisticsStorage.h"
 #endif
 
-#include "Utility/ILogger.h"
+//#include "Utility/ILogger.h"
 
 //#include <type_traits> // for static_assert
+#include <iomanip>
+#include <array>
 
 //#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
 namespace math
 {
+	class Angle;
+	struct Vector2D;
+	struct Vector3D;
+	struct Vector4D;
+
 	/// <summary> The class representing the 4x4 matrix. </summary>
 	/// <remarks>
 	///	The matrix is defined in a column-major ordering.
@@ -75,15 +80,8 @@ namespace math
 		/// <param name="screenRotationAngle"> The rotation angle. </param>
 		/// <param name="scale"> The scale. </param>
 		/// <remarks> The function is used for the gui textures. </remarks>
-		MATH_API Matrix4D(const Vector2D& screenPosition, const Angle& screenRotationAngle, const Vector2D& scale) :
-			Matrix4D(screenRotationAngle.Cos() * scale.x, screenRotationAngle.Sin() * scale.y, REAL_ZERO, REAL_ZERO,
-				-screenRotationAngle.Sin() * scale.x, screenRotationAngle.Cos() * scale.y, REAL_ZERO, REAL_ZERO,
-				REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO,
-				screenPosition.x, screenPosition.y, REAL_ZERO, REAL_ONE)
-		{
-			START_PROFILING_MATH(false, "3");
-			STOP_PROFILING_MATH("3");
-		}
+		MATH_API Matrix4D(const Vector2D& screenPosition, const Angle& screenRotationAngle, const Vector2D& scale);
+
 		/// <summary>Creates scale matrix based on the specified parameter.</summary>
 		/// <param name="scale">The scale in all dimensions: X, Y and Z.</param>
 		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real scale) :
@@ -102,24 +100,23 @@ namespace math
 			START_PROFILING_MATH(false, "5");
 			STOP_PROFILING_MATH("5");
 		}
+
 		/// <summary>Creates translation matrix based on the specified parameter.</summary>
 		/// <param name="pos">The 3D translation vector.</param>
-		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector3D& pos) :
-			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.x, pos.y, pos.z, REAL_ONE)
-		{
-			START_PROFILING_MATH(false, "6");
-			STOP_PROFILING_MATH("6");
-		}
+		MATH_API explicit Matrix4D(const Vector3D& pos);
+
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 		/// <param name="angleX">The rotation angle around X axis.</param>
 		/// <param name="angleY">The rotation angle around Y axis.</param>
 		MATH_API Matrix4D(const Angle& angleX, const Angle& angleY);
+
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 		/// <param name="angleX">The rotation angle around X axis.</param>
 		/// <param name="angleY">The rotation angle around Y axis.</param>
 		/// <param name="angleZ">The rotation angle around Z axis.</param>
 		/// <remarks> See http://planning.cs.uiuc.edu/node102.html </remarks>
 		MATH_API Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
+
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 		/// <param name="forward">The forward vector. It must be normalized.</param>
 		/// <param name="up">The up vector. It must be normalized.</param>
@@ -236,24 +233,8 @@ namespace math
 #endif
 		}
 		void M4x4_SSE(const Real* matA, const Real* matB, Real* matC) const;
-		const Real* operator[](int index) const
-		{
-			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-			return &m_values[index][0];
-#else
-			return &m_values[index];
-#endif
-		}
-		Real* operator[](int index)
-		{
-			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-			return &m_values[index][0];
-#else
-			return &m_values[index];
-#endif
-		}
+		inline const Real* operator[](int index) const;
+		inline Real* operator[](int index);
 		void SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 		/* ==================== Non-static member functions end ==================== */
 
@@ -274,29 +255,6 @@ namespace math
 		/* ==================== Non-static member variables end ==================== */
 
 	}; /* end class Matrix4D */
-
-	inline Real Matrix4D::GetElement(int i, int j) const
-	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		return m_values[i][j];
-#else
-		return m_values[i * SIZE + j];
-#endif
-	}
-
-	inline void Matrix4D::SetElement(int i, int j, Real value)
-	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		m_values[i][j] = value;
-#else
-		m_values[i * SIZE + j] = value;
-#endif
-	}
-
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_MATRIX_H__ */

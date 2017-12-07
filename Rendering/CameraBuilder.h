@@ -4,6 +4,9 @@
 #include "Rendering.h"
 
 #include "Math/Quaternion.h"
+#include "Math/Angle.h"
+#include "Math/Vector.h"
+#include "Math/Matrix.h"
 
 #include "Utility/Builder.h"
 

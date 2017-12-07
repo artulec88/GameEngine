@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "Angle.h"
 #include "IntersectInfo.h"
 #include "RandomGeneratorFactory.h"
+
+#include "Utility/ILogger.h"
 
 math::Plane::Plane(const Vector3D& normal, Real distance) :
 	m_normal(normal),

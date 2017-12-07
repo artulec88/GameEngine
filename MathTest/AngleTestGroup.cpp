@@ -2,6 +2,8 @@
 #include "Math/FloatingPoint.h"
 #include "Def.h"
 
+#include "Utility/ILogger.h"
+
 using namespace math_test;
 
 

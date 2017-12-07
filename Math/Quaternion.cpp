@@ -1,6 +1,11 @@
 #include "StdAfx.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
+#include "Angle.h"
+#include "Vector.h"
+#include "Matrix.h"
+
+#include "Utility/ILogger.h"
 
 math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 {
@@ -144,7 +149,7 @@ math::Quaternion math::Quaternion::Normalized() const
 
 math::Quaternion& math::Quaternion::Normalize()
 {
-	CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(LengthSquared(), REAL_ONE), Utility::Logging::DEBUG, "The quaternion is already normalized");
+	CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(LengthSquared(), REAL_ONE), utility::logging::DEBUG, "The quaternion is already normalized");
 	const auto length = Length();
 	m_x /= length;
 	m_y /= length;
@@ -306,6 +311,13 @@ math::Quaternion math::Quaternion::operator*(const Vector3D& vec) const
 math::Real math::Quaternion::Dot(const Quaternion& q) const
 {
 	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
+}
+
+math::Vector3D math::Quaternion::GetForward() const
+{
+	// TODO: Maybe instead of creating new vectors and rotating them each time we call this function,
+	// we should store the results in the member variables of the quaternion.
+	return Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE).Rotate(*this);
 }
 
 math::Vector3D math::Quaternion::GetBack() const

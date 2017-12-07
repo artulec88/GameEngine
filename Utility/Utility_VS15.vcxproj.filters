@@ -102,6 +102,9 @@
     <ClInclude Include="Vector_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TimeUnits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

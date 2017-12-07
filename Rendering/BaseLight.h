@@ -11,6 +11,8 @@
 #include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
+#include <memory>
+
 namespace rendering
 {
 	class Shader;

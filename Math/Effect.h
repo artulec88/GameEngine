@@ -3,11 +3,16 @@
 
 #include "Math.h"
 
-#include "Interpolation.h"
-#include "Interpolation_impl.h"
+#include <vector>
 
 namespace math
 {
+	namespace interpolation
+	{
+		template <class T>
+		class LinearInterpolator;
+	} /* end namespace interpolation */
+
 	namespace effects
 	{
 		/// <summary>
@@ -237,7 +242,7 @@ namespace math
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BlinkEffect */
 
-	} /* end namespace Effects */
-} /* end namespace Math */
+	} /* end namespace effects */
+} /* end namespace math */
 
 #endif /* __MATH_EFFECTS_EFFECT_H__ */

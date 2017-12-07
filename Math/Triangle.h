@@ -3,7 +3,6 @@
 
 #include "Math.h"
 #include "Vector.h"
-#include "Angle.h"
 
 namespace math
 {
@@ -190,6 +189,6 @@ namespace math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Triangle */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_TRIANGLE_H__ */

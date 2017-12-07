@@ -2,14 +2,14 @@
 #define __MATH_VECTOR_H__
 
 #include "Math.h"
-#include "Angle.h"
-//#include "FloatingPoint.h"
+
 #include <iomanip>
 
 #define PASS_VECTOR_BY_VALUE
 
 namespace math
 {
+	class Angle;
 	class Quaternion;
 
 	/// <summary>

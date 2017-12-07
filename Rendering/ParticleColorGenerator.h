@@ -6,6 +6,8 @@
 
 #include "Math/RandomGenerator.h"
 
+#include <vector>
+
 namespace rendering
 {
 	namespace particles

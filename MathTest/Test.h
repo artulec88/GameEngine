@@ -64,6 +64,6 @@ namespace math_test
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TestGroup */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_TEST_GROUP_H__ */

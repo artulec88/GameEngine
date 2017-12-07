@@ -2,14 +2,17 @@
 #define __MATH_QUATERNION_H__
 
 #include "Math.h"
-#include "Angle.h"
-#include "Vector.h"
-#include "Matrix.h"
+
+#include <ostream>
+#include <iomanip>
 
 #define PASS_QUATERNION_BY_VALUE
 
 namespace math
 {
+	class Angle;
+	struct Vector3D;
+	class Matrix4D;
 
 	/// <summary>
 	/// Quaternion representation. Quaternion uses the imaginary component (in contrary to a simple 4D vector) which makes rotation a lot easier to do.
@@ -177,12 +180,7 @@ namespace math
 
 		MATH_API Real Dot(const Quaternion& q) const;
 
-		Vector3D GetForward() const
-		{
-			// TODO: Maybe instead of creating new vectors and rotating them each time we call this function,
-			// we should store the results in the member variables of the quaternion.
-			return Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE).Rotate(*this);
-		}
+		MATH_API inline Vector3D GetForward() const;
 		MATH_API Vector3D GetUp() const;
 		MATH_API Vector3D GetRight() const;
 

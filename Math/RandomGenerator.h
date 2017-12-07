@@ -2,7 +2,6 @@
 #define __MATH_RANDOM_GENERATOR_H__
 
 #include "Math.h"
-#include <random>
 
 namespace math
 {

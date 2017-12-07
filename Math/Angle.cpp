@@ -1,7 +1,9 @@
 #include "StdAfx.h"
 #include "Angle.h"
 #include "FloatingPoint.h"
+
 #include "Utility/ILogger.h"
+
 #include <algorithm>
 
 math::Angle::Angle(const Angle& angle) :
@@ -38,6 +40,23 @@ math::Angle& math::Angle::operator=(Angle&& angle) noexcept
 	m_angle = std::move(angle.m_angle);
 	STOP_PROFILING_MATH("");
 	return *this;
+}
+
+void math::Angle::Set(const Real angle, units::UnitType unitType)
+{
+	START_PROFILING_MATH(false, "");
+	switch (unitType)
+	{
+	case units::DEGREE:
+		m_angle = ToRad(angle);
+		break;
+	case units::RADIAN:
+		m_angle = angle;
+		break;
+	default:
+		ERROR_LOG_MATH("Unknown unit type specified: ", unitType);
+	}
+	STOP_PROFILING_MATH("");
 }
 
 math::Angle math::Angle::operator-() const

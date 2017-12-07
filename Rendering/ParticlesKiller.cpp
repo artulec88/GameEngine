@@ -2,6 +2,8 @@
 #include "ParticlesKiller.h"
 #include "ParticlesContainer.h"
 
+#include <algorithm>
+
 /* ==================== ParticlesKiller class begin ==================== */
 rendering::particles::ParticlesKiller::ParticlesKiller()
 {

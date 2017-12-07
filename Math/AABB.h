@@ -101,6 +101,6 @@ namespace math
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AABB */
 
-} /* end namespace Math */
+} /* end namespace math */
 
 #endif /* __MATH_AABB_H__ */

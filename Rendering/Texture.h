@@ -6,6 +6,7 @@
 #include "Math/Matrix.h"
 
 #include <string>
+#include <vector>
 
 //#define STORE_TEXTURE_FILE_NAME
 

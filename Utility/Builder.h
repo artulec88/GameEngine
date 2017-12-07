@@ -2,9 +2,12 @@
 #define __UTILITY_BUILDER_H__
 
 #include "Utility.h"
-#include "BuilderDirector.h"
+//#include "BuilderDirector.h"
 
 namespace utility {
+
+	template <class T>
+	class BuilderDirector;
 
 	/// <summary>
 	/// The builder of the object of type <code>T</code>.

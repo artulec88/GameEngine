@@ -6,7 +6,7 @@
 
 #include "Math/Math.h"
 #include "Math/Interpolation.h"
-//#include "Math/Interpolation_impl.h"
+#include "Math/Interpolation_impl.h"
 
 #include "Utility/ILogger.h"
 

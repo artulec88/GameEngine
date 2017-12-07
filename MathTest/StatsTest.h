@@ -46,6 +46,6 @@ namespace math_test
 	};
 	/* ==================== class StatsTest2 end ==================== */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_STATS_TEST_H__ */

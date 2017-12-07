@@ -157,6 +157,7 @@
     <ClInclude Include="StringUtility.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="TimeSpan.h" />
+    <ClInclude Include="TimeUnits.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector_impl.h" />

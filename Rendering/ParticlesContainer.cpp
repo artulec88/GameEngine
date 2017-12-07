@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ParticlesContainer.h"
 
+#include "Utility/ILogger.h"
+
 rendering::particles::ParticlesContainer::ParticlesContainer() :
 	ParticlesContainer(0, attributes::AttributesMask(0))
 {

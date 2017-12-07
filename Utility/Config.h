@@ -21,18 +21,23 @@ namespace utility
 	public:
 		/// <summary> Config default constructor. </summary>
 		explicit Config();
+
 		/// <summary> Config destructor. </summary>
 		virtual ~Config();
+
 		/// <summary> Config copy constructor. </summary>
 		/// <param name="config"> The configuration to copy construct from. </param>
 		Config(const Config& config) = delete;
+
 		/// <summary> Config move constructor. </summary>
 		/// <param name="config"> The configuration to move construct from. </param>
 		Config(Config&& config) = delete;
+
 		/// <summary> Config copy assignment operator. </summary>
 		/// <param name="config"> The configuration to copy assign from. </param>
 		/// <returns> The newly copy-constructed configuration. </returns>
 		Config& operator=(const Config& config) = delete;
+
 		/// <summary> Config move assignment operator. </summary>
 		/// <param name="config"> The configuration to move assign from. </param>
 		/// <returns> The newly move-assigned configuration. </returns>

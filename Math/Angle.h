@@ -2,11 +2,12 @@
 #define __MATH_ANGLE_H__
 
 #include "Math.h"
-#include "Utility/ILogger.h"
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "StatisticsStorage.h"
 #endif
+
+#include <ostream>
 
 namespace math
 {
@@ -111,23 +112,12 @@ namespace math
 			return unitType == units::DEGREE ? ToDeg(m_angle) : m_angle;
 		}
 
-		/// <summary> Sets the value of the angle to the given <paramref name="angle"/> specified in the passed <paramref name="unitType"/>. </summary>
-		MATH_API void Set(const Real angle, units::UnitType unitType)
-		{
-			START_PROFILING_MATH(false, "");
-			switch (unitType)
-			{
-			case units::DEGREE:
-				m_angle = ToRad(angle);
-				break;
-			case units::RADIAN:
-				m_angle = angle;
-				break;
-			default:
-				ERROR_LOG_MATH("Unknown unit type specified: ", unitType);
-			}
-			STOP_PROFILING_MATH("");
-		}
+		/// <summary>
+		/// Sets the value of the angle to the given <paramref name="angle"/> specified in the passed <paramref name="unitType"/>.
+		/// </summary>
+		/// <param name="angle"> The new value for the angle to be set. </param>
+		/// <param name="unitType"> The angle unit. </param>
+		MATH_API inline void Set(const Real angle, units::UnitType unitType);
 
 		/// <summary>
 		/// Calculates and returns the sine of the current angle.

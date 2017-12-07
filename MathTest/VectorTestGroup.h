@@ -424,6 +424,6 @@ namespace math_test
 	//	math::Vector2D m_expectedLerpVector;
 	//}; /* end class Vector2DTestLerp */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_VECTOR_TEST_GROUP_H__ */

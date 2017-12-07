@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "Transform.h"
 
+#include "Utility/ILogger.h"
+
 math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
 	const Quaternion& rotation /* = math::NO_ROTATION_QUATERNION */,
 	Real scale /* = REAL_ONE */) :
@@ -172,6 +174,12 @@ void math::Transform::Rotate(const Quaternion& rot)
 	//DEBUG_LOG_MATH("Rotating the transformation by the quaternion ", rot);
 	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
+}
+
+void math::Transform::CalculateParentTransformation() const
+{
+	CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != nullptr, utility::logging::ERR, "Parent transform is NULL.");
+	m_parentTransformation = m_parentTransform->GetTransformation();
 }
 
 void math::Transform::LookAt(const Vector3D& point, const Vector3D& up)

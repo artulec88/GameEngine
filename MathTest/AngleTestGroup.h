@@ -238,6 +238,6 @@ namespace math_test
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestDivideByValue */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_ANGLE_TEST_GROUP_H__ */

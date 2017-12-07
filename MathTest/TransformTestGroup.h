@@ -66,6 +66,6 @@ namespace math_test
 		math::Transform m_expectedChildFinalTransform;
 	}; /* end class TransformTestParent */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_TRANSFORM_TEST_GROUP_H__ */

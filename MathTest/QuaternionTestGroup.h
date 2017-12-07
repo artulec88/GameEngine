@@ -287,6 +287,6 @@ namespace math_test
 		math::Matrix4D m_expectedRotationMatrix;
 	}; /* end class QuaternionTestRotationMatrix */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_QUATERNION_TEST_GROUP_H__ */

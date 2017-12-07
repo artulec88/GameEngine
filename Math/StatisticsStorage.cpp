@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "StatisticsStorage.h"
+
+#include "Utility/ILogger.h"
+
 #include <sstream>
 #include <fstream>
 

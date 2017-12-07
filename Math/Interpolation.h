@@ -2,7 +2,8 @@
 #define __MATH_INTERPOLATION_H__
 
 #include "Math.h"
-#include "Vector.h"
+
+#include <vector>
 
 namespace math
 {

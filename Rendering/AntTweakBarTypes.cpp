@@ -2,6 +2,8 @@
 #include "AntTweakBarTypes.h"
 #include "ShadowInfo.h"
 
+#include "Math/Angle.h"
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 
 TwType rendering::fogFallOffType;

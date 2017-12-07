@@ -4,6 +4,8 @@
 #include "Rendering.h"
 #include "Character.h"
 
+#include <vector>
+
 namespace rendering
 {
 	namespace text

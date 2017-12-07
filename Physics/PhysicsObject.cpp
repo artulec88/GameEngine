@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PhysicsObject.h"
 
+#include "Utility/ILogger.h"
+
 physics::PhysicsObject::PhysicsObject(math::Transform& transform, math::Real mass, const math::Vector3D& linearVelocity) :
 	m_massCenter(/* TODO: must be calculated from given points and point masses */),
 	m_mass(mass),

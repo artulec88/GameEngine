@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Time.h"
-#include <sstream>
+#include "TimeSpan.h"
 #include "ILogger.h"
 
+#include <sstream>
 #include <ctime>
 #include <iomanip>
 
@@ -106,6 +107,19 @@ utility::timing::DateTime& utility::timing::DateTime::operator=(DateTime&& dateT
 	return *this;
 }
 
+utility::timing::DateTime& utility::timing::DateTime::operator+=(const TimeSpan& timeSpan)
+{
+	m_timePoint += std::chrono::nanoseconds(timeSpan.GetValue());
+	//m_timePoint += timeSpan.GetDuration();
+	return *this;
+}
+
+utility::timing::DateTime& utility::timing::DateTime::operator-=(const TimeSpan& timeSpan)
+{
+	m_timePoint -= std::chrono::nanoseconds(timeSpan.GetValue());
+	return *this;
+}
+
 bool utility::timing::DateTime::operator==(const DateTime& dateTime) const
 {
 	return m_timePoint == dateTime.m_timePoint;
@@ -158,6 +172,11 @@ utility::timing::Timer::~Timer()
 {
 }
 
+utility::timing::TimeSpan utility::timing::Timer::GetTimeSpan() const
+{
+	return TimeSpan(std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime));
+}
+
 //long long Utility::timing::Timer::GetDuration(TimeUnit timeUnit) const
 //{
 //	switch (timeUnit)
@@ -195,4 +214,11 @@ void utility::timing::Timer::Stop()
 {
 	//CHECK_CONDITION_RETURN_VOID_UTILITY(m_isRunning, Logging::ERR, "Stopping the timer which is already stopped.");
 	m_stopTime = std::chrono::system_clock::now();
+}
+
+std::string utility::timing::Timer::ToString(const TimeUnit timeUnit /* = NANOSECOND */) const
+{
+	std::stringstream ss("");
+	ss << GetDuration(timeUnit) << " " << DateTime::ConvertTimeUnitToString(timeUnit);
+	return ss.str();
 }

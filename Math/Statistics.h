@@ -2,11 +2,14 @@
 #define __MATH_STATISTICS_H__
 
 #include "Math.h"
+
+#include "Utility/Time.h"
+#include "Utility/TimeSpan.h"
+
 #include <map>
 #include <vector>
+#include <memory>
 #include <string>
-#include "Utility/ILogger.h"
-#include "Utility/Time.h"
 
 //#define PROFILING_ENABLED
 

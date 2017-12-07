@@ -1,14 +1,32 @@
 #include "StdAfx.h"
 #include "Matrix.h"
 #include "FloatingPoint.h"
+#include "Vector.h"
+#include "Angle.h"
 
-#include "Utility/Utility.h"
+#include "Utility/ILogger.h"
 
 #include <utility>
-
 #include <xmmintrin.h>
 
 /* static */ const math::Matrix4D math::Matrix4D::IDENTITY_MATRIX;
+
+math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Angle& screenRotationAngle, const Vector2D& scale) :
+	Matrix4D(screenRotationAngle.Cos() * scale.x, screenRotationAngle.Sin() * scale.y, REAL_ZERO, REAL_ZERO,
+		-screenRotationAngle.Sin() * scale.x, screenRotationAngle.Cos() * scale.y, REAL_ZERO, REAL_ZERO,
+		REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO,
+		screenPosition.x, screenPosition.y, REAL_ZERO, REAL_ONE)
+{
+	START_PROFILING_MATH(false, "3");
+	STOP_PROFILING_MATH("3");
+}
+
+math::Matrix4D::Matrix4D(const Vector3D& pos) :
+	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.x, pos.y, pos.z, REAL_ONE)
+{
+	START_PROFILING_MATH(false, "6");
+	STOP_PROFILING_MATH("6");
+}
 
 math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
 	Matrix4D()
@@ -178,6 +196,28 @@ math::Matrix4D::Matrix4D(const Real* values) :
 {
 	START_PROFILING_MATH(false, "15");
 	STOP_PROFILING_MATH("15");
+}
+
+math::Real math::Matrix4D::GetElement(int i, int j) const
+{
+	CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), utility::logging::ERR, "Incorrect row index given (", i, ")");
+	CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), utility::logging::ERR, "Incorrect column index given (", j, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	return m_values[i][j];
+#else
+	return m_values[i * SIZE + j];
+#endif
+}
+
+void math::Matrix4D::SetElement(int i, int j, Real value)
+{
+	CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), utility::logging::ERR, "Incorrect row index given (", i, ")");
+	CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), utility::logging::ERR, "Incorrect column index given (", j, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	m_values[i][j] = value;
+#else
+	m_values[i * SIZE + j] = value;
+#endif
 }
 
 void math::Matrix4D::M4x4_SSE(const Real* matA, const Real* matB, Real* matC) const {
@@ -716,5 +756,25 @@ void math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	m_values[4] = r.y;	m_values[5] = u.y;	m_values[6] = f.y;	m_values[7] = REAL_ZERO;
 	m_values[8] = r.z;	m_values[9] = u.z;	m_values[10] = f.z;	m_values[11] = REAL_ZERO;
 	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
+#endif
+}
+
+const math::Real* math::Matrix4D::operator[](int index) const
+{
+	CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), utility::logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	return &m_values[index][0];
+#else
+	return &m_values[index];
+#endif
+}
+
+math::Real* math::Matrix4D::operator[](int index)
+{
+	CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), utility::logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	return &m_values[index][0];
+#else
+	return &m_values[index];
 #endif
 }

@@ -1,6 +1,8 @@
 #include "MatrixTestGroup.h"
 #include "Def.h"
 
+#include "Utility/ILogger.h"
+
 using namespace math_test;
 
 /* ==================== class MatrixTestGroup begin ==================== */

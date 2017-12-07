@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Triangle.h"
+#include "Angle.h"
 #include "FloatingPoint.h"
 
 math::Triangle::Triangle(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) noexcept :

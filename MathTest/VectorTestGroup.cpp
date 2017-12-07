@@ -1,5 +1,8 @@
 #include "VectorTestGroup.h"
+
 #include "Math/FloatingPoint.h"
+
+#include "Utility/ILogger.h"
 
 using namespace math_test;
 

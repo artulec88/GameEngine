@@ -32,10 +32,12 @@ namespace utility
 
 		/// <summary> Command line parameters mapping object copy assignment operator. </summary>
 		/// <param name="commandLineMapper"> The command line parameters mapping object to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned command line parameters mapper. </returns>
 		CommandLineMapper& operator=(const CommandLineMapper& commandLineMapper) = delete;
 
 		/// <summary> Command line parameters mapping object move assignment operator. </summary>
 		/// <param name="commandLineMapper"> The command line parameters mapping object to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned command line parameters mapper. </returns>
 		CommandLineMapper& operator=(CommandLineMapper&& commandLineMapper) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 

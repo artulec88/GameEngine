@@ -5,6 +5,8 @@
 #include "IAudioEngine.h"
 #include "irrKlang.h"
 
+#include <map>
+
 namespace audio
 {
 	class AudioEngineIrrKlang : public IAudioEngine

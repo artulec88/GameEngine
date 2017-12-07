@@ -3,6 +3,7 @@
 
 #include "Test.h"
 #include "Math/Matrix.h"
+#include "Math/Vector.h"
 
 namespace math_test
 {
@@ -16,7 +17,6 @@ namespace math_test
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -35,7 +35,6 @@ namespace math_test
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
 		math::Matrix4D m_matrix;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MatrixTestBase */
@@ -45,9 +44,9 @@ namespace math_test
 	public:
 		MatrixTestCompare(const math::Matrix4D& matrix1, const math::Matrix4D& matrix2, bool expectedCompareResult);
 		virtual ~MatrixTestCompare();
-	public:
-		virtual void StartTest() override;
-		virtual void StartTimeTest(unsigned int iterationsCount) override;
+
+		void StartTest() override;
+		void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		math::Matrix4D m_compareMatrix;
 		bool m_expectedCompareResult;
@@ -58,9 +57,8 @@ namespace math_test
 	public:
 		MatrixTestMultiplyByMatrixOperator(const math::Matrix4D& matrix1, const math::Matrix4D& matrix2, const math::Matrix4D& expectedMultiplyResultMatrix);
 		virtual ~MatrixTestMultiplyByMatrixOperator();
-	public:
-		virtual void StartTest() override;
-		virtual void StartTimeTest(unsigned int iterationsCount) override;
+		void StartTest() override;
+		void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		math::Matrix4D m_matrix2;
 		math::Matrix4D m_expectedMultiplyResultMatrix;
@@ -71,14 +69,13 @@ namespace math_test
 	public:
 		MatrixTestMultiplyByVectorOperator(const math::Matrix4D& matrix1, const math::Vector3D& vector, const math::Vector3D& expectedMultiplyResultVector);
 		virtual ~MatrixTestMultiplyByVectorOperator();
-	public:
-		virtual void StartTest() override;
-		virtual void StartTimeTest(unsigned int iterationsCount) override;
+		void StartTest() override;
+		void StartTimeTest(unsigned int iterationsCount) override;
 	protected:
 		math::Vector3D m_vector;
 		math::Vector3D m_expectedMultiplyResultVector;
 	}; /* end class MatrixTestMultiplyByVectorOperator */
 
-} /* end namespace MathTest */
+} /* end namespace mathTest */
 
 #endif /* __MATH_TEST_MATRIX_TEST_GROUP_H__ */

@@ -1,5 +1,7 @@
 #include "Test.h"
 #include "Def.h"
+
+#include "Utility/TimeSpan.h"
 #include "Utility/ILogger.h"
 
 using namespace math_test;

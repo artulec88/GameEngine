@@ -7,6 +7,8 @@
 
 #include "Math/Math.h"
 
+#include <vector>
+
 namespace rendering
 {
 	namespace particles

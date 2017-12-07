@@ -2,6 +2,8 @@
 #include "Effect.h"
 #include "Effect_impl.h"
 
+#include "Vector.h"
+
 template class MATH_API math::effects::Effect<math::Real>;
 template class MATH_API math::effects::Effect<math::Vector2D>;
 template class MATH_API math::effects::Effect<math::Vector3D>;

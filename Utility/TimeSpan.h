@@ -2,6 +2,7 @@
 #define __UTILITY_TIMING_TIME_SPAN_H__
 
 #include "Utility.h"
+#include "TimeUnits.h"
 
 #include <sstream>
 #include <chrono>
@@ -10,19 +11,6 @@ namespace utility
 {
 	namespace timing
 	{
-
-		// TODO: Make this enum scoped.
-		/// <summary> Possible time units. </summary>
-		enum TimeUnit
-		{
-			HOUR = 0,
-			MINUTE,
-			SECOND,
-			MILLISECOND,
-			MICROSECOND,
-			NANOSECOND,
-			TIME_UNITS_COUNT, // the number of all possible date-time units
-		}; /* end enum TimeUnit */
 
 		/// <summary>
 		/// The time span objects are used particularly for time measurement.

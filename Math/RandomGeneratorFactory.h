@@ -3,6 +3,7 @@
 
 #include "Math.h"
 #include "RandomGenerator.h"
+
 #include <time.h>
 #include <map>
 #include <memory>

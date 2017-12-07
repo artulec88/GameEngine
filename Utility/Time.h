@@ -2,8 +2,7 @@
 #define __UTILITY_TIMING_TIME_H__
 
 #include "Utility.h"
-//#include "ISerializable.h"
-#include "TimeSpan.h"
+#include "TimeUnits.h"
 
 #include <string>
 #include <chrono>
@@ -51,6 +50,8 @@ namespace utility {
 		//	DECEMBER,
 		//	MONTHS_COUNT, // the number of months
 		//};
+
+		class TimeSpan;
 
 		class DateTime
 		{
@@ -119,17 +120,8 @@ namespace utility {
 			{
 				return DateTime(*this) -= timeSpan;
 			}
-			DateTime& operator+=(const TimeSpan& timeSpan)
-			{
-				m_timePoint += std::chrono::nanoseconds(timeSpan.GetValue());
-				//m_timePoint += timeSpan.GetDuration();
-				return *this;
-			}
-			DateTime& operator-=(const TimeSpan& timeSpan)
-			{
-				m_timePoint -= std::chrono::nanoseconds(timeSpan.GetValue());
-				return *this;
-			}
+			UTILITY_API DateTime& operator+=(const TimeSpan& timeSpan);
+			UTILITY_API DateTime& operator-=(const TimeSpan& timeSpan);
 
 			UTILITY_API bool operator==(const DateTime& dateTime) const;
 			UTILITY_API bool operator!=(const DateTime& dateTime) const;
@@ -198,10 +190,7 @@ namespace utility {
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
-			UTILITY_API TimeSpan GetTimeSpan() const
-			{
-				return TimeSpan(std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime));
-			}
+			UTILITY_API TimeSpan GetTimeSpan() const;
 
 			UTILITY_API long long GetDuration(const TimeUnit timeUnit) const
 			{
@@ -224,12 +213,7 @@ namespace utility {
 			UTILITY_API void Reset();
 			UTILITY_API void Stop();
 			UTILITY_API bool IsRunning() const { return m_startTime > m_stopTime; }
-			UTILITY_API std::string ToString(const TimeUnit timeUnit = NANOSECOND) const
-			{
-				std::stringstream ss("");
-				ss << GetDuration(timeUnit) << " " << DateTime::ConvertTimeUnitToString(timeUnit);
-				return ss.str();
-			}
+			UTILITY_API std::string ToString(const TimeUnit timeUnit = NANOSECOND) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
