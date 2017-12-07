@@ -2,12 +2,13 @@
 #define __AUDIO_I_AUDIO_DEVICE_H__
 
 #include "Audio.h"
-#include "IAudioData.h"
 
 #include <string>
 
 namespace audio
 {
+	class IAudioData;
+
 	/// <summary>
 	/// It pretty much serves as a factory pattern for creating the audio data.
 	/// </summary>

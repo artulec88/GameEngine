@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AABBCollider.h"
 
+#include "Math/IntersectInfo.h"
+
 
 physics::AabbCollider::AabbCollider(const math::Vector3D& bottomLeftPos, const math::Vector3D& topRightPos) :
 	Collider(collider_types::TYPE_AABB),

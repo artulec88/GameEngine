@@ -2,11 +2,12 @@
 #define __AUDIO_AUDIO_OBJECT_H__
 
 #include "Audio.h"
-#include "IAudioData.h"
 #include "SampleInfo.h"
 
 namespace audio
 {
+	class IAudioData;
+
 	/// <summary>
 	/// The abstract representation of what an audio is. It is a sort of a wrapper for an audio data.
 	/// </summary>

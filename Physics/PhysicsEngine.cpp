@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "PhysicsEngine.h"
+#include "PhysicsObject.h"
+
 #include "Math/IntersectInfo.h"
+
 #include "Utility/IConfig.h"
 
 physics::PhysicsEngine::PhysicsEngine() :

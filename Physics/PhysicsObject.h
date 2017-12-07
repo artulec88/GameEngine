@@ -2,14 +2,18 @@
 #define __PHYSICS_PHYSICS_OBJECT_H__
 
 #include "Physics.h"
-#include "Collider.h"
 
 #include "Math/Vector.h"
-#include "Math/Transform.h"
-#include "Math/IntersectInfo.h"
+
+namespace math
+{
+	class IntersectInfo;
+	class Transform;
+} /* end namespace math */
 
 namespace physics
 {
+	class Collider;
 
 	/// <summary>
 	/// The representation of the physics object.

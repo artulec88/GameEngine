@@ -2,10 +2,11 @@
 #define __AUDIO_I_AUDIO_CONTEXT_H__
 
 #include "Audio.h"
-#include "AudioObject.h"
 
 namespace audio
 {
+	class AudioObject;
+
 	/// <summary>
 	/// The interface for basic audio functionality, e.g. playing, pausing and stopping audio.
 	/// </summary>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AudioContextFmod.h"
-
+#include "AudioObject.h"
 
 audio::fmod::AudioContextFmod::AudioContextFmod() :
 	m_system(nullptr)

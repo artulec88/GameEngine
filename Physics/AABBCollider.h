@@ -4,7 +4,11 @@
 #include "Physics.h"
 #include "Collider.h"
 #include "Math/AABB.h"
-#include "Math/IntersectInfo.h"
+
+namespace math
+{
+	struct Vector3D;
+} /* end namespace math */
 
 namespace physics
 {

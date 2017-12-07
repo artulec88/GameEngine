@@ -2,8 +2,16 @@
 #define __AUDIO_IAUDIO_ENGINE_H__
 
 #include "Audio.h"
-#include "Math/Vector.h"
+
+//#include "Math/Vector.h"
+
 #include <string>
+
+namespace math
+{
+	using Real = float;
+	struct Vector3D;
+} /* end namespace math */
 
 namespace audio
 {

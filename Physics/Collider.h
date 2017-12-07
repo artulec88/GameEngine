@@ -1,8 +1,10 @@
 #ifndef __PHYSICS_COLLIDER_H__
 #define __PHYSICS_COLLIDER_H__
 
-#include "Physics.h"
-#include "Math/IntersectInfo.h"
+namespace math
+{
+	class IntersectInfo;
+} /* end namespace math */
 
 namespace physics
 {

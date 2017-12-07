@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "AudioEngineFmod.h"
+
+#include "Math/Vector.h"
+#include "Math/RandomGeneratorFactory.h"
+
 #include "Utility/IConfig.h"
 #include "Utility/ILogger.h"
-
-#include "Math/RandomGeneratorFactory.h"
 
 #include "fmod_errors.h" // for error-checking
 

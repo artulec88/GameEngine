@@ -2,10 +2,11 @@
 #define __AUDIO_I_AUDIO_DATA_H__
 
 #include "Audio.h"
-#include "SampleInfo.h"
 
 namespace audio
 {
+	class SampleInfo;
+
 	/// <summary>
 	/// Low-level representation of audio data.
 	/// </summary>

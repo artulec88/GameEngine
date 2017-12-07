@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AudioEngineIrrKlang.h"
+
 #include "Utility/IConfig.h"
 #include "Utility/ILogger.h"
 

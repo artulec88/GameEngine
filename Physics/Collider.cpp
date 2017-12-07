@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Collider.h"
+#include "Physics.h"
+
 #include "Math/Sphere.h"
+#include "Math/IntersectInfo.h"
+
 #include "Utility/ILogger.h"
 
 physics::Collider::Collider(collider_types::ColliderType type) :

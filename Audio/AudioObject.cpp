@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "AudioObject.h"
+#include "IAudioData.h"
+
 #include "Math/Math.h"
+
 #include "Utility/ILogger.h"
 
 audio::AudioObject::AudioObject(const SampleInfo& sampleInfo, IAudioData* audioData) :

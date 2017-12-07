@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "PhysicsObject.h"
+#include "Collider.h"
+
+#include "Math/Transform.h"
+#include "Math/IntersectInfo.h"
 
 #include "Utility/ILogger.h"
 

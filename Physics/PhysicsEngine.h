@@ -2,7 +2,6 @@
 #define __PHYSICS_PHYSICS_ENGINE_H__
 
 #include "Physics.h"
-#include "PhysicsObject.h"
 
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
 #include "Math/Statistics.h"
@@ -13,6 +12,7 @@
 
 namespace physics
 {
+	class PhysicsObject;
 
 	/// <summary>
 	/// The physics engine.
@@ -51,8 +51,8 @@ namespace physics
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
-			/// <summary> Adds physics object for the physics simulation process. </summary>
-			/// <param name="physicsObject"> The physics object to be added to the physics engine. </param>
+		/// <summary> Adds physics object for the physics simulation process. </summary>
+		/// <param name="physicsObject"> The physics object to be added to the physics engine. </param>
 		PHYSICS_API void AddPhysicsObject(PhysicsObject* physicsObject);
 
 		/// <summary>
