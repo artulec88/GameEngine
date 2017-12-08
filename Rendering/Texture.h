@@ -12,6 +12,7 @@
 
 namespace rendering
 {
+	class TextureBuilder;
 
 	/// <summary>
 	/// The low level representation of the texture.
@@ -105,32 +106,18 @@ namespace rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		// TODO: Remove all other constructors in the future. Only the one with the TextureBuilder should remain.
 		/// <summary> Texture constructor. </summary>
-		/// <param name="fileName"> The file name of the texture. </param>
-		/// <param name="textureTarget"> The OpenGL texture target. </param>
-		/// <param name="filter">
-		/// The minifying and magnifying function that is used whenever the level-of-detail function used when sampling from the texture determines that the texture should be minified or magnified.
+		/// <param name="textureBuilder">
+		/// The texture builder storing all the required information to properly initialize a texture.
 		/// </param>
-		/// <param name="internalFormat">
-		/// Specifies the number of color components in the texture. For details see https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml.
-		/// </param>
-		/// <param name="format">
-		/// Specifies the format of the pixel data. The following symbolic values are accepted: <code>GL_RED</code>, <code>GL_RG</code>, <code>GL_RGB</code>,
-		/// <code>GL_BGR</code>, <code>GL_RGBA</code>, <code>GL_BGRA</code>, <code>GL_RED_INTEGER</code>, <code>GL_RG_INTEGER</code>, <code>GL_RGB_INTEGER</code>,
-		/// <code>GL_BGR_INTEGER</code>, <code>GL_RGBA_INTEGER</code>, <code>GL_BGRA_INTEGER</code>, <code>GL_STENCIL_INDEX</code>, <code>GL_DEPTH_COMPONENT</code>,
-		/// <code>GL_DEPTH_STENCIL</code>. For details see https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml.
-		/// </param>
-		/// <param name="wrapping">
-		/// The wrapping parameter for both (s, t) texture coordinates. Can be either <code>GL_CLAMP_TO_EDGE</code>, <code>GL_CLAMP_TO_BORDER</code>, <code>GL_MIRRORED_REPEAT</code>,
-		/// <code>GL_REPEAT</code>, or <code>GL_MIRROR_CLAMP_TO_EDGE</code>. See https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glTexParameter.xml for details.
-		/// </param>
-		/// <param name="attachment"> The attachments for the rendering targets of the texture. Particularly, useful for rendering to texture mechanism. </param>
+		RENDERING_API explicit Texture(const TextureBuilder& textureBuilder);
 		RENDERING_API explicit Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
 		RENDERING_API explicit Texture(int width = 0, int height = 0, unsigned char* data = nullptr, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
 		RENDERING_API Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments);
 		RENDERING_API Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName);
 
-		RENDERING_API virtual ~Texture();
+		RENDERING_API ~Texture();
 
 		/// <summary> Texture copy constructor. </summary>
 		Texture(const Texture& texture) = delete;
@@ -160,52 +147,6 @@ namespace rendering
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Texture */
-
-	namespace particles
-	{
-		class ParticleTexture : public Texture
-		{
-			/* ==================== Static variables begin ==================== */
-			/* ==================== Static variables end ==================== */
-
-			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
-			
-			RENDERING_API virtual ~ParticleTexture();
-
-			/// <summary> Particle texture copy constructor. </summary>
-			ParticleTexture(const ParticleTexture& particleTexture) = delete;
-
-			/// <summary> Particle texture move constructor. </summary>
-			RENDERING_API ParticleTexture(ParticleTexture&& particleTexture) noexcept;
-
-			/// <summary> Particle texture copy assignment operator. </summary>
-			ParticleTexture& operator=(const ParticleTexture& particleTexture) = delete;
-
-			/// <summary> Particle texture move assignment operator. </summary>
-			ParticleTexture& operator=(ParticleTexture&& particleTexture) = delete;
-			/* ==================== Constructors and destructors end ==================== */
-
-			/* ==================== Non-static member functions begin ==================== */
-			RENDERING_API int GetRowsCount() const { return m_rowsCount; }
-			RENDERING_API bool IsAdditive() const { return m_isAdditive; }
-			/* ==================== Non-static member functions end ==================== */
-
-			/* ==================== Non-static member variables begin ==================== */
-		protected:
-			/// <summary>
-			/// The number of rows (and columns too) in the texture atlas.
-			/// </summary>
-			int m_rowsCount;
-
-			/// <summary>
-			/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
-			/// </summary>
-			bool m_isAdditive;
-			/* ==================== Non-static member variables end ==================== */
-		}; /* end class ParticleTexture */
-	} /* end namespace particles */
 
 	//class CubeShadowMapTexture : public Texture
 	//{

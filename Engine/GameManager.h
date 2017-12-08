@@ -93,7 +93,6 @@ namespace engine
 
 		ENGINE_API const rendering::Texture* AddTexture(int textureId, const std::string& textureFileName) const;
 		ENGINE_API const rendering::Texture* AddCubeTexture(int textureId, const std::string& cubeMapTextureDirectory) const;
-		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
 		ENGINE_API inline const rendering::Texture* GetTexture(int textureId) const;
 
 		ENGINE_API const rendering::Shader* AddShader(int shaderId, const std::string& shaderFileName) const;

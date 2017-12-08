@@ -10,6 +10,8 @@
 
 namespace rendering
 {
+	class TextureBuilder;
+
 	/// <summary>
 	/// <code>Texture</code> factory.
 	/// </summary>
@@ -48,20 +50,14 @@ namespace rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 		RENDERING_API const std::string& GetTexturesDirectory() const { return m_texturesDirectory; }
-		RENDERING_API const Texture* CreateTexture(int textureId, const std::string& textureFileName);
+		RENDERING_API const Texture* CreateTexture(int textureId, const TextureBuilder& textureBuilder);
 		RENDERING_API const Texture* CreateCubeTexture(int textureId, const std::string& cubeTextureDirectory);
-		RENDERING_API const particles::ParticleTexture* CreateParticleTexture(int textureId, const std::string& textureFileName, int rowsCount, bool isAdditive);
 		RENDERING_API const Texture* GetTexture(int textureId) const
 		{
 			auto textureItr = m_textureType2TextureMap.find(textureId);
 			if (textureItr == m_textureType2TextureMap.end())
 			{
-				auto particleTextureItr = m_textureType2ParticleTextureMap.find(textureId);
-				if (particleTextureItr == m_textureType2ParticleTextureMap.end())
-				{
-					ERROR_LOG_RENDERING("No texture has been created for the specified ID (", textureId, ").");
-				}
-				return &particleTextureItr->second;
+				ERROR_LOG_RENDERING("No texture has been created for the specified ID (", textureId, ").");
 			}
 			return &textureItr->second;
 		}
@@ -78,11 +74,6 @@ namespace rendering
 		/// The map storing all textures by their unique ID.
 		/// </summary>
 		std::map<int, Texture> m_textureType2TextureMap;
-
-		/// <summary>
-		/// The map storing all particle textures by their unique ID.
-		/// </summary>
-		std::map<int, particles::ParticleTexture> m_textureType2ParticleTextureMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TextureFactory */
 

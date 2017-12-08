@@ -139,17 +139,11 @@ namespace rendering
 		RENDERING_API const Mesh* CreateMeshFromSurface(int meshId, const math::Surface& surface);
 		RENDERING_API const Mesh* GetMesh(const int meshId) const { return m_meshFactory.GetMesh(meshId); }
 
-		RENDERING_API const Texture* CreateTexture(int textureID, const std::string& textureFileName)
+		RENDERING_API inline const Texture* CreateTexture(int textureId, const std::string& textureFileName);
+		RENDERING_API inline const Texture* CreateTexture(int textureId, const TextureBuilder& textureBuilder);
+		RENDERING_API const Texture* CreateCubeTexture(int textureId, const std::string& cubeMapTextureDirectory)
 		{
-			return m_textureFactory.CreateTexture(textureID, textureFileName);
-		}
-		RENDERING_API const Texture* CreateCubeTexture(int textureID, const std::string& cubeMapTextureDirectory)
-		{
-			return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory);
-		}
-		RENDERING_API const particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
-		{
-			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+			return m_textureFactory.CreateCubeTexture(textureId, cubeMapTextureDirectory);
 		}
 		RENDERING_API const std::string& GetTexturesDirectory() const { return m_textureFactory.GetTexturesDirectory(); }
 		RENDERING_API const Texture* GetTexture(const int textureId) const { return m_textureFactory.GetTexture(textureId); }

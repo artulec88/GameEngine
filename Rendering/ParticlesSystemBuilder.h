@@ -52,7 +52,7 @@ namespace rendering
 			ParticlesSystem Build() override;
 
 			void SetDefault() override;
-			
+
 			/// <summary> Sets the maximum number of particles that final particles system will be able to maintain. </summary>
 			/// <param name="maxCount"> The maximum number of particles that final particles system will be able to maintain. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
@@ -90,6 +90,18 @@ namespace rendering
 			RENDERING_API ParticlesSystemBuilder& SetTextureId(int textureId)
 			{
 				m_textureId = textureId;
+				return *this;
+			}
+
+			RENDERING_API ParticlesSystemBuilder& SetTextureAtlasRowsCount(int textureAtlasRowsCount)
+			{
+				m_textureAtlasRowsCount = textureAtlasRowsCount;
+				return *this;
+			}
+
+			RENDERING_API ParticlesSystemBuilder& SetIsAdditive(bool isAdditive)
+			{
+				m_isAdditive = isAdditive;
 				return *this;
 			}
 
@@ -139,6 +151,16 @@ namespace rendering
 			RENDERING_API int GetTextureId() const
 			{
 				return m_textureId;
+			}
+
+			RENDERING_API int GetTextureAtlasRowsCount() const
+			{
+				return m_textureAtlasRowsCount;
+			}
+
+			RENDERING_API bool IsAdditive() const
+			{
+				return m_isAdditive;
 			}
 
 			RENDERING_API int GetShaderId() const
@@ -193,6 +215,18 @@ namespace rendering
 
 			/// <summary> The ID of the texture final particles system will use. </summary>
 			int m_textureId;
+
+			/// <summary> The integer representing the number of rows (and columns) in the texture atlas. </summary>
+			/// <remarks>
+			/// The value is only useful when the particles system uses some texture in the first place,
+			/// meaning that <code>m_textureId</code> is not equal to <code>texture_ids::INVALID</code>.
+			/// </remarks>
+			int m_textureAtlasRowsCount;
+
+			/// <summary>
+			/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
+			/// </summary>
+			bool m_isAdditive;
 			
 			/// <summary> The ID of the shader final particles system will use. </summary>
 			int m_shaderId;

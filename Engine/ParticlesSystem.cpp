@@ -3,7 +3,7 @@
 #include <algorithm>
 
 /* ==================== ParticleSystem class begin ==================== */
-engine::ParticlesSystem::ParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit) :
+engine::ParticlesSystem::ParticlesSystem(rendering::Texture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
 	//m_particles(),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
@@ -57,7 +57,7 @@ void engine::ParticlesSystem::Update(math::Real deltaTime)
 /* ==================== ParticleSystem class end ==================== */
 
 /* ==================== FireParticleSystem class begin ==================== */
-engine::FireParticlesSystem::FireParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+engine::FireParticlesSystem::FireParticlesSystem(rendering::Texture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 	math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
@@ -83,7 +83,7 @@ void engine::FireParticlesSystem::GenerateParticles(const math::Vector3D& initia
 /* ==================== FreeFallParticleSystem class end ==================== */
 
 /* ==================== FreeFallParticleSystem class begin ==================== */
-engine::FreeFallParticlesSystem::FreeFallParticlesSystem(rendering::particles::ParticleTexture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
+engine::FreeFallParticlesSystem::FreeFallParticlesSystem(rendering::Texture* particleTexture, math::Real particlesPerSecondCount, math::Real particleLifeSpanLimit,
 	math::Real particleSpeed, math::Real particleGravityComplient, const math::Angle& particleRotation, math::Real particleScale) :
 	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),

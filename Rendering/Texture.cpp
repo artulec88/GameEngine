@@ -2,9 +2,12 @@
 #include "Texture.h"
 #include "stb_image.h"
 #include "Image.h"
+#include "TextureBuilder.h"
+
+#include "Math/Math.h"
+
 #include "Utility/Utility.h"
 #include "Utility/ILogger.h"
-#include "Math/Math.h"
 
 /* ==================== TextureData class implementation begin ==================== */
 rendering::TextureData::TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping,
@@ -284,6 +287,15 @@ void rendering::TextureData::BindAsRenderTarget() const
 /* ==================== TextureData class implementation end ==================== */
 
 /* ==================== Texture class implementation begin ==================== */
+rendering::Texture::Texture(const TextureBuilder& textureBuilder) :
+	m_textureData(textureBuilder.GetFileName(), textureBuilder.GetTarget(), textureBuilder.GetFilter(), textureBuilder.GetInternalFormat(),
+		textureBuilder.GetFormat(), textureBuilder.GetWrapping(), textureBuilder.GetAttachment())
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName(textureBuilder.GetFileName())
+#endif
+{
+}
+
 rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */,
 	GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
 	m_textureData(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment)
@@ -359,27 +371,6 @@ void rendering::Texture::BindAsRenderTarget() const
 	m_textureData.BindAsRenderTarget();
 }
 /* ==================== Texture class implementation end ==================== */
-
-/* ==================== ParticleTexture class implementation begin ==================== */
-rendering::particles::ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
-	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_NONE),
-	m_rowsCount(rowsCount),
-	m_isAdditive(isAdditive)
-{
-}
-
-rendering::particles::ParticleTexture::~ParticleTexture()
-{
-}
-
-rendering::particles::ParticleTexture::ParticleTexture(ParticleTexture&& particleTexture) noexcept :
-	Texture(std::move(particleTexture)),
-	m_rowsCount(std::move(particleTexture.m_rowsCount)),
-	m_isAdditive(std::move(particleTexture.m_isAdditive))
-{
-	DELOCUST_LOG_RENDERING("Particle texture moved.");
-}
-/* ==================== ParticleTexture class implementation end ==================== */
 
 //Rendering::CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
 //{

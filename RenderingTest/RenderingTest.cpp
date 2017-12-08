@@ -798,7 +798,7 @@ void RenderScene()
 	renderer->UpdateRendererUniforms(shader_ids::AMBIENT_TERRAIN);
 	renderer->Render(test_mesh_ids::TERRAIN, terrainMaterial.get(), terrainTransform, shader_ids::AMBIENT_TERRAIN);
 
-	RenderParticles();
+	//RenderParticles();
 
 	//RenderSkybox();
 

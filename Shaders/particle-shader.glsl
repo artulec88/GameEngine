@@ -59,13 +59,13 @@ void main()
 
 #elif defined(FS_BUILD)
 
-uniform sampler2D particleTexture;
+uniform sampler2D R_particleTexture;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
-	vec4 currentParticleStageColor = texture(particleTexture, texCoord0);
-	vec4 nextParticleStageColor = texture(particleTexture, texCoord1);
+	vec4 currentParticleStageColor = texture(R_particleTexture, texCoord0);
+	vec4 nextParticleStageColor = texture(R_particleTexture, texCoord1);
 	SetFragOutput(0, mix(currentParticleStageColor, nextParticleStageColor, particleLifeStageBlendFactor));
 }
 #endif

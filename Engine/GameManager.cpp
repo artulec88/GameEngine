@@ -142,11 +142,6 @@ const rendering::Texture* engine::GameManager::AddCubeTexture(int textureId, con
 	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureId, cubeMapTextureDirectory);
 }
 
-const rendering::particles::ParticleTexture* engine::GameManager::AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
-{
-	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureId, particleTextureFileName, rowsCount, isAdditive);
-}
-
 const rendering::Texture* engine::GameManager::GetTexture(int textureId) const
 {
 	return CoreEngine::GetCoreEngine()->GetTexture(textureId);

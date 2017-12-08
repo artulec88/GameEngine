@@ -73,6 +73,10 @@ namespace rendering
 			RENDERING_API math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
 			RENDERING_API math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
 			
+			RENDERING_API int GetTextureAtlasRowsCount() const { return m_textureAtlasRowsCount; }
+
+			RENDERING_API bool IsAdditive() const { return m_isAdditive; }
+
 			/// <summary> Determines whether the specified <paramref name="attribute"/> is maintained by the particles in the system. </summary>
 			/// <param name="attribute"> The property that we want to know if it is being maintained by each particle. </param>
 			/// <returns>
@@ -134,6 +138,18 @@ namespace rendering
 			/// The ID of the particle texture. May be <code>texture_ids::INVALID</code> if no texture is used in the system.
 			/// </summary>
 			int m_textureId;
+
+			/// <summary>
+			/// The number of rows (and columns too) in the texture atlas.
+			/// It is only useful when <code>m_textureId</code> is not equal to <code>texture_ids::INVALID</code>.
+			/// </summary>
+			int m_textureAtlasRowsCount;
+
+			/// <summary>
+			/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
+			/// It is only useful when <code>m_textureId</code> is not equal to <code>texture_ids::INVALID</code>.
+			/// </summary>
+			bool m_isAdditive;
 
 			/// <summary>
 			/// The ID of the shader the particles system will use.

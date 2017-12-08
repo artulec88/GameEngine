@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TextureFactory.h"
 #include "TextureIDs.h"
+#include "TextureBuilder.h"
 
 #include "Utility/IConfig.h"
 #include "Utility/FileManager.h"
@@ -26,12 +27,13 @@ rendering::TextureFactory::~TextureFactory()
 {
 }
 
-const rendering::Texture* rendering::TextureFactory::CreateTexture(int textureId, const std::string& textureFileName)
+const rendering::Texture* rendering::TextureFactory::CreateTexture(int textureId, const TextureBuilder& textureBuilder)
 {
-	INFO_LOG_RENDERING("Creating texture \"", textureFileName, "\" for ID ", textureId);
-	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(m_texturesDirectory + textureFileName)));
+	INFO_LOG_RENDERING("Creating texture \"", textureBuilder.GetFileName(), "\" for ID ", textureId);
+	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(m_texturesDirectory + textureBuilder.GetFileName(), textureBuilder.GetTarget(),
+		textureBuilder.GetFilter(), textureBuilder.GetInternalFormat(), textureBuilder.GetFormat(), textureBuilder.GetWrapping(), textureBuilder.GetAttachment())));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
-	DEBUG_LOG_RENDERING("Texture \"", textureFileName, "\" has been created for ID ", textureId);
+	DEBUG_LOG_RENDERING("Texture \"", textureBuilder.GetFileName(), "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
 }
 
@@ -99,12 +101,4 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Cube texture \"", cubeTextureDirectory, "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
-}
-
-const rendering::particles::ParticleTexture* rendering::TextureFactory::CreateParticleTexture(int textureId, const std::string& textureFileName, int rowsCount, bool isAdditive)
-{
-	INFO_LOG_RENDERING("Creating particles texture \"", textureFileName, "\" for ID ", textureId);
-	const auto particleTexturePair = m_textureType2ParticleTextureMap.insert(std::make_pair(textureId, particles::ParticleTexture(m_texturesDirectory + textureFileName, rowsCount, isAdditive)));
-	CHECK_CONDITION_RENDERING(particleTexturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
-	return &particleTexturePair.first->second;
 }

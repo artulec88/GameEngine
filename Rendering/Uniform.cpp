@@ -86,7 +86,7 @@ void rendering::uniforms::TextureUniform::Update(const Renderer* renderer, const
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	unsigned int multitextureIndex = 0; // used only by the multitextures
 	const auto texture = GetPrefix() == "R_" ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != nullptr, utility::logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 	texture->Bind(samplerSlot, multitextureIndex);
 	glUniform1i(GetLocation(), samplerSlot);
 }

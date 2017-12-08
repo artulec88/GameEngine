@@ -6,6 +6,7 @@
 #include "GuiImageControl.h"
 #include "AntTweakBarTypes.h"
 #include "ShaderIDs.h"
+#include "TextureBuilder.h"
 
 #include "Math/FloatingPoint.h"
 
@@ -135,6 +136,7 @@ rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	SetSamplerSlot("waterDUDVMap", 2);
 	SetSamplerSlot("waterNormalMap", 3);
 	SetSamplerSlot("waterDepthMap", 4);
+	// SetSamplerSlot("particleTexture", 0);
 
 #ifndef ANT_TWEAK_BAR_ENABLED
 	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
@@ -204,6 +206,16 @@ const rendering::Mesh* rendering::Renderer::CreateMesh(int meshID, const std::st
 const rendering::Mesh* rendering::Renderer::CreateMeshFromSurface(int meshID, const math::Surface& surface)
 {
 	return m_meshFactory.CreateMeshFromSurface(meshID, surface);
+}
+
+const rendering::Texture* rendering::Renderer::CreateTexture(int textureId, const std::string& textureFileName)
+{
+	return CreateTexture(textureId, TextureBuilder(textureFileName));
+}
+
+const rendering::Texture* rendering::Renderer::CreateTexture(int textureId, const TextureBuilder& textureBuilder)
+{
+	return m_textureFactory.CreateTexture(textureId, textureBuilder);
 }
 
 const rendering::Shader* rendering::Renderer::CreateShader(int shaderID, const std::string& shaderFileName)
@@ -406,10 +418,10 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 	DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
 	const auto particleShader = m_shaderFactory.GetShader(particleShaderID);
 	particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
-	const auto particleTexture = static_cast<const particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureId()));
+	const auto particleTexture = m_textureFactory.GetTexture(particlesSystem.GetTextureId());
 	particleTexture->Bind();
 	particleShader->SetUniformi("particleTexture", 0);
-	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<math::Real>(particleTexture->GetRowsCount()));
+	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<math::Real>(particlesSystem.GetTextureAtlasRowsCount()));
 	if (glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -418,7 +430,7 @@ void rendering::Renderer::RenderParticles(int particleShaderID, const particles:
 	{
 		glEnable(GL_BLEND);
 	}
-	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, particlesSystem.IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 
 	m_particleInstanceVboData.clear();
 	const auto cameraViewMatrix = m_currentCamera->GetViewMatrix();

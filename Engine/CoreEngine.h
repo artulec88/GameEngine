@@ -201,10 +201,6 @@ namespace engine
 		{
 			return m_renderer->CreateCubeTexture(textureId, cubeMapTextureDirectory);
 		}
-		ENGINE_API const rendering::particles::ParticleTexture* AddParticleTexture(int textureId, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
-		{
-			return m_renderer->CreateParticleTexture(textureId, particleTextureFileName, rowsCount, isAdditive);
-		}
 		ENGINE_API const rendering::Texture* GetTexture(int textureId) const
 		{
 			return m_renderer->GetTexture(textureId);

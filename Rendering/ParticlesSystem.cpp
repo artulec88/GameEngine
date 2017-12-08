@@ -12,6 +12,8 @@ rendering::particles::ParticlesSystem::ParticlesSystem(const ParticlesSystemBuil
 	m_updaters(particlesSystemBuilder.GetUpdaters()),
 	m_killer(particlesSystemBuilder.GetKiller()),
 	m_textureId(particlesSystemBuilder.GetTextureId()),
+	m_textureAtlasRowsCount(particlesSystemBuilder.GetTextureAtlasRowsCount()),
+	m_isAdditive(particlesSystemBuilder.IsAdditive()),
 	m_shaderId(particlesSystemBuilder.GetShaderId())
 {
 	// TODO: Determine m_shaderID based on the given attributesMask

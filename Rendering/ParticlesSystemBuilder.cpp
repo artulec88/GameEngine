@@ -20,6 +20,8 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_maxCount(m_defaultMaxParticlesCount),
 	m_attributesMask(m_defaultAttributesMask),
 	m_textureId(texture_ids::INVALID),
+	m_textureAtlasRowsCount(1),
+	m_isAdditive(false),
 	m_shaderId(shader_ids::INVALID),
 	m_emitters(),
 	m_updaters(),
@@ -63,6 +65,8 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 	m_maxCount = m_defaultMaxParticlesCount;
 	m_attributesMask = m_defaultAttributesMask;
 	m_textureId = texture_ids::INVALID;
+	m_textureAtlasRowsCount = 1;
+	m_isAdditive = false;
 	m_shaderId = shader_ids::INVALID;
 	m_emitters.clear();
 	m_updaters.clear();
@@ -86,7 +90,7 @@ rendering::particles::ParticlesSystem rendering::particles::ParticlesSystemBuild
 	////	GET_CONFIG_VALUE_STR_GAME("particleTexture" + m_configurationSuffix, "particleRain.png"),
 	////	GET_CONFIG_VALUE_RENDERING("particleTextureRowsCount" + m_configurationSuffix, 4),
 	////	GET_CONFIG_VALUE_RENDERING("particleTextureIsAdditive" + m_configurationSuffix, true));
-	////CHECK_CONDITION_GAME(m_particleTexture != NULL, Utility::Logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
+	////CHECK_CONDITION_GAME(m_particleTexture != nullptr, utility::logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
 
 	////if (GET_CONFIG_VALUE_RENDERING("particleAttributePositionEnabled" + m_configurationSuffix, true))
 	////{
