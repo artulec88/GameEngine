@@ -129,6 +129,18 @@ namespace rendering
 			}
 
 			/// <summary>
+			/// Sets the uniform color that the final particles system will use.
+			/// The value will only be useful when the shader used by the particles system will define the uniform <code>R_particleColor</color>.
+			/// </summary>
+			/// <param name="color"> The uniform color to be used by the final particles system. </param>
+			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
+			RENDERING_API ParticlesSystemBuilder& SetUniformColor(const Color& color)
+			{
+				m_uniformColor = color;
+				return *this;
+			}
+
+			/// <summary>
 			/// Adds next particles emitter to the particles system.
 			/// </summary>
 			/// <param name="particlesEmitter"> The particles emitter to be used by the particles system. </param>
@@ -182,6 +194,11 @@ namespace rendering
 			RENDERING_API int GetShaderId() const
 			{
 				return m_shaderId;
+			}
+
+			RENDERING_API const Color& GetUniformColor() const
+			{
+				return m_uniformColor;
 			}
 
 			RENDERING_API const std::vector<ParticlesEmitter>& GetEmitters() const
@@ -249,6 +266,12 @@ namespace rendering
 			
 			/// <summary> The ID of the shader final particles system will use. </summary>
 			int m_shaderId;
+
+			/// <summary>
+			/// The uniform color to be used by the particles system.
+			/// Only useful when the shader used by the particles system defines the uniform <code>R_particleColor</code>.
+			/// </summary>
+			Color m_uniformColor;
 
 			/// <summary> The emitters to be used by the final particles system. </summary>
 			std::vector<ParticlesEmitter> m_emitters;

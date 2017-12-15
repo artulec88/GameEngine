@@ -32,6 +32,7 @@ namespace rendering
 			BILLBOARD,
 			PARTICLES,
 			PARTICLES_COLORS, // For particles that have colors attributes.
+			PARTICLES_UNIFORM_COLORS, // For particles that all use the same uniform color.
 			GUI,
 			DIRECTIONAL_LIGHT,
 			DIRECTIONAL_LIGHT_TERRAIN,

@@ -91,6 +91,8 @@ namespace rendering
 				return m_particles.IsAttributeEnabled(attribute);
 			}
 			
+			RENDERING_API const Color& GetUniformColor() const { return m_uniformColor; }
+
 			RENDERING_API std::vector<math::Real> GetInstanceData(const Camera* camera, std::vector<math::Real>& particleInstanceVboData) const;
 
 			//RENDERING_API void SetMaxParticlesCount(size_t maxCount)
@@ -166,6 +168,12 @@ namespace rendering
 			/// Based on the attributes the particles have the shader's ID should be chosen appropriately.
 			/// </summary>
 			int m_shaderId;
+
+			/// <summary>
+			/// The uniform color for the particles.
+			/// The value is only useful when the particle system's shader defines the uniform <code>R_particleColor</code>.
+			/// </summary>
+			Color m_uniformColor;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystem */
 	} /* end namespace particles */

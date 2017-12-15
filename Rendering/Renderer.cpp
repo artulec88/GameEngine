@@ -421,6 +421,7 @@ void rendering::Renderer::RenderParticles(const particles::ParticlesSystem& part
 		m_mappedValues.SetTexture("particleTexture", m_textureFactory.GetTexture(particlesSystem.GetTextureId()));
 		m_mappedValues.SetReal("textureAtlasRowsCount", particlesSystem.GetTextureAtlasRowsCount());
 	}
+	m_mappedValues.SetVector4D("particleColor", particlesSystem.GetUniformColor().GetValues());
 
 	const auto particleShader = m_shaderFactory.GetShader(particlesSystem.GetShaderId());
 	particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).

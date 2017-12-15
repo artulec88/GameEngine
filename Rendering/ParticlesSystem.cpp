@@ -18,7 +18,8 @@ rendering::particles::ParticlesSystem::ParticlesSystem(const ParticlesSystemBuil
 	m_textureId(particlesSystemBuilder.GetTextureId()),
 	m_textureAtlasRowsCount(particlesSystemBuilder.GetTextureAtlasRowsCount()),
 	m_isAdditive(particlesSystemBuilder.IsAdditive()),
-	m_shaderId(particlesSystemBuilder.GetShaderId())
+	m_shaderId(particlesSystemBuilder.GetShaderId()),
+	m_uniformColor(particlesSystemBuilder.GetUniformColor())
 {
 	// TODO: Determine m_meshId and m_shaderID based on the given attributesMask
 }
@@ -123,11 +124,11 @@ std::vector<math::Real> rendering::particles::ParticlesSystem::GetInstanceData(c
 //		particleInstanceVboData.push_back(CalculateLifeStageFactor(i));
 //#endif
 
-		const auto& color = m_particles.GetColor(i);
-		particleInstanceVboData.push_back(color.GetRed());
-		particleInstanceVboData.push_back(color.GetGreen());
-		particleInstanceVboData.push_back(color.GetBlue());
-		particleInstanceVboData.push_back(color.GetAlpha());
+		//const auto& color = m_particles.GetColor(i);
+		//particleInstanceVboData.push_back(color.GetRed());
+		//particleInstanceVboData.push_back(color.GetGreen());
+		//particleInstanceVboData.push_back(color.GetBlue());
+		//particleInstanceVboData.push_back(color.GetAlpha());
 	}
 	return particleInstanceVboData;
 }

@@ -58,6 +58,8 @@ rendering::ShaderFactory::ShaderFactory(const std::string& shadersDirectory) :
 		GET_CONFIG_VALUE_STR_RENDERING("defaultParticleShader", "particle-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(shader_ids::PARTICLES_COLORS, Shader(m_shadersDirectory,
 		GET_CONFIG_VALUE_STR_RENDERING("defaultParticleColorShader", "particle-shader-color.glsl"))),
+		m_shaderType2ShaderMap.emplace(shader_ids::PARTICLES_UNIFORM_COLORS, Shader(m_shadersDirectory,
+			GET_CONFIG_VALUE_STR_RENDERING("defaultParticleUniformColorShader", "particle-shader-uniform-color.glsl"))),
 	m_shaderType2ShaderMap.emplace(shader_ids::GUI, Shader(m_shadersDirectory,
 		GET_CONFIG_VALUE_STR_RENDERING("defaultGuiShader", "gui-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(shader_ids::DIRECTIONAL_LIGHT, Shader(m_shadersDirectory,

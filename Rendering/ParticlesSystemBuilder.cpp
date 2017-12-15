@@ -25,6 +25,7 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 	m_textureAtlasRowsCount(1),
 	m_isAdditive(false),
 	m_shaderId(shader_ids::INVALID),
+	m_uniformColor(color_ids::YELLOW),
 	m_emitters(),
 	m_updaters(),
 	m_particlesKiller(nullptr)
@@ -71,6 +72,7 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 	m_textureAtlasRowsCount = 1;
 	m_isAdditive = false;
 	m_shaderId = shader_ids::INVALID;
+	m_uniformColor = Color(color_ids::YELLOW);
 	m_emitters.clear();
 	m_updaters.clear();
 	m_particlesKiller = nullptr;

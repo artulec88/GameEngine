@@ -25,6 +25,9 @@ rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const st
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE_COLOR,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
 		4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
+	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE_UNIFORM_COLOR,
+		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
+			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::DEBUG,

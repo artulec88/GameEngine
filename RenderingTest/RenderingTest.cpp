@@ -693,13 +693,13 @@ void CreateCubes()
 void CreateParticlesSystem()
 {
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
-		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
+	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::SCALE | particles::attributes::ROTATION).
+		SetMeshId(mesh_ids::PARTICLE_UNIFORM_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_UNIFORM_COLORS);
 
 	particles::ParticlesEmitter particlesEmitter(10.0f);
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
-	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
+	//const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
+	//particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantScaleGenerator>(0.01f));
 	particlesEmitter.AddGenerator(make_unique<particles::generators::RangeRotationGenerator>(Angle(0.0f), Angle(90.0f)));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);

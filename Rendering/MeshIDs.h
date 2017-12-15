@@ -11,6 +11,7 @@ namespace rendering
 			SIMPLE_PLANE,
 			PARTICLE,
 			PARTICLE_COLOR,
+			PARTICLE_UNIFORM_COLOR,
 			DEBUG,
 			//TERRAIN,
 			COUNT,
