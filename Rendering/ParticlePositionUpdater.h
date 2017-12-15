@@ -16,6 +16,7 @@ namespace rendering
 			{
 				enum PositionUpdaterType
 				{
+					CONSTANT_MOVEMENT,
 					EULER = 0
 				}; /* end enum PositionUpdaterType */
 			} /* end namespace position_updater_types */
@@ -41,11 +42,11 @@ namespace rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				void Set(ParticlesContainer* particlesContainer, size_t i, const math::Vector3D& position)
+				void Set(ParticlesContainer* particlesContainer, size_t i, const math::Vector3D& position) const
 				{
 					particlesContainer->SetPosition(i, position);
 				}
-				void Set(ParticlesContainer* particlesContainer, size_t i, math::Real x, math::Real y, math::Real z)
+				void Set(ParticlesContainer* particlesContainer, size_t i, math::Real x, math::Real y, math::Real z) const
 				{
 					particlesContainer->SetPosition(i, x, y, z);
 				}

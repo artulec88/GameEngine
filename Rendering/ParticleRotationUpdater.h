@@ -1,5 +1,5 @@
-#ifndef __RENDERING_PARTICLE_COLOR_UPDATER_H__
-#define __RENDERING_PARTICLE_COLOR_UPDATER_H__
+#ifndef __RENDERING_PARTICLE_ROTATION_UPDATER_H__
+#define __RENDERING_PARTICLE_ROTATION_UPDATER_H__
 
 #include "Rendering.h"
 #include "ParticleAttributeUpdater.h"
@@ -12,58 +12,58 @@ namespace rendering
 	{
 		namespace updaters
 		{
-			namespace color_updater_types
+			namespace rotation_updater_types
 			{
-				enum ColorUpdaterType
+				enum RotationUpdaterType
 				{
 					CONSTANT = 0
-				}; /* end enum ColorUpdaterType */
-			} /* end namespace color_updater_types */
+				}; /* end enum RotationUpdaterType */
+			} /* end namespace rotation_updater_types */
 
-			  /// <summary>
-			  /// Updates color for the particle.
-			  /// </summary>
-			class ColorUpdater : public ParticleAttributeUpdater
+			/// <summary>
+			/// Updates rotation for the particle.
+			/// </summary>
+			class RotationUpdater : public ParticleAttributeUpdater
 			{
 				/* ==================== Static variables and functions begin ==================== */
 				/* ==================== Static variables and functions end ==================== */
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				ColorUpdater() :
-					ParticleAttributeUpdater(attributes::COLOR)
+				RotationUpdater() :
+					ParticleAttributeUpdater(attributes::ROTATION)
 				{
 				}
-				virtual ~ColorUpdater()
+				virtual ~RotationUpdater()
 				{
 				}
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			protected:
-				void Set(ParticlesContainer* particlesContainer, size_t i, const Color& color) const
+				void Set(ParticlesContainer* particlesContainer, size_t i, const math::Angle& angle) const
 				{
-					particlesContainer->SetColor(i, color);
+					particlesContainer->SetRotation(i, angle);
 				}
-				void Set(ParticlesContainer* particlesContainer, size_t i, math::Real red, math::Real green, math::Real blue, math::Real alpha) const
+				void Increase(ParticlesContainer* particlesContainer, size_t i, const math::Angle& angle) const
 				{
-					particlesContainer->SetColor(i, red, green, blue, alpha);
+					particlesContainer->IncreaseRotation(i, angle);
 				}
 				/* ==================== Non-static member functions end ==================== */
 
 				/* ==================== Non-static member variables begin ==================== */
 				/* ==================== Non-static member variables end ==================== */
-			}; /* end class ColorUpdater */
+			}; /* end class RotationUpdater */
 
-			class ConstantColorUpdater : public ColorUpdater
+			class ConstantRotationParticlesUpdater : public RotationUpdater
 			{
 				/* ==================== Static variables and functions begin ==================== */
 				/* ==================== Static variables and functions end ==================== */
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API explicit ConstantColorUpdater(const Color& color);
-				RENDERING_API virtual ~ConstantColorUpdater();
+				RENDERING_API explicit ConstantRotationParticlesUpdater(const math::Angle& angle);
+				RENDERING_API virtual ~ConstantRotationParticlesUpdater();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
@@ -72,11 +72,11 @@ namespace rendering
 
 				/* ==================== Non-static member variables begin ==================== */
 			private:
-				Color m_color;
+				math::Angle m_angle;
 				/* ==================== Non-static member variables end ==================== */
-			}; /* end class ConstantColorUpdater */
+			}; /* end class ConstantRotationParticlesUpdater */
 		} /* end namespace updaters */
 	} /* end namespace particles */
 } /* end namespace rendering */
 
-#endif /* __RENDERING_PARTICLE_COLOR_UPDATER_H__ */
+#endif /* __RENDERING_PARTICLE_ROTATION_UPDATER_H__ */

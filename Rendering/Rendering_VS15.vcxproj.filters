@@ -169,6 +169,9 @@
     <ClCompile Include="ParticlesKiller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleRotationUpdater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntTweakBarTypes.h">
@@ -355,6 +358,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParticlesKiller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRotationUpdater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

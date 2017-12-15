@@ -19,6 +19,9 @@
 #include "Rendering/ParticleColorGenerator.h"
 #include "Rendering/ParticleColorUpdater.h"
 #include "Rendering/ParticlePositionUpdater.h"
+#include "Rendering/ParticleScaleGenerator.h"
+#include "Rendering/ParticleRotationGenerator.h"
+#include "Rendering/ParticleRotationUpdater.h"
 
 #include "Math/Transform.h"
 #include "Math/StatisticsStorage.h"
@@ -658,7 +661,7 @@ void CreateCamera()
 		SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, 0.0f).SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
@@ -690,16 +693,19 @@ void CreateCubes()
 void CreateParticlesSystem()
 {
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
+	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
 		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 
-	particles::ParticlesEmitter particlesEmitter(2.0f);
+	particles::ParticlesEmitter particlesEmitter(10.0f);
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN) };
+	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
+	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantScaleGenerator>(0.01f));
+	particlesEmitter.AddGenerator(make_unique<particles::generators::RangeRotationGenerator>(Angle(0.0f), Angle(90.0f)));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);
 
 	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantMovementParticlesUpdater>(math::Vector3D(0.0f, 0.0f, 0.2f)));
+	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantRotationParticlesUpdater>(math::Angle(180.0f)));
 	//particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
 
 	particlesKiller = make_unique<particles::TimerParticlesKiller>(1.2f);
