@@ -7,6 +7,7 @@
 #include "ParticleRotationGenerator.h"
 #include "ParticleScaleGenerator.h"
 #include "ParticleLifeSpanGenerator.h"
+#include "MeshIDs.h"
 #include "TextureIDs.h"
 #include "ShaderIDs.h"
 
@@ -19,6 +20,7 @@ rendering::particles::ParticlesSystemBuilder::ParticlesSystemBuilder() :
 		static_cast<int>(attributes::POSITION | attributes::LIFE_SPAN | attributes::COLOR | attributes::SCALE))),
 	m_maxCount(m_defaultMaxParticlesCount),
 	m_attributesMask(m_defaultAttributesMask),
+	m_meshId(mesh_ids::INVALID),
 	m_textureId(texture_ids::INVALID),
 	m_textureAtlasRowsCount(1),
 	m_isAdditive(false),
@@ -64,6 +66,7 @@ void rendering::particles::ParticlesSystemBuilder::SetDefault()
 {
 	m_maxCount = m_defaultMaxParticlesCount;
 	m_attributesMask = m_defaultAttributesMask;
+	m_meshId = mesh_ids::INVALID;
 	m_textureId = texture_ids::INVALID;
 	m_textureAtlasRowsCount = 1;
 	m_isAdditive = false;

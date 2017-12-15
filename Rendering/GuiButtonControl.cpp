@@ -32,7 +32,7 @@ rendering::controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	}
 	else
 	{
-		// Replace all such calls to create new meshes with reference to one single mesh (probably MeshIDs::SIMPLE_QUAD).
+		// Replace all such calls to create new meshes with reference to one single mesh (probably mesh_ids::SIMPLE_QUAD).
 		math::Vector2D quadVertexPositions[] = { math::Vector2D(-REAL_ONE, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ONE), math::Vector2D(-REAL_ONE, -REAL_ONE), math::Vector2D(REAL_ONE, -REAL_ONE) };
 		math::Vector2D quadTexCoords[] = { math::Vector2D(REAL_ZERO, REAL_ZERO), math::Vector2D(REAL_ZERO, REAL_ONE), math::Vector2D(REAL_ONE, REAL_ZERO), math::Vector2D(REAL_ONE, REAL_ONE) };
 		m_mesh = std::make_unique<Mesh>(quadVertexPositions, quadTexCoords, 4, GL_TRIANGLE_STRIP);

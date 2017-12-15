@@ -16,7 +16,7 @@ layout(location = 6) attribute float lifeStageBlendFactor; // instanced attribut
 layout(location = 5) attribute float lifeStageFactor; // instanced attribute
 #endif
 
-uniform float textureAtlasRowsCount;
+uniform float R_textureAtlasRowsCount;
 
 #if defined(TEXTURE_ATLAS_OFFSET_CALCULATION)
 #else
@@ -32,13 +32,13 @@ void main()
 {
 	vec2 texCoords = position + vec2(0.5, 0.5);
 	texCoords.y = 1.0 - texCoords.y;
-	texCoords /= textureAtlasRowsCount;
+	texCoords /= R_textureAtlasRowsCount;
 #if defined(TEXTURE_ATLAS_OFFSET_CALCULATION)
 	texCoord0 = texCoords + textureOffsets.xy;
 	texCoord1 = texCoords + textureOffsets.zw;
 	particleLifeStageBlendFactor = lifeStageBlendFactor;
 #else	
-	float stagesCount = textureAtlasRowsCount * textureAtlasRowsCount;
+	float stagesCount = R_textureAtlasRowsCount * R_textureAtlasRowsCount;
 	float textureAtlasProgression = lifeStageFactor * stagesCount;
 	float index0 = floor(textureAtlasProgression);
 	float index1 = clamp(index0 + 1.0, index0, stagesCount - 1.0);
@@ -46,8 +46,8 @@ void main()
 	{
 		index1 = index0;
 	}
-	vec2 textureOffset0 = CalcTextureOffsets(lifeStageFactor, index0, textureAtlasRowsCount);
-	vec2 textureOffset1 = CalcTextureOffsets(lifeStageFactor, index1, textureAtlasRowsCount);
+	vec2 textureOffset0 = CalcTextureOffsets(lifeStageFactor, index0, R_textureAtlasRowsCount);
+	vec2 textureOffset1 = CalcTextureOffsets(lifeStageFactor, index1, R_textureAtlasRowsCount);
 	
 	texCoord0 = texCoords + textureOffset0;
 	texCoord1 = texCoords + textureOffset1;

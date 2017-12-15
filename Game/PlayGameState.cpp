@@ -330,7 +330,7 @@ void game::PlayGameState::AddBillboards(unsigned int billboardsCount, rendering:
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
 	engine::GameNode billboardsNode;
-	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, math::Matrix4D::SIZE * math::Matrix4D::SIZE));
+	//m_gameManager->AddMesh(mesh_ids::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, math::Matrix4D::SIZE * math::Matrix4D::SIZE));
 	billboardsNode.AddComponent(new engine::BillboardsRendererComponent(mesh_ids::BILLBOARD, billboardsMaterial));
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
@@ -979,16 +979,13 @@ void game::PlayGameState::RenderParticles(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
-	const auto particlesShaderId = rendering::shader_ids::PARTICLES;
-	renderer->BindShader(particlesShaderId);
-	renderer->UpdateRendererUniforms(particlesShaderId);
 	for (auto particleSystemItr = m_gameManager->GetParticlesSystems().begin(); particleSystemItr != m_gameManager->GetParticlesSystems().end(); ++particleSystemItr)
 	{
 		//if (!(*particleSystemItr)->GetTexture()->IsAdditive())
 		//{
 			//(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(particlesShaderId, **particleSystemItr);
+		renderer->RenderParticles(**particleSystemItr);
 	}
 	STOP_PROFILING_GAME("");
 }

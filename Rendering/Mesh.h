@@ -14,8 +14,6 @@
 //#include "Math/KDTree.h"
 #endif
 
-//#define TEXTURE_ATLAS_OFFSET_CALCULATION
-
 namespace rendering
 {
 	namespace mesh_buffer_types
@@ -397,7 +395,7 @@ namespace rendering
 		/// <summary>
 		/// Instance mesh constructor.
 		/// </summary>
-		InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
+		InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector);
 
 		/// <summary>
 		/// Instance mesh destructor.

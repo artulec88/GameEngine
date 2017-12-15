@@ -84,6 +84,8 @@ namespace rendering
 			const math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
 			math::Real GetScale(size_t i) const { return m_scales[i]; }
 			math::Real* GetScalePtr(size_t i) const { return &m_scales[i]; }
+			const math::Vector2D& GetTextureOffset(size_t i) const { return m_textureOffsets[i]; }
+			const Color& GetColor(size_t i) const { return m_colors[i]; }
 			void SetPosition(size_t i, const math::Vector3D& newPosition) const { m_positions[i] = newPosition; }
 			void SetPosition(size_t i, math::Real x, math::Real y, math::Real z) const
 			{

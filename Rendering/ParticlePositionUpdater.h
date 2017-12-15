@@ -55,6 +55,27 @@ namespace rendering
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class PositionUpdater */
 
+			class ConstantMovementParticlesUpdater : public PositionUpdater
+			{
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
+
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				RENDERING_API explicit ConstantMovementParticlesUpdater(const math::Vector3D& movement);
+				RENDERING_API virtual ~ConstantMovementParticlesUpdater();
+				/* ==================== Constructors and destructors end ==================== */
+
+				/* ==================== Non-static member functions begin ==================== */
+				RENDERING_API void Update(math::Real deltaTime, ParticlesContainer* particlesContainer) const override;
+				/* ==================== Non-static member functions end ==================== */
+
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				math::Vector3D m_movement;
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class ConstantMovementParticlesUpdater */
+
 			class EulerParticlesUpdater : public PositionUpdater
 			{
 				/* ==================== Static variables and functions begin ==================== */

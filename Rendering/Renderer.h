@@ -118,7 +118,7 @@ namespace rendering
 
 		RENDERING_API void RenderGuiControl(const controls::GuiControl& guiControl, int guiControlShaderId) const;
 
-		RENDERING_API void RenderParticles(int particleShaderId, const particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(const particles::ParticlesSystem& particleSystem);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -155,7 +155,8 @@ namespace rendering
 		RENDERING_API const text::Font* GetFont(int fontId) const;
 
 		RENDERING_API void BindShader(const int shaderId) const { m_shaderFactory.GetShader(shaderId)->Bind(); }
-		RENDERING_API void UpdateRendererUniforms(const int shaderId) const { m_shaderFactory.GetShader(shaderId)->UpdateRendererUniforms(this); }
+		RENDERING_API void UpdateRendererUniforms(const int shaderId) const { UpdateRendererUniforms(m_shaderFactory.GetShader(shaderId)); }
+		RENDERING_API void UpdateRendererUniforms(const Shader* shader) const { shader->UpdateRendererUniforms(this); }
 
 		RENDERING_API void ClearScreen() const
 		{
@@ -420,8 +421,6 @@ namespace rendering
 		CONST_IF_TWEAK_BAR_DISABLED math::Real m_waterNormalVerticalFactor;
 
 		int m_maxParticlesCount;
-		const InstanceMesh* m_particleQuad;
-		mutable std::vector<math::Real> m_particleInstanceVboData;
 
 		MappedValues m_mappedValues;
 

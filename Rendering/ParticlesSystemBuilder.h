@@ -79,11 +79,22 @@ namespace rendering
 				m_attributesMask = attributesMask;
 				return *this;
 			}
+			
+			/// <summary>
+			/// Sets the ID of the mesh that the final particles system will use.
+			/// </summary>
+			/// <param name="meshId"> The ID of the mesh to be used by the final particles system. </param>
+			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
+			RENDERING_API ParticlesSystemBuilder& SetMeshId(int meshId)
+			{
+				m_meshId = meshId;
+				return *this;
+			}
 
 			/// <summary>
 			/// Sets the ID of the texture that the final particles system will use.
 			/// One must remember that texture ID may not be used if it stays in contradiction with the attributes mask given to the particles system.
-			/// For example, the particles system will just use <code>TextureIDs::INVALID</code> as the texture ID if the attributes mask declares that particles do not have texture offsets property.
+			/// For example, the particles system will just use <code>texture_ids::INVALID</code> as the texture ID if the attributes mask declares that particles do not have texture offsets property.
 			/// </summary>
 			/// <param name="textureId"> The ID of the texture to be used by the final particles system. </param>
 			/// <returns> The reference to the <code>this</code> object which allows the client to chain methods invocations easily. </returns>
@@ -146,6 +157,11 @@ namespace rendering
 			RENDERING_API attributes::AttributesMask GetAttributesMask() const
 			{
 				return m_attributesMask;
+			}
+
+			RENDERING_API int GetMeshId() const
+			{
+				return m_meshId;
 			}
 
 			RENDERING_API int GetTextureId() const
@@ -212,6 +228,9 @@ namespace rendering
 			/// The mask of attributes defines which shader will be used by the final particles system.
 			/// </summary>
 			attributes::AttributesMask m_attributesMask;
+
+			/// <summary> The ID of the mesh final particles system will use. </summary>
+			int m_meshId;
 
 			/// <summary> The ID of the texture final particles system will use. </summary>
 			int m_textureId;

@@ -7,8 +7,10 @@ namespace rendering
 	{
 		enum MeshId
 		{
+			INVALID,
 			SIMPLE_PLANE,
 			PARTICLE,
+			PARTICLE_COLOR,
 			DEBUG,
 			//TERRAIN,
 			COUNT,

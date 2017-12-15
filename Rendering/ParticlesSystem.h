@@ -12,6 +12,8 @@
 
 namespace rendering
 {
+	class Camera;
+
 	namespace particles
 	{
 		/// <summary>
@@ -61,6 +63,7 @@ namespace rendering
 			/// <param name="deltaTime"> The amount of time passed since the last update. </param>
 			RENDERING_API void Update(math::Real deltaTime);
 			RENDERING_API void Reset();
+			RENDERING_API int GetMeshId() const { return m_meshId; }
 			RENDERING_API int GetTextureId() const { return m_textureId; }
 			RENDERING_API int GetShaderId() const { return m_shaderId; }
 			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetMaxCount(); }
@@ -68,10 +71,10 @@ namespace rendering
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
 			RENDERING_API void AddUpdater(std::shared_ptr<updaters::ParticleAttributeUpdater> updater) { m_updaters.push_back(updater); }
 			RENDERING_API void SetKiller(ParticlesKiller* killer) { m_killer = killer; }
-			RENDERING_API const math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
-			RENDERING_API const math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
-			RENDERING_API math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
-			RENDERING_API math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
+			//RENDERING_API const math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
+			//RENDERING_API const math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
+			//RENDERING_API math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
+			//RENDERING_API math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
 			
 			RENDERING_API int GetTextureAtlasRowsCount() const { return m_textureAtlasRowsCount; }
 
@@ -87,6 +90,8 @@ namespace rendering
 			{
 				return m_particles.IsAttributeEnabled(attribute);
 			}
+			
+			RENDERING_API std::vector<math::Real> GetInstanceData(const Camera* camera, std::vector<math::Real>& particleInstanceVboData) const;
 
 			//RENDERING_API void SetMaxParticlesCount(size_t maxCount)
 			//{
@@ -133,6 +138,11 @@ namespace rendering
 
 			/// <summary> The killer of particles in the system. </summary>
 			ParticlesKiller* m_killer;
+
+			/// <summary>
+			/// The ID of the particle mesh.
+			/// </summary>
+			int m_meshId;
 
 			/// <summary>
 			/// The ID of the particle texture. May be <code>texture_ids::INVALID</code> if no texture is used in the system.

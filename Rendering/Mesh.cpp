@@ -526,46 +526,43 @@ void rendering::BillboardMesh::Draw() const
 
 
 /* ==================== InstanceMesh class implementation begin ==================== */
-rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength) :
+rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector) :
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount),
 	m_maxParticlesCount(maxParticlesCount),
-	m_instanceDataLength(instanceDataLength)
+	m_instanceDataLength(0)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::Logging::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0 (", positionsCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(m_maxParticlesCount > 0, Utility::Logging::ERR, "Cannot create a mesh. Specified maximum number of particles is not greater than 0 (", m_maxParticlesCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(m_instanceDataLength > 0, Utility::Logging::ERR, "Cannot create a instance mesh. Specified instance data length is not greater than 0 (", instanceDataLength, ").");
+	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::Logging::ERR,
+		"Cannot create an instance mesh. Specified number of positions is not greater than 0 (", positionsCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(m_maxParticlesCount > 0, Utility::Logging::ERR,
+		"Cannot create an instance mesh. Specified maximum number of particles is not greater than 0 (", m_maxParticlesCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(!instanceDataSizeVector.empty(), Utility::Logging::ERR,
+		"Cannot create an instance mesh. Specified vector of instance data is empty");
 	
 	AddVertices(positions, nullptr, positionsCount);
+
+	for (auto& instanceDataSize : instanceDataSizeVector)
+	{
+		m_instanceDataLength += instanceDataSize;
+	}
+	CHECK_CONDITION_EXIT_RENDERING(m_instanceDataLength > 0, Utility::Logging::ERR,
+		"Cannot create an instance mesh. Specified instance data length is not greater than 0 (", instanceDataLength, ").");
 
 	m_meshData->Bind();
 	m_meshData->CreateVbo(mesh_buffer_types::INSTANCE); // instanced attributes will be stored in this VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::INSTANCE));
 	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, nullptr, GL_STREAM_DRAW);
-	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), nullptr);
-	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
-	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
-	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(4 * sizeof(math::Real)));
-	glEnableVertexAttribArray(2 /* MVP_MATRIX_COLUMN_2_LOCATION */);
-	glVertexAttribDivisor(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 1);
-	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(8 * sizeof(math::Real)));
-	glEnableVertexAttribArray(3 /* MVP_MATRIX_COLUMN_3_LOCATION */);
-	glVertexAttribDivisor(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 1);
-	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(12 * sizeof(math::Real)));
-	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
-	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
-#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	glVertexAttribPointer(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(16 * sizeof(math::Real)));
-	glEnableVertexAttribArray(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */);
-	glVertexAttribDivisor(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 1);
-	glVertexAttribPointer(6 /* BLEND_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(20 * sizeof(math::Real)));
-	glEnableVertexAttribArray(6 /* BLEND_FACTOR_LOCATION */);
-	glVertexAttribDivisor(6 /* BLEND_FACTOR_LOCATION */, 1);
-#else
-	glVertexAttribPointer(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real), (GLvoid*)(16 * sizeof(math::Real)));
-	glEnableVertexAttribArray(5 /* LIFE_STAGE_FACTOR_LOCATION */);
-	glVertexAttribDivisor(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1);
-#endif
+
+	GLuint locationIndex = 1;
+	GLuint instanceDataOffset = 0;
+	for (auto instanceDataSizeItr = instanceDataSizeVector.begin(); instanceDataSizeItr != instanceDataSizeVector.end(); ++instanceDataSizeItr, ++locationIndex)
+	{
+		glVertexAttribPointer(locationIndex, *instanceDataSizeItr, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(math::Real),
+			instanceDataOffset == 0 ? nullptr : (GLvoid*)(instanceDataOffset * sizeof(math::Real)));
+		glEnableVertexAttribArray(locationIndex);
+		glVertexAttribDivisor(locationIndex, 1 /* to indicate that this attribute is an instance attribute */);
+		instanceDataOffset += *instanceDataSizeItr;
+	}
 
 	m_meshData->Unbind();
 }

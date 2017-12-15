@@ -1,5 +1,6 @@
 /**
  * http://http.developer.nvidia.com/GPUGems3/gpugems3_ch08.html
+ * https://www.youtube.com/watch?v=F5QAkUloGOs&index=13&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl
  */
 
 #include "common.glh"

@@ -18,6 +18,7 @@
 #include "Rendering/ParticlePositionGenerator.h"
 #include "Rendering/ParticleColorGenerator.h"
 #include "Rendering/ParticleColorUpdater.h"
+#include "Rendering/ParticlePositionUpdater.h"
 
 #include "Math/Transform.h"
 #include "Math/StatisticsStorage.h"
@@ -357,6 +358,8 @@ void InitGlfw(bool fullscreenEnabled, int width, int height, const string& title
 	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
+	//int monitorCount;
+	//GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
 	GLFWmonitor* monitor = nullptr;
 	if (fullscreenEnabled)
 	{
@@ -655,7 +658,7 @@ void CreateCamera()
 		SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, 0.0f).SetRot(Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = std::make_unique<Camera>(cameraBuilderDirector.Construct());
@@ -688,7 +691,7 @@ void CreateParticlesSystem()
 {
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
 	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR).
-		SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
+		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 
 	particles::ParticlesEmitter particlesEmitter(2.0f);
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
@@ -696,7 +699,8 @@ void CreateParticlesSystem()
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);
 
-	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
+	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantMovementParticlesUpdater>(math::Vector3D(0.0f, 0.0f, 0.2f)));
+	//particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
 
 	particlesKiller = make_unique<particles::TimerParticlesKiller>(1.2f);
 	particlesSystemBuilder.SetKiller(particlesKiller.get());
@@ -742,14 +746,11 @@ void UpdateScene(Real frameTime)
 void RenderParticles()
 {
 	DEBUG_LOG_RENDERING_TEST("Rendering particles started");
-	const auto particlesShaderID = particlesSystem->GetShaderId();
-	renderer->BindShader(particlesShaderID);
-	renderer->UpdateRendererUniforms(particlesShaderID);
 	//if (!particlesSystem.GetTexture()->IsAdditive())
 	//{
 	//particlesSystem.SortParticles(renderer->GetCurrentCamera().GetPos());
 	//}
-	renderer->RenderParticles(particlesShaderID, *particlesSystem);
+	renderer->RenderParticles(*particlesSystem);
 }
 
 void RenderSkybox()
@@ -798,7 +799,7 @@ void RenderScene()
 	renderer->UpdateRendererUniforms(shader_ids::AMBIENT_TERRAIN);
 	renderer->Render(test_mesh_ids::TERRAIN, terrainMaterial.get(), terrainTransform, shader_ids::AMBIENT_TERRAIN);
 
-	//RenderParticles();
+	RenderParticles();
 
 	//RenderSkybox();
 
@@ -938,7 +939,7 @@ int main(int argc, char* argv[])
 	CameraBuilderTest();
 	//TextureTest();
 	LightBuilderTest();
-	ParticlesSystemBuilderTest();
+	//ParticlesSystemBuilderTest();
 	//OtherTests();
 
 	STATS_STORAGE.StopTimer();

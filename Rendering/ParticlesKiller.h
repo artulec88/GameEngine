@@ -4,6 +4,7 @@
 #include "Rendering.h"
 
 #include "Math/Math.h"
+#include "Math/RandomGenerator.h"
 
 namespace rendering
 {
@@ -151,6 +152,7 @@ namespace rendering
 		private:
 			math::Real m_timeToKillOneParticle;
 			math::Real m_currentTimer;
+			const math::random::RandomGenerator& m_randomGenerator;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class TimerParticlesKiller */
 	} /* end namespace particles */

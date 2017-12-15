@@ -19,15 +19,12 @@ rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const st
 	//m_meshType2MeshMap({ { MeshTypes::DEFAULT, std::move(Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultTexture", "defaultTexture"))) } })
 {
 	CreateMesh(mesh_ids::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
-#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	m_meshType2MeshMap.insert(make_pair(MeshIDs::PARTICLE,
-		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
-			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 21)));
-#else
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE,
 		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
-			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), 17))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
-#endif
+			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 1}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
+	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE_COLOR,
+		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
+		4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::DEBUG,

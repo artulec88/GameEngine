@@ -560,7 +560,7 @@ rendering::Shader::Shader(Shader&& shader) noexcept :
 void rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
 {
 	START_PROFILING_RENDERING(false, "");
-	CHECK_CONDITION_EXIT_RENDERING(renderer != nullptr, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(renderer != nullptr, utility::logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 	for (auto uniformItr = m_shaderData.GetRendererUniforms().begin(); uniformItr != m_shaderData.GetRendererUniforms().end(); ++uniformItr)
 	{
 		(*uniformItr)->Update(renderer, nullptr, nullptr);
@@ -579,7 +579,7 @@ void rendering::Shader::UpdateTransformUniforms(const math::Transform& transform
 void rendering::Shader::UpdateUniforms(const math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
 	START_PROFILING_RENDERING(false, "");
-	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(renderer != nullptr, utility::logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 	for (auto uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
 	{
 		(*uniformItr)->Update(renderer, &transform, material);
