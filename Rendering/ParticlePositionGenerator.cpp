@@ -101,6 +101,30 @@ void rendering::particles::generators::BoxPositionGenerator::Generate(math::Real
 }
 /* ==================== class BoxPositionGenerator end ==================== */
 
+/* ==================== class CirclePositionGenerator begin ==================== */
+rendering::particles::generators::CirclePositionGenerator::CirclePositionGenerator(const math::Vector3D& center, math::Real width, math::Real height) :
+	PositionGenerator(),
+	m_center(center),
+	m_width(width),
+	m_height(height),
+	m_randomGenerator(math::random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(math::random::generator_ids::SIMPLE))
+{
+}
+
+rendering::particles::generators::CirclePositionGenerator::~CirclePositionGenerator()
+{
+}
+
+void rendering::particles::generators::CirclePositionGenerator::Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+	for (auto i = startId; i < endId; ++i)
+	{
+		const auto angle = math::Angle(m_randomGenerator.NextFloat(REAL_ZERO, 2.0f * math::PI), math::units::RADIAN);
+		Set(particleContainer, i, m_center + math::Vector3D(m_width * angle.Sin(), m_height * angle.Cos(), REAL_ZERO));
+	}
+}
+/* ==================== class EllipsoidPositionGenerator end ==================== */
+
 /* ==================== class EllipsoidPositionGenerator begin ==================== */
 rendering::particles::generators::EllipsoidPositionGenerator::EllipsoidPositionGenerator(const math::Ellipsoid& ellipsoid) :
 	EllipsoidPositionGenerator(ellipsoid.GetCenter(), ellipsoid.GetA(), ellipsoid.GetB(), ellipsoid.GetC())

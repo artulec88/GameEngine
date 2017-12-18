@@ -693,11 +693,11 @@ void CreateCubes()
 void CreateParticlesSystem()
 {
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
+	particlesSystemBuilder.SetMaxCount(100000).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
 		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 
-	particles::ParticlesEmitter particlesEmitter(10.0f);
-	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	particles::ParticlesEmitter particlesEmitter(501.0f);
+	particlesEmitter.AddGenerator(make_unique<particles::generators::CirclePositionGenerator>(math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), 0.15f, 0.15f));
 	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantScaleGenerator>(0.01f));
@@ -708,7 +708,7 @@ void CreateParticlesSystem()
 	particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantRotationParticlesUpdater>(math::Angle(180.0f)));
 	//particlesSystemBuilder.AddUpdater(make_shared<particles::updaters::ConstantColorUpdater>(Color(color_ids::WHITE)));
 
-	particlesKiller = make_unique<particles::TimerParticlesKiller>(1.2f);
+	particlesKiller = make_unique<particles::TimerParticlesKiller>(86.2f);
 	particlesSystemBuilder.SetKiller(particlesKiller.get());
 
 	BuilderDirector<particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);

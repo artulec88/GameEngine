@@ -22,6 +22,7 @@ namespace rendering
 					CONSTANT = 0,
 					BOX,
 					PLANE,
+					CIRCLE,
 					ELLIPSOID,
 				}; /* end enum PositionGeneratorType */
 			} /* end namespace position_generator_types */
@@ -146,6 +147,33 @@ namespace rendering
 				const math::random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class PlanePositionGenerator */
+
+			/// <summary>
+			/// Generates position for the particle. The position is chosen randomly from the set of all the points lying on the circle.
+			/// </summary>
+			class CirclePositionGenerator : public PositionGenerator
+			{
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
+
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				RENDERING_API CirclePositionGenerator(const math::Vector3D& center, math::Real width, math::Real height);
+				RENDERING_API virtual ~CirclePositionGenerator();
+				/* ==================== Constructors and destructors end ==================== */
+
+				/* ==================== Non-static member functions begin ==================== */
+				RENDERING_API void Generate(math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId) override;
+				/* ==================== Non-static member functions end ==================== */
+
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				math::Vector3D m_center;
+				math::Real m_width;
+				math::Real m_height;
+				const math::random::RandomGenerator& m_randomGenerator;
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class CirclePositionGenerator */
 
 			/// <summary>
 			/// Generates position for the particle. The position is chosen randomly from the specified ellipsoid.
