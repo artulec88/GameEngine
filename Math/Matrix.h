@@ -187,7 +187,7 @@ namespace math
 		/// <returns> Pointer to constant matrix data. </returns>
 		MATH_API const Real* Data() const
 		{
-			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), utility::logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return m_values[0].data();
 #else
@@ -225,7 +225,7 @@ namespace math
 		/// <returns> Pointer to constant matrix data. </returns>
 		MATH_API Real* DataPtr()
 		{
-			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), utility::logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[0][0];
 #else

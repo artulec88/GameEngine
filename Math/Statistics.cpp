@@ -124,7 +124,7 @@ T math::statistics::Stats<T>::CalculateMean(StatsId statsId) const
 
 	T sum = CalculateSum(statsId);
 	auto samplesCount = CalculateSamplesCount(statsId);
-	CHECK_CONDITION_MATH(samplesCount > 0, Utility::Logging::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
+	CHECK_CONDITION_MATH(samplesCount > 0, utility::logging::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
 
 	DEBUG_LOG_MATH("Sum = ", sum, ", samplesCount = ", samplesCount);
 
@@ -262,7 +262,7 @@ void math::statistics::MethodStats::StartProfiling(bool isMeasureTimeEnabled, bo
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	CHECK_CONDITION_MATH(!m_timer.IsRunning(), Utility::Logging::ERR, "Cannot start profiling the method. The method's timer is still running.");
+	CHECK_CONDITION_MATH(!m_timer.IsRunning(), utility::logging::ERR, "Cannot start profiling the method. The method's timer is still running.");
 	if (isMeasureTimeEnabled)
 	{
 		m_timer.Start();
@@ -346,16 +346,16 @@ math::statistics::ClassStats::~ClassStats()
 
 void math::statistics::ClassStats::StartProfiling(bool isMeasureTimeEnabled, const std::string& methodName)
 {
-	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot start profiling the method in class \"", m_className, "\". The method's name is empty.");
+	CHECK_CONDITION_MATH(!methodName.empty(), utility::logging::ERR, "Cannot start profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
-	CHECK_CONDITION_RETURN_VOID_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
+	CHECK_CONDITION_RETURN_VOID_MATH(!m_methodsStats[methodName].IsProfiling(), utility::logging::ERR, "The method \"", methodName, "\" is already being profiled.");
 	m_methodsStats[methodName].StartProfiling(isMeasureTimeEnabled, m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
 
 void math::statistics::ClassStats::StopProfiling(const std::string& methodName)
 {
-	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot stop profiling the method in class \"", m_className, "\". The method's name is empty.");
+	CHECK_CONDITION_MATH(!methodName.empty(), utility::logging::ERR, "Cannot stop profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), utility::logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();

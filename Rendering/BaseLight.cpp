@@ -55,9 +55,9 @@ void rendering::lighting::BaseLight::SetShadowInfo(const math::Matrix4D& project
 	math::Real shadowSoftness /* = REAL_ONE */, math::Real lightBleedingReductionAmount /* = static_cast<math::Real>(0.2f) */,
 	math::Real minVariance /* = static_cast<math::Real>(0.00002f) */)
 {
-	CHECK_CONDITION_RENDERING(m_shadowInfo == nullptr, Utility::Logging::WARNING, "Setting new shadow info for the light seems dubious.");
+	CHECK_CONDITION_RENDERING(m_shadowInfo == nullptr, utility::logging::WARNING, "Setting new shadow info for the light seems dubious.");
 	m_shadowInfo = std::make_unique<ShadowInfo>(projection, flipFacesEnabled, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
-	CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, Utility::Logging::CRITICAL, "Cannot initialize the light. Shadow info is nullptr.");
+	CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, utility::logging::CRITICAL, "Cannot initialize the light. Shadow info is nullptr.");
 }
 
 rendering::ShadowCameraTransform rendering::lighting::BaseLight::CalcShadowCameraTransform(const math::Vector3D& cameraPos, const math::Quaternion& cameraRot) const

@@ -28,7 +28,7 @@ math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	m_squareDepth(REAL_ZERO),
 	m_heights()
 {
-	CHECK_CONDITION_MATH(positionsCount > 0, Utility::Logging::ERR, "Cannot intialize the surface with negative number of positions: ", positionsCount);
+	CHECK_CONDITION_MATH(positionsCount > 0, utility::logging::ERR, "Cannot intialize the surface with negative number of positions: ", positionsCount);
 
 	// TODO: Implement
 	// 1. Find the lowest X and Z and greatest X and Z values within all vertices (minX, minZ, maxX and maxZ respectively). Each of these four values may come from the different position.
@@ -166,7 +166,7 @@ math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* ve
 
 math::Real math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<Vector2D>& vectorsSortedByX, std::vector<Vector2D>& vectorsSortedByZ) const
 {
-	CHECK_CONDITION_MATH(vectorsSortedByX.size() == vectorsSortedByZ.size(), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(vectorsSortedByX.size() == vectorsSortedByZ.size(), utility::logging::ERR,
 		"Error when trying to find the minimum distance between any two positions. The number of positions in two collections are not equal (",
 		vectorsSortedByX.size(), " != ", vectorsSortedByZ.size(), ").");
 	if (vectorsSortedByX.size() <= 3) // If there are 2 or 3 points, then use brute force

@@ -79,7 +79,7 @@ namespace rendering
 		RENDERING_API const Mesh* GetMesh(const int meshId) const
 		{
 			const auto meshItr = m_meshType2MeshMap.find(meshId);
-			CHECK_CONDITION_EXIT_RENDERING(meshItr != m_meshType2MeshMap.end(), Utility::Logging::ERR,
+			CHECK_CONDITION_EXIT_RENDERING(meshItr != m_meshType2MeshMap.end(), utility::logging::ERR,
 				"No mesh has been created for the specified ID (", meshId, ").");
 			return meshItr->second.get();
 		}

@@ -121,7 +121,7 @@ math::Angle& math::Angle::operator*=(const Real s)
 math::Angle& math::Angle::operator/=(const Real s)
 {
 	START_PROFILING_MATH(false, "");
-	CHECK_CONDITION_MATH(!AlmostEqual(s, REAL_ZERO), Utility::Logging::ERR, "Cannot divide the angle by 0. Returning the unmodified angle.");
+	CHECK_CONDITION_MATH(!AlmostEqual(s, REAL_ZERO), utility::logging::ERR, "Cannot divide the angle by 0. Returning the unmodified angle.");
 	m_angle /= s;
 	STOP_PROFILING_MATH("");
 	return *this;

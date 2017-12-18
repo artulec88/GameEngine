@@ -305,14 +305,14 @@ void engine::CoreEngine::CreateAudioEngine()
 {
 	audio::AudioEngineFactory audioEngineFactory(m_audioDirectory);
 	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<audio::audio_engine_types::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(audio::audio_engine_types::FMOD))));
-	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Logging::CRITICAL, "Failed to create an audio engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, utility::logging::CRITICAL, "Failed to create an audio engine.");
 }
 
 void engine::CoreEngine::CreatePhysicsEngine()
 {
 	m_physicsEngine = new physics::PhysicsEngine();
 
-	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, utility::logging::CRITICAL, "Failed to create a physics engine.");
 }
 
 void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, rendering::aliasing::AntiAliasingMethod antiAliasingMethod)
@@ -327,7 +327,7 @@ void engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int h
 	m_renderer = std::make_unique<rendering::Renderer>(width, height, m_modelsDirectory, m_texturesDirectory, m_shadersDirectory, m_fontsDirectory, antiAliasingMethod);
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, utility::logging::CRITICAL, "Failed to create a renderer.");
 	STOP_PROFILING_ENGINE("");
 }
 
@@ -442,7 +442,7 @@ void engine::CoreEngine::Stop()
 
 	m_isRunning = false;
 	RequestWindowClose();
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Logging::WARNING, "Stopping the core engine is not possible as it is simply not running at the moment.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, utility::logging::WARNING, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	NOTICE_LOG_ENGINE("The core engine has stopped");
 
 	// Just for checking whether time calculation is performed correctly
@@ -478,7 +478,7 @@ void engine::CoreEngine::Run()
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
 #endif
 
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Logging::WARNING, "According to the core engine the game is already running.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, utility::logging::WARNING, "According to the core engine the game is already running.");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	rendering::InitializeTweakBars();

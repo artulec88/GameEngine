@@ -47,7 +47,7 @@ int math::random::SimpleRandomGenerator::NextInt() const
 
 int math::random::SimpleRandomGenerator::NextInt(int lowerBound, int upperBound) const
 {
-	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, 0, Utility::Logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
+	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, 0, utility::logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
 	const auto result = rand() % (upperBound - lowerBound) + lowerBound;
 	return CheckIfInRange(result, lowerBound, upperBound) ? result : lowerBound;
 }
@@ -59,7 +59,7 @@ math::Real math::random::SimpleRandomGenerator::NextFloat() const
 
 math::Real math::random::SimpleRandomGenerator::NextFloat(Real lowerBound, Real upperBound) const
 {
-	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, REAL_ZERO, Utility::Logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
+	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, REAL_ZERO, utility::logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
 	const auto result = NextFloat() * (upperBound - lowerBound) + lowerBound;
 	return CheckIfInRange(result, lowerBound, upperBound) ? result : lowerBound;
 }
@@ -85,7 +85,7 @@ int math::random::DefaultRandomGenerator::NextInt() const
 
 int math::random::DefaultRandomGenerator::NextInt(int lowerBound, int upperBound) const
 {
-	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, 0, Utility::Logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
+	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, 0, utility::logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
 	const auto result = rand() % (upperBound - lowerBound) + lowerBound;
 	return CheckIfInRange(result, lowerBound, upperBound) ? result : lowerBound;
 }
@@ -97,7 +97,7 @@ math::Real math::random::DefaultRandomGenerator::NextFloat() const
 
 math::Real math::random::DefaultRandomGenerator::NextFloat(Real lowerBound, Real upperBound) const
 {
-	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, REAL_ZERO, Utility::Logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
+	CHECK_CONDITION_RETURN_MATH(lowerBound <= upperBound, REAL_ZERO, utility::logging::ERR, "Incorrect lower bound specified (", lowerBound, "). It is greater than upper bound (", upperBound, ").");
 	const auto result = NextFloat() * (upperBound - lowerBound) + lowerBound;
 	return CheckIfInRange(result, lowerBound, upperBound) ? result : lowerBound;
 }

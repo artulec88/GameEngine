@@ -9,8 +9,9 @@ layout(location = 5) attribute vec4 color; // instanced attribute
 
 void main()
 {
+	gl_PointSize = 5.0; // this could be made an improvement
 	vColor = color;
-    gl_Position = mvp * vec4(position, 0.0, 1.0);
+    gl_Position = mvp * vec4(0.0, 0.0, 0.0, 1.0);
 }
 
 #elif defined(FS_BUILD)

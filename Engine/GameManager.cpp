@@ -26,7 +26,7 @@ engine::GameManager* engine::GameManager::s_gameManager = nullptr;
 
 /* static */ void engine::GameManager::LoadGame(GameManager* gameManager)
 {
-	CHECK_CONDITION_EXIT_ENGINE(gameManager != NULL, Utility::Logging::CRITICAL, "Cannot load the game. Specified game manager is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(gameManager != NULL, utility::logging::CRITICAL, "Cannot load the game. Specified game manager is NULL.");
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
 	CoreEngine::GetCoreEngine()->InitGlew(); // glew init
 	gameManager->Load();

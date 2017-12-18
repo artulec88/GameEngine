@@ -121,7 +121,7 @@ void math::effects::BlinkEffect<T>::Update(Real deltaTime)
 	{
 		m_timer = 0.0f;
 		m_currentIndex = (m_currentIndex + 1) % m_values.size();
-		CHECK_CONDITION_MATH(m_currentIndex >= 0 && m_currentIndex < m_values.size(), Utility::Logging::ERR, "Blinking effect's index calculation incorrect. The index ",
+		CHECK_CONDITION_MATH(m_currentIndex >= 0 && m_currentIndex < m_values.size(), utility::logging::ERR, "Blinking effect's index calculation incorrect. The index ",
 			m_currentIndex, " is out of range [0; ", m_values.size(), ")");
 		DEBUG_LOG_MATH("Switching to effect ", m_currentIndex);
 		m_value = m_values[m_currentIndex];

@@ -23,14 +23,14 @@ rendering::text::FontFactory::~FontFactory()
 const rendering::text::Font* rendering::text::FontFactory::CreateFont(int fontId, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
 	const auto fontPair = m_fontType2FontMap.insert(std::make_pair(fontId, Font(m_textShader, m_texturesDirectory + fontTextureFileName, m_fontsDirectory + fontMetaDataFileName)));
-	CHECK_CONDITION_RENDERING(fontPair.second, Utility::Logging::WARNING, "Font \"", fontTextureFileName, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(fontPair.second, utility::logging::WARNING, "Font \"", fontTextureFileName, "\" has already been created.");
 	return &fontPair.first->second;
 }
 
 const rendering::text::Font* rendering::text::FontFactory::GetFont(int fontId) const
 {
 	DEBUG_LOG_RENDERING("Retrieving font for font ID: ", fontId);
-	CHECK_CONDITION_EXIT_RENDERING(m_fontType2FontMap.find(fontId) != m_fontType2FontMap.end(), Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_RENDERING(m_fontType2FontMap.find(fontId) != m_fontType2FontMap.end(), utility::logging::EMERGENCY,
 		"No font has been created for the specified type of font (", fontId, ").");
 	return &m_fontType2FontMap.find(fontId)->second;
 }

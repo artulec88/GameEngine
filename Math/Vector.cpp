@@ -39,7 +39,7 @@ math::Vector2D& math::Vector2D::operator*=(const Vector2D& v) noexcept
 
 math::Vector2D& math::Vector2D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, utility::logging::ERR,
 		"Dividing the 2D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
@@ -49,9 +49,9 @@ math::Vector2D& math::Vector2D::operator/=(Real s) noexcept
 
 math::Vector2D& math::Vector2D::operator/=(const Vector2D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
@@ -90,7 +90,7 @@ math::Vector2D math::Vector2D::Max(Vector2D v) const
 
 math::Vector2D math::Vector2D::Lerp(Vector2D vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	vec.x = x * (REAL_ONE - lerpFactor) + vec.x * lerpFactor;
 	vec.y = y * (REAL_ONE - lerpFactor) + vec.y * lerpFactor;
@@ -107,7 +107,7 @@ math::Vector2D math::Vector2D::Max(const Vector2D& v) const
 
 math::Vector2D math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return math::Vector2D(m_x * (REAL_ONE - lerpFactor) + vec.GetX() * lerpFactor,
 		m_y * (REAL_ONE - lerpFactor) + vec.GetY() * lerpFactor);
@@ -132,7 +132,7 @@ math::Real math::Vector3D::Max() const
 #ifdef PASS_VECTOR_BY_VALUE
 math::Vector3D math::Vector3D::Lerp(Vector3D vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
 	const auto oneMinusLerpFactor = REAL_ONE - lerpFactor;
 	vec.x = x * oneMinusLerpFactor + vec.x * lerpFactor;
@@ -162,7 +162,7 @@ math::Vector3D math::Vector3D::Max(Vector3D v) const
 #else
 math::Vector3D math::Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
 	const math::Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
 	return math::Vector3D(m_x * oneMinusLerpFactor + vec.GetX() * lerpFactor,
@@ -242,7 +242,7 @@ math::Vector3D& math::Vector3D::operator*=(const Vector3D& v) noexcept
 
 math::Vector3D& math::Vector3D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, utility::logging::ERR,
 		"Dividing the 3D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
@@ -252,11 +252,11 @@ math::Vector3D& math::Vector3D::operator/=(Real s) noexcept
 
 math::Vector3D& math::Vector3D::operator/=(const Vector3D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
@@ -357,10 +357,10 @@ void math::Vector3D::Threshold(Real maxLength)
 	const auto length = Length();
 	if (length > maxLength)
 	{
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), utility::logging::ERR,
 			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		const auto quotient = length / maxLength;
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), utility::logging::ERR,
 			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
 		y /= quotient;
@@ -397,7 +397,7 @@ math::Vector4D math::Vector4D::Max(Vector4D v) const
 }
 math::Vector4D math::Vector4D::Lerp(Vector4D vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	const auto oneMinusLerpFactor = REAL_ONE - lerpFactor;
 	vec.x = x * oneMinusLerpFactor + vec.x * lerpFactor;
@@ -415,7 +415,7 @@ math::Vector4D math::Vector4D::Max(const Vector4D& v) const
 }
 math::Vector4D math::Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
 {
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), utility::logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
@@ -462,7 +462,7 @@ math::Vector4D& math::Vector4D::operator*=(const Vector4D& v) noexcept
 
 math::Vector4D& math::Vector4D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, utility::logging::ERR,
 		"Dividing the 4D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
@@ -473,13 +473,13 @@ math::Vector4D& math::Vector4D::operator/=(Real s) noexcept
 
 math::Vector4D& math::Vector4D::operator/=(const Vector4D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetW(), REAL_ZERO), *this, Utility::Logging::ERR,
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetW(), REAL_ZERO), *this, utility::logging::ERR,
 		"Cannot perform the division of the vector (w == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
@@ -605,10 +605,10 @@ void math::Vector4D::Threshold(Real maxLength)
 	const auto length = Length();
 	if (length > maxLength)
 	{
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), utility::logging::ERR,
 			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		const auto quotient = length / maxLength;
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), utility::logging::ERR,
 			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
 		y /= quotient;

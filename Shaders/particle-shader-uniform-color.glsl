@@ -6,6 +6,7 @@ layout(location = 1) attribute mat4 mvp; // instanced attribute
 
 void main()
 {
+	gl_PointSize = 5.0; // this could be made an improvement
     gl_Position = mvp * vec4(position, 0.0, 1.0);
 }
 

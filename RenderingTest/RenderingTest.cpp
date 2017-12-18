@@ -440,7 +440,7 @@ void CreateRenderer(bool fullscreenEnabled, int width, int height, const string&
 	renderer = std::make_unique<Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance finished");
 
-	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
+	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, utility::logging::CRITICAL, "Failed to create a renderer.");
 }
 
 void ReportError(const string& reportStr)
@@ -693,13 +693,13 @@ void CreateCubes()
 void CreateParticlesSystem()
 {
 	particles::ParticlesSystemBuilder particlesSystemBuilder;
-	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::SCALE | particles::attributes::ROTATION).
-		SetMeshId(mesh_ids::PARTICLE_UNIFORM_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_UNIFORM_COLORS);
+	particlesSystemBuilder.SetMaxCount(200).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
+		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 
 	particles::ParticlesEmitter particlesEmitter(10.0f);
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantPositionGenerator>(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	//const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
-	//particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
+	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
+	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));
 	particlesEmitter.AddGenerator(make_unique<particles::generators::ConstantScaleGenerator>(0.01f));
 	particlesEmitter.AddGenerator(make_unique<particles::generators::RangeRotationGenerator>(Angle(0.0f), Angle(90.0f)));
 	particlesSystemBuilder.AddEmitter(particlesEmitter);
@@ -726,7 +726,7 @@ void CreateScene()
 
 	//int bufferEntriesCount;
 	//void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
-	//CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
+	//CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, utility::logging::ERR, "Data is nullptr.");
 	//math::Vector2D* dataValues = static_cast<math::Vector2D*>(data);
 	//for (int i = 0; i < bufferEntriesCount; ++i)
 	//{

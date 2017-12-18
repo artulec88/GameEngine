@@ -96,6 +96,6 @@ rendering::ShaderFactory::~ShaderFactory()
 const rendering::Shader* rendering::ShaderFactory::CreateShader(int shaderId, const std::string& shaderFileName)
 {
 	const auto shaderPair = m_shaderType2ShaderMap.insert(std::make_pair(shaderId, Shader(m_shadersDirectory, shaderFileName)));
-	CHECK_CONDITION_RENDERING(shaderPair.second, Utility::Logging::WARNING, "Shader \"", shaderFileName, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(shaderPair.second, utility::logging::WARNING, "Shader \"", shaderFileName, "\" has already been created.");
 	return &shaderPair.first->second;
 }

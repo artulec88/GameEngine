@@ -16,9 +16,9 @@ math::KdTree::KdTree(Vector3D* positions, size_t positionsCount, int numberOfSam
 #endif
 {
 	START_PROFILING_MATH(true, "");
-	CHECK_CONDITION_EXIT_MATH(positions != nullptr, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_MATH(positions != nullptr, utility::logging::EMERGENCY,
 		"Cannot create K-d tree. The positions array is nullptr.");
-	CHECK_CONDITION_EXIT_MATH(positionsCount > 0, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_MATH(positionsCount > 0, utility::logging::EMERGENCY,
 		"Cannot create K-d tree. The number of positions is not positive (", positionsCount, ").");
 
 	if (depth == 0)

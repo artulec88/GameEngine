@@ -448,7 +448,7 @@ void NewMatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		auto result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
-		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
+		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, utility::logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrices multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
@@ -550,7 +550,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
-		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
+		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, utility::logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrices multiplication:\t", timer, timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);

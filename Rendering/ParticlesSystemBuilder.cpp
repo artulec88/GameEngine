@@ -218,7 +218,7 @@ rendering::particles::ParticlesSystemBuilder& rendering::particles::ParticlesSys
 
 void rendering::particles::ParticlesSystemBuilder::AddPositionGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::POSITION), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::POSITION), utility::logging::DEBUG,
 	//	"The position attribute is disabled for the current particles system");
 
 	//generators::position_generator_types::PositionGeneratorType positionGeneratorType = static_cast<generators::position_generator_types::PositionGeneratorType>(
@@ -258,7 +258,7 @@ void rendering::particles::ParticlesSystemBuilder::AddPositionGenerator(Particle
 
 void rendering::particles::ParticlesSystemBuilder::AddVelocityGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY), utility::logging::DEBUG,
 	//	"The velocity attribute is disabled for the current particles system");
 
 	//generators::velocity_generator_types::VelocityGeneratorType velocityGeneratorType = static_cast<generators::velocity_generator_types::VelocityGeneratorType>(
@@ -287,7 +287,7 @@ void rendering::particles::ParticlesSystemBuilder::AddVelocityGenerator(Particle
 
 void rendering::particles::ParticlesSystemBuilder::AddAccelerationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION), utility::logging::DEBUG,
 	//	"The acceleration attribute is disabled for the current particles system");
 
 	//Generators::acceleration_generator_types::AccelerationGeneratorType accelerationGeneratorType = static_cast<Generators::AccelerationGeneratorTypes::AccelerationGeneratorType>(
@@ -324,7 +324,7 @@ void rendering::particles::ParticlesSystemBuilder::AddGravityEffectFactorGenerat
 
 void rendering::particles::ParticlesSystemBuilder::AddLifeSpanGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN), utility::logging::DEBUG,
 	//	"The life span attribute is disabled for the current particles system");
 
 	//generators::life_span_generator_types::LifeSpanGeneratorType lifeSpanGeneratorType = static_cast<generators::life_span_generator_types::LifeSpanGeneratorType>(
@@ -347,7 +347,7 @@ void rendering::particles::ParticlesSystemBuilder::AddLifeSpanGenerator(Particle
 
 void rendering::particles::ParticlesSystemBuilder::AddRotationGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ROTATION), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::ROTATION), utility::logging::DEBUG,
 	//	"The rotation attribute is disabled for the current particles system");
 
 	//generators::rotation_generator_types::RotationGeneratorType rotationGeneratorType = static_cast<generators::rotation_generator_types::RotationGeneratorType>(
@@ -371,7 +371,7 @@ void rendering::particles::ParticlesSystemBuilder::AddRotationGenerator(Particle
 
 void rendering::particles::ParticlesSystemBuilder::AddScaleGenerator(ParticlesEmitter* emitter, const std::string& indexStr) const
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::SCALE), Utility::Logging::DEBUG,
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_attributesMask.IsAttributeEnabled(Attributes::SCALE), utility::logging::DEBUG,
 	//	"The scale attribute is disabled for the current particles system");
 
 	//generators::scale_generator_types::ScaleGeneratorType scaleGeneratorType = static_cast<generators::scale_generator_types::ScaleGeneratorType>(

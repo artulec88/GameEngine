@@ -70,7 +70,7 @@ GLuint rendering::MeshData::CreateVbo(mesh_buffer_types::MeshBufferType buffer)
 void rendering::MeshData::ReplaceVbo(mesh_buffer_types::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
 {
 	CheckErrorCode(__FUNCTION__, "Started VBO data replacement function");
-	CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, utility::logging::EMERGENCY,
 		"Cannot replace data in the mesh data buffer. The buffer has not been intialized.");
 
 	// TODO: Check special cases such as mesh_buffer_types::INDEX and mesh_buffer_types::INSTANCE.
@@ -132,8 +132,8 @@ rendering::Mesh::Mesh(math::Vector2D* screenPositions, math::Vector2D* textureCo
 	m_mode(mode),
 	m_meshData(nullptr)
 {
-	CHECK_CONDITION_EXIT_RENDERING(verticesCount > 0, Utility::Logging::ERR, "Cannot create a mesh. Specified number of vertices is not greater than 0 (", verticesCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(screenPositions != nullptr, Utility::Logging::ERR, "Cannot create a mesh. Specified positions array is nullptr.");
+	CHECK_CONDITION_EXIT_RENDERING(verticesCount > 0, utility::logging::ERR, "Cannot create a mesh. Specified number of vertices is not greater than 0 (", verticesCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(screenPositions != nullptr, utility::logging::ERR, "Cannot create a mesh. Specified positions array is nullptr.");
 	AddVertices(screenPositions, textureCoordinates, verticesCount);
 }
 
@@ -167,24 +167,26 @@ void rendering::Mesh::AddVertices(math::Vector2D* positions, math::Vector2D* tex
 #endif
 	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
-	m_meshData->Bind();
-	m_meshData->CreateVbo(mesh_buffer_types::POSITIONS);
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::POSITIONS));
-	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), positions, GL_STATIC_DRAW);
-	glVertexAttribPointer(mesh_attribute_locations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glEnableVertexAttribArray(mesh_attribute_locations::POSITIONS);
-
-	if (textureCoordinates != nullptr)
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
+	if (positions != nullptr)
 	{
-		m_meshData->CreateVbo(mesh_buffer_types::TEXTURE_COORDINATES);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::TEXTURE_COORDINATES));
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
-		glVertexAttribPointer(mesh_attribute_locations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-		glEnableVertexAttribArray(mesh_attribute_locations::TEXTURE_COORDINATES);
-	}
+		m_meshData->Bind();
+		m_meshData->CreateVbo(mesh_buffer_types::POSITIONS);
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::POSITIONS));
+		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), positions, GL_STATIC_DRAW);
+		glVertexAttribPointer(mesh_attribute_locations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+		glEnableVertexAttribArray(mesh_attribute_locations::POSITIONS);
 
-	m_meshData->Unbind();
+		if (textureCoordinates != nullptr)
+		{
+			m_meshData->CreateVbo(mesh_buffer_types::TEXTURE_COORDINATES);
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::TEXTURE_COORDINATES));
+			glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
+			glVertexAttribPointer(mesh_attribute_locations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+			glEnableVertexAttribArray(mesh_attribute_locations::TEXTURE_COORDINATES);
+		}
+		m_meshData->Unbind();
+	}
 	CheckErrorCode(__FUNCTION__, "Finished adding 2D vertices to the Mesh");
 }
 
@@ -197,8 +199,8 @@ void rendering::Mesh::FillBuffer(mesh_buffer_types::MeshBufferType buffer, mesh_
 		DELOCUST_LOG_RENDERING("positions[", i, "] = ", positions[i]);
 	}
 #endif
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
-	CHECK_CONDITION_RENDERING(!m_meshData->HasVBO(buffer), Utility::Logging::WARNING, "Filling buffer that is already initialized.");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_RENDERING(!m_meshData->HasVBO(buffer), utility::logging::WARNING, "Filling buffer that is already initialized.");
 	m_meshData->Bind();
 	if (!m_meshData->HasVbo(buffer))
 	{
@@ -236,7 +238,7 @@ void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 	//	CalcTangents(vertices, verticesCount);
 	//}
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVbo(mesh_buffer_types::POSITIONS));
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(math::Vector3D), positions, GL_STATIC_DRAW);
@@ -328,7 +330,7 @@ void rendering::Mesh::AddVertices(math::Vector3D* positions, math::Vector2D* tex
 void rendering::Mesh::Draw() const
 {
 	CheckErrorCode(__FUNCTION__, "Started drawing the Mesh");
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
 
 	m_meshData->Bind();
 
@@ -351,7 +353,7 @@ void rendering::Mesh::ReplaceData(mesh_buffer_types::MeshBufferType buffer, void
 {
 	CheckErrorCode(__FUNCTION__, "Started replacing data in the Mesh");
 	//CRITICAL_LOG_RENDERING("Replacing data in the mesh. The functionality has not been tested yet.");
-	CHECK_CONDITION_RETURN_VOID_RENDERING(m_meshData->HasVBO(buffer), Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_RETURN_VOID_RENDERING(m_meshData->HasVBO(buffer), utility::logging::EMERGENCY,
 		"Cannot replace data in buffer ", buffer, " because this buffer has not been initialized at all.");
 	m_meshData->ReplaceVbo(buffer, data, dataCount, singleDataEntrySize, singleDataComponentsCount);
 	CheckErrorCode(__FUNCTION__, "Finished replacing data in the Mesh");
@@ -359,7 +361,7 @@ void rendering::Mesh::ReplaceData(mesh_buffer_types::MeshBufferType buffer, void
 
 void* rendering::Mesh::GetBufferData(mesh_buffer_types::MeshBufferType buffer, int* bufferEntriesCount) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData->HasVBO(buffer), Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData->HasVBO(buffer), utility::logging::EMERGENCY,
 		"Retrieving data for the buffer type ", buffer, " cannot be performed. The buffer is 0.");
 
 	//m_meshData->Bind();
@@ -481,8 +483,8 @@ rendering::BillboardMesh::BillboardMesh(math::Real* modelMatricesValues, unsigne
 	math::Vector3D zeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	AddVertices(&zeroVector, nullptr, nullptr, nullptr, nullptr, 1, nullptr, 0, false);
 
-	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0 (", billboardsCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
+	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, utility::logging::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0 (", billboardsCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, utility::logging::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
 
 	m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVbo(mesh_buffer_types::INSTANCE));
@@ -515,7 +517,7 @@ rendering::BillboardMesh::~BillboardMesh()
 
 void rendering::BillboardMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
 
 	glDrawArraysInstanced(m_mode, 0, 1, m_billboardsCount);
@@ -526,26 +528,28 @@ void rendering::BillboardMesh::Draw() const
 
 
 /* ==================== InstanceMesh class implementation begin ==================== */
-rendering::InstanceMesh::InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector) :
-	Mesh(GL_TRIANGLE_STRIP),
-	m_positionsCount(positionsCount),
+rendering::InstanceMesh::InstanceMesh(GLenum mode, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector) :
+	Mesh(mode),
+	m_positionsCount(mode == GL_POINTS ? 1 : 4),
 	m_maxParticlesCount(maxParticlesCount),
 	m_instanceDataLength(0)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_RENDERING(m_positionsCount > 0, utility::logging::ERR,
 		"Cannot create an instance mesh. Specified number of positions is not greater than 0 (", positionsCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(m_maxParticlesCount > 0, Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_RENDERING(m_maxParticlesCount > 0, utility::logging::ERR,
 		"Cannot create an instance mesh. Specified maximum number of particles is not greater than 0 (", m_maxParticlesCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(!instanceDataSizeVector.empty(), Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_RENDERING(!instanceDataSizeVector.empty(), utility::logging::ERR,
 		"Cannot create an instance mesh. Specified vector of instance data is empty");
 	
-	AddVertices(positions, nullptr, positionsCount);
+	math::Vector2D* positions = m_mode == GL_POINTS ? nullptr :
+		std::array<math::Vector2D, 4>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data();
+	AddVertices(positions, nullptr, m_positionsCount);
 
 	for (auto& instanceDataSize : instanceDataSizeVector)
 	{
 		m_instanceDataLength += instanceDataSize;
 	}
-	CHECK_CONDITION_EXIT_RENDERING(m_instanceDataLength > 0, Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_RENDERING(m_instanceDataLength > 0, utility::logging::ERR,
 		"Cannot create an instance mesh. Specified instance data length is not greater than 0 (", instanceDataLength, ").");
 
 	m_meshData->Bind();
@@ -581,7 +585,7 @@ rendering::InstanceMesh::~InstanceMesh()
 
 void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
@@ -646,8 +650,8 @@ void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsi
 //	int bytesPerPixel;
 //	unsigned char* heightMapData = stbi_load(heightMapFileName.c_str(), &m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel,
 //		1 /* we only care about one RED component for now (the heightmap is grayscale) */);
-//	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
-//	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
+//	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, utility::logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
+//	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, utility::logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
 //	//for (int i = 0; i < heightMapWidth; ++i)
 //	//{
 //	//	for (int j = 0; j < heightMapHeight; ++j)
@@ -829,9 +833,9 @@ void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsi
 //{
 //	// TODO: Range checking
 //	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-//		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
+//		utility::logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
 //	const int heightMapIndex = GetHeightMapIndex(x, z);
-//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
+//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, utility::logging::ERR,
 //		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 //	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
 //	math::Real height = static_cast<math::Real>(heightMapData[heightMapIndex]);
@@ -846,9 +850,9 @@ void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsi
 //{
 //	// TODO: Range checking
 //	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-//		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
+//		utility::logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
 //	const int heightMapIndex = GetHeightMapIndex(x, z);
-//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
+//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, utility::logging::ERR,
 //		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 //	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
 //	math::Real height = heightsGenerator.GenerateHeight(static_cast<math::Real>(x), static_cast<math::Real>(z));

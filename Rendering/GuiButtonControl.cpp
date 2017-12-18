@@ -48,8 +48,8 @@ rendering::controls::GuiButtonControl::~GuiButtonControl()
 
 void rendering::controls::GuiButtonControl::SetText(const std::string& text)
 {
-	CHECK_CONDITION_RETURN_VOID_RENDERING(!text.empty(), Utility::Logging::DEBUG, "Cannot create a mesh for the GUI button control. No text is set.");
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_font != NULL, Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_RENDERING(!text.empty(), utility::logging::DEBUG, "Cannot create a mesh for the GUI button control. No text is set.");
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_font != NULL, utility::logging::DEBUG,
 	//	"Cannot set text (\"", text, "\") for the GUI control. No font is set. GUI control uses only icons for rendering.");
 	std::vector<text::Line> lines;
 	text::Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);

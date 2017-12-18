@@ -8,7 +8,7 @@ engine::MeshRendererComponent::MeshRendererComponent(int meshId, const rendering
 	m_meshId(meshId),
 	m_material(material)
 {
-	CHECK_CONDITION_ENGINE(m_material != nullptr, Utility::Logging::WARNING, "The material given to the mesh renderer component is NULL.");
+	CHECK_CONDITION_ENGINE(m_material != nullptr, utility::logging::WARNING, "The material given to the mesh renderer component is NULL.");
 }
 
 
@@ -39,8 +39,8 @@ engine::MeshRendererComponent& engine::MeshRendererComponent::operator=(MeshRend
 void engine::MeshRendererComponent::Render(int shaderId, rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering mesh started");
-	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");
-	CHECK_CONDITION_ENGINE(m_material != NULL, Utility::Logging::WARNING, "Rendering a mesh while the material is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, utility::logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");
+	CHECK_CONDITION_ENGINE(m_material != NULL, utility::logging::WARNING, "Rendering a mesh while the material is NULL.");
 
 
 	//const math::Transform& transform = GetTransform();

@@ -165,7 +165,7 @@ void game::PlayGameState::Entered()
 	engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::Logging::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
+	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), utility::logging::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
 	engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
 #endif
@@ -657,7 +657,7 @@ void game::PlayGameState::Render(rendering::Renderer* renderer) const
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_EXIT_GAME(renderer != nullptr, Utility::Logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_GAME(renderer != nullptr, utility::logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
@@ -701,7 +701,7 @@ void game::PlayGameState::RenderSceneWithAmbientLight(rendering::Renderer* rende
 	renderer->BindShader(ambientShaderId);
 	renderer->UpdateRendererUniforms(ambientShaderId);
 	m_rootGameNode.Render(ambientShaderId, renderer);
-	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != nullptr, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
+	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != nullptr, utility::logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
 	const auto ambientTerrainShaderId = GetAmbientTerrainShaderId(renderer->GetFogInfo());
 	renderer->BindShader(ambientTerrainShaderId);
 	renderer->UpdateRendererUniforms(ambientTerrainShaderId);
@@ -818,7 +818,7 @@ void game::PlayGameState::RenderSkybox(rendering::Renderer* renderer) const
 void game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, utility::logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
 	RenderWaterReflectionTexture(renderer);
@@ -831,7 +831,7 @@ void game::PlayGameState::RenderWaterTextures(rendering::Renderer* renderer) con
 void game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, utility::logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	EMERGENCY_LOG_GAME("Rendering water reflection texture doesn't work now. Reflection camera is not properly setup.");
 	return;
 
@@ -887,7 +887,7 @@ void game::PlayGameState::RenderWaterReflectionTexture(rendering::Renderer* rend
 void game::PlayGameState::RenderWaterRefractionTexture(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != nullptr, utility::logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
 	renderer->EnableWaterRefractionClippingPlane(m_waterNode.GetTransform().GetTransformedPos().y);
 	renderer->BindWaterRefractionTexture();
@@ -930,7 +930,7 @@ void game::PlayGameState::RenderWaterNodes(rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	// TODO: Add some condition here that will prevent any water nodes rendering if there are no water nodes available.
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_waterNode != nullptr, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_waterNode != nullptr, utility::logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
 	// TODO: In the future there might be more than one water node.
@@ -1165,7 +1165,7 @@ int game::PlayGameState::GetAmbientTerrainShaderId(const rendering::fog_effect::
 
 unsigned int game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 {
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), utility::logging::ERR, "Incorrect current camera index. Passed ",
 		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
 	//m_cameras[m_currentCameraIndex].Deactivate();
 	//m_currentCameraIndex = cameraIndex;

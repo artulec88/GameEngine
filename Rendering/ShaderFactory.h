@@ -47,7 +47,7 @@ namespace rendering
 		RENDERING_API const Shader* CreateShader(int shaderId, const std::string& shaderFileName);
 		RENDERING_API const Shader* GetShader(const int shaderId) const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_shaderType2ShaderMap.find(shaderId) != m_shaderType2ShaderMap.end(), Utility::Logging::EMERGENCY,
+			CHECK_CONDITION_EXIT_RENDERING(m_shaderType2ShaderMap.find(shaderId) != m_shaderType2ShaderMap.end(), utility::logging::EMERGENCY,
 				"No shader has been created for the specified type of shader (", shaderId, ").");
 			return &m_shaderType2ShaderMap.find(shaderId)->second;
 		}

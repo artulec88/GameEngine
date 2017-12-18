@@ -29,21 +29,21 @@ engine::GameComponent::~GameComponent()
 
 void engine::GameComponent::SetParent(GameNode* parentGameNode)
 {
-	CHECK_CONDITION_EXIT_ENGINE(parentGameNode != nullptr, Utility::Logging::ERR,
+	CHECK_CONDITION_EXIT_ENGINE(parentGameNode != nullptr, utility::logging::ERR,
 		"Cannot assign a parent to the game component. Parent game node is NULL.");
 	m_parentGameNode = parentGameNode;
 }
 
 math::Transform& engine::GameComponent::GetTransform()
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, Utility::Logging::CRITICAL,
+	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, utility::logging::CRITICAL,
 		"Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
 }
 
 const math::Transform& engine::GameComponent::GetTransform() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, Utility::Logging::CRITICAL,
+	CHECK_CONDITION_EXIT_ENGINE(m_parentGameNode != nullptr, utility::logging::CRITICAL,
 		"Cannot get transformation for a given component. Parent game node is NULL.");
 	return m_parentGameNode->GetTransform();
 }

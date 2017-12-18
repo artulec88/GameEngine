@@ -33,14 +33,14 @@ bool audio::AudioObject::GenerateSamples(float* stream, size_t streamLength)
 
 void audio::AudioObject::SetPos(double pos)
 {
-	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), Utility::Logging::ERR,
+	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), utility::logging::ERR,
 		"Cannot easily set the audio data position. The normalized position's value (", pos, ") lies outside of range [0; 1]");
 	m_audioPos = ConvertPosToAbsolutePos(math::Clamp(pos, 0.0, 1.0));
 }
 
 size_t audio::AudioObject::ConvertPosToAbsolutePos(const double pos) const
 {
-	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), Utility::Logging::ERR,
+	CHECK_CONDITION_AUDIO(!((pos < 0.0) || (pos > 1.0)), utility::logging::ERR,
 		"Cannot convert the audio data normalized position to absolute position. The normalized position's value (", pos, ") lies outside of range [0; 1]");
 	return static_cast<size_t>(pos * m_audioLength);
 }

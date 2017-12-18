@@ -459,7 +459,7 @@ bool rendering::Renderer::InitShadowMap()
 {
 	const auto shadowInfo = m_currentLight->GetShadowInfo();
 	const auto shadowMapIndex = shadowInfo == nullptr ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
+	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, utility::logging::ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
 	m_mappedValues.SetTexture("shadowMap", &m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex].BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
@@ -522,7 +522,7 @@ void rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 void rendering::Renderer::BlurShadowMap(const Shader* filterShader, int shadowMapIndex, math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING_RENDERING(true, "");
-	CHECK_CONDITION_RENDERING(shadowMapIndex >= 0 && shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_RENDERING(shadowMapIndex >= 0 && shadowMapIndex < SHADOW_MAPS_COUNT, utility::logging::EMERGENCY,
 		"Cannot perform the blurring process. Specified shadow map index (", shadowMapIndex, ") lies outside of range [0; ", SHADOW_MAPS_COUNT, ").");
 
 	m_mappedValues.SetVector3D("blurScale", math::Vector3D(blurAmount / m_shadowMaps[shadowMapIndex].GetWidth(), REAL_ZERO, REAL_ZERO));
@@ -537,8 +537,8 @@ void rendering::Renderer::BlurShadowMap(const Shader* filterShader, int shadowMa
 void rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING_RENDERING(true, "");
-	CHECK_CONDITION_EXIT_RENDERING(source != nullptr, Utility::Logging::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::Logging::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
+	CHECK_CONDITION_EXIT_RENDERING(source != nullptr, utility::logging::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != dest, utility::logging::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
 	if (dest == nullptr)
 	{
 		DELOCUST_LOG_RENDERING("Binding window as a render target for filtering");
@@ -570,7 +570,7 @@ void rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 
 void rendering::Renderer::SetCurrentCamera(const Camera* camera)
 {
-	CHECK_CONDITION_RENDERING(camera != nullptr, Utility::Logging::ERROR, "Cannot set current camera. Given camera is nullptr.");
+	CHECK_CONDITION_RENDERING(camera != nullptr, utility::logging::ERROR, "Cannot set current camera. Given camera is nullptr.");
 	//if (camera == nullptr)
 	//{
 	//	ERROR_LOG_RENDERING("Cannot set current camera. Given camera is NULL.");

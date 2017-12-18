@@ -141,9 +141,9 @@ void game::SkyboxBuilder::BuildComponents()
 	const auto cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	const auto cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
 	const auto skyboxTextureDay = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_DAY, cubeMapDayDirectory);
-	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != nullptr, utility::logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
 	const auto skyboxTextureNight = m_gameManager->AddCubeTexture(texture_ids::SKYBOX_NIGHT, cubeMapNightDirectory);
-	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != nullptr, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != nullptr, utility::logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
 
 	//SetTexture("cubeMapDay", m_skyboxTextureDay);
 	//SetTexture("cubeMapNight", m_skyboxTextureNight);

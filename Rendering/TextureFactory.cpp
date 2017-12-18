@@ -32,7 +32,7 @@ const rendering::Texture* rendering::TextureFactory::CreateTexture(int textureId
 	INFO_LOG_RENDERING("Creating texture \"", textureBuilder.GetFileName(), "\" for ID ", textureId);
 	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(m_texturesDirectory + textureBuilder.GetFileName(), textureBuilder.GetTarget(),
 		textureBuilder.GetFilter(), textureBuilder.GetInternalFormat(), textureBuilder.GetFormat(), textureBuilder.GetWrapping(), textureBuilder.GetAttachment())));
-	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(texturePair.second, utility::logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Texture \"", textureBuilder.GetFileName(), "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
 }
@@ -90,15 +90,15 @@ const rendering::Texture* rendering::TextureFactory::CreateCubeTexture(int textu
 			cubeMapNegZFaceFileName += *filenameItr;
 		}
 	}
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosXFaceFileFound, Utility::Logging::ERR, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegXFaceFileFound, Utility::Logging::ERR, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosYFaceFileFound, Utility::Logging::ERR, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegYFaceFileFound, Utility::Logging::ERR, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosZFaceFileFound, Utility::Logging::ERR, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegZFaceFileFound, Utility::Logging::ERR, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosXFaceFileFound, utility::logging::ERR, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegXFaceFileFound, utility::logging::ERR, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosYFaceFileFound, utility::logging::ERR, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegYFaceFileFound, utility::logging::ERR, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapPosZFaceFileFound, utility::logging::ERR, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_RENDERING(cubeMapNegZFaceFileFound, utility::logging::ERR, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 
 	const auto texturePair = m_textureType2TextureMap.insert(std::make_pair(textureId, Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName)));
-	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(texturePair.second, utility::logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Cube texture \"", cubeTextureDirectory, "\" has been created for ID ", textureId);
 	return &texturePair.first->second;
 }

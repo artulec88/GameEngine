@@ -20,8 +20,8 @@ rendering::TextureData::TextureData(const std::string& fileName, GLenum textureT
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, Utility::Logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
-	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, utility::logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, utility::logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
 
 	Image image(fileName, STBI_rgb_alpha);
@@ -45,8 +45,8 @@ rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, Utility::Logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
-	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, utility::logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, utility::logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
 	InitTextures(data, filters, internalFormats, formats, wrapping);
@@ -212,7 +212,7 @@ void rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 
 void rendering::TextureData::Bind(int textureIndex) const
 {
-	CHECK_CONDITION_RETURN_VOID_RENDERING(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Logging::CRITICAL,
+	CHECK_CONDITION_RETURN_VOID_RENDERING(textureIndex >= 0 && textureIndex < m_texturesCount, utility::logging::CRITICAL,
 		"Cannot bind the texture with textureID=", textureIndex, ". This value is out of range [0; ", m_texturesCount, ")");
 	glBindTexture(m_textureTarget, m_textureIDs[textureIndex]);
 }
@@ -220,7 +220,7 @@ void rendering::TextureData::Bind(int textureIndex) const
 void rendering::TextureData::InitRenderTargets(GLenum* attachments)
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(attachments != nullptr, utility::logging::DEBUG, "Cannot initialize rendering targets for the texture. No attachments specified.");
-	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, utility::logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 
 	std::vector<GLenum> drawBuffers(m_texturesCount);
 	auto hasDepth = false;
@@ -274,7 +274,7 @@ void rendering::TextureData::InitRenderTargets(GLenum* attachments)
 	}
 	glDrawBuffers(m_texturesCount, drawBuffers.data());
 
-	CHECK_CONDITION_EXIT_RENDERING(GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER), Utility::Logging::CRITICAL,
+	CHECK_CONDITION_EXIT_RENDERING(GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER), utility::logging::CRITICAL,
 		"Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is ", status, ".");
 }
 
@@ -313,8 +313,8 @@ rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned 
 	, m_fileName()
 #endif
 {
-	CHECK_CONDITION_RENDERING((width > 0) && (height > 0), Utility::Logging::ERR, "Cannot initialize texture. Passed texture size is incorrect (width=", width, "; height=", height, ")");
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
+	CHECK_CONDITION_RENDERING((width > 0) && (height > 0), utility::logging::ERR, "Cannot initialize texture. Passed texture size is incorrect (width=", width, "; height=", height, ")");
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, utility::logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 rendering::Texture::Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
@@ -323,7 +323,7 @@ rendering::Texture::Texture(int texturesCount, int width, int height, unsigned c
 	, m_fileName()
 #endif
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, utility::logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName) :
@@ -358,8 +358,8 @@ rendering::Texture::Texture(Texture&& texture) noexcept :
 
 void rendering::Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureIndex /* = 0 */) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::EMERGENCY, "Cannot bind the texture. Texture data is NULL.");
-	CHECK_CONDITION_RENDERING((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT), Utility::Logging::ERR, "Specified unit ", unit, " is outside of range [0; ", TextureData::MAX_BOUND_TEXTURES_COUNT, ")");
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, utility::logging::EMERGENCY, "Cannot bind the texture. Texture data is NULL.");
+	CHECK_CONDITION_RENDERING((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT), utility::logging::ERR, "Specified unit ", unit, " is outside of range [0; ", TextureData::MAX_BOUND_TEXTURES_COUNT, ")");
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
 	m_textureData.Bind(textureIndex);
@@ -367,7 +367,7 @@ void rendering::Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureI
 
 void rendering::Texture::BindAsRenderTarget() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::EMERGENCY, "Cannot bind the texture as render target. Texture data is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, utility::logging::EMERGENCY, "Cannot bind the texture as render target. Texture data is NULL.");
 	m_textureData.BindAsRenderTarget();
 }
 /* ==================== Texture class implementation end ==================== */

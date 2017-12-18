@@ -104,7 +104,7 @@ std::string rendering::ShaderData::LoadShaderData(const std::string& directoryPa
 	DELOCUST_LOG_RENDERING("Loading shader data from file \"", fileName, "\"");
 
 	std::ifstream file(directoryPath + fileName);
-	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), Utility::Logging::ERR, "Unable to open shader file \"", fileName, "\". Check the path.");
+	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), utility::logging::ERR, "Unable to open shader file \"", fileName, "\". Check the path.");
 
 	std::string output;
 	std::string line;
@@ -186,7 +186,7 @@ bool rendering::ShaderData::Compile()
 		ERROR_LOG_RENDERING("Error validating shader program ", m_programId, ":\n", &errorMessage[0], "\r");
 	}
 
-	CHECK_CONDITION_RENDERING(compileSuccess, Utility::Logging::EMERGENCY,
+	CHECK_CONDITION_RENDERING(compileSuccess, utility::logging::EMERGENCY,
 		"Shader program ", m_programId, " compilation error occurred. Investigate the problem.");
 	return compileSuccess;
 }
@@ -402,7 +402,7 @@ void rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&...
 GLint rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
 {
 	const auto location = glGetUniformLocation(m_programId, uniformName.c_str());
-	CHECK_CONDITION_RENDERING(location != uniforms::UniformBase::INVALID_LOCATION, Utility::Logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
+	CHECK_CONDITION_RENDERING(location != uniforms::UniformBase::INVALID_LOCATION, utility::logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
 	m_uniformNameToLocationMap[uniformName] = location;
 	return location;
 }
@@ -517,7 +517,7 @@ void rendering::ShaderData::AddUniformInfos(const std::vector<uniforms::UniformS
 bool rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const
 {
 	itr = m_uniformNameToLocationMap.find(uniformName);
-	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), Utility::Logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
+	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), utility::logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
 	return itr != m_uniformNameToLocationMap.end();
 }
 

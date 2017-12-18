@@ -90,7 +90,7 @@ namespace rendering
 		{
 			CheckErrorCode(__FUNCTION__, "Started mesh data binding");
 			//WARNING_LOG_RENDERING("Binding mesh data \"", *this, "\".");
-			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
+			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, utility::logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
 			CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
 		}
@@ -119,7 +119,7 @@ namespace rendering
 		bool HasVbo(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
-				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
+				utility::logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
 			return m_buffers[buffer] != 0;
 		}
 
@@ -131,8 +131,8 @@ namespace rendering
 		GLuint GetVbo(mesh_buffer_types::MeshBufferType buffer) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
-				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
-			CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, Utility::Logging::CRITICAL,
+				utility::logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
+			CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, utility::logging::CRITICAL,
 				"The buffer under index ", buffer, " is 0. Mesh data = \"", *this, "\"");
 			return m_buffers[buffer];
 		}
@@ -212,7 +212,7 @@ namespace rendering
 		public:
 			bool operator() (const Mesh& lhs, const Mesh& rhs) const
 			{
-				CHECK_CONDITION_RETURN_RENDERING(lhs.m_meshData != nullptr && rhs.m_meshData != nullptr, false, Utility::Logging::ERR,
+				CHECK_CONDITION_RETURN_RENDERING(lhs.m_meshData != nullptr && rhs.m_meshData != nullptr, false, utility::logging::ERR,
 					"Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
 				return lhs.m_meshData->GetVao() < rhs.m_meshData->GetVao();
 			}
@@ -395,7 +395,7 @@ namespace rendering
 		/// <summary>
 		/// Instance mesh constructor.
 		/// </summary>
-		InstanceMesh(math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector);
+		InstanceMesh(GLenum mode, unsigned int maxParticlesCount, std::vector<GLint> instanceDataSizeVector);
 
 		/// <summary>
 		/// Instance mesh destructor.

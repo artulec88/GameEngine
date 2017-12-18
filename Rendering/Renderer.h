@@ -189,7 +189,7 @@ namespace rendering
 
 		const lighting::BaseLight* GetCurrentLight() const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != nullptr, Utility::Logging::ERR, "Current light is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != nullptr, utility::logging::ERR, "Current light is NULL.");
 			return m_currentLight;
 		}
 		const lighting::BaseLight* SetCurrentLight(const lighting::BaseLight* light)
@@ -219,7 +219,7 @@ namespace rendering
 
 		const Camera& GetCurrentCamera() const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != nullptr, Utility::Logging::CRITICAL, "Current camera is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != nullptr, utility::logging::CRITICAL, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
 

@@ -63,7 +63,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 
 				bool swapOccured;
@@ -143,7 +143,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table using the insertion sort algorithm. The specified table is nullptr");
 
 				for (auto i = 1; i < vectorSize; ++i)
@@ -219,7 +219,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(vectorSize >= 2, utility::logging::DEBUG,
 					"Selection sort operation ignored. Only one element to sort.");
@@ -303,7 +303,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 				std::vector<T> auxiliaryTable(vectorSize);
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable.data());
@@ -537,7 +537,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters);
 			}
@@ -634,7 +634,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table using the insertion sort algorithm. The specified table is nullptr");
 				const auto quarterVectorSize = vectorSize / 4;
 				const auto firstConstIndex = 1;
@@ -658,9 +658,9 @@ namespace math {
 						nextIndex = Floor(static_cast<Real>(nextIndex) * recursiveIndexStep);
 					}
 				}
-				CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Logging::ERR,
+				CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, utility::logging::ERR,
 					"Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = ", vectorSize, " and the gap = ", indices.back());
-				CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::Logging::ERR,
+				CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, utility::logging::ERR,
 					"Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to ", FIRST_CONST_INDEX, ", but is equal to ", indices.front());
 
 				while (!indices.empty())
@@ -744,7 +744,7 @@ namespace math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 
 				auto gap = vectorSize;
@@ -973,7 +973,7 @@ namespace math {
 		private:
 			void FindMinMax(Vector2D* vectors, size_t vectorSize, keys::Key sortingKey, Real& minValue, Real& maxValue) const
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 
 				minValue = REAL_MAX;
@@ -990,12 +990,12 @@ namespace math {
 						maxValue = value;
 					}
 				}
-				CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
+				CHECK_CONDITION_MATH(!(maxValue < minValue), utility::logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 			}
 
 			void FindMinMax(Vector3D* vectors, size_t vectorSize, keys::Key sortingKey, Real& minValue, Real& maxValue) const
 			{
-				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, utility::logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 
 				minValue = REAL_MAX;
@@ -1012,7 +1012,7 @@ namespace math {
 						maxValue = value;
 					}
 				}
-				CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
+				CHECK_CONDITION_MATH(!(maxValue < minValue), utility::logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 			}
 
 			template <typename T>
@@ -1047,7 +1047,7 @@ namespace math {
 						--bucketIndex;
 					}
 
-					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
+					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), utility::logging::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 					buckets[bucketIndex].PushVector(vectors[i]);
 				}
 				auto insertionSorter = GetSortingObject(sorting_algorithms::INSERTION_SORT);
@@ -1131,7 +1131,7 @@ namespace math {
 						--bucketIndex;
 					}
 
-					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
+					CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), utility::logging::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 					buckets[bucketIndex].PushVector(vectors[i]);
 				}
 				auto insertionSorter = GetSortingObject(sorting_algorithms::INSERTION_SORT);

@@ -20,14 +20,11 @@ rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory, const st
 {
 	CreateMesh(mesh_ids::SIMPLE_PLANE, GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"));
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE,
-		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
-			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 1}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
+		std::make_unique<InstanceMesh>(GL_TRIANGLE_STRIP, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 1}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE_COLOR,
-		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
-		4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
+		std::make_unique<InstanceMesh>(GL_POINTS, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::PARTICLE_UNIFORM_COLOR,
-		std::make_unique<InstanceMesh>(std::vector<math::Vector2D>{ math::Vector2D(-0.5f, -0.5f), math::Vector2D(-0.5f, 0.5f), math::Vector2D(0.5f, -0.5f), math::Vector2D(0.5f, 0.5f) }.data(),
-			4, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
+		std::make_unique<InstanceMesh>(GL_POINTS, GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000), std::vector<GLint>{4, 4, 4, 4}))); // TODO: The "maxParticlesCount" variable is also retrieved in the Renderer class.))
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_meshType2MeshMap.insert(make_pair(mesh_ids::DEBUG,
@@ -44,7 +41,7 @@ rendering::MeshFactory::~MeshFactory()
 const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std::string& meshFileName)
 {
 	CheckErrorCode(__FUNCTION__, "Started reading the mesh model.");
-	CHECK_CONDITION_RENDERING(!meshFileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
+	CHECK_CONDITION_RENDERING(!meshFileName.empty(), utility::logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
 #ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::timing::Timer timer;
@@ -59,8 +56,8 @@ const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std:
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace);
 
-	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, Utility::Logging::CRITICAL, "Error while loading a mesh \"", meshFileName, "\"");
-	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != nullptr) && (scene->mNumMeshes > 0), Utility::Logging::CRITICAL,
+	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, utility::logging::CRITICAL, "Error while loading a mesh \"", meshFileName, "\"");
+	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != nullptr) && (scene->mNumMeshes > 0), utility::logging::CRITICAL,
 		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", meshFileName,
 		"\". One of the possible solutions is to check whether the model has any additional lines at the end.");
 
@@ -121,7 +118,7 @@ const rendering::Mesh* rendering::MeshFactory::CreateMesh(int meshId, const std:
 
 	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshId, std::make_unique<Mesh>(indices.data(), indices.size(),
 		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data(), bitangents.data())));
-	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(meshPair.second, utility::logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return meshPair.first->second.get();
 }
 
@@ -188,7 +185,7 @@ const rendering::Mesh* rendering::MeshFactory::CreateMeshFromSurface(int meshId,
 
 	const auto meshPair = m_meshType2MeshMap.insert(make_pair(meshId, std::make_unique<Mesh>(indices.data(), indices.size(),
 		positions.size(), positions.data(), textureCoordinates.data(), normals.data(), tangents.data())));
-	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
+	CHECK_CONDITION_RENDERING(meshPair.second, utility::logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 	return meshPair.first->second.get();
 }

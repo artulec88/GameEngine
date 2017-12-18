@@ -39,7 +39,7 @@ void rendering::text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 {
 	// TODO: Implement font meta data file parsing
 	std::ifstream file(fontMetaDataFileName);
-	CHECK_CONDITION_RETURN_VOID_RENDERING(file.is_open(), Utility::Logging::ERR, "Could not open font meta data file \"", fontMetaDataFileName, "\"");
+	CHECK_CONDITION_RETURN_VOID_RENDERING(file.is_open(), utility::logging::ERR, "Could not open font meta data file \"", fontMetaDataFileName, "\"");
 
 	int imageWidth;
 	std::string line;
@@ -59,12 +59,12 @@ void rendering::text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				tokens.erase(tokens.begin()); // Removing the first token
 				// Padding calculation begin
 				const auto tokenItr = find(tokens.begin(), tokens.end(), "padding");
-				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 					"No \"padding\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 				const auto padding = *(tokenItr + 1);
 				std::vector<std::string> subTokens;
 				utility::string_utility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
-				CHECK_CONDITION_RENDERING(subTokens.size() == 4, Utility::Logging::ERR, "The \"padding\" attribute must define 4 values instead of ", subTokens.size());
+				CHECK_CONDITION_RENDERING(subTokens.size() == 4, utility::logging::ERR, "The \"padding\" attribute must define 4 values instead of ", subTokens.size());
 				for (size_t index = 0; index < subTokens.size(); ++index)
 				{
 					m_padding[index] = utility::string_utility::ToInt(subTokens[index]);
@@ -78,7 +78,7 @@ void rendering::text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				tokens.erase(tokens.begin()); // Removing the first token
 				// Line sizes calculation begin
 				auto tokenItr = find(tokens.begin(), tokens.end(), "lineHeight");
-				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 					"No \"lineHeight\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 				const auto lineHeightPixels = utility::string_utility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX];
 				m_verticalPerPixelSize = LINE_HEIGHT / lineHeightPixels;
@@ -87,7 +87,7 @@ void rendering::text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				// Line sizes calculation end
 
 				tokenItr = find(tokens.begin(), tokens.end(), "scaleW");
-				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 					"No \"scaleW\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 				imageWidth = utility::string_utility::ToInt(*(tokenItr + 1));
 				DELOCUST_LOG_RENDERING("Image width = ", imageWidth);
@@ -105,12 +105,12 @@ void rendering::text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 void rendering::text::Font::AddCharacter(std::vector<std::string>& tokens, int imageWidth)
 {
 	auto tokenItr = find(tokens.begin(), tokens.end(), "id");
-	CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+	CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 		"No \"id\" attribute found in the font meta data file");
 	const auto id = utility::string_utility::ToInt(*(tokenItr + 1));
 
 	tokenItr = find(tokens.begin(), tokens.end(), "xadvance");
-	CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+	CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 		"No \"xadvance\" attribute found in the font meta data file");
 	const auto metaDataXAdvance = utility::string_utility::ToInt(*(tokenItr + 1));
 	const auto xAdvance = static_cast<math::Real>(metaDataXAdvance - m_padding[PADDING_LEFT_INDEX] - m_padding[PADDING_RIGHT_INDEX]) * m_horizontalPerPixelSize;
@@ -122,22 +122,22 @@ void rendering::text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 	else
 	{
 		tokenItr = find(tokens.begin(), tokens.end(), "x");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"x\" attribute found in the font meta data file");
 		const auto xTextureCoord = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) / imageWidth;
 
 		tokenItr = find(tokens.begin(), tokens.end(), "y");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"y\" attribute found in the font meta data file");
 		const auto yTextureCoord = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) / imageWidth;
 
 		tokenItr = find(tokens.begin(), tokens.end(), "width");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"width\" attribute found in the font meta data file");
 		const auto width = utility::string_utility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_LEFT_INDEX] - m_padding[PADDING_RIGHT_INDEX] + 2 * DESIRED_PADDING;
 
 		tokenItr = find(tokens.begin(), tokens.end(), "height");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"height\" attribute found in the font meta data file");
 		const auto height = utility::string_utility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX] + 2 * DESIRED_PADDING;
 		const auto quadWidth = width * m_horizontalPerPixelSize;
@@ -146,12 +146,12 @@ void rendering::text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		const auto yTextureSize = static_cast<math::Real>(height) / imageWidth;
 
 		tokenItr = find(tokens.begin(), tokens.end(), "xoffset");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"xoffset\" attribute found in the font meta data file");
 		const auto xOffset = static_cast<math::Real>(utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_LEFT_INDEX] - DESIRED_PADDING) * m_horizontalPerPixelSize;
 
 		tokenItr = find(tokens.begin(), tokens.end(), "yoffset");
-		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
+		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), utility::logging::ERR,
 			"No \"yoffset\" attribute found in the font meta data file");
 		const auto yOffset = (utility::string_utility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
 		DELOCUST_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
@@ -165,7 +165,7 @@ void rendering::text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 const rendering::text::Character& rendering::text::Font::GetCharacter(int asciiCode) const
 {
 	const auto characterItr = m_metaData.find(asciiCode);
-	CHECK_CONDITION_RENDERING(characterItr != m_metaData.end(), Utility::Logging::ERR,
+	CHECK_CONDITION_RENDERING(characterItr != m_metaData.end(), utility::logging::ERR,
 		"The ascii code (", asciiCode, ") hasn't been found in the font meta data");
 	return characterItr->second;
 }

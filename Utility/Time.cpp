@@ -63,12 +63,12 @@
 utility::timing::DateTime::DateTime(const unsigned int year, const unsigned int month, const unsigned int day, const unsigned int hour, const unsigned int minute, const unsigned int second) :
 	m_timePoint()
 {
-	CHECK_CONDITION_UTILITY(month > 0 && month <= MONTHS_COUNT, Utility::Logging::ERR, "Incorrect month number specified: ", month, ". The month number must lie in range [1; 12].");
-	CHECK_CONDITION_UTILITY(day > 0 && day <= DAYS_COUNT_IN_MONTH[month], Utility::Logging::ERR, "Incorrect day number specified: ", day,
+	CHECK_CONDITION_UTILITY(month > 0 && month <= MONTHS_COUNT, utility::logging::ERR, "Incorrect month number specified: ", month, ". The month number must lie in range [1; 12].");
+	CHECK_CONDITION_UTILITY(day > 0 && day <= DAYS_COUNT_IN_MONTH[month], utility::logging::ERR, "Incorrect day number specified: ", day,
 		". The day number must lie in range [1; ", DAYS_COUNT_IN_MONTH[month], "].");
-	CHECK_CONDITION_UTILITY(hour >= 0 && hour < HOURS_PER_DAY, Utility::Logging::ERR, "Incorrect hour number specified: ", hour, ". The hour number must lie in range [0; 24).");
-	CHECK_CONDITION_UTILITY(minute >= 0 && minute < MINUTES_PER_HOUR, Utility::Logging::ERR, "Incorrect minute number specified: ", minute, ". The minute number must lie in range [0; 60).");
-	CHECK_CONDITION_UTILITY(second >= 0 && second < SECONDS_PER_MINUTE, Utility::Logging::ERR, "Incorrect second number specified: ", second, ". The second number must lie in range [0; 60).");
+	CHECK_CONDITION_UTILITY(hour >= 0 && hour < HOURS_PER_DAY, utility::logging::ERR, "Incorrect hour number specified: ", hour, ". The hour number must lie in range [0; 24).");
+	CHECK_CONDITION_UTILITY(minute >= 0 && minute < MINUTES_PER_HOUR, utility::logging::ERR, "Incorrect minute number specified: ", minute, ". The minute number must lie in range [0; 60).");
+	CHECK_CONDITION_UTILITY(second >= 0 && second < SECONDS_PER_MINUTE, utility::logging::ERR, "Incorrect second number specified: ", second, ". The second number must lie in range [0; 60).");
 	std::stringstream ss("");// Jan 9 2014 12:35 : 34");
 	ss << year << "-" << month << "-" << day << " " << hour << ":" << minute << ":" << second;
 	tm timePoint = {};

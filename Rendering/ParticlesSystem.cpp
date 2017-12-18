@@ -124,11 +124,14 @@ std::vector<math::Real> rendering::particles::ParticlesSystem::GetInstanceData(c
 //		particleInstanceVboData.push_back(CalculateLifeStageFactor(i));
 //#endif
 
-		//const auto& color = m_particles.GetColor(i);
-		//particleInstanceVboData.push_back(color.GetRed());
-		//particleInstanceVboData.push_back(color.GetGreen());
-		//particleInstanceVboData.push_back(color.GetBlue());
-		//particleInstanceVboData.push_back(color.GetAlpha());
+		if (IsAttributeEnabled(attributes::COLOR))
+		{
+			const auto& color = m_particles.GetColor(i);
+			particleInstanceVboData.push_back(color.GetRed());
+			particleInstanceVboData.push_back(color.GetGreen());
+			particleInstanceVboData.push_back(color.GetBlue());
+			particleInstanceVboData.push_back(color.GetAlpha());
+		}
 	}
 	return particleInstanceVboData;
 }
