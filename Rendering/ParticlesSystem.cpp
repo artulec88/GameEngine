@@ -68,6 +68,8 @@ void rendering::particles::ParticlesSystem::Reset()
 
 std::vector<math::Real> rendering::particles::ParticlesSystem::GetInstanceData(const Camera* camera, std::vector<math::Real>& particleInstanceVboData) const
 {
+	CHECK_CONDITION_ALWAYS_RENDERING(GetAliveParticlesCount() <= GetParticlesCount() - 1000, utility::logging::EMERGENCY,
+		"The number of alive particles exceed the specified limit (alive: ", GetAliveParticlesCount(), "; limit: ", GetParticlesCount(), ")");
 	const auto cameraViewMatrix = camera->GetViewMatrix();
 	const auto cameraViewProjectionMatrix = camera->GetViewProjection();
 	particleInstanceVboData.clear();

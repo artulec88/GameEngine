@@ -585,12 +585,15 @@ rendering::InstanceMesh::~InstanceMesh()
 
 void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
+	CheckErrorCode(__FUNCTION__, "Started drawing an instance mesh");
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, utility::logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_RETURN_VOID_RENDERING(particlesCount <= m_maxParticlesCount, utility::logging::ERR,
+		"Trying to draw ", particlesCount, " particles when limited to: ", m_maxParticlesCount);
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVbo(mesh_buffer_types::INSTANCE));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, data, GL_STREAM_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(math::Real) * m_maxParticlesCount * m_instanceDataLength, data, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(math::Real) * dataSize, data);
 	//m_meshData->Unbind();
 	// Updating the instance VBO end
@@ -600,6 +603,7 @@ void rendering::InstanceMesh::Draw(math::Real* data, unsigned int dataSize, unsi
 	glDrawArraysInstanced(m_mode, 0, m_positionsCount /* * 2 */, particlesCount);
 
 	m_meshData->Unbind();
+	CheckErrorCode(__FUNCTION__, "Finished drawing an instance mesh");
 }
 /* ==================== InstanceMesh class implementation end ==================== */
 

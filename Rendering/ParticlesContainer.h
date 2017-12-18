@@ -130,11 +130,12 @@ namespace rendering
 			void IncreaseScale(size_t i, math::Real scaleIncrease) const { m_scales[i] += scaleIncrease; }
 
 			/// <summary>
-			/// Kills the particle stored under the specified index <paramref name="id"/>.
+			/// Kills the particles stored under the specified indices <paramref name="ids"/>.
 			/// The function does nothing when no alive particles exist.
 			/// </summary>
-			/// <param name="id"> The index of the particle requested to be killed. </param>
-			void Kill(size_t id);
+			/// <param name="ids"> The indices of the particles requested to be killed. </param>
+			/// <param name="idsCount"> The number of particles to be killed. </param>
+			void Kill(size_t* ids, size_t idsCount);
 
 			/// <summary>
 			/// Revives the particle stored under the specified index <paramref name="id"/>.

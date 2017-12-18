@@ -33,17 +33,19 @@ rendering::particles::ParticlesContainer::~ParticlesContainer()
 {
 }
 
-void rendering::particles::ParticlesContainer::Kill(size_t id)
+void rendering::particles::ParticlesContainer::Kill(size_t* ids, size_t idsCount)
 {
 	if (m_countAlive > 0)
 	{
 		//DEBUG_LOG_RENDERING("Killing particle #", id);
-		//m_alive[id] = false;
-		if (id != m_countAlive - 1)
+		for (auto i = 0; i < idsCount; ++i)
 		{
-			SwapData(id, m_countAlive - 1);
+			if (ids[i] != m_countAlive - 1)
+			{
+				SwapData(ids[i], m_countAlive - 1);
+			}
+			--m_countAlive;
 		}
-		--m_countAlive;
 	}
 }
 
@@ -58,74 +60,75 @@ void rendering::particles::ParticlesContainer::Revive(size_t id)
 			SwapData(id, m_countAlive);
 		}
 		++m_countAlive;
+		//CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_countAlive <= m_maxCount, utility::logging::EMERGENCY,
+		//	"");
 	}
 }
 
 void rendering::particles::ParticlesContainer::SwapData(size_t a, size_t b)
 {
 	DELOCUST_LOG_RENDERING("Swapping data between particle #", a, " and particle #", b);
-	//std::swap(m_positions[a], m_positions[b]);
-	//std::swap(m_velocities[a], m_velocities[b]);
-	//std::swap(m_accelerations[a], m_accelerations[b]);
-	//std::swap(m_gravityEffectFactors[a], m_gravityEffectFactors[b]);
-	//std::swap(m_lifeSpanLimits[a], m_lifeSpanLimits[b]);
-	//std::swap(m_lifeSpans[a], m_lifeSpans[b]);
-	//std::swap(m_rotations[a], m_rotations[b]);
-	//std::swap(m_scales[a], m_scales[b]);
-	//std::swap(m_textureOffsets[a], m_textureOffsets[b]);
-	//std::swap(m_colors[a], m_colors[b]);
-	//std::swap(m_masses[a], m_masses[b]);
-	//std::swap(m_aliveFlags[a], m_aliveFlags[b]);
-	//std::swap(m_IDs[a], m_IDs[b]);
 
 	if (m_attributesMask.IsAttributeEnabled(attributes::POSITION))
 	{
-		std::swap(m_positions[a], m_positions[b]);
+		//std::swap(m_positions[a], m_positions[b]);
+		m_positions[a] = m_positions[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::VELOCITY))
 	{
-		std::swap(m_velocities[a], m_velocities[b]);
+		//std::swap(m_velocities[a], m_velocities[b]);
+		m_velocities[a] = m_velocities[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::ACCELERATION))
 	{
-		std::swap(m_accelerations[a], m_accelerations[b]);
+		//std::swap(m_accelerations[a], m_accelerations[b]);
+		m_accelerations[a] = m_accelerations[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::GRAVITY_EFFECT_FACTOR))
 	{
-		std::swap(m_gravityEffectFactors[a], m_gravityEffectFactors[b]);
+		//std::swap(m_gravityEffectFactors[a], m_gravityEffectFactors[b]);
+		m_gravityEffectFactors[a] = m_gravityEffectFactors[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::LIFE_SPAN))
 	{
-		std::swap(m_lifeSpanLimits[a], m_lifeSpanLimits[b]);
-		std::swap(m_lifeSpans[a], m_lifeSpans[b]);
+		//std::swap(m_lifeSpanLimits[a], m_lifeSpanLimits[b]);
+		//std::swap(m_lifeSpans[a], m_lifeSpans[b]);
+		m_lifeSpanLimits[a] = m_lifeSpanLimits[b];
+		m_lifeSpans[a] = m_lifeSpans[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::ROTATION))
 	{
-		std::swap(m_rotations[a], m_rotations[b]);
+		//std::swap(m_rotations[a], m_rotations[b]);
+		m_rotations[a] = m_rotations[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::SCALE))
 	{
-		std::swap(m_scales[a], m_scales[b]);
+		//std::swap(m_scales[a], m_scales[b]);
+		m_scales[a] = m_scales[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::TEXTURE_OFFSET))
 	{
-		std::swap(m_textureOffsets[a], m_textureOffsets[b]);
+		//std::swap(m_textureOffsets[a], m_textureOffsets[b]);
+		m_textureOffsets[a] = m_textureOffsets[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::COLOR))
 	{
-		std::swap(m_colors[a], m_colors[b]);
+		//std::swap(m_colors[a], m_colors[b]);
+		m_colors[a] = m_colors[b];
 	}
 	if (m_attributesMask.IsAttributeEnabled(attributes::MASS))
 	{
-		std::swap(m_masses[a], m_masses[b]);
+		//std::swap(m_masses[a], m_masses[b]);
+		m_masses[a] = m_masses[b];
 	}
-	if (m_attributesMask.IsAttributeEnabled(attributes::ALIVE))
-	{
-		std::swap(m_aliveFlags[a], m_aliveFlags[b]);
-	}
+	//if (m_attributesMask.IsAttributeEnabled(attributes::ALIVE))
+	//{
+	//	std::swap(m_aliveFlags[a], m_aliveFlags[b]);
+	//}
 	if (m_attributesMask.IsAttributeEnabled(attributes::ID))
 	{
-		std::swap(m_ids[a], m_ids[b]);
+		//std::swap(m_ids[a], m_ids[b]);
+		m_ids[a] = m_ids[b];
 	}
 }
 

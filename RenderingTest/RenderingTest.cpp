@@ -696,7 +696,7 @@ void CreateParticlesSystem()
 	particlesSystemBuilder.SetMaxCount(100000).SetAttributesMask(particles::attributes::POSITION | particles::attributes::COLOR | particles::attributes::SCALE | particles::attributes::ROTATION).
 		SetMeshId(mesh_ids::PARTICLE_COLOR).SetTextureId(texture_ids::INVALID).SetShaderId(shader_ids::PARTICLES_COLORS);
 
-	particles::ParticlesEmitter particlesEmitter(501.0f);
+	particles::ParticlesEmitter particlesEmitter(1501.0f);
 	particlesEmitter.AddGenerator(make_unique<particles::generators::CirclePositionGenerator>(math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), 0.15f, 0.15f));
 	const auto colorsSet = { Color(color_ids::RED), Color(color_ids::GREEN), Color(color_ids::CYAN), Color(color_ids::YELLOW), Color(color_ids::MAGENTA) };
 	particlesEmitter.AddGenerator(make_unique<particles::generators::FromSetColorGenerator>(colorsSet));

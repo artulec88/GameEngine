@@ -33,13 +33,15 @@ void rendering::particles::LifeSpanParticlesKiller::Kill(math::Real deltaTime, P
 {
 	// TODO: Instead of removing the dead particles one by one we could collect their indices and
 	/// then pass those indices of dead particles to particles container to remove them in one go.
+	std::vector<size_t> indicesToKill;
 	for (size_t i = 0; i < particleContainer->GetAliveCount(); ++i)
 	{
 		if (particleContainer->GetLifeSpan(i) >= particleContainer->GetLifeSpanLimit(i))
 		{
-			particleContainer->Kill(i);
+			indicesToKill.push_back(i);
 		}
 	}
+	particleContainer->Kill(indicesToKill.data(), indicesToKill.size());
 }
 
 /* ==================== LifeSpanParticlesKiller class end ==================== */
@@ -78,10 +80,12 @@ void rendering::particles::TimerParticlesKiller::Kill(math::Real deltaTime, Part
 		DELOCUST_LOG_RENDERING("Killing starts: particlesToBeKilledCount: ", particlesToBeKilledCount, " startIndex: ",
 			startIndex, " aliveParticles: ", particleContainer->GetAliveCount());
 
+		std::vector<size_t> indicesToKill;
 		for (auto i = 0; i < particlesToBeKilledCount; ++i)
 		{
-			particleContainer->Kill((startIndex + i) % particleContainer->GetAliveCount());
+			indicesToKill.push_back((startIndex + i) % particleContainer->GetAliveCount());
 		}
+		particleContainer->Kill(indicesToKill.data(), indicesToKill.size());
 	}
 }
 /* ==================== TimerParticlesKiller class end ==================== */
