@@ -54,10 +54,12 @@ namespace rendering
 			/// <summary>
 			/// Simulates the killer by the specified <paramref name="deltaTime"/> time.
 			/// The function simply iterates through the particles in the specified particles container <paramref name="particlesContainer"/>
-			/// and kill the ones that are no longer alive, i.e. the function <code>IsAlive(/*...*/)</code> returns <code>false</code>.
+			/// and kill the ones that are no longer alive.
 			/// </summary>
 			/// <param name="deltaTime"> The time that has passed since the last killing procedure took place. </param>
-			/// <param name="particleContainer"> The container of particles that will be cleansed of dead particles. </param>
+			/// <param name="particleContainer">
+			/// The container of particles that will be cleansed of the particles that are assumed to be dead.
+			/// </param>
 			RENDERING_API virtual void Kill(math::Real deltaTime, ParticlesContainer* particleContainer) = 0;
 			/* ==================== Non-static member functions end ==================== */
 
@@ -65,6 +67,9 @@ namespace rendering
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesKiller */
 
+		/// <summary>
+		/// Life span particles killer. This kind of particles killer decides to kill the particles based on their life span attribute.
+		/// </summary>
 		class LifeSpanParticlesKiller : public ParticlesKiller
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -107,6 +112,12 @@ namespace rendering
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class LifeSpanParticlesKiller */
 
+		/// <summary>
+		/// Timer particles killer. This kind of particles killer performs the killing procedure with specified frequency.
+		/// In other words the timer particles killer is given the information about the number of particles to be killed every second
+		/// (or the time between two separate particles being killed).
+		/// Whenever the time limit is reached the particles killer picks random particles from the given particles container and kills them.
+		/// </summary>
 		class TimerParticlesKiller : public ParticlesKiller
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -122,7 +133,7 @@ namespace rendering
 			/// </param>
 			RENDERING_API TimerParticlesKiller(math::Real particlesToKillPerSecond);
 
-			/// <summary> Life-span particles killer destructor. </summary>
+			/// <summary> Timer particles killer destructor. </summary>
 			RENDERING_API virtual ~TimerParticlesKiller();
 
 			/// <summary> Timer particles killer copy constructor. </summary>

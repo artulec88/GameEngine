@@ -6,6 +6,7 @@
 
 #include "Utility/ILogger.h"
 
+#include <numeric>
 #include <algorithm>
 
 /* ==================== ParticlesKiller class begin ==================== */
@@ -47,6 +48,26 @@ void rendering::particles::LifeSpanParticlesKiller::Kill(math::Real deltaTime, P
 /* ==================== LifeSpanParticlesKiller class end ==================== */
 
 /* ==================== TimerParticlesKiller class begin ==================== */
+/// <summary>
+/// A simple sequence generator. The structure is used to simplify the process of creating a sequence of integers starting from given <code>m_current</code> variable value.
+/// This values is then incremented each time the generator is called, but when it reaches the constant value <code>m_limit</code> it is reset to <value>0</value>.
+/// </summary>
+struct SeqGenerator
+{
+	SeqGenerator(int start, int limit) : m_current(start), m_limit(limit) {}
+	int operator() ()
+	{
+		if (m_current == m_limit)
+		{
+			m_current = 0;
+		}
+		return m_current++;
+	}
+private:
+	int m_current;
+	const int m_limit;
+};
+
 rendering::particles::TimerParticlesKiller::TimerParticlesKiller(math::Real particlesToKillPerSecond) :
 	ParticlesKiller(),
 	m_timeToKillOneParticle(REAL_ONE / particlesToKillPerSecond),
@@ -80,12 +101,18 @@ void rendering::particles::TimerParticlesKiller::Kill(math::Real deltaTime, Part
 		DELOCUST_LOG_RENDERING("Killing starts: particlesToBeKilledCount: ", particlesToBeKilledCount, " startIndex: ",
 			startIndex, " aliveParticles: ", particleContainer->GetAliveCount());
 
-		std::vector<size_t> indicesToKill;
-		for (auto i = 0; i < particlesToBeKilledCount; ++i)
+		std::vector<size_t> indicesToKill(particlesToBeKilledCount);
+		if (startIndex + particlesToBeKilledCount > particleContainer->GetAliveCount())
 		{
-			indicesToKill.push_back((startIndex + i) % particleContainer->GetAliveCount());
+			SeqGenerator seqGenerator(startIndex, particleContainer->GetAliveCount());
+			std::generate(indicesToKill.begin(), indicesToKill.end(), seqGenerator);
+		}
+		else
+		{
+			std::iota(indicesToKill.begin(), indicesToKill.end(), startIndex);
 		}
 		particleContainer->Kill(indicesToKill.data(), indicesToKill.size());
 	}
 }
+
 /* ==================== TimerParticlesKiller class end ==================== */
